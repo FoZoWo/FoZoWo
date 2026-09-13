@@ -5,93 +5,60 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ZoJeZuのロゴ | ZoJeZu公式</title>
 <meta name="description" content="ZoJeZu公式ロゴページ。ロゴのダウンロード・コピーができます。">
-<meta name="theme-color" content="#0a0a12">
+<meta name="theme-color" content="#07060f">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
 <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;900&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
 
 <style>
-:root, [data-theme="dark"] {
-  --bg: #07070f;
-  --bg-elevated: #0e0e1a;
-  --surface: rgba(255,255,255,0.055);
-  --surface-hover: rgba(255,255,255,0.11);
-  --border: rgba(255,255,255,0.12);
-  --text: #f4f4fc;
-  --muted: #9b9bb8;
-  --pink: #ff6bcb;
-  --purple: #8b6cff;
-  --cyan: #00e5ff;
-  --gold: #ffd166;
-  --header-bg: rgba(7,7,15,0.78);
-  --header-bg-scrolled: rgba(7,7,15,0.94);
-  --menu-bg: rgba(7,7,15,0.97);
-  --card-glow: 0 0 32px rgba(255,107,203,0.4);
-  --shadow: 0 22px 55px rgba(0,0,0,0.5);
-  --radius: 18px;
-  --header-h: 64px;
-  --nav-max: 1100px;
+/* =====================================================================
+   Design tokens are kept IDENTICAL to index.html so that every page
+   (including the shared header.html, which is injected at runtime)
+   looks and themes the same way regardless of which page loaded it.
+   ===================================================================== */
+:root, [data-theme="dark"]{
+  --ink:#07060f; --ink-2:#0c0a1a; --panel:#120e22; --panel-2:#17122b;
+  --line:rgba(178,150,255,.16); --line-strong:rgba(178,150,255,.4);
+  --text:#f3f0ff; --muted:#9d97c6;
+  --pink:#ff5fa8; --violet:#8b6cff; --cyan:#57e8ff; --gold:#ffcf7e;
+  --glass:rgba(255,255,255,.04); --glass-2:rgba(255,255,255,.09);
+  --card-glow:0 0 32px rgba(255,95,168,.4);
+  --shadow:0 24px 60px rgba(0,0,0,.55);
+  --radius:18px;
 }
-[data-theme="light"] {
-  --bg: #f3f0f8;
-  --bg-elevated: #ffffff;
-  --surface: rgba(0,0,0,0.04);
-  --surface-hover: rgba(0,0,0,0.075);
-  --border: rgba(0,0,0,0.09);
-  --text: #1a1a2e;
-  --muted: #5c5c78;
-  --pink: #e84a9a;
-  --purple: #6b4ce0;
-  --cyan: #0099b8;
-  --gold: #c99200;
-  --header-bg: rgba(255,255,255,0.82);
-  --header-bg-scrolled: rgba(255,255,255,0.96);
-  --menu-bg: rgba(255,255,255,0.97);
-  --card-glow: 0 0 28px rgba(232,74,154,0.28);
-  --shadow: 0 18px 45px rgba(0,0,0,0.13);
+[data-theme="light"]{
+  --ink:#f4f0ff; --ink-2:#ece3ff; --panel:#ffffff; --panel-2:#f7f1ff;
+  --line:rgba(90,60,200,.16); --line-strong:rgba(90,60,200,.38);
+  --text:#1c1230; --muted:#645892;
+  --pink:#d63d94; --violet:#6a3fe0; --cyan:#0092b3; --gold:#af7a12;
+  --glass:rgba(90,60,200,.05); --glass-2:rgba(90,60,200,.09);
+  --card-glow:0 0 28px rgba(214,61,148,.28);
+  --shadow:0 18px 44px rgba(70,40,140,.16);
 }
-@media (prefers-color-scheme: light) {
-  [data-theme="auto"] {
-    --bg: #f3f0f8;
-    --bg-elevated: #ffffff;
-    --surface: rgba(0,0,0,0.04);
-    --surface-hover: rgba(0,0,0,0.075);
-    --border: rgba(0,0,0,0.09);
-    --text: #1a1a2e;
-    --muted: #5c5c78;
-    --pink: #e84a9a;
-    --purple: #6b4ce0;
-    --cyan: #0099b8;
-    --gold: #c99200;
-    --header-bg: rgba(255,255,255,0.82);
-    --header-bg-scrolled: rgba(255,255,255,0.96);
-    --menu-bg: rgba(255,255,255,0.97);
-    --card-glow: 0 0 28px rgba(232,74,154,0.28);
-    --shadow: 0 18px 45px rgba(0,0,0,0.13);
+@media (prefers-color-scheme: light){
+  [data-theme="auto"]{
+    --ink:#f4f0ff; --ink-2:#ece3ff; --panel:#ffffff; --panel-2:#f7f1ff;
+    --line:rgba(90,60,200,.16); --line-strong:rgba(90,60,200,.38);
+    --text:#1c1230; --muted:#645892;
+    --pink:#d63d94; --violet:#6a3fe0; --cyan:#0092b3; --gold:#af7a12;
+    --glass:rgba(90,60,200,.05); --glass-2:rgba(90,60,200,.09);
+    --card-glow:0 0 28px rgba(214,61,148,.28);
+    --shadow:0 18px 44px rgba(70,40,140,.16);
   }
 }
-@media (prefers-color-scheme: dark) {
-  [data-theme="auto"] {
-    --bg: #07070f;
-    --bg-elevated: #0e0e1a;
-    --surface: rgba(255,255,255,0.055);
-    --surface-hover: rgba(255,255,255,0.11);
-    --border: rgba(255,255,255,0.12);
-    --text: #f4f4fc;
-    --muted: #9b9bb8;
-    --pink: #ff6bcb;
-    --purple: #8b6cff;
-    --cyan: #00e5ff;
-    --gold: #ffd166;
-    --header-bg: rgba(7,7,15,0.78);
-    --header-bg-scrolled: rgba(7,7,15,0.94);
-    --menu-bg: rgba(7,7,15,0.97);
-    --card-glow: 0 0 32px rgba(255,107,203,0.4);
-    --shadow: 0 22px 55px rgba(0,0,0,0.5);
+@media (prefers-color-scheme: dark){
+  [data-theme="auto"]{
+    --ink:#07060f; --ink-2:#0c0a1a; --panel:#120e22; --panel-2:#17122b;
+    --line:rgba(178,150,255,.16); --line-strong:rgba(178,150,255,.4);
+    --text:#f3f0ff; --muted:#9d97c6;
+    --pink:#ff5fa8; --violet:#8b6cff; --cyan:#57e8ff; --gold:#ffcf7e;
+    --glass:rgba(255,255,255,.04); --glass-2:rgba(255,255,255,.09);
+    --card-glow:0 0 32px rgba(255,95,168,.4);
+    --shadow:0 24px 60px rgba(0,0,0,.55);
   }
 }
 
@@ -101,17 +68,17 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; background: var(--ink); }
 body {
   font-family: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Yu Gothic", system-ui, sans-serif;
   font-size: 15px;
   line-height: 1.7;
   color: var(--text);
-  background: var(--bg);
+  background: var(--ink);
   min-height: 100dvh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  padding-top: var(--header-h);
+  padding-top: var(--header-h, 64px);
   cursor: var(--cursor);
   transition: background 0.45s, color 0.35s;
 }
@@ -123,10 +90,10 @@ a, button, .card, .pill, .sns, .icon-btn, .hamburger, .settings-options button, 
 .bg {
   position: fixed; inset: 0; z-index: -2;
   background:
-    radial-gradient(ellipse 90% 60% at 15% -10%, color-mix(in srgb, var(--purple) 40%, transparent), transparent 55%),
+    radial-gradient(ellipse 90% 60% at 15% -10%, color-mix(in srgb, var(--violet) 40%, transparent), transparent 55%),
     radial-gradient(ellipse 70% 50% at 90% 5%, color-mix(in srgb, var(--pink) 30%, transparent), transparent 50%),
     radial-gradient(ellipse 60% 40% at 50% 110%, color-mix(in srgb, var(--cyan) 14%, transparent), transparent 50%),
-    var(--bg);
+    var(--ink);
   transition: background 0.5s;
   animation: bgShift 16s ease-in-out infinite alternate;
 }
@@ -143,7 +110,7 @@ a, button, .card, .pill, .sns, .icon-btn, .hamburger, .settings-options button, 
   [data-theme="auto"] .orb { opacity: 0.32; }
 }
 .orb-1 { width: 300px; height: 300px; background: var(--pink); top: -90px; left: -70px; }
-.orb-2 { width: 240px; height: 240px; background: var(--purple); bottom: 8%; right: -50px; animation-delay: -6s; }
+.orb-2 { width: 240px; height: 240px; background: var(--violet); bottom: 8%; right: -50px; animation-delay: -6s; }
 .orb-3 { width: 180px; height: 180px; background: var(--cyan); top: 42%; left: 58%; animation-delay: -12s; opacity: 0.2; }
 @keyframes orbFloat {
   0%, 100% { transform: translate(0,0) scale(1); }
@@ -156,7 +123,7 @@ a, button, .card, .pill, .sns, .icon-btn, .hamburger, .settings-options button, 
   position: absolute; bottom: -12px; width: 4px; height: 4px; border-radius: 50%;
   background: #fff; opacity: 0; animation: rise linear infinite;
 }
-[data-theme="light"] .p { background: var(--purple); }
+[data-theme="light"] .p { background: var(--violet); }
 @keyframes rise {
   0% { transform: translateY(0) scale(0) rotate(0deg); opacity: 0; }
   12% { opacity: 0.55; }
@@ -176,133 +143,31 @@ a, button, .card, .pill, .sns, .icon-btn, .hamburger, .settings-options button, 
   50% { opacity: 0.8; transform: scale(1.2); }
 }
 
-/* Header & Components */
-.header {
-  position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); z-index: 1000;
-  background: var(--header-bg);
-  backdrop-filter: blur(20px) saturate(1.6);
-  -webkit-backdrop-filter: blur(20px) saturate(1.6);
-  border-bottom: 1px solid var(--border);
-  transition: background 0.35s, box-shadow 0.35s, transform 0.4s;
-}
-.header.scrolled {
-  background: var(--header-bg-scrolled);
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-}
-.header-inner {
-  max-width: var(--nav-max); height: 100%; margin: 0 auto;
-  padding: 0 16px 0 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
-}
-.logo {
-  display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text);
-  font-weight: 900; font-size: 17px; letter-spacing: -0.02em; flex-shrink: 0; z-index: 1001;
-  transition: transform 0.3s;
-}
-.logo:hover { transform: scale(1.03); }
-.logo-img {
-  width: 38px; height: 38px; border-radius: 11px; object-fit: contain;
-  background: var(--surface);
-  box-shadow: 0 4px 16px color-mix(in srgb, var(--pink) 35%, transparent);
-  transition: transform 0.4s, box-shadow 0.4s;
-}
-.logo:hover .logo-img {
-  transform: rotate(-8deg) scale(1.08);
-  box-shadow: 0 6px 22px color-mix(in srgb, var(--pink) 50%, transparent);
-}
-.logo-text span {
-  background: linear-gradient(120deg, var(--text), var(--pink) 60%, var(--purple));
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  background-size: 200% auto;
-  animation: textShine 6s linear infinite;
-}
-@keyframes textShine {
-  0% { background-position: 0% center; }
-  100% { background-position: 200% center; }
-}
-
-.nav-desktop { display: none; align-items: center; gap: 4px; }
-.nav-desktop a {
-  padding: 8px 14px; border-radius: 11px; color: var(--muted); text-decoration: none;
-  font-size: 14px; font-weight: 700; transition: all 0.3s cubic-bezier(0.22,1,0.36,1); white-space: nowrap;
-  position: relative;
-}
-.nav-desktop a::after {
-  content: ""; position: absolute; left: 14px; right: 14px; bottom: 5px; height: 2px;
-  background: linear-gradient(90deg, var(--pink), var(--purple));
-  border-radius: 2px; transform: scaleX(0); transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
-}
-.nav-desktop a:hover { color: var(--text); background: var(--surface); }
-.nav-desktop a:hover::after { transform: scaleX(1); }
-.nav-desktop a.accent {
-  background: linear-gradient(135deg, var(--pink), var(--purple)); color: #fff;
-  box-shadow: 0 4px 18px color-mix(in srgb, var(--pink) 35%, transparent);
-}
-.nav-desktop a.accent::after { display: none; }
-.nav-desktop a.accent:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--pink) 50%, transparent);
-}
-
-.header-actions { display: flex; align-items: center; gap: 8px; z-index: 1001; }
-.icon-btn {
-  width: 40px; height: 40px; border: none; border-radius: 12px; background: var(--surface);
-  color: var(--text); display: grid; place-items: center; cursor: var(--cursor);
-  transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
-}
-.icon-btn:hover { background: var(--surface-hover); transform: rotate(30deg) scale(1.08); }
-.icon-btn:active { transform: scale(0.92); }
-.icon-btn svg { width: 20px; height: 20px; transition: transform 0.4s; }
-.hamburger {
-  display: flex; flex-direction: column; justify-content: center; gap: 5px;
-  width: 40px; height: 40px; padding: 10px; border: none; background: var(--surface);
-  border-radius: 12px; cursor: var(--cursor); transition: background 0.25s;
-}
-.hamburger:hover { background: var(--surface-hover); }
-.hamburger span {
-  display: block; height: 2px; width: 100%; background: var(--text); border-radius: 2px;
-  transition: all 0.4s cubic-bezier(0.22,1,0.36,1); transform-origin: center;
-}
-.hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.hamburger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-.hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+/* NOTE: .header / .logo / .nav-desktop / .icon-btn / .hamburger / .nav-mobile
+   styles live in header.html (fetched and injected into #headerRoot below).
+   They are intentionally NOT duplicated here — that duplication was the
+   source of the inconsistent header look across pages. */
 
 /* Settings */
 .settings-panel {
-  position: fixed; top: calc(var(--header-h) + 12px); right: 16px;
+  position: fixed; top: calc(var(--header-h, 64px) + 12px); right: 16px;
   width: min(300px, calc(100vw - 32px));
-  background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 20px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 20px;
   box-shadow: var(--shadow); z-index: 1100; padding: 20px;
   opacity: 0; visibility: hidden; transform: translateY(-16px) scale(0.94);
   transition: all 0.35s cubic-bezier(0.22,1,0.36,1); pointer-events: none;
 }
 .settings-panel.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); pointer-events: auto; }
 .settings-title { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
-.settings-close { width: 28px; height: 28px; border: none; border-radius: 8px; background: var(--surface); color: var(--muted); display: grid; place-items: center; cursor: var(--cursor); font-size: 16px; line-height: 1; transition: all 0.25s; }
-.settings-close:hover { background: var(--surface-hover); color: var(--text); transform: rotate(90deg); }
+.settings-close { width: 28px; height: 28px; border: none; border-radius: 8px; background: var(--glass); color: var(--muted); display: grid; place-items: center; cursor: var(--cursor-hover); font-size: 16px; line-height: 1; transition: all 0.25s; }
+.settings-close:hover { background: var(--glass-2); color: var(--text); transform: rotate(90deg); }
 .settings-group { margin-bottom: 18px; }
 .settings-group:last-child { margin-bottom: 0; }
 .settings-label { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 8px; display: block; }
 .settings-options { display: flex; flex-wrap: wrap; gap: 8px; }
-.settings-options button { flex: 1; min-width: 72px; padding: 11px 8px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 13px; font-weight: 700; font-family: inherit; cursor: var(--cursor); transition: all 0.3s cubic-bezier(0.22,1,0.36,1); }
-.settings-options button:hover { background: var(--surface-hover); border-color: color-mix(in srgb, var(--pink) 45%, var(--border)); transform: translateY(-2px); }
-.settings-options button.active { background: linear-gradient(135deg, var(--pink), var(--purple)); border-color: transparent; color: #fff; box-shadow: 0 6px 18px color-mix(in srgb, var(--pink) 40%, transparent); }
-
-/* Mobile Menu */
-.nav-mobile { position: fixed; inset: 0; z-index: 999; background: var(--menu-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; opacity: 0; visibility: hidden; pointer-events: none; transition: all 0.45s cubic-bezier(0.22,1,0.36,1); }
-.nav-mobile.open { opacity: 1; visibility: visible; pointer-events: auto; }
-.nav-mobile a { display: flex; align-items: center; gap: 14px; padding: 17px 28px; min-width: 270px; border-radius: 16px; color: var(--text); text-decoration: none; font-size: 18px; font-weight: 700; background: var(--surface); border: 1px solid var(--border); transform: translateY(28px) scale(0.96); opacity: 0; transition: all 0.45s cubic-bezier(0.22,1,0.36,1); }
-.nav-mobile.open a { transform: translateY(0) scale(1); opacity: 1; }
-.nav-mobile.open a:nth-child(1) { transition-delay: 0.06s; }
-.nav-mobile.open a:nth-child(2) { transition-delay: 0.11s; }
-.nav-mobile.open a:nth-child(3) { transition-delay: 0.16s; }
-.nav-mobile.open a:nth-child(4) { transition-delay: 0.21s; }
-.nav-mobile.open a:nth-child(5) { transition-delay: 0.26s; }
-.nav-mobile.open a:nth-child(6) { transition-delay: 0.31s; }
-.nav-mobile a:hover, .nav-mobile a:active { background: linear-gradient(135deg, color-mix(in srgb, var(--pink) 22%, transparent), color-mix(in srgb, var(--purple) 16%, transparent)); border-color: color-mix(in srgb, var(--pink) 45%, transparent); transform: scale(1.04); }
-.nav-mobile .icon { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; font-size: 19px; background: linear-gradient(145deg, color-mix(in srgb, var(--pink) 28%, transparent), color-mix(in srgb, var(--purple) 22%, transparent)); transition: transform 0.35s; }
-.nav-mobile a:hover .icon { transform: rotate(-10deg) scale(1.1); }
-.nav-mobile-footer { margin-top: 36px; font-size: 13px; color: var(--muted); opacity: 0; transition: opacity 0.4s 0.4s; }
-.nav-mobile.open .nav-mobile-footer { opacity: 1; }
+.settings-options button { flex: 1; min-width: 72px; padding: 11px 8px; border-radius: 12px; border: 1px solid var(--line); background: var(--glass); color: var(--text); font-size: 13px; font-weight: 700; font-family: inherit; cursor: var(--cursor-hover); transition: all 0.3s cubic-bezier(0.22,1,0.36,1); }
+.settings-options button:hover { background: var(--glass-2); border-color: color-mix(in srgb, var(--pink) 45%, var(--line)); transform: translateY(-2px); }
+.settings-options button.active { background: linear-gradient(135deg, var(--pink), var(--violet)); border-color: transparent; color: #fff; box-shadow: 0 6px 18px color-mix(in srgb, var(--pink) 40%, transparent); }
 
 /* Content Base */
 .shell { max-width: 540px; margin: 0 auto; padding: 28px 18px 90px; position: relative; }
@@ -312,32 +177,23 @@ a, button, .card, .pill, .sns, .icon-btn, .hamburger, .settings-options button, 
 @keyframes badgePulse { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--gold) 30%, transparent); } 50% { box-shadow: 0 0 0 8px transparent; } }
 .badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px var(--gold); animation: pulse 2s ease-in-out infinite; }
 @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.8); } }
-h1 { font-size: clamp(28px, 7.5vw, 36px); font-weight: 900; line-height: 1.2; letter-spacing: -0.03em; margin-bottom: 10px; }
-h1 span { background: linear-gradient(120deg, var(--text) 8%, var(--pink) 40%, var(--purple) 70%, var(--cyan) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: textShine 7s linear infinite; }
+h1 { font-family: 'Cinzel', serif; font-size: clamp(28px, 7.5vw, 36px); font-weight: 900; line-height: 1.2; letter-spacing: -0.03em; margin-bottom: 10px; }
+h1 span { background: linear-gradient(120deg, var(--text) 8%, var(--pink) 40%, var(--violet) 70%, var(--cyan) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: textShine 7s linear infinite; }
+@keyframes textShine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
 .lead { font-size: 15px; color: var(--muted); max-width: 340px; margin: 0 auto; }
 .section { margin-bottom: 44px; opacity: 0; transform: translateY(36px); transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1); }
 .section.visible { opacity: 1; transform: translateY(0); }
 .sec-title { display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
-.sec-title::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
-.back-btn { display: inline-flex; align-items: center; gap: 10px; margin-top: 8px; padding: 14px 24px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); color: var(--text); text-decoration: none; font-size: 14px; font-weight: 700; transition: all 0.4s cubic-bezier(0.22,1,0.36,1); }
-.back-btn:hover { transform: translateY(-4px) scale(1.03); border-color: transparent; background: linear-gradient(135deg, var(--pink), var(--purple)); color: #fff; box-shadow: 0 12px 28px color-mix(in srgb, var(--pink) 40%, transparent); }
+.sec-title::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--line), transparent); }
+.back-btn { display: inline-flex; align-items: center; gap: 10px; margin-top: 8px; padding: 14px 24px; border-radius: 999px; background: var(--glass); border: 1px solid var(--line); color: var(--text); text-decoration: none; font-size: 14px; font-weight: 700; transition: all 0.4s cubic-bezier(0.22,1,0.36,1); }
+.back-btn:hover { transform: translateY(-4px) scale(1.03); border-color: transparent; background: linear-gradient(135deg, var(--pink), var(--violet)); color: #fff; box-shadow: 0 12px 28px color-mix(in srgb, var(--pink) 40%, transparent); }
 .back-btn svg { width: 16px; height: 16px; transition: transform 0.3s; }
 .back-btn:hover svg { transform: translateX(-3px); }
 footer { margin-top: 52px; text-align: center; }
-.footer-pill { display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 999px; font-size: 12px; color: var(--muted); background: var(--surface); border: 1px solid var(--border); transition: all 0.3s; }
+.footer-pill { display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 999px; font-size: 12px; color: var(--muted); background: var(--glass); border: 1px solid var(--line); transition: all 0.3s; }
 .footer-pill:hover { border-color: color-mix(in srgb, var(--pink) 30%, transparent); transform: translateY(-2px); }
 
-/* Offline Toast */
-.network-toast { position: fixed; top: calc(var(--header-h, 64px) + 12px); left: 50%; z-index: 2000; transform: translate(-50%, -14px); opacity: 0; visibility: hidden; display: flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 999px; font-size: 13px; font-weight: 700; box-shadow: 0 10px 28px rgba(0,0,0,0.3); transition: all 0.4s cubic-bezier(0.22,1,0.36,1); pointer-events: none; }
-.network-toast.show { transform: translate(-50%, 0); opacity: 1; visibility: visible; }
-.network-toast.offline { background: linear-gradient(135deg, #ff5a7a, #e84a9a); color: #fff; }
-.network-toast.online { background: linear-gradient(135deg, #21c98a, #00b4d8); color: #fff; }
-.network-toast svg { width: 15px; height: 15px; flex-shrink: 0; }
-
 @media (min-width: 768px) {
-  .hamburger { display: none; }
-  .nav-desktop { display: flex; }
-  .nav-mobile { display: none !important; }
   .shell { max-width: 700px; padding: 40px 28px 100px; }
   .hero { padding: 36px 0 44px; }
   h1 { font-size: 40px; }
@@ -345,9 +201,6 @@ footer { margin-top: 52px; text-align: center; }
 }
 @media (min-width: 1024px) {
   .shell { max-width: 760px; padding: 48px 32px 110px; }
-  .header-inner { padding: 0 28px; }
-  .nav-desktop { gap: 6px; }
-  .nav-desktop a { padding: 9px 16px; font-size: 14.5px; }
   h1 { font-size: 44px; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -358,18 +211,18 @@ footer { margin-top: 52px; text-align: center; }
 
 <style>
 /* Logo specific styles */
-.logo-card { border-radius: var(--radius); background: var(--surface); border: 1px solid var(--border); padding: 32px 24px; text-align: center; transition: all 0.4s cubic-bezier(0.22,1,0.36,1); }
+.logo-card { border-radius: var(--radius); background: var(--glass); border: 1px solid var(--line); padding: 32px 24px; text-align: center; transition: all 0.4s cubic-bezier(0.22,1,0.36,1); }
 .logo-card:hover { border-color: color-mix(in srgb, var(--pink) 40%, transparent); box-shadow: var(--card-glow), var(--shadow); }
 .brand-img { width: min(60vw, 260px); height: auto; margin: 0 auto 8px; display: block; filter: drop-shadow(0 10px 30px color-mix(in srgb, var(--pink) 25%, transparent)); transition: transform 0.5s cubic-bezier(0.22,1,0.36,1); }
 .logo-card:hover .brand-img { transform: scale(1.03) rotate(-1deg); }
 .logo-desc { display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
 .logo-desc p { color: var(--muted); font-size: 14.5px; line-height: 1.8; text-align: left; }
 .logo-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 12px; }
-.action-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); text-decoration: none; font-size: 14px; font-weight: 700; font-family: inherit; transition: all 0.4s cubic-bezier(0.22,1,0.36,1); }
+.action-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: 999px; border: 1px solid var(--line); background: var(--glass); color: var(--text); text-decoration: none; font-size: 14px; font-weight: 700; font-family: inherit; transition: all 0.4s cubic-bezier(0.22,1,0.36,1); }
 .action-btn svg { width: 16px; height: 16px; transition: transform 0.3s; }
-.action-btn:hover { transform: translateY(-3px) scale(1.02); border-color: transparent; background: linear-gradient(135deg, var(--pink), var(--purple)); color: #fff; box-shadow: 0 12px 28px color-mix(in srgb, var(--pink) 40%, transparent); }
-.action-btn.primary { border-color: transparent; background: linear-gradient(135deg, var(--pink), var(--purple)); color: #fff; box-shadow: 0 8px 24px color-mix(in srgb, var(--pink) 35%, transparent); }
-.action-btn.primary:hover { background: linear-gradient(135deg, var(--purple), var(--cyan)); box-shadow: 0 14px 32px color-mix(in srgb, var(--pink) 45%, transparent); }
+.action-btn:hover { transform: translateY(-3px) scale(1.02); border-color: transparent; background: linear-gradient(135deg, var(--pink), var(--violet)); color: #fff; box-shadow: 0 12px 28px color-mix(in srgb, var(--pink) 40%, transparent); }
+.action-btn.primary { border-color: transparent; background: linear-gradient(135deg, var(--pink), var(--violet)); color: #fff; box-shadow: 0 8px 24px color-mix(in srgb, var(--pink) 35%, transparent); }
+.action-btn.primary:hover { background: linear-gradient(135deg, var(--violet), var(--cyan)); box-shadow: 0 14px 32px color-mix(in srgb, var(--pink) 45%, transparent); }
 .action-msg { text-align: center; font-size: 13px; color: var(--pink); height: 1.4em; margin-top: 10px; font-weight: 700; }
 @media (min-width: 768px) {
   .logo-card { padding: 44px 40px; }
@@ -380,7 +233,29 @@ footer { margin-top: 52px; text-align: center; }
 </head>
 <body>
 
-<div id="external-header-container"></div>
+<!-- ============ Shared header (loaded from header.html) ============ -->
+<div id="headerRoot"></div>
+
+<!-- ============ Settings panel ============ -->
+<div class="settings-panel" id="settingsPanel" role="dialog" aria-label="設定">
+  <div class="settings-title"><span data-i18n="settings">設定</span><button class="settings-close" id="settingsClose">×</button></div>
+  <div class="settings-group">
+    <span class="settings-label" data-i18n="theme">テーマ</span>
+    <div class="settings-options" id="themeOptions">
+      <button data-value="auto" class="active" data-i18n="auto">自動</button>
+      <button data-value="dark" data-i18n="dark">ダーク</button>
+      <button data-value="light" data-i18n="light">ライト</button>
+    </div>
+  </div>
+  <div class="settings-group">
+    <span class="settings-label" data-i18n="language">言語</span>
+    <div class="settings-options" id="langOptions">
+      <button data-value="auto" class="active" data-i18n="auto">自動</button>
+      <button data-value="ja">日本語</button>
+      <button data-value="en">English</button>
+    </div>
+  </div>
+</div>
 
 <div class="shell">
   <header class="hero">
@@ -423,40 +298,26 @@ footer { margin-top: 52px; text-align: center; }
   <footer>
     <div class="footer-pill">
       <span>✦</span>
-      <span data-i18n="footer">OisasiOfficial — 設定からテーマ・言語を変更できます</span>
+      <span data-i18n="footer">ZoJeZu Official — 設定からテーマ・言語を変更できます</span>
     </div>
   </footer>
 </div>
 
 
 <script>
-function initApp() {
+(function () {
   const html = document.documentElement;
-  const header = document.getElementById('header');
-  const hamburger = document.getElementById('hamburger');
-  const navMobile = document.getElementById('navMobile');
-  const settingsBtn = document.getElementById('settingsBtn');
-  const settingsPanel = document.getElementById('settingsPanel');
-  const settingsClose = document.getElementById('settingsClose');
-
-  if (!header || !hamburger) return; // Prevent errors if missing
 
   const i18n = {
     ja: {
       settings: '設定', theme: 'テーマ', language: '言語',
       auto: '自動', dark: 'ダーク', light: 'ライト',
-      nav_oijiiw: 'おいじぃ魔女のホームページ', nav_logo: 'ZoJeZuのロゴページ',
-      nav_ai: 'ZoJeZuAIページ', nav_character: 'キャラクターページ', nav_faq: 'FAQページ',
-      hero_title: document.querySelector('.hero h1 span') ? document.querySelector('.hero h1 span').innerText : '',
-      hero_lead: document.querySelector('.lead') ? document.querySelector('.lead').innerText : '',
-      sec_faq: 'QUESTION & ANSWER',
+      sec_main: '宝物庫', sec_witch: '魔女の館', sec_contents: '目録', sec_sns: '星座', sec_embed: '魔法書',
+      card_faq: 'FAQ', card_ai: 'ゾジェズAI',
+      badge: 'LOGO',
+      hero_title: 'ZoJeZuのロゴ',
+      hero_lead: '自由にダウンロード・コピーしてお使いいただけます',
       sec_logo: 'BRAND MARK',
-      q1: '「ZoJeZu」は以前から？',
-      a1: '旧名「おいさし」。2026年9月7日15時に改名。',
-      q2: 'このホームページの特徴は？',
-      a2: '超軽量設計（128kbpsの通信制限下でも爆速表示）。',
-      q3: '名前の由来は？',
-      a3: '「美味しさ」より。お：美味しい／い：いつでも／さ：最後まで／し：しっかり。「おいさ」と「し」の入れ替え＝美味しさ。',
       d1: '円の中に、キーボードのキーと流れるような曲線が融合したデザイン。',
       d2: '左側のキー配列は「入力・創造」を表し、右側のS字のうねりは「流れ・進化・自由」をイメージしています。',
       d3: '紫からピンク、オレンジへと移り変わるグラデーションは、デジタルと有機的なエネルギーの調和を表現。',
@@ -464,23 +325,17 @@ function initApp() {
       btn_download: 'ロゴをダウンロード(644 KB)',
       btn_copy: 'ロゴをコピー',
       back: 'トップに戻る',
-      footer: 'OisasiOfficial — 設定からテーマ・言語を変更できます'
+      footer: 'ZoJeZu Official — 設定からテーマ・言語を変更できます'
     },
     en: {
       settings: 'Settings', theme: 'Theme', language: 'Language',
       auto: 'Auto', dark: 'Dark', light: 'Light',
-      nav_oijiiw: 'Oijii Witch Homepage', nav_logo: 'ZoJeZu Logo Page',
-      nav_ai: 'ZoJeZu AI Page', nav_character: 'Character Page', nav_faq: 'FAQ Page',
-      hero_title: document.querySelector('.hero h1 span') ? document.querySelector('.hero h1 span').innerText : '',
-      hero_lead: document.querySelector('.lead') ? document.querySelector('.lead').innerText : '',
-      sec_faq: 'QUESTION & ANSWER',
+      sec_main: 'Treasury', sec_witch: "Witch's House", sec_contents: 'Index', sec_sns: 'Constellation', sec_embed: 'Grimoire',
+      card_faq: 'FAQ', card_ai: 'ZoJeZu AI',
+      badge: 'LOGO',
+      hero_title: 'ZoJeZu Logo',
+      hero_lead: 'Feel free to download or copy the logo for your own use',
       sec_logo: 'BRAND MARK',
-      q1: 'Has "ZoJeZu" been around for a while?',
-      a1: 'Formerly known as "Oisasi". Renamed on Sep 7, 2026 at 15:00.',
-      q2: 'What are the features of this website?',
-      a2: 'Ultra-lightweight design (loads blazing fast even under 128kbps restrictions).',
-      q3: 'What is the origin of the name?',
-      a3: 'From "oishisa" (deliciousness). O: delicious / I: anytime / Sa: to the end / Shi: solidly. Rearranging "oisa" + "shi" = oishisa.',
       d1: 'A design that fuses a keyboard key and flowing curves inside a circle.',
       d2: 'The key layout on the left represents "input/creation", and the S-curve on the right images "flow/evolution/freedom".',
       d3: 'The gradient shifting from purple to pink and orange expresses the harmony of digital and organic energy.',
@@ -488,7 +343,7 @@ function initApp() {
       btn_download: 'Download Logo (644 KB)',
       btn_copy: 'Copy Logo',
       back: 'Back to Top',
-      footer: 'OisasiOfficial — Change theme & language in Settings'
+      footer: 'ZoJeZu Official — Change theme & language in Settings'
     }
   };
 
@@ -498,8 +353,10 @@ function initApp() {
     return nav.startsWith('ja') ? 'ja' : 'en';
   }
 
+  let currentLangPref = 'auto';
   function applyLang(pref) {
-    localStorage.setItem('oisasi-lang', pref);
+    currentLangPref = pref;
+    try { localStorage.setItem('zojezu-lang', pref); } catch (e) {}
     const lang = resolveLang(pref);
     html.setAttribute('lang', lang);
     document.querySelectorAll('#langOptions button').forEach(btn => {
@@ -516,45 +373,39 @@ function initApp() {
     });
   }
 
-  const savedTheme = localStorage.getItem('oisasi-theme') || 'auto';
-  const savedLang = localStorage.getItem('oisasi-lang') || 'auto';
+  let savedTheme = 'auto', savedLang = 'auto';
+  try {
+    savedTheme = localStorage.getItem('zojezu-theme') || 'auto';
+    savedLang = localStorage.getItem('zojezu-lang') || 'auto';
+  } catch (e) {}
 
+  function updateThemeColor(theme) {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) return;
+    if (theme === 'light') meta.content = '#f4f0ff';
+    else if (theme === 'dark') meta.content = '#07060f';
+    else meta.content = window.matchMedia('(prefers-color-scheme: light)').matches ? '#f4f0ff' : '#07060f';
+  }
   function applyTheme(theme) {
     html.setAttribute('data-theme', theme);
-    localStorage.setItem('oisasi-theme', theme);
+    try { localStorage.setItem('zojezu-theme', theme); } catch (e) {}
     document.querySelectorAll('#themeOptions button').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.value === theme);
     });
     updateThemeColor(theme);
   }
-
-  function updateThemeColor(theme) {
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (!meta) return;
-    if (theme === 'light') meta.content = '#f3f0f8';
-    else if (theme === 'dark') meta.content = '#0a0a12';
-    else {
-      meta.content = window.matchMedia('(prefers-color-scheme: light)').matches ? '#f3f0f8' : '#0a0a12';
-    }
-  }
-
   applyTheme(savedTheme);
   applyLang(savedLang);
-
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (html.getAttribute('data-theme') === 'auto') updateThemeColor('auto');
   });
 
+  /* ---------------- settings panel (works even before the header loads) ---------------- */
+  const settingsPanel = document.getElementById('settingsPanel');
   function openSettings() { settingsPanel.classList.add('open'); closeMenu(); }
   function closeSettings() { settingsPanel.classList.remove('open'); }
-  function toggleSettings() {
-    if (settingsPanel.classList.contains('open')) closeSettings();
-    else openSettings();
-  }
-
-  settingsBtn.addEventListener('click', e => { e.stopPropagation(); toggleSettings(); });
-  settingsClose.addEventListener('click', closeSettings);
-
+  function toggleSettings() { settingsPanel.classList.contains('open') ? closeSettings() : openSettings(); }
+  document.getElementById('settingsClose').addEventListener('click', closeSettings);
   document.getElementById('themeOptions').addEventListener('click', e => {
     const btn = e.target.closest('button');
     if (btn) applyTheme(btn.dataset.value);
@@ -563,8 +414,16 @@ function initApp() {
     const btn = e.target.closest('button');
     if (btn) applyLang(btn.dataset.value);
   });
+  document.addEventListener('click', e => {
+    if (settingsPanel.classList.contains('open') && !settingsPanel.contains(e.target) && !e.target.closest('#settingsBtn')) {
+      closeSettings();
+    }
+  });
 
+  /* ---------------- mobile menu (elements exist only after header.html loads) ---------------- */
+  let hamburger, navMobile;
   function toggleMenu() {
+    if (!hamburger || !navMobile) return;
     const isOpen = navMobile.classList.toggle('open');
     hamburger.classList.toggle('active', isOpen);
     hamburger.setAttribute('aria-expanded', isOpen);
@@ -572,92 +431,73 @@ function initApp() {
     if (isOpen) closeSettings();
   }
   function closeMenu() {
+    if (!navMobile) return;
     navMobile.classList.remove('open');
     hamburger.classList.remove('active');
     hamburger.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
   }
   function closeAll() { closeMenu(); closeSettings(); }
-
-  hamburger.addEventListener('click', toggleMenu);
-
-  document.addEventListener('click', e => {
-    if (settingsPanel.classList.contains('open') && !settingsPanel.contains(e.target) && !settingsBtn.contains(e.target)) {
-      closeSettings();
-    }
-  });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
-
-  window.addEventListener('scroll', () => {
-    header.classList.toggle('scrolled', window.scrollY > 20);
-  }, { passive: true });
-
   window.closeAll = closeAll;
   window.closeMenu = closeMenu;
 
-  /* Network Toast */
-  const networkToast = document.getElementById('networkToast');
-  const networkToastText = document.getElementById('networkToastText');
-  const networkToastIcon = document.getElementById('networkToastIcon');
-  let toastTimer = null;
-  let isOfflineShown = false;
-  const offlineIconSVG = '<line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.58 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/>';
-  const onlineIconSVG = '<path d="M20 6L9 17l-5-5"/>';
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
 
-  function showNetworkToast(type) {
-    clearTimeout(toastTimer);
-    networkToast.classList.remove('offline', 'online', 'show');
-    void networkToast.offsetWidth;
-    const isJa = (document.documentElement.lang || 'ja').startsWith('ja');
-    if (type === 'offline') {
-      isOfflineShown = true;
-      networkToast.classList.add('offline');
-      networkToastText.textContent = isJa ? 'オフラインです' : "You're offline";
-      networkToastIcon.innerHTML = offlineIconSVG;
-      networkToast.classList.add('show');
-    } else {
-      isOfflineShown = false;
-      networkToast.classList.add('online');
-      networkToastText.textContent = isJa ? 'インターネットに再接続しました' : 'Back online';
-      networkToastIcon.innerHTML = onlineIconSVG;
-      networkToast.classList.add('show');
-      toastTimer = setTimeout(() => networkToast.classList.remove('show'), 3200);
-    }
-  }
-  window.addEventListener('offline', () => showNetworkToast('offline'));
-  window.addEventListener('online', () => { if (isOfflineShown) showNetworkToast('online'); });
-  if (!navigator.onLine) showNetworkToast('offline');
-}
-</script>
-
-<script>
-  // Fetch external header and insert it
+  /* ---------------- load the shared header ---------------- */
+  const headerRoot = document.getElementById('headerRoot');
   fetch('header.html')
     .then(response => response.text())
-    .then(html => {
-      document.getElementById('external-header-container').innerHTML = html;
-      initApp();
-      
-      const sections = document.querySelectorAll('.section');
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) entry.target.classList.add('visible');
-        });
-      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-      sections.forEach(s => observer.observe(s));
-      
-      const copyBtn = document.getElementById('copyBtn');
-      if (copyBtn) {
-        copyBtn.addEventListener('click', async () => {
-          try {
-            const msg = document.getElementById('msg');
-            msg.textContent = 'ロゴ画像をコピーしました（※デモ動作）';
-            setTimeout(() => msg.textContent = '', 3000);
-          } catch (e) {}
-        });
-      }
+    .then(headerHtml => {
+      headerRoot.innerHTML = headerHtml;
+
+      const headerEl = document.getElementById('header');
+      hamburger = document.getElementById('hamburger');
+      navMobile = document.getElementById('navMobile');
+
+      applyLang(currentLangPref); // fill in data-i18n text on the freshly injected header
+
+      const settingsBtn = document.getElementById('settingsBtn');
+      if (settingsBtn) settingsBtn.addEventListener('click', e => { e.stopPropagation(); toggleSettings(); });
+
+      // This page has no on-page search/command palette (that lives on index.html),
+      // so route the header's search icon back to the homepage instead of doing nothing.
+      const paletteBtnH = document.getElementById('paletteBtnH');
+      if (paletteBtnH) paletteBtnH.addEventListener('click', () => { window.location.href = 'index.html'; });
+
+      if (hamburger) hamburger.addEventListener('click', toggleMenu);
+
+      function onHeaderScroll() { if (headerEl) headerEl.classList.toggle('scrolled', window.scrollY > 20); }
+      window.addEventListener('scroll', onHeaderScroll, { passive: true });
+      onHeaderScroll();
     })
-    .catch(err => console.error('Failed to load header:', err));
+    .catch(err => console.error('header.html の読み込みに失敗しました:', err));
+
+  /* ---------------- section reveal ---------------- */
+  const sections = document.querySelectorAll('.section');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  sections.forEach(s => observer.observe(s));
+
+  /* ---------------- copy button ---------------- */
+  const copyBtn = document.getElementById('copyBtn');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      const msg = document.getElementById('msg');
+      const lang = resolveLang(currentLangPref);
+      try {
+        const img = document.getElementById('logoImg');
+        const response = await fetch(img.src);
+        const blob = await response.blob();
+        await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+        msg.textContent = lang === 'ja' ? 'ロゴ画像をコピーしました' : 'Logo image copied';
+      } catch (e) {
+        msg.textContent = lang === 'ja' ? 'コピーに失敗しました（対応ブラウザではありません）' : 'Copy failed (unsupported browser)';
+      }
+      setTimeout(() => { msg.textContent = ''; }, 3000);
+    });
+  }
+})();
 </script>
 </body>
 </html>
