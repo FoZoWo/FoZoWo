@@ -1,9 +1,212 @@
 <!-- ========================================
-     ZOJEZU Official — Header Partial
-     ヘッダー / 設定パネル / モバイルナビ
-     使い方: このファイルを index 側で include するか、
-     サーバーサイドで読み込んでください。
+     ZOJEZU Official — Shared Header
+     どのページから読み込んでも同じ見た目になるよう
+     ヘッダー用CSSをこのファイル内に含めています。
 ======================================== -->
+<style>
+/* ===== Shared Header Styles (works with index & logo variable systems) ===== */
+:root {
+  --header-h: 68px;
+  --nav-max: 1180px;
+}
+.network-toast {
+  position: fixed; top: 14px; left: 50%;
+  transform: translate(-50%, -140%);
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 18px; border-radius: 999px;
+  background: var(--menu-bg, var(--panel, rgba(6,5,15,0.96)));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-strong, var(--line-strong, rgba(178,150,255,0.4)));
+  color: var(--text, #f3f0ff); font-size: 13px; font-weight: 700;
+  box-shadow: var(--shadow, 0 22px 60px rgba(0,0,0,0.6)); z-index: 200;
+  opacity: 0; transition: transform .4s cubic-bezier(.4,0,.2,1), opacity .4s;
+  pointer-events: none; max-width: calc(100vw - 24px);
+}
+.network-toast.show { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
+.network-toast svg { width: 18px; height: 18px; flex: 0 0 auto; }
+.network-toast.offline { border-color: rgba(255,107,203,0.6); }
+.network-toast.offline svg { color: var(--pink, #ff5fa8); }
+.network-toast.online { border-color: rgba(102,240,255,0.6); }
+.network-toast.online svg { color: var(--cyan, #57e8ff); }
+
+.header {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: var(--header-bg, color-mix(in srgb, var(--panel, #120e22) 85%, transparent));
+  backdrop-filter: blur(22px) saturate(1.4);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  border-bottom: 1px solid var(--border, var(--line, rgba(178,150,255,0.16)));
+  z-index: 100;
+  transition: background .3s ease, border-color .3s ease;
+}
+.header.scrolled {
+  background: var(--header-bg-scrolled, var(--panel, #120e22));
+  border-bottom-color: var(--border-strong, var(--line-strong, rgba(178,150,255,0.4)));
+}
+.header-inner {
+  max-width: var(--nav-max); height: 100%; margin: 0 auto;
+  padding: 0 clamp(14px, 3vw, 28px);
+  display: flex; align-items: center; justify-content: space-between; gap: 18px;
+}
+.logo {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none; color: var(--text, #f3f0ff);
+  padding: 6px 10px; border-radius: 14px;
+  transition: transform .25s;
+}
+.logo:hover { transform: translateY(-1px); }
+.logo-img {
+  width: 40px; height: 40px; border-radius: 12px;
+  border: 1.5px solid var(--border-strong, var(--line-strong, rgba(178,150,255,0.4)));
+  box-shadow: 0 0 16px rgba(139,108,255,0.5);
+  background: var(--surface, var(--glass, rgba(255,255,255,0.04)));
+  object-fit: cover;
+}
+.logo-text {
+  font-family: 'Cinzel', serif;
+  font-weight: 900; font-size: 17px; letter-spacing: 3px;
+  background: linear-gradient(120deg, var(--pink, #ff5fa8) 0%, var(--violet, var(--purple, #8b6cff)) 40%, var(--cyan, #57e8ff) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  text-transform: uppercase;
+}
+.logo-text span { font-family: 'Zen Maru Gothic', sans-serif; letter-spacing: 0.5px; }
+
+.nav-desktop { display: none; gap: 4px; }
+.nav-desktop a {
+  color: var(--text, #f3f0ff); text-decoration: none;
+  font-size: 14px; font-weight: 600;
+  padding: 8px 14px; border-radius: 12px;
+  transition: background .2s, color .2s;
+  white-space: nowrap;
+}
+.nav-desktop a:hover { background: var(--surface-hover, var(--glass-2, rgba(255,255,255,0.09))); color: var(--pink, #ff5fa8); }
+.nav-desktop a.accent {
+  background: linear-gradient(120deg, var(--pink, #ff5fa8) 0%, var(--violet, var(--purple, #8b6cff)) 40%, var(--cyan, #57e8ff) 100%);
+  color: #fff;
+  box-shadow: 0 4px 18px rgba(139,108,255,0.5);
+}
+.nav-desktop a.accent:hover { transform: translateY(-1px); }
+
+.header-actions { display: flex; align-items: center; gap: 6px; }
+.icon-btn, .hamburger {
+  width: 42px; height: 42px; border-radius: 12px;
+  background: var(--surface, var(--glass, rgba(255,255,255,0.04)));
+  border: 1px solid var(--border, var(--line, rgba(178,150,255,0.16)));
+  color: var(--text, #f3f0ff); display: grid; place-items: center;
+  transition: background .2s, transform .2s, border-color .2s;
+}
+.icon-btn:hover, .hamburger:hover {
+  background: var(--surface-hover, var(--glass-2, rgba(255,255,255,0.09)));
+  border-color: var(--border-strong, var(--line-strong, rgba(178,150,255,0.4)));
+  transform: translateY(-1px);
+}
+.icon-btn svg { width: 20px; height: 20px; }
+.hamburger { position: relative; border: 1px solid var(--border, var(--line, rgba(178,150,255,0.16))); background: var(--surface, var(--glass, rgba(255,255,255,0.04))); }
+.hamburger span {
+  position: absolute; left: 11px; width: 20px; height: 2px;
+  background: currentColor; border-radius: 2px; transition: transform .3s, opacity .3s, top .3s;
+}
+.hamburger span:nth-child(1) { top: 14px; }
+.hamburger span:nth-child(2) { top: 20px; }
+.hamburger span:nth-child(3) { top: 26px; }
+.hamburger.active span:nth-child(1) { top: 20px; transform: rotate(45deg); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { top: 20px; transform: rotate(-45deg); }
+
+@media (min-width: 900px) {
+  .nav-desktop { display: flex; }
+  .hamburger { display: none; }
+}
+
+/* Settings panel (shared) */
+.settings-panel {
+  position: fixed; top: calc(var(--header-h) + 10px);
+  right: clamp(10px, 3vw, 22px);
+  width: min(320px, calc(100vw - 20px));
+  background: var(--menu-bg, var(--panel, rgba(6,5,15,0.96)));
+  backdrop-filter: blur(22px) saturate(1.4);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  border: 1px solid var(--border-strong, var(--line-strong, rgba(178,150,255,0.4)));
+  border-radius: var(--radius, 20px);
+  padding: 18px;
+  box-shadow: var(--shadow, 0 22px 60px rgba(0,0,0,0.6)), 0 0 40px rgba(139,108,255,0.25);
+  transform: translateY(-8px); opacity: 0; pointer-events: none;
+  transition: transform .28s, opacity .28s;
+  z-index: 90;
+}
+.settings-panel.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.settings-title {
+  display: flex; justify-content: space-between; align-items: center;
+  font-weight: 700; font-size: 15px; margin-bottom: 14px;
+  font-family: 'Cinzel', serif; letter-spacing: 2px;
+  color: var(--text, #f3f0ff);
+}
+.settings-close {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: var(--surface, var(--glass, rgba(255,255,255,0.04)));
+  border: 1px solid var(--border, var(--line, rgba(178,150,255,0.16)));
+  color: var(--text, #f3f0ff); font-size: 20px; line-height: 1;
+  cursor: pointer;
+}
+.settings-close:hover { background: var(--surface-hover, var(--glass-2, rgba(255,255,255,0.09))); }
+.settings-group { margin-bottom: 14px; }
+.settings-group:last-child { margin-bottom: 0; }
+.settings-label {
+  display: block; font-size: 12px; color: var(--muted, #9d97c6);
+  margin-bottom: 8px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700;
+}
+.settings-options {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+  background: var(--surface, var(--glass, rgba(255,255,255,0.04)));
+  border-radius: 12px; padding: 4px;
+}
+.settings-options button {
+  padding: 8px 6px; border: none; background: transparent;
+  color: var(--text, #f3f0ff); border-radius: 9px;
+  font-size: 13px; font-weight: 600; font-family: inherit;
+  transition: background .2s, color .2s; cursor: pointer;
+}
+.settings-options button:hover { background: var(--surface-hover, var(--glass-2, rgba(255,255,255,0.09))); }
+.settings-options button.active {
+  background: linear-gradient(120deg, var(--pink, #ff5fa8), var(--violet, var(--purple, #8b6cff)));
+  color: #fff; box-shadow: 0 2px 10px rgba(139,108,255,0.4);
+}
+
+/* Mobile nav */
+.nav-mobile {
+  position: fixed; top: var(--header-h); left: 0; right: 0;
+  background: var(--menu-bg, var(--panel, rgba(6,5,15,0.96)));
+  backdrop-filter: blur(22px) saturate(1.4);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  border-bottom: 1px solid var(--border, var(--line, rgba(178,150,255,0.16)));
+  padding: 16px clamp(14px, 4vw, 24px) 22px;
+  transform: translateY(-110%); opacity: 0; pointer-events: none;
+  transition: transform .35s cubic-bezier(.4,0,.2,1), opacity .3s;
+  z-index: 85; max-height: calc(100dvh - var(--header-h)); overflow-y: auto;
+}
+.nav-mobile.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.nav-mobile a {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px; margin: 4px 0;
+  color: var(--text, #f3f0ff); text-decoration: none; font-weight: 600;
+  border-radius: 14px;
+  background: var(--surface, var(--glass, rgba(255,255,255,0.04)));
+  border: 1px solid var(--border, var(--line, rgba(178,150,255,0.16)));
+  transition: background .2s, transform .2s;
+}
+.nav-mobile a:hover, .nav-mobile a:active {
+  background: var(--surface-hover, var(--glass-2, rgba(255,255,255,0.09)));
+  transform: translateX(4px);
+}
+.nav-mobile a .icon { font-size: 20px; }
+.nav-mobile-footer {
+  text-align: center; margin-top: 16px; padding-top: 16px;
+  border-top: 1px solid var(--border, var(--line, rgba(178,150,255,0.16)));
+  color: var(--muted, #9d97c6); font-size: 12px;
+  letter-spacing: 2px; font-family: 'Cinzel', serif;
+}
+</style>
 
 <!-- ネットワーク通知 -->
 <div class="network-toast" id="networkToast" role="status" aria-live="polite">
@@ -22,7 +225,7 @@
 <!-- ヘッダー -->
 <header class="header" id="header">
   <div class="header-inner">
-    <a href="#" class="logo" onclick="closeAll()">
+    <a href="index.html" class="logo" onclick="typeof closeAll==='function'&&closeAll()">
       <img class="logo-img" src="おいさしロゴ.png" alt="ゾジェズ" width="40" height="40">
       <div class="logo-text"><span>ゾジェズ</span></div>
     </a>
@@ -73,10 +276,10 @@
 
 <!-- モバイルナビ -->
 <nav class="nav-mobile" id="navMobile" aria-label="モバイルメニュー">
-  <a href="https://www.zojezu.f5.si/oijiiw" onclick="closeAll()"><span class="icon">🔮</span> <span data-i18n="nav_oijiiw">おいじぃ魔女のホームページ</span></a>
-  <a href="https://www.zojezu.f5.si/logo" onclick="closeAll()"><span class="icon">🎀</span> <span data-i18n="nav_logo">ゾジェズのロゴページ</span></a>
-  <a href="https://www.zojezu.f5.si/ai" onclick="closeAll()"><span class="icon">🤖</span> <span data-i18n="nav_ai">ゾジェズAIページ</span></a>
-  <a href="https://www.zojezu.f5.si/character" onclick="closeAll()"><span class="icon">👤</span> <span data-i18n="nav_character">キャラクターページ</span></a>
-  <a href="faq.html" onclick="closeAll()"><span class="icon">💬</span> <span data-i18n="nav_faq">FAQページ</span></a>
+  <a href="https://www.zojezu.f5.si/oijiiw" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🔮</span> <span data-i18n="nav_oijiiw">おいじぃ魔女のホームページ</span></a>
+  <a href="https://www.zojezu.f5.si/logo" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🎀</span> <span data-i18n="nav_logo">ゾジェズのロゴページ</span></a>
+  <a href="https://www.zojezu.f5.si/ai" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🤖</span> <span data-i18n="nav_ai">ゾジェズAIページ</span></a>
+  <a href="https://www.zojezu.f5.si/character" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">👤</span> <span data-i18n="nav_character">キャラクターページ</span></a>
+  <a href="faq.html" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">💬</span> <span data-i18n="nav_faq">FAQページ</span></a>
   <div class="nav-mobile-footer">ZOJEZU · OFFICIAL</div>
 </nav>
