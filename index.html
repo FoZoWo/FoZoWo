@@ -10,9 +10,9 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
 <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
-<link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
-<link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
-<link href="[https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap](https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap)" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 /* =========================================================
    ZOJEZU OFFICIAL — Ethereal Realm Edition
@@ -107,8 +107,8 @@
 
 /* ===== Fantasy Cursor ===== */
 :root {
-  --cursor: url("data:image/svg+xml,%3Csvg xmlns='[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath fill='%23ff6bcb' stroke='%23ffffff' stroke-width='1.8' stroke-linejoin='round' d='M4 2 L4 22 L10 16 L14 25 L17.5 23.5 L13.5 14.5 L21 14.5 Z'/%3E%3C/svg%3E") 4 2, auto;
-  --cursor-hover: url("data:image/svg+xml,%3Csvg xmlns='[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath fill='%238b6cff' stroke='%23ffffff' stroke-width='1.8' stroke-linejoin='round' d='M4 2 L4 22 L10 16 L14 25 L17.5 23.5 L13.5 14.5 L21 14.5 Z'/%3E%3C/svg%3E") 4 2, pointer;
+  --cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath fill='%23ff6bcb' stroke='%23ffffff' stroke-width='1.8' stroke-linejoin='round' d='M4 2 L4 22 L10 16 L14 25 L17.5 23.5 L13.5 14.5 L21 14.5 Z'/%3E%3C/svg%3E") 4 2, auto;
+  --cursor-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath fill='%238b6cff' stroke='%23ffffff' stroke-width='1.8' stroke-linejoin='round' d='M4 2 L4 22 L10 16 L14 25 L17.5 23.5 L13.5 14.5 L21 14.5 Z'/%3E%3C/svg%3E") 4 2, pointer;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1077,21 +1077,8 @@ footer::before {
 <div class="bg-aurora" aria-hidden="true"></div>
 <canvas id="particles" aria-hidden="true"></canvas>
 
-<!-- ネットワーク通知 -->
-<div class="network-toast" id="networkToast" role="status" aria-live="polite">
-  <svg id="networkToastIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-    <line x1="1" y1="1" x2="23" y2="23"/>
-    <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
-    <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/>
-    <path d="M10.71 5.05A16 16 0 0 1 22.58 9"/>
-    <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/>
-    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
-    <line x1="12" y1="20" x2="12.01" y2="20"/>
-  </svg>
-  <span id="networkToastText" data-i18n="offline_title">オフラインです</span>
-</div>
-
-<!-- ★ ここに header.html などのヘッダー部分をインクルードしてください ★ -->
+<!-- ========== ヘッダー部分（header.html を読み込み） ========== -->
+<div id="header-placeholder"></div>
 
 <div class="shell">
 
@@ -1153,7 +1140,7 @@ footer::before {
           <span data-i18n="cta_enter">世界を巡る</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </a>
-        <a class="btn btn-ghost" href="[https://www.zojezu.f5.si/ai](https://www.zojezu.f5.si/ai)">
+        <a class="btn btn-ghost" href="https://www.zojezu.f5.si/ai">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a4 4 0 0 1 4 4v1a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M6 10v1a6 6 0 0 0 12 0v-1"/><path d="M9 18h6"/><path d="M10 21h4"/></svg>
           <span data-i18n="cta_ai">AIと話す</span>
         </a>
@@ -1208,7 +1195,7 @@ footer::before {
       <div class="sec-line"></div>
     </div>
     <div class="card-grid">
-      <a class="card music-card" href="[https://www.zojezu.f5.si/music](https://www.zojezu.f5.si/music)">
+      <a class="card music-card" href="https://www.zojezu.f5.si/music">
         <div class="card-icon music-icon">
           <img src="oisasi music.jpg" alt="oisasimusic">
         </div>
@@ -1218,7 +1205,7 @@ footer::before {
         </div>
         <div class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
       </a>
-      <a class="card ai-card" href="[https://www.zojezu.f5.si/ai](https://www.zojezu.f5.si/ai)">
+      <a class="card ai-card" href="https://www.zojezu.f5.si/ai">
         <div class="card-icon ai-icon">
           <img src="oisasi-logoAI.png" alt="ゾジェズAI">
         </div>
@@ -1228,7 +1215,7 @@ footer::before {
         </div>
         <div class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
       </a>
-      <a class="card" href="[https://www.zojezu.f5.si/logo](https://www.zojezu.f5.si/logo)">
+      <a class="card" href="https://www.zojezu.f5.si/logo">
         <div class="card-icon"><img src="おいさしロゴ.png" alt="ゾジェズロゴ"></div>
         <div class="card-body">
           <div class="card-title" data-i18n="card_logo">ゾジェズロゴページ</div>
@@ -1236,7 +1223,7 @@ footer::before {
         </div>
         <div class="card-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
       </a>
-      <a class="card" href="[https://www.zojezu.f5.si/character](https://www.zojezu.f5.si/character)">
+      <a class="card" href="https://www.zojezu.f5.si/character">
         <div class="card-icon"><img src="おいさし写真.png" alt="キャラクター"></div>
         <div class="card-body">
           <div class="card-title" data-i18n="card_char">キャラクター紹介</div>
@@ -1296,19 +1283,19 @@ footer::before {
       <div class="sec-line"></div>
     </div>
     <div class="pills">
-      <a class="pill pill-music" href="[https://www.zojezu.f5.si/music](https://www.zojezu.f5.si/music)">
+      <a class="pill pill-music" href="https://www.zojezu.f5.si/music">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
         <span data-i18n="music">音楽</span>
       </a>
-      <a class="pill pill-ai" href="[https://www.zojezu.f5.si/ai](https://www.zojezu.f5.si/ai)">
+      <a class="pill pill-ai" href="https://www.zojezu.f5.si/ai">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v1a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M6 10v1a6 6 0 0 0 12 0v-1"/><path d="M9 18h6"/><path d="M10 21h4"/></svg>
         <span data-i18n="ai_pill">AI</span>
       </a>
-      <a class="pill" href="[https://ojg.netlify.app](https://ojg.netlify.app)">
+      <a class="pill" href="https://ojg.netlify.app">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M14 10v4M18 12h.01"/></svg>
         <span data-i18n="game">ゲーム</span>
       </a>
-      <a class="pill" href="[https://oisasi.hatenablog.com](https://oisasi.hatenablog.com)">
+      <a class="pill" href="https://oisasi.hatenablog.com">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
         <span data-i18n="blog">ブログ</span>
       </a>
@@ -1326,28 +1313,28 @@ footer::before {
       <div class="sec-line"></div>
     </div>
     <div class="sns-grid">
-      <a class="sns yt" href="[https://www.youtube.com/@zojepu](https://www.youtube.com/@zojepu)" aria-label="YouTube">
+      <a class="sns yt" href="https://www.youtube.com/@zojepu" aria-label="YouTube">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.5 31.5 0 0 0 0 12a31.5 31.5 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.5 31.5 0 0 0 24 12a31.5 31.5 0 0 0-.5-5.8zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>
         <span>YouTube</span>
       </a>
-      <a class="sns ig" href="[https://www.instagram.com/zojepu/](https://www.instagram.com/zojepu/)" aria-label="Instagram">
+      <a class="sns ig" href="https://www.instagram.com/zojepu/" aria-label="Instagram">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-3.3-.1-4.8-1.7-4.9-4.9-.1-1.3-.1-1.7-.1-4.9s0-3.6.1-4.9c.1-3.2 1.7-4.8 4.9-4.9 1.3-.1 1.7-.1 4.9-.1zM12 0C8.7 0 8.3 0 7 .1 2.7.3.3 2.7.1 7 0 8.3 0 8.7 0 12s0 3.7.1 5c.2 4.3 2.6 6.7 6.9 6.9 1.3.1 1.7.1 5 .1s3.7 0 5-.1c4.3-.2 6.7-2.6 6.9-6.9.1-1.3.1-1.7.1-5s0-3.7-.1-5c-.2-4.3-2.6-6.7-6.9-6.9C15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-10.5a1.4 1.4 0 1 1-2.9 0 1.4 1.4 0 0 1 2.9 0z"/></svg>
         <span>Instagram</span>
       </a>
-      <a class="sns fb" href="[https://www.facebook.com/zojepu](https://www.facebook.com/zojepu)" aria-label="Facebook">
+      <a class="sns fb" href="https://www.facebook.com/zojepu" aria-label="Facebook">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.41 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.8-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.5c-1.5 0-1.96.93-1.96 1.89v2.26h3.32l-.53 3.5h-2.8V24C19.62 23.1 24 18.1 24 12.07z"/></svg>
         <span>Facebook</span>
       </a>
-      <a class="sns x" href="[https://x.com/zojepu](https://x.com/zojepu)" aria-label="X">
+      <a class="sns x" href="https://x.com/zojepu" aria-label="X">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.24 2.25h3.31l-7.23 8.26 8.5 11.24h-6.66l-5.21-6.82-5.97 6.82H1.67l7.73-8.84L1.25 2.25h6.83l4.71 6.23 5.45-6.23zm-1.16 17.52h1.83L7.03 4.13H5.05l12.03 15.64z"/></svg>
         <span>X</span>
       </a>
-      <a class="sns tk" href="[https://www.tiktok.com/@zojepu](https://www.tiktok.com/@zojepu)" aria-label="TikTok">
+      <a class="sns tk" href="https://www.tiktok.com/@zojepu" aria-label="TikTok">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .56.04.83.11v-3.5a6.37 6.37 0 0 0-.83-.05A6.34 6.34 0 0 0 3.15 15.3a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.73a8.18 8.18 0 0 0 4.76 1.52V6.79a4.84 4.84 0 0 1-1-.1z"/></svg>
         <span>TikTok</span>
       </a>
     </div>
-    <p class="sns-note"><span data-i18n="sns_note">おいじぃ魔女・雑学のSNSはこちら</span> → <a href="[https://lit.link/zojepu](https://lit.link/zojepu)">lit.link/zojepu</a></p>
+    <p class="sns-note"><span data-i18n="sns_note">おいじぃ魔女・雑学のSNSはこちら</span> → <a href="https://lit.link/zojepu">lit.link/zojepu</a></p>
   </section>
 
   <!-- ================= V. 埋め込み ================= -->
@@ -1368,7 +1355,7 @@ footer::before {
           <span>note</span>
         </div>
         <div class="embed-media">
-          <iframe class="note-embed" src="[https://note.com/embed/notes/nacc6adb6d4e5](https://note.com/embed/notes/nacc6adb6d4e5)" style="border: 0; display: block; max-width: 99%; width: 494px; padding: 0px; margin: 10px 0px; position: static; visibility: visible;" height="400"></iframe>
+          <iframe class="note-embed" src="https://note.com/embed/notes/nacc6adb6d4e5" style="border: 0; display: block; max-width: 99%; width: 494px; padding: 0px; margin: 10px 0px; position: static; visibility: visible;" height="400"></iframe>
         </div>
       </div>
 
@@ -1378,7 +1365,7 @@ footer::before {
           <span>Instagram</span>
         </div>
         <div class="embed-media">
-          <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="[https://www.instagram.com/reel/DcUmkTwj5ND/?utm_source=ig_embed&amp;utm_campaign=loading](https://www.instagram.com/reel/DcUmkTwj5ND/?utm_source=ig_embed&amp;utm_campaign=loading)" data-instgrm-version="14" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:280px; padding:0; width:99.375%;"><div style="padding:16px;"> <a href="[https://www.instagram.com/reel/DcUmkTwj5ND/?utm_source=ig_embed&amp;utm_campaign=loading](https://www.instagram.com/reel/DcUmkTwj5ND/?utm_source=ig_embed&amp;utm_campaign=loading)" style=" background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;" target="_blank">この投稿をInstagramで見る</a></div></blockquote>
+          <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/reel/DcUmkTwj5ND/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:280px; padding:0; width:99.375%;"><div style="padding:16px;"> <a href="https://www.instagram.com/reel/DcUmkTwj5ND/?utm_source=ig_embed&amp;utm_campaign=loading" style=" background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;" target="_blank">この投稿をInstagramで見る</a></div></blockquote>
         </div>
       </div>
 
@@ -1388,7 +1375,7 @@ footer::before {
           <span>Facebook</span>
         </div>
         <div class="embed-media">
-          <iframe src="[https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fzojepu%2Fposts%2Fpfbid0v9dcWexQZPNZpBeLtUS7gREUAXPmT3KK7JDfBccAMLx5KQQqsLToXtqkgccoy4V4l&show_text=true&width=500](https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fzojepu%2Fposts%2Fpfbid0v9dcWexQZPNZpBeLtUS7gREUAXPmT3KK7JDfBccAMLx5KQQqsLToXtqkgccoy4V4l&show_text=true&width=500)" width="500" height="500" style="border:none;overflow:hidden;max-width:100%" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+          <iframe src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fzojepu%2Fposts%2Fpfbid0v9dcWexQZPNZpBeLtUS7gREUAXPmT3KK7JDfBccAMLx5KQQqsLToXtqkgccoy4V4l&show_text=true&width=500" width="500" height="500" style="border:none;overflow:hidden;max-width:100%" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
         </div>
       </div>
 
@@ -1398,7 +1385,7 @@ footer::before {
           <span>YouTube</span>
         </div>
         <div class="embed-media embed-yt">
-          <iframe src="[https://www.youtube.com/embed/53po8361bYA?si=HYPaG8YlupnQ_pGm](https://www.youtube.com/embed/53po8361bYA?si=HYPaG8YlupnQ_pGm)" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <iframe src="https://www.youtube.com/embed/53po8361bYA?si=HYPaG8YlupnQ_pGm" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
       </div>
 
@@ -1423,7 +1410,19 @@ footer::before {
 </button>
 
 <script>
-(function () {
+/* ヘッダーを header.html から読み込んでから本体を初期化 */
+(async function () {
+  try {
+    const res = await fetch('header.html');
+    if (!res.ok) throw new Error('header load failed: ' + res.status);
+    document.getElementById('header-placeholder').innerHTML = await res.text();
+  } catch (e) {
+    console.error('header.html の読み込みに失敗しました。同じフォルダに header.html があるか確認してください。', e);
+  }
+
+  // ===== ここから元の本体スクリプト =====
+  (function () {
+
   const html = document.documentElement;
   const header = document.getElementById('header');
   const hamburger = document.getElementById('hamburger');
@@ -1516,4 +1515,306 @@ footer::before {
   /* ===== i18n ===== */
   const i18n = {
     ja: {
-      settings: '設定', theme:
+      settings: '設定', theme: 'テーマ', language: '言語',
+      auto: '自動', dark: 'ダーク', light: 'ライト',
+      nav_oijiiw: 'おいじぃ魔女のホームページ', nav_logo: 'ゾジェズのロゴページ',
+      nav_ai: 'ゾジェズAIページ', nav_character: 'キャラクターページ', nav_faq: 'FAQページ',
+      badge_realm: '幻想世界へようこそ',
+      hero_title: 'ゾジェズ公式<br><span class="glow">ホームページ</span>',
+      hero_lead: 'ゾジェズ公式サイトです。星と魔法陣が導く、少し不思議な世界へ。',
+      cta_enter: '世界を巡る', cta_ai: 'AIと話す',
+      eyebrow_main: 'THE VAULT · 宝物庫', eyebrow_witch: 'THE WITCH · 魔女の館',
+      eyebrow_contents: 'THE CATALOG · 目録', eyebrow_sns: 'THE CONSTELLATION · 星座',
+      eyebrow_embed: 'THE GRIMOIRE · 魔法の書',
+      sec_main: 'メインメニュー', sec_witch: 'おいじぃ魔女',
+      sec_contents: 'コンテンツ', sec_sns: 'SNS(ゾジェズ公式)', sec_embed: '埋め込み投稿',
+      card_logo: 'ゾジェズロゴページ', card_logo_desc: '公式ロゴ・ビジュアル',
+      card_char: 'キャラクター紹介', card_char_desc: 'メンバー・キャラ一覧',
+      card_faq: 'FAQ・よくある質問', card_faq_desc: '疑問をサクッと解決',
+      card_music: 'ゾジェズミュージック', card_music_desc: '公式音楽チャンネル・試聴',
+      card_ai: 'ゾジェズAI', card_ai_desc: 'AIとおしゃべりしよう',
+      card_witch: 'おいじぃ魔女のホームページ', card_witch_desc: '魔女の世界へようこそ',
+      card_trivia: 'おいじぃ魔女のヤバい雑学', card_trivia_desc: '衝撃の知識が満載',
+      music: '音楽', ai_pill: 'AI', game: 'ゲーム', blog: 'ブログ',
+      sns_note: 'おいじぃ魔女・雑学のSNSはこちら',
+      footer: 'ZOJEZU Official — 設定からテーマ・言語を変更できます',
+      offline_title: 'オフラインです',
+      offline_desc: 'インターネット接続をご確認ください',
+      offline_desc_full: 'インターネットに接続されていないため、このページを表示できません。接続を確認してから再読み込みしてください。',
+      offline_retry: '再読み込み',
+      offline_watching: '接続を自動でチェックしています…',
+      online_title: '接続が復旧しました',
+      online_desc: 'インターネットに再接続しました'
+    },
+    en: {
+      settings: 'Settings', theme: 'Theme', language: 'Language',
+      auto: 'Auto', dark: 'Dark', light: 'Light',
+      nav_oijiiw: 'Oijii Witch Homepage', nav_logo: 'ZOJEZU Logo Page',
+      nav_ai: 'ZOJEZU AI Page', nav_character: 'Character Page', nav_faq: 'FAQ Page',
+      badge_realm: 'Welcome to the Realm',
+      hero_title: 'ZOJEZU Official<br><span class="glow">Website</span>',
+      hero_lead: 'Welcome to the official ZOJEZU website — a realm guided by stars and runes.',
+      cta_enter: 'Enter the Realm', cta_ai: 'Talk to the AI',
+      eyebrow_main: 'THE VAULT', eyebrow_witch: 'THE WITCH',
+      eyebrow_contents: 'THE CATALOG', eyebrow_sns: 'THE CONSTELLATION',
+      eyebrow_embed: 'THE GRIMOIRE',
+      sec_main: 'Main Menu', sec_witch: 'Oijii Witch',
+      sec_contents: 'Contents', sec_sns: 'SNS (ZOJEZU Official)', sec_embed: 'Featured Posts',
+      card_logo: 'ZOJEZU Logo Page', card_logo_desc: 'Official logo & visuals',
+      card_char: 'Characters', card_char_desc: 'Members & character list',
+      card_faq: 'FAQ', card_faq_desc: 'Quick answers to common questions',
+      card_music: 'ZOJEZU Music', card_music_desc: 'Official music channel',
+      card_ai: 'ZOJEZU AI', card_ai_desc: 'Chat with the AI',
+      card_witch: 'Oijii Witch Homepage', card_witch_desc: 'Welcome to the witch world',
+      card_trivia: 'Oijii Witch Trivia', card_trivia_desc: 'Shocking knowledge awaits',
+      music: 'Music', ai_pill: 'AI', game: 'Games', blog: 'Blog',
+      sns_note: 'Oijii Witch & trivia SNS',
+      footer: 'ZOJEZU Official — Change theme & language in Settings',
+      offline_title: 'You\u2019re offline',
+      offline_desc: 'Please check your internet connection',
+      offline_desc_full: 'This page can\u2019t be shown because you\u2019re not connected to the internet. Please check your connection and try again.',
+      offline_retry: 'Reload',
+      offline_watching: 'Checking your connection automatically\u2026',
+      online_title: 'Back online',
+      online_desc: 'Your connection has been restored'
+    }
+  };
+
+  function resolveLang(pref) {
+    if (pref === 'ja' || pref === 'en') return pref;
+    const nav = (navigator.language || 'ja').toLowerCase();
+    return nav.startsWith('ja') ? 'ja' : 'en';
+  }
+
+  let currentLangPref = 'auto';
+  function applyLang(pref) {
+    currentLangPref = pref;
+    localStorage.setItem('zojezu-lang', pref);
+    const lang = resolveLang(pref);
+    html.setAttribute('lang', lang);
+    document.querySelectorAll('#langOptions button').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.value === pref);
+    });
+    const t = i18n[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (t[key] != null) el.textContent = t[key];
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const key = el.getAttribute('data-i18n-html');
+      if (t[key] != null) el.innerHTML = t[key];
+    });
+  }
+
+  const savedTheme = localStorage.getItem('zojezu-theme') || 'auto';
+  const savedLang = localStorage.getItem('zojezu-lang') || 'auto';
+
+  function applyTheme(theme) {
+    html.setAttribute('data-theme', theme);
+    localStorage.setItem('zojezu-theme', theme);
+    document.querySelectorAll('#themeOptions button').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.value === theme);
+    });
+    updateThemeColor(theme);
+  }
+
+  function updateThemeColor(theme) {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) return;
+    if (theme === 'light') meta.content = '#f2edff';
+    else if (theme === 'dark') meta.content = '#05050d';
+    else {
+      meta.content = window.matchMedia('(prefers-color-scheme: light)').matches ? '#f2edff' : '#05050d';
+    }
+  }
+
+  applyTheme(savedTheme);
+  applyLang(savedLang);
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (html.getAttribute('data-theme') === 'auto') updateThemeColor('auto');
+  });
+
+  function openSettings() { settingsPanel.classList.add('open'); closeMenu(); }
+  function closeSettings() { settingsPanel.classList.remove('open'); }
+  function toggleSettings() {
+    if (settingsPanel.classList.contains('open')) closeSettings();
+    else openSettings();
+  }
+
+  settingsBtn.addEventListener('click', e => { e.stopPropagation(); toggleSettings(); });
+  settingsClose.addEventListener('click', closeSettings);
+
+  document.getElementById('themeOptions').addEventListener('click', e => {
+    const btn = e.target.closest('button');
+    if (btn) applyTheme(btn.dataset.value);
+  });
+  document.getElementById('langOptions').addEventListener('click', e => {
+    const btn = e.target.closest('button');
+    if (btn) applyLang(btn.dataset.value);
+  });
+
+  function toggleMenu() {
+    const isOpen = navMobile.classList.toggle('open');
+    hamburger.classList.toggle('active', isOpen);
+    hamburger.setAttribute('aria-expanded', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    if (isOpen) closeSettings();
+  }
+  function closeMenu() {
+    navMobile.classList.remove('open');
+    hamburger.classList.remove('active');
+    hamburger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+  function closeAll() { closeMenu(); closeSettings(); }
+
+  hamburger.addEventListener('click', toggleMenu);
+
+  document.addEventListener('click', e => {
+    if (settingsPanel.classList.contains('open') && !settingsPanel.contains(e.target) && !settingsBtn.contains(e.target)) {
+      closeSettings();
+    }
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
+
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+
+  // Scroll reveal
+  const sections = document.querySelectorAll('.section');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  sections.forEach(s => observer.observe(s));
+
+  // Card magnetic light
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('pointermove', e => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+  });
+
+  /* ===== Network toast ===== */
+  const networkToast = document.getElementById('networkToast');
+  const networkToastText = document.getElementById('networkToastText');
+  const networkToastIcon = document.getElementById('networkToastIcon');
+  let toastTimer = null;
+  let isOfflineShown = false;
+
+  const offlineIconSVG = '<line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.58 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/>';
+  const onlineIconSVG = '<path d="M20 6L9 17l-5-5"/>';
+
+  function ntText(key) {
+    const t = i18n[resolveLang(currentLangPref)];
+    return t[key] != null ? t[key] : key;
+  }
+  function showNetworkToast(type) {
+    clearTimeout(toastTimer);
+    networkToast.classList.remove('offline', 'online', 'show');
+    void networkToast.offsetWidth;
+    if (type === 'offline') {
+      isOfflineShown = true;
+      networkToast.classList.add('offline');
+      networkToastText.textContent = ntText('offline_title');
+      networkToastIcon.innerHTML = offlineIconSVG;
+      networkToast.classList.add('show');
+    } else {
+      isOfflineShown = false;
+      networkToast.classList.add('online');
+      networkToastText.textContent = ntText('online_desc');
+      networkToastIcon.innerHTML = onlineIconSVG;
+      networkToast.classList.add('show');
+      toastTimer = setTimeout(() => networkToast.classList.remove('show'), 3200);
+    }
+  }
+  function handleOffline() { showNetworkToast('offline'); }
+  function handleOnline() { if (isOfflineShown) showNetworkToast('online'); }
+  window.addEventListener('offline', handleOffline);
+  window.addEventListener('online', handleOnline);
+  if (!navigator.onLine) handleOffline();
+
+  const _applyLangOrig = applyLang;
+  applyLang = function (pref) {
+    _applyLangOrig(pref);
+    if (isOfflineShown) networkToastText.textContent = ntText('offline_title');
+  };
+
+  window.closeAll = closeAll;
+  window.closeMenu = closeMenu;
+})();
+})();
+
+/* ===== 埋め込みスクリプト ===== */
+(function loadEmbedScripts() {
+  const igScript = document.createElement('script');
+  igScript.async = true;
+  igScript.src = 'https://www.instagram.com/embed.js';
+  document.body.appendChild(igScript);
+
+  const noteScript = document.createElement('script');
+  noteScript.async = true;
+  noteScript.charset = 'utf-8';
+  noteScript.src = 'https://note.com/scripts/embed.js';
+  document.body.appendChild(noteScript);
+})();
+
+/* ===== 幻想パーティクル(星屑) ===== */
+(function stardust() {
+  const c = document.getElementById('particles');
+  if (!c) return;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ctx = c.getContext('2d');
+  let w, h, dpr, particles;
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = c.width = innerWidth * dpr;
+    h = c.height = innerHeight * dpr;
+    c.style.width = innerWidth + 'px';
+    c.style.height = innerHeight + 'px';
+    const isMobile = innerWidth < 700;
+    const count = reduce ? 0 : (isMobile ? 40 : 90);
+    particles = Array.from({length: count}, () => ({
+      x: Math.random()*w, y: Math.random()*h,
+      r: (Math.random()*1.4 + 0.3) * dpr,
+      vx: (Math.random()-0.5)*0.12*dpr,
+      vy: (Math.random()-0.5)*0.12*dpr,
+      hue: Math.random() < 0.5 ? 315 : (Math.random() < 0.5 ? 265 : 195),
+      a: Math.random()*0.6 + 0.2,
+      p: Math.random()*Math.PI*2
+    }));
+  }
+  function draw(t) {
+    ctx.clearRect(0,0,w,h);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
+      if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
+      const twinkle = 0.55 + 0.45*Math.sin(t*0.001 + p.p);
+      ctx.beginPath();
+      ctx.fillStyle = `hsla(${p.hue}, 90%, 75%, ${p.a * twinkle})`;
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  resize();
+  addEventListener('resize', resize);
+  if (!reduce) requestAnimationFrame(draw);
+})();
+
+/* ===== Service Worker ===== */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
