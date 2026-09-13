@@ -580,7 +580,11 @@ function initApp() {
     hamburger.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
   }
-  function closeAll() { closeMenu(); closeSettings(); }
+  function closeAll() {
+    closeMenu();
+    closeSettings();
+    if (typeof window.closeZojezuSearch === 'function') window.closeZojezuSearch();
+  }
 
   hamburger.addEventListener('click', toggleMenu);
 
@@ -638,7 +642,19 @@ function initApp() {
   fetch('header.html')
     .then(response => response.text())
     .then(html => {
-      document.getElementById('external-header-container').innerHTML = html;
+      const container = document.getElementById('external-header-container');
+      container.innerHTML = html;
+
+      // ★ 挿入した <script> を実行する（innerHTML では自動実行されない）
+      container.querySelectorAll('script').forEach(oldScript => {
+        const newScript = document.createElement('script');
+        Array.from(oldScript.attributes).forEach(attr => {
+          newScript.setAttribute(attr.name, attr.value);
+        });
+        newScript.textContent = oldScript.textContent;
+        oldScript.parentNode.replaceChild(newScript, oldScript);
+      });
+
       initApp();
       
       // FAQ specific JS
