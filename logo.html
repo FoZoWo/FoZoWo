@@ -236,27 +236,6 @@ footer { margin-top: 52px; text-align: center; }
 <!-- ============ Shared header (loaded from header.html) ============ -->
 <div id="headerRoot"></div>
 
-<!-- ============ Settings panel ============ -->
-<div class="settings-panel" id="settingsPanel" role="dialog" aria-label="設定">
-  <div class="settings-title"><span data-i18n="settings">設定</span><button class="settings-close" id="settingsClose">×</button></div>
-  <div class="settings-group">
-    <span class="settings-label" data-i18n="theme">テーマ</span>
-    <div class="settings-options" id="themeOptions">
-      <button data-value="auto" class="active" data-i18n="auto">自動</button>
-      <button data-value="dark" data-i18n="dark">ダーク</button>
-      <button data-value="light" data-i18n="light">ライト</button>
-    </div>
-  </div>
-  <div class="settings-group">
-    <span class="settings-label" data-i18n="language">言語</span>
-    <div class="settings-options" id="langOptions">
-      <button data-value="auto" class="active" data-i18n="auto">自動</button>
-      <button data-value="ja">日本語</button>
-      <button data-value="en">English</button>
-    </div>
-  </div>
-</div>
-
 <div class="shell">
   <header class="hero">
     <div class="badge" data-i18n="badge">LOGO</div>
@@ -400,25 +379,14 @@ footer { margin-top: 52px; text-align: center; }
     if (html.getAttribute('data-theme') === 'auto') updateThemeColor('auto');
   });
 
-  /* ---------------- settings panel (works even before the header loads) ---------------- */
-  const settingsPanel = document.getElementById('settingsPanel');
-  function openSettings() { settingsPanel.classList.add('open'); closeMenu(); }
-  function closeSettings() { settingsPanel.classList.remove('open'); }
-  function toggleSettings() { settingsPanel.classList.contains('open') ? closeSettings() : openSettings(); }
-  document.getElementById('settingsClose').addEventListener('click', closeSettings);
-  document.getElementById('themeOptions').addEventListener('click', e => {
-    const btn = e.target.closest('button');
-    if (btn) applyTheme(btn.dataset.value);
-  });
-  document.getElementById('langOptions').addEventListener('click', e => {
-    const btn = e.target.closest('button');
-    if (btn) applyLang(btn.dataset.value);
-  });
-  document.addEventListener('click', e => {
-    if (settingsPanel.classList.contains('open') && !settingsPanel.contains(e.target) && !e.target.closest('#settingsBtn')) {
-      closeSettings();
-    }
-  });
+  /* ---------------- settings / menu (bound after header.html loads) ---------------- */
+  let settingsPanel;
+  function openSettings() { if (settingsPanel) { settingsPanel.classList.add('open'); closeMenu(); } }
+  function closeSettings() { if (settingsPanel) settingsPanel.classList.remove('open'); }
+  function toggleSettings() {
+    if (!settingsPanel) return;
+    settingsPanel.classList.contains('open') ? closeSettings() : openSettings();
+  }
 
   /* ---------------- mobile menu (elements exist only after header.html loads) ---------------- */
   let hamburger, navMobile;
@@ -455,9 +423,28 @@ footer { margin-top: 52px; text-align: center; }
       navMobile = document.getElementById('navMobile');
 
       applyLang(currentLangPref); // fill in data-i18n text on the freshly injected header
+      applyTheme(html.getAttribute('data-theme') || 'auto');
 
+      settingsPanel = document.getElementById('settingsPanel');
       const settingsBtn = document.getElementById('settingsBtn');
+      const settingsClose = document.getElementById('settingsClose');
       if (settingsBtn) settingsBtn.addEventListener('click', e => { e.stopPropagation(); toggleSettings(); });
+      if (settingsClose) settingsClose.addEventListener('click', closeSettings);
+      const themeOpts = document.getElementById('themeOptions');
+      const langOpts = document.getElementById('langOptions');
+      if (themeOpts) themeOpts.addEventListener('click', e => {
+        const btn = e.target.closest('button');
+        if (btn) applyTheme(btn.dataset.value);
+      });
+      if (langOpts) langOpts.addEventListener('click', e => {
+        const btn = e.target.closest('button');
+        if (btn) applyLang(btn.dataset.value);
+      });
+      document.addEventListener('click', e => {
+        if (settingsPanel && settingsPanel.classList.contains('open') && !settingsPanel.contains(e.target) && !e.target.closest('#settingsBtn')) {
+          closeSettings();
+        }
+      });
 
       // This page has no on-page search/command palette (that lives on index.html),
       // so route the header's search icon back to the homepage instead of doing nothing.
