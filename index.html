@@ -1329,7 +1329,19 @@ footer::before {
   try {
     const res = await fetch('header.html');
     if (!res.ok) throw new Error('header load failed: ' + res.status);
-    document.getElementById('header-placeholder').innerHTML = await res.text();
+    const placeholder = document.getElementById('header-placeholder');
+    placeholder.innerHTML = await res.text();
+
+    /* innerHTMLで挿入した<script>タグはブラウザの仕様上そのままでは実行されないため、
+       作り直して差し替えることで実行させる（検索機能などが動かない問題の対処） */
+    placeholder.querySelectorAll('script').forEach(oldScript => {
+      const newScript = document.createElement('script');
+      for (const attr of oldScript.attributes) {
+        newScript.setAttribute(attr.name, attr.value);
+      }
+      newScript.textContent = oldScript.textContent;
+      oldScript.replaceWith(newScript);
+    });
   } catch (e) {
     console.error('header.html の読み込みに失敗しました。同じフォルダに header.html があるか確認してください。', e);
   }
