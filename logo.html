@@ -405,7 +405,11 @@ footer { margin-top: 52px; text-align: center; }
     hamburger.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
   }
-  function closeAll() { closeMenu(); closeSettings(); }
+  function closeAll() {
+    closeMenu();
+    closeSettings();
+    if (typeof window.closeZojezuSearch === 'function') window.closeZojezuSearch();
+  }
   window.closeAll = closeAll;
   window.closeMenu = closeMenu;
 
@@ -417,6 +421,16 @@ footer { margin-top: 52px; text-align: center; }
     .then(response => response.text())
     .then(headerHtml => {
       headerRoot.innerHTML = headerHtml;
+
+      // ★ 挿入した <script> を実行する（innerHTML では自動実行されない）
+      headerRoot.querySelectorAll('script').forEach(oldScript => {
+        const newScript = document.createElement('script');
+        Array.from(oldScript.attributes).forEach(attr => {
+          newScript.setAttribute(attr.name, attr.value);
+        });
+        newScript.textContent = oldScript.textContent;
+        oldScript.parentNode.replaceChild(newScript, oldScript);
+      });
 
       const headerEl = document.getElementById('header');
       hamburger = document.getElementById('hamburger');
