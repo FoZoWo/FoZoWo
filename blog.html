@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZoJeZu公式ブログ</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+            --header-bg: #1e293b;
+            --card-bg: #fff;
+            --border-color: #e2e8f0;
+            --accent-color: #3b82f6;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            color: white;
+            padding: 2.5rem 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            letter-spacing: 0.05em;
+        }
+        
+        header p {
+            opacity: 0.85;
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        #loading {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+        }
+
+        .post-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .post-title {
+            margin: 0 0 1rem 0;
+            color: #0f172a;
+            font-size: 1.6rem;
+            line-height: 1.4;
+        }
+
+        .post-meta {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+        }
+
+        .post-content {
+            white-space: pre-line;
+            color: #334155;
+            font-size: 1.05rem;
+        }
+        
+        /* Markdown風の装飾 */
+        .post-content h2, .post-content h3 {
+            color: #0f172a;
+            margin-top: 1.75rem;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 0.75rem;
+        }
+        
+        .post-content ul, .post-content ol {
+            padding-left: 1.5rem;
+        }
+        
+        .post-content code {
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .error-message {
+            background-color: #fef2f2;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #fca5a5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem 0;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ZoJeZu公式ブログ</h1>
+        <p>AIが毎日お届けする最新トレンドとナレッジ</p>
+    </header>
+
+    <div class="container">
+        <div id="loading">記事を読み込んでいます...</div>
+        <div id="posts-container"></div>
+    </div>
+
+    <footer>
+        &copy; 2026 ZoJeZu. All rights reserved.
+    </footer>
+
+    <script>
+        // APIのエンドポイント (WorkerのURL)
+        const API_URL = 'https://blog-api.oisasioisasi.workers.dev';
+
+        async function fetchPosts() {
+            const container = document.getElementById('posts-container');
+            const loading = document.getElementById('loading');
+
+            try {
+                const response = await fetch(API_URL);
+                
+                if (!response.ok) {
+                    throw new Error(`サーバーエラー: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                loading.style.display = 'none';
+
+                if (!data.success) {
+                     throw new Error('データの取得に失敗しました。');
+                }
+
+                if (data.posts && data.posts.length > 0) {
+                    data.posts.forEach(post => {
+                        const date = new Date(post.created_at).toLocaleDateString('ja-JP', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+
+                        const article = document.createElement('article');
+                        article.className = 'post-card';
+                        
+                        article.innerHTML = `
+                            <h2 class="post-title">${escapeHTML(post.title)}</h2>
+                            <div class="post-meta">投稿日時: ${date}</div>
+                            <div class="post-content">${formatContent(escapeHTML(post.content))}</div>
+                        `;
+                        container.appendChild(article);
+                    });
+                } else {
+                    container.innerHTML = `
+                        <div class="post-card" style="text-align:center; padding: 3rem;">
+                            <h2>まだ記事がありません</h2>
+                            <p>最初の記事が自動投稿されるのをお待ちください。（毎日19:00更新予定）</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                container.innerHTML = `<div class="error-message">エラーが発生しました: ${error.message}</div>`;
+                console.error('Error fetching posts:', error);
+            }
+        }
+
+        // HTMLエスケープ処理 (XSS対策)
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            );
+        }
+
+        // 簡易的な見出し・改行装飾
+        function formatContent(text) {
+            let formatted = text.replace(/\n/g, '<br>');
+            formatted = formatted.replace(/^## (.*?)(<br>|$)/gm, '<h2>$1</h2>');
+            formatted = formatted.replace(/^### (.*?)(<br>|$)/gm, '<h3>$1</h3>');
+            formatted = formatted.replace(/^- (.*?)(<br>|$)/gm, '<ul><li>$1</li></ul>');
+            formatted = formatted.replace(/<\/ul><ul>/g, '');
+            return formatted;
+        }
+
+        // ページ読み込み時に実行
+        document.addEventListener('DOMContentLoaded', fetchPosts);
+    </script>
+</body>
+</html>
