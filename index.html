@@ -1543,14 +1543,10 @@ footer::before {
     if (html.getAttribute('data-theme') === 'auto') applyTheme('auto');
   });
 
-  function openSettings() { if (settingsPanel) settingsPanel.classList.add('open'); closeMenu(); }
-  function closeSettings() { if (settingsPanel) settingsPanel.classList.remove('open'); }
-  function toggleSettings() {
-    if (!settingsPanel) return;
-    settingsPanel.classList.contains('open') ? closeSettings() : openSettings();
-  }
-  if (settingsBtn) settingsBtn.addEventListener('click', e => { e.stopPropagation(); toggleSettings(); });
-  if (settingsClose) settingsClose.addEventListener('click', closeSettings);
+  /* ハンバーガーメニュー・設定パネルの開閉は header.html 側のスクリプトが
+     一元管理しています（以前はここでも同じ要素にクリックイベントを登録していたため、
+     1回クリックすると「開く→即座に閉じる」が同時に起きてボタンが反応しないように
+     見える不具合がありました。重複登録をやめてこちらに一本化しています）。 */
   const themeOpts = document.getElementById('themeOptions');
   const langOpts = document.getElementById('langOptions');
   if (themeOpts) themeOpts.addEventListener('click', e => {
@@ -1561,30 +1557,6 @@ footer::before {
     const btn = e.target.closest('button');
     if (btn) applyLang(btn.dataset.value);
   });
-
-  function toggleMenu() {
-    if (!navMobile || !hamburger) return;
-    const isOpen = navMobile.classList.toggle('open');
-    hamburger.classList.toggle('active', isOpen);
-    hamburger.setAttribute('aria-expanded', isOpen);
-    document.body.style.overflow = isOpen ? 'hidden' : '';
-    if (isOpen) closeSettings();
-  }
-  function closeMenu() {
-    if (!navMobile || !hamburger) return;
-    navMobile.classList.remove('open');
-    hamburger.classList.remove('active');
-    hamburger.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
-  }
-  function closeAll() { closeMenu(); closeSettings(); }
-
-  if (hamburger) hamburger.addEventListener('click', toggleMenu);
-  document.addEventListener('click', e => {
-    if (settingsPanel && settingsBtn && settingsPanel.classList.contains('open') && !settingsPanel.contains(e.target) && !settingsBtn.contains(e.target)) closeSettings();
-  });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
-  if (navMobile) navMobile.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
 
   window.addEventListener('scroll', () => {
     if (header) header.classList.toggle('scrolled', window.scrollY > 24);
