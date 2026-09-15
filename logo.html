@@ -15,11 +15,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;900&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
 
 <style>
-/* =====================================================================
-   Design tokens are kept IDENTICAL to index.html so that every page
-   (including the shared header.html, which is injected at runtime)
-   looks and themes the same way regardless of which page loaded it.
-   ===================================================================== */
 :root, [data-theme="dark"]{
   --ink:#07060f; --ink-2:#0c0a1a; --panel:#120e22; --panel-2:#17122b;
   --line:rgba(178,150,255,.16); --line-strong:rgba(178,150,255,.4);
@@ -29,6 +24,7 @@
   --card-glow:0 0 32px rgba(255,95,168,.4);
   --shadow:0 24px 60px rgba(0,0,0,.55);
   --radius:18px;
+  --header-h: 68px;
 }
 [data-theme="light"]{
   --ink:#f4f0ff; --ink-2:#ece3ff; --panel:#ffffff; --panel-2:#f7f1ff;
@@ -78,7 +74,7 @@ body {
   min-height: 100dvh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  padding-top: var(--header-h, 64px);
+  padding-top: var(--header-h, 68px);
   cursor: var(--cursor);
   transition: background 0.45s, color 0.35s;
 }
@@ -117,57 +113,6 @@ a, button, .card, .pill, .sns, .icon-btn, .hamburger, .settings-options button, 
   33% { transform: translate(40px,-50px) scale(1.1); }
   66% { transform: translate(-30px,30px) scale(0.92); }
 }
-
-.particles { position: fixed; inset: 0; pointer-events: none; z-index: -1; overflow: hidden; }
-.p {
-  position: absolute; bottom: -12px; width: 4px; height: 4px; border-radius: 50%;
-  background: #fff; opacity: 0; animation: rise linear infinite;
-}
-[data-theme="light"] .p { background: var(--violet); }
-@keyframes rise {
-  0% { transform: translateY(0) scale(0) rotate(0deg); opacity: 0; }
-  12% { opacity: 0.55; }
-  80% { opacity: 0.2; }
-  100% { transform: translateY(-110vh) scale(1.2) rotate(180deg); opacity: 0; }
-}
-.sparkle {
-  position: fixed; pointer-events: none; z-index: -1;
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--gold);
-  box-shadow: 0 0 10px var(--gold);
-  animation: sparkle 3.5s ease-in-out infinite;
-  opacity: 0;
-}
-@keyframes sparkle {
-  0%, 100% { opacity: 0; transform: scale(0.3); }
-  50% { opacity: 0.8; transform: scale(1.2); }
-}
-
-/* NOTE: .header / .logo / .nav-desktop / .icon-btn / .hamburger / .nav-mobile
-   styles live in header.html (fetched and injected into #headerRoot below).
-   They are intentionally NOT duplicated here — that duplication was the
-   source of the inconsistent header look across pages. */
-
-/* Settings */
-.settings-panel {
-  position: fixed; top: calc(var(--header-h, 64px) + 12px); right: 16px;
-  width: min(300px, calc(100vw - 32px));
-  background: var(--panel); border: 1px solid var(--line); border-radius: 20px;
-  box-shadow: var(--shadow); z-index: 1100; padding: 20px;
-  opacity: 0; visibility: hidden; transform: translateY(-16px) scale(0.94);
-  transition: all 0.35s cubic-bezier(0.22,1,0.36,1); pointer-events: none;
-}
-.settings-panel.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); pointer-events: auto; }
-.settings-title { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
-.settings-close { width: 28px; height: 28px; border: none; border-radius: 8px; background: var(--glass); color: var(--muted); display: grid; place-items: center; cursor: var(--cursor-hover); font-size: 16px; line-height: 1; transition: all 0.25s; }
-.settings-close:hover { background: var(--glass-2); color: var(--text); transform: rotate(90deg); }
-.settings-group { margin-bottom: 18px; }
-.settings-group:last-child { margin-bottom: 0; }
-.settings-label { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 8px; display: block; }
-.settings-options { display: flex; flex-wrap: wrap; gap: 8px; }
-.settings-options button { flex: 1; min-width: 72px; padding: 11px 8px; border-radius: 12px; border: 1px solid var(--line); background: var(--glass); color: var(--text); font-size: 13px; font-weight: 700; font-family: inherit; cursor: var(--cursor-hover); transition: all 0.3s cubic-bezier(0.22,1,0.36,1); }
-.settings-options button:hover { background: var(--glass-2); border-color: color-mix(in srgb, var(--pink) 45%, var(--line)); transform: translateY(-2px); }
-.settings-options button.active { background: linear-gradient(135deg, var(--pink), var(--violet)); border-color: transparent; color: #fff; box-shadow: 0 6px 18px color-mix(in srgb, var(--pink) 40%, transparent); }
 
 /* Content Base */
 .shell { max-width: 540px; margin: 0 auto; padding: 28px 18px 90px; position: relative; }
@@ -233,7 +178,6 @@ footer { margin-top: 52px; text-align: center; }
 </head>
 <body>
 
-<!-- ============ Shared header (loaded from header.html) ============ -->
 <div id="headerRoot"></div>
 
 <div class="shell">
@@ -282,17 +226,12 @@ footer { margin-top: 52px; text-align: center; }
   </footer>
 </div>
 
-
 <script>
 (function () {
   const html = document.documentElement;
 
   const i18n = {
     ja: {
-      settings: '設定', theme: 'テーマ', language: '言語',
-      auto: '自動', dark: 'ダーク', light: 'ライト',
-      sec_main: '宝物庫', sec_witch: '魔女の館', sec_contents: '目録', sec_sns: '星座', sec_embed: '魔法書',
-      card_faq: 'FAQ', card_ai: 'ゾジェズAI',
       badge: 'LOGO',
       hero_title: 'ZoJeZuのロゴ',
       hero_lead: '自由にダウンロード・コピーしてお使いいただけます',
@@ -307,10 +246,6 @@ footer { margin-top: 52px; text-align: center; }
       footer: 'ZoJeZu Official — 設定からテーマ・言語を変更できます'
     },
     en: {
-      settings: 'Settings', theme: 'Theme', language: 'Language',
-      auto: 'Auto', dark: 'Dark', light: 'Light',
-      sec_main: 'Treasury', sec_witch: "Witch's House", sec_contents: 'Index', sec_sns: 'Constellation', sec_embed: 'Grimoire',
-      card_faq: 'FAQ', card_ai: 'ZoJeZu AI',
       badge: 'LOGO',
       hero_title: 'ZoJeZu Logo',
       hero_lead: 'Feel free to download or copy the logo for your own use',
@@ -328,8 +263,7 @@ footer { margin-top: 52px; text-align: center; }
 
   function resolveLang(pref) {
     if (pref === 'ja' || pref === 'en') return pref;
-    const nav = (navigator.language || 'ja').toLowerCase();
-    return nav.startsWith('ja') ? 'ja' : 'en';
+    return (navigator.language || 'ja').toLowerCase().startsWith('ja') ? 'ja' : 'en';
   }
 
   let currentLangPref = 'auto';
@@ -338,9 +272,6 @@ footer { margin-top: 52px; text-align: center; }
     try { localStorage.setItem('zojezu-lang', pref); } catch (e) {}
     const lang = resolveLang(pref);
     html.setAttribute('lang', lang);
-    document.querySelectorAll('#langOptions button').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.value === pref);
-    });
     const t = i18n[lang];
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
@@ -352,135 +283,69 @@ footer { margin-top: 52px; text-align: center; }
     });
   }
 
+  function applyTheme(theme) {
+    html.setAttribute('data-theme', theme);
+    try { localStorage.setItem('zojezu-theme', theme); } catch (e) {}
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+      if (theme === 'light') meta.content = '#f4f0ff';
+      else if (theme === 'dark') meta.content = '#07060f';
+      else meta.content = window.matchMedia('(prefers-color-scheme: light)').matches ? '#f4f0ff' : '#07060f';
+    }
+  }
+
   let savedTheme = 'auto', savedLang = 'auto';
   try {
     savedTheme = localStorage.getItem('zojezu-theme') || 'auto';
     savedLang = localStorage.getItem('zojezu-lang') || 'auto';
   } catch (e) {}
-
-  function updateThemeColor(theme) {
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (!meta) return;
-    if (theme === 'light') meta.content = '#f4f0ff';
-    else if (theme === 'dark') meta.content = '#07060f';
-    else meta.content = window.matchMedia('(prefers-color-scheme: light)').matches ? '#f4f0ff' : '#07060f';
-  }
-  function applyTheme(theme) {
-    html.setAttribute('data-theme', theme);
-    try { localStorage.setItem('zojezu-theme', theme); } catch (e) {}
-    document.querySelectorAll('#themeOptions button').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.value === theme);
-    });
-    updateThemeColor(theme);
-  }
   applyTheme(savedTheme);
   applyLang(savedLang);
+
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-    if (html.getAttribute('data-theme') === 'auto') updateThemeColor('auto');
+    if (html.getAttribute('data-theme') === 'auto') applyTheme('auto');
   });
 
-  /* ---------------- settings / menu (bound after header.html loads) ---------------- */
-  let settingsPanel;
-  function openSettings() { if (settingsPanel) { settingsPanel.classList.add('open'); closeMenu(); } }
-  function closeSettings() { if (settingsPanel) settingsPanel.classList.remove('open'); }
-  function toggleSettings() {
-    if (!settingsPanel) return;
-    settingsPanel.classList.contains('open') ? closeSettings() : openSettings();
-  }
-
-  /* ---------------- mobile menu (elements exist only after header.html loads) ---------------- */
-  let hamburger, navMobile;
-  function toggleMenu() {
-    if (!hamburger || !navMobile) return;
-    const isOpen = navMobile.classList.toggle('open');
-    hamburger.classList.toggle('active', isOpen);
-    hamburger.setAttribute('aria-expanded', isOpen);
-    document.body.style.overflow = isOpen ? 'hidden' : '';
-    if (isOpen) closeSettings();
-  }
-  function closeMenu() {
-    if (!navMobile) return;
-    navMobile.classList.remove('open');
-    hamburger.classList.remove('active');
-    hamburger.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
-  }
-  function closeAll() {
-    closeMenu();
-    closeSettings();
-    if (typeof window.closeZojezuSearch === 'function') window.closeZojezuSearch();
-  }
-  window.closeAll = closeAll;
-  window.closeMenu = closeMenu;
-
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
-
-  /* ---------------- load the shared header ---------------- */
+  // ヘッダー読み込み
   const headerRoot = document.getElementById('headerRoot');
   fetch('header.html')
-    .then(response => response.text())
+    .then(r => r.text())
     .then(headerHtml => {
       headerRoot.innerHTML = headerHtml;
 
-      // ★ 挿入した <script> を実行する（innerHTML では自動実行されない）
       headerRoot.querySelectorAll('script').forEach(oldScript => {
         const newScript = document.createElement('script');
-        Array.from(oldScript.attributes).forEach(attr => {
-          newScript.setAttribute(attr.name, attr.value);
-        });
+        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
         newScript.textContent = oldScript.textContent;
         oldScript.parentNode.replaceChild(newScript, oldScript);
       });
 
-      const headerEl = document.getElementById('header');
-      hamburger = document.getElementById('hamburger');
-      navMobile = document.getElementById('navMobile');
-
-      applyLang(currentLangPref); // fill in data-i18n text on the freshly injected header
-      applyTheme(html.getAttribute('data-theme') || 'auto');
-
-      settingsPanel = document.getElementById('settingsPanel');
-      const settingsBtn = document.getElementById('settingsBtn');
-      const settingsClose = document.getElementById('settingsClose');
-      if (settingsBtn) settingsBtn.addEventListener('click', e => { e.stopPropagation(); toggleSettings(); });
-      if (settingsClose) settingsClose.addEventListener('click', closeSettings);
+      // ヘッダーのテーマ・言語ボタンにページ側の処理を連動
       const themeOpts = document.getElementById('themeOptions');
       const langOpts = document.getElementById('langOptions');
-      if (themeOpts) themeOpts.addEventListener('click', e => {
-        const btn = e.target.closest('button');
-        if (btn) applyTheme(btn.dataset.value);
-      });
-      if (langOpts) langOpts.addEventListener('click', e => {
-        const btn = e.target.closest('button');
-        if (btn) applyLang(btn.dataset.value);
-      });
-      document.addEventListener('click', e => {
-        if (settingsPanel && settingsPanel.classList.contains('open') && !settingsPanel.contains(e.target) && !e.target.closest('#settingsBtn')) {
-          closeSettings();
-        }
-      });
-
-      // This page has no on-page search/command palette (that lives on index.html),
-      // so route the header's search icon back to the homepage instead of doing nothing.
-      const paletteBtnH = document.getElementById('paletteBtnH');
-      if (paletteBtnH) paletteBtnH.addEventListener('click', () => { window.location.href = 'index.html'; });
-
-      if (hamburger) hamburger.addEventListener('click', toggleMenu);
-
-      function onHeaderScroll() { if (headerEl) headerEl.classList.toggle('scrolled', window.scrollY > 20); }
-      window.addEventListener('scroll', onHeaderScroll, { passive: true });
-      onHeaderScroll();
+      if (themeOpts) {
+        themeOpts.addEventListener('click', e => {
+          const btn = e.target.closest('button[data-value]');
+          if (btn) applyTheme(btn.getAttribute('data-value'));
+        });
+      }
+      if (langOpts) {
+        langOpts.addEventListener('click', e => {
+          const btn = e.target.closest('button[data-value]');
+          if (btn) applyLang(btn.getAttribute('data-value'));
+        });
+      }
     })
     .catch(err => console.error('header.html の読み込みに失敗しました:', err));
 
-  /* ---------------- section reveal ---------------- */
+  // セクション表示
   const sections = document.querySelectorAll('.section');
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
   sections.forEach(s => observer.observe(s));
 
-  /* ---------------- copy button ---------------- */
+  // コピーボタン
   const copyBtn = document.getElementById('copyBtn');
   if (copyBtn) {
     copyBtn.addEventListener('click', async () => {
