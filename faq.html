@@ -33,7 +33,7 @@
   --card-glow: 0 0 32px rgba(255,107,203,0.4);
   --shadow: 0 22px 55px rgba(0,0,0,0.5);
   --radius: 18px;
-  --header-h: 64px;
+  --header-h: 68px;
   --nav-max: 1100px;
 }
 [data-theme="light"] {
@@ -176,134 +176,6 @@ a, button, .card, .pill, .sns, .icon-btn, .hamburger, .settings-options button, 
   50% { opacity: 0.8; transform: scale(1.2); }
 }
 
-/* Header & Components */
-.header {
-  position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); z-index: 1000;
-  background: var(--header-bg);
-  backdrop-filter: blur(20px) saturate(1.6);
-  -webkit-backdrop-filter: blur(20px) saturate(1.6);
-  border-bottom: 1px solid var(--border);
-  transition: background 0.35s, box-shadow 0.35s, transform 0.4s;
-}
-.header.scrolled {
-  background: var(--header-bg-scrolled);
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-}
-.header-inner {
-  max-width: var(--nav-max); height: 100%; margin: 0 auto;
-  padding: 0 16px 0 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
-}
-.logo {
-  display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text);
-  font-weight: 900; font-size: 17px; letter-spacing: -0.02em; flex-shrink: 0; z-index: 1001;
-  transition: transform 0.3s;
-}
-.logo:hover { transform: scale(1.03); }
-.logo-img {
-  width: 38px; height: 38px; border-radius: 11px; object-fit: contain;
-  background: var(--surface);
-  box-shadow: 0 4px 16px color-mix(in srgb, var(--pink) 35%, transparent);
-  transition: transform 0.4s, box-shadow 0.4s;
-}
-.logo:hover .logo-img {
-  transform: rotate(-8deg) scale(1.08);
-  box-shadow: 0 6px 22px color-mix(in srgb, var(--pink) 50%, transparent);
-}
-.logo-text span {
-  background: linear-gradient(120deg, var(--text), var(--pink) 60%, var(--purple));
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  background-size: 200% auto;
-  animation: textShine 6s linear infinite;
-}
-@keyframes textShine {
-  0% { background-position: 0% center; }
-  100% { background-position: 200% center; }
-}
-
-.nav-desktop { display: none; align-items: center; gap: 4px; }
-.nav-desktop a {
-  padding: 8px 14px; border-radius: 11px; color: var(--muted); text-decoration: none;
-  font-size: 14px; font-weight: 700; transition: all 0.3s cubic-bezier(0.22,1,0.36,1); white-space: nowrap;
-  position: relative;
-}
-.nav-desktop a::after {
-  content: ""; position: absolute; left: 14px; right: 14px; bottom: 5px; height: 2px;
-  background: linear-gradient(90deg, var(--pink), var(--purple));
-  border-radius: 2px; transform: scaleX(0); transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
-}
-.nav-desktop a:hover { color: var(--text); background: var(--surface); }
-.nav-desktop a:hover::after { transform: scaleX(1); }
-.nav-desktop a.accent {
-  background: linear-gradient(135deg, var(--pink), var(--purple)); color: #fff;
-  box-shadow: 0 4px 18px color-mix(in srgb, var(--pink) 35%, transparent);
-}
-.nav-desktop a.accent::after { display: none; }
-.nav-desktop a.accent:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--pink) 50%, transparent);
-}
-
-.header-actions { display: flex; align-items: center; gap: 8px; z-index: 1001; }
-.icon-btn {
-  width: 40px; height: 40px; border: none; border-radius: 12px; background: var(--surface);
-  color: var(--text); display: grid; place-items: center; cursor: var(--cursor);
-  transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
-}
-.icon-btn:hover { background: var(--surface-hover); transform: rotate(30deg) scale(1.08); }
-.icon-btn:active { transform: scale(0.92); }
-.icon-btn svg { width: 20px; height: 20px; transition: transform 0.4s; }
-.hamburger {
-  display: flex; flex-direction: column; justify-content: center; gap: 5px;
-  width: 40px; height: 40px; padding: 10px; border: none; background: var(--surface);
-  border-radius: 12px; cursor: var(--cursor); transition: background 0.25s;
-}
-.hamburger:hover { background: var(--surface-hover); }
-.hamburger span {
-  display: block; height: 2px; width: 100%; background: var(--text); border-radius: 2px;
-  transition: all 0.4s cubic-bezier(0.22,1,0.36,1); transform-origin: center;
-}
-.hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.hamburger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-.hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-/* Settings */
-.settings-panel {
-  position: fixed; top: calc(var(--header-h) + 12px); right: 16px;
-  width: min(300px, calc(100vw - 32px));
-  background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 20px;
-  box-shadow: var(--shadow); z-index: 1100; padding: 20px;
-  opacity: 0; visibility: hidden; transform: translateY(-16px) scale(0.94);
-  transition: all 0.35s cubic-bezier(0.22,1,0.36,1); pointer-events: none;
-}
-.settings-panel.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); pointer-events: auto; }
-.settings-title { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
-.settings-close { width: 28px; height: 28px; border: none; border-radius: 8px; background: var(--surface); color: var(--muted); display: grid; place-items: center; cursor: var(--cursor); font-size: 16px; line-height: 1; transition: all 0.25s; }
-.settings-close:hover { background: var(--surface-hover); color: var(--text); transform: rotate(90deg); }
-.settings-group { margin-bottom: 18px; }
-.settings-group:last-child { margin-bottom: 0; }
-.settings-label { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 8px; display: block; }
-.settings-options { display: flex; flex-wrap: wrap; gap: 8px; }
-.settings-options button { flex: 1; min-width: 72px; padding: 11px 8px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 13px; font-weight: 700; font-family: inherit; cursor: var(--cursor); transition: all 0.3s cubic-bezier(0.22,1,0.36,1); }
-.settings-options button:hover { background: var(--surface-hover); border-color: color-mix(in srgb, var(--pink) 45%, var(--border)); transform: translateY(-2px); }
-.settings-options button.active { background: linear-gradient(135deg, var(--pink), var(--purple)); border-color: transparent; color: #fff; box-shadow: 0 6px 18px color-mix(in srgb, var(--pink) 40%, transparent); }
-
-/* Mobile Menu */
-.nav-mobile { position: fixed; inset: 0; z-index: 999; background: var(--menu-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; opacity: 0; visibility: hidden; pointer-events: none; transition: all 0.45s cubic-bezier(0.22,1,0.36,1); }
-.nav-mobile.open { opacity: 1; visibility: visible; pointer-events: auto; }
-.nav-mobile a { display: flex; align-items: center; gap: 14px; padding: 17px 28px; min-width: 270px; border-radius: 16px; color: var(--text); text-decoration: none; font-size: 18px; font-weight: 700; background: var(--surface); border: 1px solid var(--border); transform: translateY(28px) scale(0.96); opacity: 0; transition: all 0.45s cubic-bezier(0.22,1,0.36,1); }
-.nav-mobile.open a { transform: translateY(0) scale(1); opacity: 1; }
-.nav-mobile.open a:nth-child(1) { transition-delay: 0.06s; }
-.nav-mobile.open a:nth-child(2) { transition-delay: 0.11s; }
-.nav-mobile.open a:nth-child(3) { transition-delay: 0.16s; }
-.nav-mobile.open a:nth-child(4) { transition-delay: 0.21s; }
-.nav-mobile.open a:nth-child(5) { transition-delay: 0.26s; }
-.nav-mobile.open a:nth-child(6) { transition-delay: 0.31s; }
-.nav-mobile a:hover, .nav-mobile a:active { background: linear-gradient(135deg, color-mix(in srgb, var(--pink) 22%, transparent), color-mix(in srgb, var(--purple) 16%, transparent)); border-color: color-mix(in srgb, var(--pink) 45%, transparent); transform: scale(1.04); }
-.nav-mobile .icon { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; font-size: 19px; background: linear-gradient(145deg, color-mix(in srgb, var(--pink) 28%, transparent), color-mix(in srgb, var(--purple) 22%, transparent)); transition: transform 0.35s; }
-.nav-mobile a:hover .icon { transform: rotate(-10deg) scale(1.1); }
-.nav-mobile-footer { margin-top: 36px; font-size: 13px; color: var(--muted); opacity: 0; transition: opacity 0.4s 0.4s; }
-.nav-mobile.open .nav-mobile-footer { opacity: 1; }
-
 /* Content Base */
 .shell { max-width: 540px; margin: 0 auto; padding: 28px 18px 90px; position: relative; }
 .hero { text-align: center; padding: 24px 0 36px; animation: heroIn 1s cubic-bezier(0.22,1,0.36,1) both; }
@@ -314,6 +186,7 @@ a, button, .card, .pill, .sns, .icon-btn, .hamburger, .settings-options button, 
 @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.8); } }
 h1 { font-size: clamp(28px, 7.5vw, 36px); font-weight: 900; line-height: 1.2; letter-spacing: -0.03em; margin-bottom: 10px; }
 h1 span { background: linear-gradient(120deg, var(--text) 8%, var(--pink) 40%, var(--purple) 70%, var(--cyan) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: textShine 7s linear infinite; }
+@keyframes textShine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
 .lead { font-size: 15px; color: var(--muted); max-width: 340px; margin: 0 auto; }
 .section { margin-bottom: 44px; opacity: 0; transform: translateY(36px); transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1); }
 .section.visible { opacity: 1; transform: translateY(0); }
@@ -327,17 +200,7 @@ footer { margin-top: 52px; text-align: center; }
 .footer-pill { display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 999px; font-size: 12px; color: var(--muted); background: var(--surface); border: 1px solid var(--border); transition: all 0.3s; }
 .footer-pill:hover { border-color: color-mix(in srgb, var(--pink) 30%, transparent); transform: translateY(-2px); }
 
-/* Offline Toast */
-.network-toast { position: fixed; top: calc(var(--header-h, 64px) + 12px); left: 50%; z-index: 2000; transform: translate(-50%, -14px); opacity: 0; visibility: hidden; display: flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 999px; font-size: 13px; font-weight: 700; box-shadow: 0 10px 28px rgba(0,0,0,0.3); transition: all 0.4s cubic-bezier(0.22,1,0.36,1); pointer-events: none; }
-.network-toast.show { transform: translate(-50%, 0); opacity: 1; visibility: visible; }
-.network-toast.offline { background: linear-gradient(135deg, #ff5a7a, #e84a9a); color: #fff; }
-.network-toast.online { background: linear-gradient(135deg, #21c98a, #00b4d8); color: #fff; }
-.network-toast svg { width: 15px; height: 15px; flex-shrink: 0; }
-
 @media (min-width: 768px) {
-  .hamburger { display: none; }
-  .nav-desktop { display: flex; }
-  .nav-mobile { display: none !important; }
   .shell { max-width: 700px; padding: 40px 28px 100px; }
   .hero { padding: 36px 0 44px; }
   h1 { font-size: 40px; }
@@ -345,9 +208,6 @@ footer { margin-top: 52px; text-align: center; }
 }
 @media (min-width: 1024px) {
   .shell { max-width: 760px; padding: 48px 32px 110px; }
-  .header-inner { padding: 0 28px; }
-  .nav-desktop { gap: 6px; }
-  .nav-desktop a { padding: 9px 16px; font-size: 14.5px; }
   h1 { font-size: 44px; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -426,88 +286,53 @@ footer { margin-top: 52px; text-align: center; }
   <footer>
     <div class="footer-pill">
       <span>✦</span>
-      <span data-i18n="footer">OisasiOfficial — 設定からテーマ・言語を変更できます</span>
+      <span data-i18n="footer">ZoJeZu Official — 設定からテーマ・言語を変更できます</span>
     </div>
   </footer>
 </div>
 
-
 <script>
-function initApp() {
+(function () {
   const html = document.documentElement;
-  const header = document.getElementById('header');
-  const hamburger = document.getElementById('hamburger');
-  const navMobile = document.getElementById('navMobile');
-  const settingsBtn = document.getElementById('settingsBtn');
-  const settingsPanel = document.getElementById('settingsPanel');
-  const settingsClose = document.getElementById('settingsClose');
-
-  if (!header || !hamburger) return; // Prevent errors if missing
 
   const i18n = {
     ja: {
-      settings: '設定', theme: 'テーマ', language: '言語',
-      auto: '自動', dark: 'ダーク', light: 'ライト',
-      nav_oijiiw: 'おいじぃ魔女のホームページ', nav_logo: 'ZoJeZuのロゴページ',
-      nav_ai: 'ZoJeZuAIページ', nav_character: 'キャラクターページ', nav_faq: 'FAQページ',
-      hero_title: document.querySelector('.hero h1 span') ? document.querySelector('.hero h1 span').innerText : '',
-      hero_lead: document.querySelector('.lead') ? document.querySelector('.lead').innerText : '',
+      hero_title: 'よくある質問',
+      hero_lead: '疑問をサクッと解決',
       sec_faq: 'QUESTION & ANSWER',
-      sec_logo: 'BRAND MARK',
       q1: '「ZoJeZu」は以前から？',
       a1: '旧名「おいさし」。2026年9月7日15時に改名。',
       q2: 'このホームページの特徴は？',
       a2: '超軽量設計（128kbpsの通信制限下でも爆速表示）。',
       q3: '名前の由来は？',
       a3: '「美味しさ」より。お：美味しい／い：いつでも／さ：最後まで／し：しっかり。「おいさ」と「し」の入れ替え＝美味しさ。',
-      d1: '円の中に、キーボードのキーと流れるような曲線が融合したデザイン。',
-      d2: '左側のキー配列は「入力・創造」を表し、右側のS字のうねりは「流れ・進化・自由」をイメージしています。',
-      d3: '紫からピンク、オレンジへと移り変わるグラデーションは、デジタルと有機的なエネルギーの調和を表現。',
-      d4: '濃い紺の背景に映える鮮やかな色使いで、シンプルながら印象に残るマークです。',
-      btn_download: 'ロゴをダウンロード(644 KB)',
-      btn_copy: 'ロゴをコピー',
       back: 'トップに戻る',
-      footer: 'OisasiOfficial — 設定からテーマ・言語を変更できます'
+      footer: 'ZoJeZu Official — 設定からテーマ・言語を変更できます'
     },
     en: {
-      settings: 'Settings', theme: 'Theme', language: 'Language',
-      auto: 'Auto', dark: 'Dark', light: 'Light',
-      nav_oijiiw: 'Oijii Witch Homepage', nav_logo: 'ZoJeZu Logo Page',
-      nav_ai: 'ZoJeZu AI Page', nav_character: 'Character Page', nav_faq: 'FAQ Page',
-      hero_title: document.querySelector('.hero h1 span') ? document.querySelector('.hero h1 span').innerText : '',
-      hero_lead: document.querySelector('.lead') ? document.querySelector('.lead').innerText : '',
+      hero_title: 'FAQ',
+      hero_lead: 'Quick answers to common questions',
       sec_faq: 'QUESTION & ANSWER',
-      sec_logo: 'BRAND MARK',
       q1: 'Has "ZoJeZu" been around for a while?',
       a1: 'Formerly known as "Oisasi". Renamed on Sep 7, 2026 at 15:00.',
       q2: 'What are the features of this website?',
       a2: 'Ultra-lightweight design (loads blazing fast even under 128kbps restrictions).',
       q3: 'What is the origin of the name?',
       a3: 'From "oishisa" (deliciousness). O: delicious / I: anytime / Sa: to the end / Shi: solidly. Rearranging "oisa" + "shi" = oishisa.',
-      d1: 'A design that fuses a keyboard key and flowing curves inside a circle.',
-      d2: 'The key layout on the left represents "input/creation", and the S-curve on the right images "flow/evolution/freedom".',
-      d3: 'The gradient shifting from purple to pink and orange expresses the harmony of digital and organic energy.',
-      d4: 'A simple yet memorable mark with vivid colors that stand out against a dark navy background.',
-      btn_download: 'Download Logo (644 KB)',
-      btn_copy: 'Copy Logo',
       back: 'Back to Top',
-      footer: 'OisasiOfficial — Change theme & language in Settings'
+      footer: 'ZoJeZu Official — Change theme & language in Settings'
     }
   };
 
   function resolveLang(pref) {
     if (pref === 'ja' || pref === 'en') return pref;
-    const nav = (navigator.language || 'ja').toLowerCase();
-    return nav.startsWith('ja') ? 'ja' : 'en';
+    return (navigator.language || 'ja').toLowerCase().startsWith('ja') ? 'ja' : 'en';
   }
 
   function applyLang(pref) {
-    localStorage.setItem('oisasi-lang', pref);
+    try { localStorage.setItem('zojezu-lang', pref); } catch (e) {}
     const lang = resolveLang(pref);
     html.setAttribute('lang', lang);
-    document.querySelectorAll('#langOptions button').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.value === pref);
-    });
     const t = i18n[lang];
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
@@ -519,154 +344,72 @@ function initApp() {
     });
   }
 
-  const savedTheme = localStorage.getItem('oisasi-theme') || 'auto';
-  const savedLang = localStorage.getItem('oisasi-lang') || 'auto';
-
   function applyTheme(theme) {
     html.setAttribute('data-theme', theme);
-    localStorage.setItem('oisasi-theme', theme);
-    document.querySelectorAll('#themeOptions button').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.value === theme);
-    });
-    updateThemeColor(theme);
-  }
-
-  function updateThemeColor(theme) {
+    try { localStorage.setItem('zojezu-theme', theme); } catch (e) {}
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (!meta) return;
-    if (theme === 'light') meta.content = '#f3f0f8';
-    else if (theme === 'dark') meta.content = '#0a0a12';
-    else {
-      meta.content = window.matchMedia('(prefers-color-scheme: light)').matches ? '#f3f0f8' : '#0a0a12';
+    if (meta) {
+      if (theme === 'light') meta.content = '#f3f0f8';
+      else if (theme === 'dark') meta.content = '#0a0a12';
+      else meta.content = window.matchMedia('(prefers-color-scheme: light)').matches ? '#f3f0f8' : '#0a0a12';
     }
   }
 
+  // 初期適用（ヘッダー読み込み前でもテーマを反映）
+  let savedTheme = 'auto', savedLang = 'auto';
+  try {
+    savedTheme = localStorage.getItem('zojezu-theme') || 'auto';
+    savedLang = localStorage.getItem('zojezu-lang') || 'auto';
+  } catch (e) {}
   applyTheme(savedTheme);
   applyLang(savedLang);
 
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-    if (html.getAttribute('data-theme') === 'auto') updateThemeColor('auto');
+    if (html.getAttribute('data-theme') === 'auto') applyTheme('auto');
   });
 
-  function openSettings() { settingsPanel.classList.add('open'); closeMenu(); }
-  function closeSettings() { settingsPanel.classList.remove('open'); }
-  function toggleSettings() {
-    if (settingsPanel.classList.contains('open')) closeSettings();
-    else openSettings();
-  }
-
-  settingsBtn.addEventListener('click', e => { e.stopPropagation(); toggleSettings(); });
-  settingsClose.addEventListener('click', closeSettings);
-
-  document.getElementById('themeOptions').addEventListener('click', e => {
-    const btn = e.target.closest('button');
-    if (btn) applyTheme(btn.dataset.value);
-  });
-  document.getElementById('langOptions').addEventListener('click', e => {
-    const btn = e.target.closest('button');
-    if (btn) applyLang(btn.dataset.value);
-  });
-
-  function toggleMenu() {
-    const isOpen = navMobile.classList.toggle('open');
-    hamburger.classList.toggle('active', isOpen);
-    hamburger.setAttribute('aria-expanded', isOpen);
-    document.body.style.overflow = isOpen ? 'hidden' : '';
-    if (isOpen) closeSettings();
-  }
-  function closeMenu() {
-    navMobile.classList.remove('open');
-    hamburger.classList.remove('active');
-    hamburger.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
-  }
-  function closeAll() {
-    closeMenu();
-    closeSettings();
-    if (typeof window.closeZojezuSearch === 'function') window.closeZojezuSearch();
-  }
-
-  hamburger.addEventListener('click', toggleMenu);
-
-  document.addEventListener('click', e => {
-    if (settingsPanel.classList.contains('open') && !settingsPanel.contains(e.target) && !settingsBtn.contains(e.target)) {
-      closeSettings();
-    }
-  });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
-
-  window.addEventListener('scroll', () => {
-    header.classList.toggle('scrolled', window.scrollY > 20);
-  }, { passive: true });
-
-  window.closeAll = closeAll;
-  window.closeMenu = closeMenu;
-
-  /* Network Toast */
-  const networkToast = document.getElementById('networkToast');
-  const networkToastText = document.getElementById('networkToastText');
-  const networkToastIcon = document.getElementById('networkToastIcon');
-  let toastTimer = null;
-  let isOfflineShown = false;
-  const offlineIconSVG = '<line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.58 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/>';
-  const onlineIconSVG = '<path d="M20 6L9 17l-5-5"/>';
-
-  function showNetworkToast(type) {
-    clearTimeout(toastTimer);
-    networkToast.classList.remove('offline', 'online', 'show');
-    void networkToast.offsetWidth;
-    const isJa = (document.documentElement.lang || 'ja').startsWith('ja');
-    if (type === 'offline') {
-      isOfflineShown = true;
-      networkToast.classList.add('offline');
-      networkToastText.textContent = isJa ? 'オフラインです' : "You're offline";
-      networkToastIcon.innerHTML = offlineIconSVG;
-      networkToast.classList.add('show');
-    } else {
-      isOfflineShown = false;
-      networkToast.classList.add('online');
-      networkToastText.textContent = isJa ? 'インターネットに再接続しました' : 'Back online';
-      networkToastIcon.innerHTML = onlineIconSVG;
-      networkToast.classList.add('show');
-      toastTimer = setTimeout(() => networkToast.classList.remove('show'), 3200);
-    }
-  }
-  window.addEventListener('offline', () => showNetworkToast('offline'));
-  window.addEventListener('online', () => { if (isOfflineShown) showNetworkToast('online'); });
-  if (!navigator.onLine) showNetworkToast('offline');
-}
-</script>
-
-<script>
-  // Fetch external header and insert it
+  // ヘッダー読み込み
   fetch('header.html')
-    .then(response => response.text())
-    .then(html => {
+    .then(r => r.text())
+    .then(htmlText => {
       const container = document.getElementById('external-header-container');
-      container.innerHTML = html;
+      container.innerHTML = htmlText;
 
-      // ★ 挿入した <script> を実行する（innerHTML では自動実行されない）
+      // script実行
       container.querySelectorAll('script').forEach(oldScript => {
         const newScript = document.createElement('script');
-        Array.from(oldScript.attributes).forEach(attr => {
-          newScript.setAttribute(attr.name, attr.value);
-        });
+        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
         newScript.textContent = oldScript.textContent;
         oldScript.parentNode.replaceChild(newScript, oldScript);
       });
 
-      initApp();
-      
-      // FAQ specific JS
+      // ヘッダー側のテーマ・言語ボタンにページ側のi18nも連動させる
+      const themeOpts = document.getElementById('themeOptions');
+      const langOpts = document.getElementById('langOptions');
+      if (themeOpts) {
+        themeOpts.addEventListener('click', e => {
+          const btn = e.target.closest('button[data-value]');
+          if (btn) applyTheme(btn.getAttribute('data-value'));
+        });
+      }
+      if (langOpts) {
+        langOpts.addEventListener('click', e => {
+          const btn = e.target.closest('button[data-value]');
+          if (btn) applyLang(btn.getAttribute('data-value'));
+        });
+      }
+
+      // FAQ開閉アイコン
       document.querySelectorAll('.faq-item').forEach(item => {
         item.addEventListener('toggle', () => {
           const icon = item.querySelector('.faq-icon');
           if (icon) icon.textContent = item.open ? '×' : '＋';
         });
       });
-      
+
+      // セクション表示
       const sections = document.querySelectorAll('.section');
-      const observer = new IntersectionObserver((entries) => {
+      const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) entry.target.classList.add('visible');
         });
@@ -674,6 +417,7 @@ function initApp() {
       sections.forEach(s => observer.observe(s));
     })
     .catch(err => console.error('Failed to load header:', err));
+})();
 </script>
 </body>
 </html>
