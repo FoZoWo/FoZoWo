@@ -1,10 +1,7 @@
 <!-- ========================================
      ZOJEZU Official — Shared Header
-     どのページから読み込んでも同じ見た目になるよう
-     ヘッダー用CSSをこのファイル内に含めています。
 ======================================== -->
 <style>
-/* ===== Shared Header Styles (works with index & logo variable systems) ===== */
 :root {
   --header-h: 68px;
   --nav-max: 1180px;
@@ -95,6 +92,7 @@
   border: 1px solid var(--border, var(--line, rgba(178,150,255,0.16)));
   color: var(--text, #f3f0ff); display: grid; place-items: center;
   transition: background .2s, transform .2s, border-color .2s;
+  cursor: pointer;
 }
 .icon-btn:hover, .hamburger:hover {
   background: var(--surface-hover, var(--glass-2, rgba(255,255,255,0.09)));
@@ -102,7 +100,7 @@
   transform: translateY(-1px);
 }
 .icon-btn svg { width: 20px; height: 20px; }
-.hamburger { position: relative; border: 1px solid var(--border, var(--line, rgba(178,150,255,0.16))); background: var(--surface, var(--glass, rgba(255,255,255,0.04))); }
+.hamburger { position: relative; }
 .hamburger span {
   position: absolute; left: 11px; width: 20px; height: 2px;
   background: currentColor; border-radius: 2px; transition: transform .3s, opacity .3s, top .3s;
@@ -119,7 +117,6 @@
   .hamburger { display: none; }
 }
 
-/* Settings panel (shared) */
 .settings-panel {
   position: fixed; top: calc(var(--header-h) + 10px);
   right: clamp(10px, 3vw, 22px);
@@ -173,7 +170,6 @@
   color: #fff; box-shadow: 0 2px 10px rgba(139,108,255,0.4);
 }
 
-/* Search panel (shared) */
 .search-panel {
   position: fixed; top: calc(var(--header-h) + 10px);
   right: clamp(10px, 3vw, 22px);
@@ -235,7 +231,6 @@
   color: var(--muted, #9d97c6); font-size: 13px; font-weight: 600;
 }
 
-/* Mobile nav */
 .nav-mobile {
   position: fixed; top: var(--header-h); left: 0; right: 0;
   background: var(--menu-bg, var(--panel, rgba(6,5,15,0.96)));
@@ -270,7 +265,6 @@
 }
 </style>
 
-<!-- ネットワーク通知 -->
 <div class="network-toast" id="networkToast" role="status" aria-live="polite">
   <svg id="networkToastIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
     <line x1="1" y1="1" x2="23" y2="23"/>
@@ -281,22 +275,22 @@
     <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
     <line x1="12" y1="20" x2="12.01" y2="20"/>
   </svg>
-  <span id="networkToastText" data-i18n="offline_title">オフラインです</span>
+  <span id="networkToastText">オフラインです</span>
 </div>
 
-<!-- ヘッダー -->
 <header class="header" id="header">
   <div class="header-inner">
-    <a href="index.html" class="logo" onclick="typeof closeAll==='function'&&closeAll()">
-      <img class="logo-img" src="おいさしロゴ.png" alt="ゾジェズ" width="40" height="40">
-      <div class="logo-text"><span>ゾジェズ</span></div>
+    <a href="https://www.zojezu.f5.si/" class="logo" onclick="typeof closeAll==='function'&&closeAll()">
+      <img class="logo-img" src="おいさしロゴ.png" alt="ZoJeZu" width="40" height="40" onerror="this.style.display='none'">
+      <div class="logo-text"><span>ZoJeZu</span></div>
     </a>
     <nav class="nav-desktop" aria-label="メインナビゲーション">
-      <a href="https://www.zojezu.f5.si/oijiiw" data-i18n="nav_oijiiw">おいじぃ魔女のホームページ</a>
-      <a href="https://www.zojezu.f5.si/logo" data-i18n="nav_logo">ゾジェズのロゴページ</a>
-      <a href="https://www.zojezu.f5.si/faq" data-i18n="nav_faq">FAQ</a>
-      <a href="https://www.zojezu.f5.si/character" data-i18n="nav_character">キャラクター</a>
-      <a class="accent" href="https://www.zojezu.f5.si/ai" data-i18n="nav_ai">ゾジェズAI</a>
+      <a href="https://www.zojezu.f5.si/oijiiw">おいじぃ魔女のホームページ</a>
+      <a href="https://www.zojezu.f5.si/logo">ゾジェズのロゴページ</a>
+      <a href="https://www.zojezu.f5.si/faq">FAQ</a>
+      <a href="https://www.zojezu.f5.si/character">キャラクター</a>
+      <a href="https://www.zojezu.f5.si/blog">ブログ</a>
+      <a class="accent" href="https://www.zojezu.f5.si/ai">ゾジェズAI</a>
     </nav>
     <div class="header-actions">
       <button class="icon-btn" id="searchBtn" aria-label="検索" title="検索" aria-expanded="false">
@@ -318,115 +312,208 @@
   </div>
 </header>
 
-<!-- 設定パネル -->
 <div class="settings-panel" id="settingsPanel" role="dialog" aria-label="設定">
   <div class="settings-title">
-    <span data-i18n="settings">設定</span>
+    <span>設定</span>
     <button class="settings-close" id="settingsClose" aria-label="閉じる">×</button>
   </div>
   <div class="settings-group">
-    <span class="settings-label" data-i18n="theme">テーマ</span>
+    <span class="settings-label">テーマ</span>
     <div class="settings-options" id="themeOptions">
-      <button data-value="auto" class="active" data-i18n="auto">自動</button>
-      <button data-value="dark" data-i18n="dark">ダーク</button>
-      <button data-value="light" data-i18n="light">ライト</button>
+      <button data-value="auto" class="active">自動</button>
+      <button data-value="dark">ダーク</button>
+      <button data-value="light">ライト</button>
     </div>
   </div>
   <div class="settings-group">
-    <span class="settings-label" data-i18n="language">言語</span>
+    <span class="settings-label">言語</span>
     <div class="settings-options" id="langOptions">
-      <button data-value="auto" class="active" data-i18n="auto">自動</button>
+      <button data-value="auto" class="active">自動</button>
       <button data-value="ja">日本語</button>
       <button data-value="en">English</button>
     </div>
   </div>
 </div>
 
-<!-- 検索パネル -->
 <div class="search-panel" id="searchPanel" role="dialog" aria-label="検索">
   <div class="search-input-wrap">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="11" cy="11" r="7"/>
       <line x1="21" y1="21" x2="16.65" y2="16.65"/>
     </svg>
-    <input type="text" id="searchInput" autocomplete="off" data-i18n-placeholder="search_placeholder" placeholder="ページを検索…">
+    <input type="text" id="searchInput" autocomplete="off" placeholder="ページを検索…">
     <button class="search-clear" id="searchClear" aria-label="クリア" hidden>×</button>
   </div>
   <div class="search-results" id="searchResults">
-    <div class="search-empty" data-i18n="search_hint">キーワードを入力してください</div>
+    <div class="search-empty">キーワードを入力してください</div>
   </div>
 </div>
 
-<!-- モバイルナビ -->
 <nav class="nav-mobile" id="navMobile" aria-label="モバイルメニュー">
-  <a href="https://www.zojezu.f5.si/oijiiw" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🔮</span> <span data-i18n="nav_oijiiw">おいじぃ魔女のホームページ</span></a>
-  <a href="https://www.zojezu.f5.si/logo" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🎀</span> <span data-i18n="nav_logo">ゾジェズのロゴページ</span></a>
-  <a href="https://www.zojezu.f5.si/ai" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🤖</span> <span data-i18n="nav_ai">ゾジェズAIページ</span></a>
-  <a href="https://www.zojezu.f5.si/character" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">👤</span> <span data-i18n="nav_character">キャラクターページ</span></a>
-  <a href="faq.html" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">💬</span> <span data-i18n="nav_faq">FAQページ</span></a>
+  <a href="https://www.zojezu.f5.si/oijiiw" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🔮</span> <span>おいじぃ魔女のホームページ</span></a>
+  <a href="https://www.zojezu.f5.si/logo" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🎀</span> <span>ゾジェズのロゴページ</span></a>
+  <a href="https://www.zojezu.f5.si/ai" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🤖</span> <span>ゾジェズAIページ</span></a>
+  <a href="https://www.zojezu.f5.si/character" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">👤</span> <span>キャラクターページ</span></a>
+  <a href="https://www.zojezu.f5.si/faq" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">💬</span> <span>FAQページ</span></a>
+  <a href="https://www.zojezu.f5.si/blog" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">📝</span> <span>ブログ</span></a>
   <div class="nav-mobile-footer">ZOJEZU · OFFICIAL</div>
 </nav>
 
-<!-- 検索機能スクリプト -->
 <script>
 (function () {
-  // サイト内検索インデックス（ナビゲーションと同じページ群）
   var ZOJEZU_SEARCH_INDEX = [
     { title: "おいじぃ魔女のホームページ", url: "https://www.zojezu.f5.si/oijiiw", icon: "🔮", keywords: "おいじい おいじぃ 魔女 witch home ホーム" },
-    { title: "ゾジェズのロゴページ",       url: "https://www.zojezu.f5.si/logo",   icon: "🎀", keywords: "ロゴ logo デザイン" },
-    { title: "FAQ",                        url: "https://www.zojezu.f5.si/faq",    icon: "💬", keywords: "faq よくある質問 question ヘルプ help" },
-    { title: "キャラクター",                url: "https://www.zojezu.f5.si/character", icon: "👤", keywords: "キャラクター character 人物 プロフィール" },
-    { title: "ゾジェズAI",                  url: "https://www.zojezu.f5.si/ai",     icon: "🤖", keywords: "ai チャット bot ボット 人工知能" }
+    { title: "ゾジェズのロゴページ", url: "https://www.zojezu.f5.si/logo", icon: "🎀", keywords: "ロゴ logo デザイン" },
+    { title: "FAQ", url: "https://www.zojezu.f5.si/faq", icon: "💬", keywords: "faq よくある質問 question ヘルプ help" },
+    { title: "キャラクター", url: "https://www.zojezu.f5.si/character", icon: "👤", keywords: "キャラクター character 人物 プロフィール" },
+    { title: "ゾジェズAI", url: "https://www.zojezu.f5.si/ai", icon: "🤖", keywords: "ai チャット bot ボット 人工知能" },
+    { title: "ブログ", url: "https://www.zojezu.f5.si/blog", icon: "📝", keywords: "ブログ blog 記事 トレンド ノート" }
   ];
 
-  function initZojezuSearch() {
+  function initHeader() {
+    var header = document.getElementById('header');
+    var hamburger = document.getElementById('hamburger');
+    var navMobile = document.getElementById('navMobile');
+    var settingsBtn = document.getElementById('settingsBtn');
+    var settingsPanel = document.getElementById('settingsPanel');
+    var settingsClose = document.getElementById('settingsClose');
     var searchBtn = document.getElementById('searchBtn');
     var searchPanel = document.getElementById('searchPanel');
     var searchInput = document.getElementById('searchInput');
     var searchResults = document.getElementById('searchResults');
     var searchClear = document.getElementById('searchClear');
+    var themeOptions = document.getElementById('themeOptions');
+    var langOptions = document.getElementById('langOptions');
+    var networkToast = document.getElementById('networkToast');
+    var networkToastText = document.getElementById('networkToastText');
 
-    if (!searchBtn || !searchPanel || !searchInput || !searchResults) return;
+    function closeAll() {
+      if (navMobile) navMobile.classList.remove('open');
+      if (hamburger) {
+        hamburger.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+      if (settingsPanel) settingsPanel.classList.remove('open');
+      if (searchPanel) searchPanel.classList.remove('open');
+      if (searchBtn) searchBtn.setAttribute('aria-expanded', 'false');
+    }
+    window.closeAll = closeAll;
+
+    if (hamburger && navMobile) {
+      hamburger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var open = navMobile.classList.toggle('open');
+        hamburger.classList.toggle('active', open);
+        hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) {
+          if (settingsPanel) settingsPanel.classList.remove('open');
+          if (searchPanel) searchPanel.classList.remove('open');
+          if (searchBtn) searchBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    if (settingsBtn && settingsPanel) {
+      settingsBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var open = !settingsPanel.classList.contains('open');
+        closeAll();
+        if (open) settingsPanel.classList.add('open');
+      });
+    }
+    if (settingsClose) {
+      settingsClose.addEventListener('click', function () {
+        settingsPanel.classList.remove('open');
+      });
+    }
+
+    function applyTheme(value) {
+      var root = document.documentElement;
+      if (value === 'auto') {
+        root.removeAttribute('data-theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        root.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      } else {
+        root.setAttribute('data-theme', value);
+      }
+      try { localStorage.setItem('zojezu-theme', value); } catch (e) {}
+      if (themeOptions) {
+        themeOptions.querySelectorAll('button').forEach(function (btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-value') === value);
+        });
+      }
+    }
+
+    var savedTheme = 'auto';
+    try { savedTheme = localStorage.getItem('zojezu-theme') || 'auto'; } catch (e) {}
+    applyTheme(savedTheme);
+
+    if (themeOptions) {
+      themeOptions.addEventListener('click', function (e) {
+        var btn = e.target.closest('button[data-value]');
+        if (!btn) return;
+        applyTheme(btn.getAttribute('data-value'));
+      });
+    }
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
+      var current = 'auto';
+      try { current = localStorage.getItem('zojezu-theme') || 'auto'; } catch (e) {}
+      if (current === 'auto') applyTheme('auto');
+    });
+
+    if (langOptions) {
+      var savedLang = 'auto';
+      try { savedLang = localStorage.getItem('zojezu-lang') || 'auto'; } catch (e) {}
+      langOptions.querySelectorAll('button').forEach(function (btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-value') === savedLang);
+      });
+      langOptions.addEventListener('click', function (e) {
+        var btn = e.target.closest('button[data-value]');
+        if (!btn) return;
+        var val = btn.getAttribute('data-value');
+        langOptions.querySelectorAll('button').forEach(function (b) {
+          b.classList.toggle('active', b.getAttribute('data-value') === val);
+        });
+        try { localStorage.setItem('zojezu-lang', val); } catch (err) {}
+      });
+    }
 
     function openSearch() {
+      if (!searchPanel) return;
       searchPanel.classList.add('open');
-      searchBtn.setAttribute('aria-expanded', 'true');
-      window.setTimeout(function () { searchInput.focus(); }, 60);
+      if (searchBtn) searchBtn.setAttribute('aria-expanded', 'true');
+      window.setTimeout(function () { if (searchInput) searchInput.focus(); }, 60);
     }
-
     function closeSearch() {
+      if (!searchPanel) return;
       searchPanel.classList.remove('open');
-      searchBtn.setAttribute('aria-expanded', 'false');
+      if (searchBtn) searchBtn.setAttribute('aria-expanded', 'false');
     }
-
-    // 他のパネル(closeAll)からも検索を閉じられるようにする
     window.closeZojezuSearch = closeSearch;
 
     function escapeHtml(str) {
-      return str.replace(/[&<>"']/g, function (c) {
+      return String(str).replace(/[&<>"']/g, function (c) {
         return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
       });
     }
 
-    function render(query) {
+    function renderSearch(query) {
+      if (!searchResults) return;
       var q = query.trim().toLowerCase();
-      searchClear.hidden = q.length === 0;
-
+      if (searchClear) searchClear.hidden = q.length === 0;
       if (!q) {
-        searchResults.innerHTML = '<div class="search-empty" data-i18n="search_hint">キーワードを入力してください</div>';
+        searchResults.innerHTML = '<div class="search-empty">キーワードを入力してください</div>';
         return;
       }
-
       var matches = ZOJEZU_SEARCH_INDEX.filter(function (item) {
         return item.title.toLowerCase().indexOf(q) !== -1 ||
                item.keywords.toLowerCase().indexOf(q) !== -1;
       });
-
       if (matches.length === 0) {
-        searchResults.innerHTML = '<div class="search-empty" data-i18n="search_noresults">見つかりませんでした</div>';
+        searchResults.innerHTML = '<div class="search-empty">見つかりませんでした</div>';
         return;
       }
-
       searchResults.innerHTML = matches.map(function (item) {
         return '<a class="search-result" href="' + item.url + '">' +
                  '<span class="icon">' + item.icon + '</span>' +
@@ -435,46 +522,78 @@
       }).join('');
     }
 
-    searchBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      if (searchPanel.classList.contains('open')) {
-        closeSearch();
-      } else {
-        if (typeof closeAll === 'function') closeAll();
-        openSearch();
-      }
-    });
-
-    searchInput.addEventListener('input', function () { render(this.value); });
-
-    searchClear.addEventListener('click', function () {
-      searchInput.value = '';
-      render('');
-      searchInput.focus();
-    });
+    if (searchBtn) {
+      searchBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (searchPanel && searchPanel.classList.contains('open')) {
+          closeSearch();
+        } else {
+          closeAll();
+          openSearch();
+        }
+      });
+    }
+    if (searchInput) {
+      searchInput.addEventListener('input', function () { renderSearch(this.value); });
+    }
+    if (searchClear) {
+      searchClear.addEventListener('click', function () {
+        if (searchInput) {
+          searchInput.value = '';
+          renderSearch('');
+          searchInput.focus();
+        }
+      });
+    }
+    if (searchResults) {
+      searchResults.addEventListener('click', function (e) {
+        if (e.target.closest('a')) closeSearch();
+      });
+    }
 
     document.addEventListener('click', function (e) {
-      if (searchPanel.classList.contains('open') &&
-          !searchPanel.contains(e.target) &&
-          e.target !== searchBtn && !searchBtn.contains(e.target)) {
+      if (settingsPanel && settingsPanel.classList.contains('open') &&
+          !settingsPanel.contains(e.target) && e.target !== settingsBtn && !(settingsBtn && settingsBtn.contains(e.target))) {
+        settingsPanel.classList.remove('open');
+      }
+      if (searchPanel && searchPanel.classList.contains('open') &&
+          !searchPanel.contains(e.target) && e.target !== searchBtn && !(searchBtn && searchBtn.contains(e.target))) {
         closeSearch();
       }
+      if (navMobile && navMobile.classList.contains('open') &&
+          !navMobile.contains(e.target) && e.target !== hamburger && !(hamburger && hamburger.contains(e.target))) {
+        closeAll();
+      }
     });
-
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeSearch();
+      if (e.key === 'Escape') closeAll();
     });
 
-    // 検索結果のリンクをクリックしたらパネルを閉じる
-    searchResults.addEventListener('click', function (e) {
-      if (e.target.closest('a')) closeSearch();
-    });
+    if (header) {
+      window.addEventListener('scroll', function () {
+        header.classList.toggle('scrolled', window.scrollY > 8);
+      }, { passive: true });
+    }
+
+    function showNetworkToast(online) {
+      if (!networkToast) return;
+      networkToast.classList.remove('online', 'offline', 'show');
+      networkToast.classList.add(online ? 'online' : 'offline');
+      if (networkToastText) networkToastText.textContent = online ? 'オンラインに戻りました' : 'オフラインです';
+      networkToast.classList.add('show');
+      window.clearTimeout(showNetworkToast._t);
+      showNetworkToast._t = window.setTimeout(function () {
+        networkToast.classList.remove('show');
+      }, 2800);
+    }
+    window.addEventListener('online', function () { showNetworkToast(true); });
+    window.addEventListener('offline', function () { showNetworkToast(false); });
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initZojezuSearch);
+    document.addEventListener('DOMContentLoaded', initHeader);
   } else {
-    initZojezuSearch();
+    initHeader();
   }
 })();
 </script>
