@@ -396,6 +396,7 @@
       if (settingsPanel) settingsPanel.classList.remove('open');
       if (searchPanel) searchPanel.classList.remove('open');
       if (searchBtn) searchBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
     }
     window.closeAll = closeAll;
 
@@ -406,6 +407,7 @@
         var open = navMobile.classList.toggle('open');
         hamburger.classList.toggle('active', open);
         hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        document.body.style.overflow = open ? 'hidden' : '';
         if (open) {
           if (settingsPanel) settingsPanel.classList.remove('open');
           if (searchPanel) searchPanel.classList.remove('open');
