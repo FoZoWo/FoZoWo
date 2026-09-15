@@ -7,974 +7,767 @@
 <meta name="theme-color" content="#fdfcf9">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
 <style>
-    :root {
-        --bg: #f4f1e9;
-        --paper: #fdfcf9;
-        --ink: #1f1e19;
-        --muted: #6f6c60;
-        --line: #e0dbcb;
-        --accent: #3a5f3e;
-        --accent-ink: #2a4a2e;
-        --accent-soft: #e8efe4;
-        --danger: #9a3b34;
-        --danger-soft: #f7e9e6;
-        --sidebar-bg: #faf8f2;
-        --radius: 10px;
-        --shadow: 0 1px 3px rgba(32, 31, 26, 0.06);
-        --safe-bottom: env(safe-area-inset-bottom, 0px);
-    }
-
-    * { box-sizing: border-box; }
-
-    html {
-        scroll-behavior: smooth;
-        -webkit-text-size-adjust: 100%;
-    }
-
-    body {
-        font-family: "Zen Kaku Gothic New", "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
-        background: var(--bg);
-        color: var(--ink);
-        line-height: 1.75;
-        margin: 0;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        min-height: 100dvh;
-        display: flex;
-        flex-direction: column;
-    }
-
-    a { color: inherit; }
-
-    :focus-visible {
-        outline: 2px solid var(--accent);
-        outline-offset: 3px;
-    }
-
-    header {
-        padding: 2.4rem 1.25rem 1.8rem;
-        text-align: center;
-        border-bottom: 1px solid var(--line);
-        background: var(--paper);
-    }
-
-    header .mark {
-        display: inline-block;
-        width: 30px;
-        height: 30px;
-        border: 1.5px solid var(--accent);
-        border-radius: 50%;
-        margin-bottom: 0.85rem;
-        position: relative;
-    }
-    header .mark::after {
-        content: "";
-        position: absolute;
-        inset: 6px;
-        border: 1.5px solid var(--accent);
-        border-radius: 50%;
-    }
-
-    header h1 {
-        margin: 0;
-        font-family: "Shippori Mincho", "Hiragino Mincho ProN", serif;
-        font-weight: 700;
-        font-size: clamp(1.45rem, 5vw, 1.9rem);
-        letter-spacing: 0.04em;
-        line-height: 1.3;
-    }
-
-    header h1 a {
-        text-decoration: none;
-        color: var(--ink);
-        transition: color 0.15s ease;
-    }
-
-    header h1 a:hover { color: var(--accent-ink); }
-
-    header p {
-        color: var(--muted);
-        margin: 0.45rem 0 0;
-        font-size: 0.88rem;
-        letter-spacing: 0.02em;
-    }
-
-    .container {
-        width: 100%;
-        max-width: 960px;
-        margin: 0 auto;
-        padding: 0 1.15rem;
-        flex: 1;
-    }
-
-    #loading {
-        text-align: center;
-        padding: 4rem 1rem;
-        color: var(--muted);
-        font-size: 0.9rem;
-    }
-
-    .blog-layout {
-        display: grid;
-        grid-template-columns: 1fr 230px;
-        gap: 2rem;
-        margin-top: 1.75rem;
-        align-items: start;
-        padding-bottom: 1.5rem;
-    }
-
-    @media (max-width: 800px) {
-        .blog-layout {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-            margin-top: 1.25rem;
-        }
-        .sidebar { order: 2; }
-    }
-
-    .toolbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 0.75rem;
-        margin-bottom: 0.9rem;
-        flex-wrap: wrap;
-    }
-
-    .search-field {
-        position: relative;
-        flex: 1;
-        min-width: 0;
-    }
-
-    .search-field input {
-        width: 100%;
-        font: inherit;
-        font-size: 16px;
-        padding: 0.72rem 0.9rem 0.72rem 2.35rem;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--paper);
-        color: var(--ink);
-        transition: border-color 0.15s ease, box-shadow 0.15s ease;
-        -webkit-appearance: none;
-        appearance: none;
-    }
-
-    .search-field input:focus {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px var(--accent-soft);
-        outline: none;
-    }
-
-    .search-field input::placeholder { color: #a39e90; }
-
-    .search-field svg {
-        position: absolute;
-        left: 0.8rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 16px;
-        height: 16px;
-        stroke: var(--muted);
-        pointer-events: none;
-    }
-
-    .result-count {
-        font-size: 0.78rem;
-        color: var(--muted);
-        white-space: nowrap;
-        flex-shrink: 0;
-    }
-
-    .post-list {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        border-top: 1px solid var(--line);
-        background: var(--paper);
-        border-radius: 0 0 var(--radius) var(--radius);
-        overflow: hidden;
-        box-shadow: var(--shadow);
-    }
-
-    .post-row { border-bottom: 1px solid var(--line); }
-    .post-row:last-child { border-bottom: none; }
-
-    .post-row a {
-        display: flex;
-        align-items: baseline;
-        gap: 1rem;
-        padding: 1.05rem 1rem;
-        text-decoration: none;
-        transition: background 0.15s ease;
-        min-height: 48px;
-    }
-
-    .post-row a:hover,
-    .post-row a:focus-visible { background: var(--accent-soft); }
-    .post-row a:active { background: #dce8d7; }
-
-    .post-row time {
-        flex: 0 0 auto;
-        font-size: 0.78rem;
-        color: var(--muted);
-        white-space: nowrap;
-        padding-top: 0.15rem;
-        min-width: 5.8em;
-        font-variant-numeric: tabular-nums;
-    }
-
-    .post-row h2 {
-        margin: 0;
-        font-family: "Shippori Mincho", "Hiragino Mincho ProN", serif;
-        font-weight: 500;
-        font-size: 1.02rem;
-        line-height: 1.5;
-        word-break: break-word;
-    }
-
-    .post-row mark, .post-title mark {
-        background: #fbe7a1;
-        color: inherit;
-        border-radius: 2px;
-        padding: 0 1px;
-    }
-
-    @media (max-width: 520px) {
-        .post-row a {
-            flex-direction: column;
-            gap: 0.2rem;
-            padding: 0.95rem 0.9rem;
-        }
-        .post-row time {
-            min-width: auto;
-            font-size: 0.74rem;
-        }
-        .post-row h2 { font-size: 0.98rem; }
-    }
-
-    .pagination {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 1rem;
-        margin: 1.5rem 0 0.5rem;
-        font-size: 0.88rem;
-    }
-
-    .pagination button {
-        font: inherit;
-        background: var(--paper);
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        padding: 0.55rem 1.1rem;
-        cursor: pointer;
-        color: var(--ink);
-        min-height: 44px;
-        min-width: 44px;
-        transition: border-color 0.15s ease, background 0.15s ease;
-        -webkit-tap-highlight-color: transparent;
-    }
-
-    .pagination button:hover:not(:disabled) {
-        border-color: var(--accent);
-        background: var(--accent-soft);
-    }
-
-    .pagination button:disabled {
-        opacity: 0.4;
-        cursor: default;
-    }
-
-    .pagination .page-info {
-        color: var(--muted);
-        font-variant-numeric: tabular-nums;
-        min-width: 3.5em;
-        text-align: center;
-    }
-
-    .sidebar { position: sticky; top: 1rem; }
-
-    .sidebar-section {
-        background: var(--sidebar-bg);
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-        padding: 1.1rem 1rem;
-        box-shadow: var(--shadow);
-    }
-
-    .sidebar-section h3 {
-        font-family: "Shippori Mincho", serif;
-        font-size: 0.92rem;
-        font-weight: 700;
-        margin: 0 0 0.75rem;
-        color: var(--accent-ink);
-        letter-spacing: 0.03em;
-    }
-
-    .archive-list {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    .archive-list li { margin-bottom: 0.15rem; }
-
-    .archive-list a {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        text-decoration: none;
-        font-size: 0.86rem;
-        color: var(--ink);
-        padding: 0.4rem 0.45rem;
-        border-radius: 6px;
-        transition: background 0.15s ease;
-        min-height: 36px;
-        -webkit-tap-highlight-color: transparent;
-    }
-
-    .archive-list a:hover,
-    .archive-list a.active {
-        background: var(--accent-soft);
-        color: var(--accent-ink);
-    }
-
-    .archive-list .count {
-        font-size: 0.74rem;
-        color: var(--muted);
-        background: var(--paper);
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        padding: 0.05rem 0.45rem;
-        min-width: 1.5em;
-        text-align: center;
-        font-variant-numeric: tabular-nums;
-    }
-
-    .archive-year {
-        font-weight: 500;
-        margin-top: 0.55rem;
-        margin-bottom: 0.15rem;
-        font-size: 0.78rem;
-        color: var(--muted);
-        padding-left: 0.2rem;
-    }
-
-    .archive-year:first-child { margin-top: 0; }
-
-    @media (max-width: 800px) {
-        .sidebar { position: static; }
-        .sidebar-section { padding: 0.9rem 0.85rem; }
-        .archive-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.35rem;
-        }
-        .archive-year {
-            width: 100%;
-            margin-top: 0.5rem;
-            margin-bottom: 0.15rem;
-        }
-        .archive-list a {
-            padding: 0.35rem 0.65rem;
-            background: var(--paper);
-            border: 1px solid var(--line);
-            border-radius: 999px;
-            font-size: 0.82rem;
-            gap: 0.4rem;
-        }
-        .archive-list a.active {
-            background: var(--accent-soft);
-            border-color: var(--accent);
-        }
-        .archive-list .count {
-            border: none;
-            background: transparent;
-            padding: 0;
-            font-size: 0.72rem;
-        }
-    }
-
-    .back-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.3rem;
-        margin: 1.5rem 0 1.1rem;
-        color: var(--accent-ink);
-        text-decoration: none;
-        font-size: 0.88rem;
-        font-weight: 500;
-        padding: 0.35rem 0;
-        border-bottom: 1px solid transparent;
-        transition: border-color 0.15s ease;
-        -webkit-tap-highlight-color: transparent;
-    }
-
-    .back-link:hover { border-bottom-color: var(--accent); }
-
-    article.post-full {
-        padding: 0 0 1.5rem;
-        max-width: 680px;
-        margin: 0 auto;
-    }
-
-    .post-title {
-        font-family: "Shippori Mincho", "Hiragino Mincho ProN", serif;
-        font-weight: 700;
-        font-size: clamp(1.35rem, 4.5vw, 1.65rem);
-        line-height: 1.45;
-        margin: 0 0 0.9rem;
-        word-break: break-word;
-    }
-
-    .post-meta {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        font-size: 0.8rem;
-        color: var(--muted);
-        border-top: 1px solid var(--line);
-        border-bottom: 1px solid var(--line);
-        padding: 0.75rem 0;
-        margin-bottom: 1.6rem;
-    }
-
-    .post-content {
-        white-space: pre-line;
-        font-size: 1.02rem;
-        color: #2a2924;
-        line-height: 1.85;
-        word-break: break-word;
-        overflow-wrap: anywhere;
-    }
-
-    .post-content h2, .post-content h3 {
-        font-family: "Shippori Mincho", serif;
-        color: var(--ink);
-        margin-top: 1.8rem;
-        margin-bottom: 0.65rem;
-        border-left: 3px solid var(--accent);
-        padding-left: 0.65rem;
-        line-height: 1.4;
-    }
-
-    .post-content h2 { font-size: 1.2rem; }
-    .post-content h3 { font-size: 1.08rem; }
-
-    .post-content ul, .post-content ol {
-        padding-left: 1.35rem;
-        margin: 0.6rem 0;
-    }
-    .post-content li { margin-bottom: 0.3rem; }
-
-    .post-nav {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.75rem;
-        margin: 2.2rem 0 0.5rem;
-        padding-top: 1.4rem;
-        border-top: 1px solid var(--line);
-    }
-
-    .post-nav a {
-        display: block;
-        text-decoration: none;
-        padding: 0.95rem 1rem;
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-        background: var(--paper);
-        transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
-        min-height: 72px;
-        -webkit-tap-highlight-color: transparent;
-        box-shadow: var(--shadow);
-    }
-
-    .post-nav a:hover {
-        border-color: var(--accent);
-        background: var(--accent-soft);
-    }
-
-    .post-nav a:active { transform: scale(0.985); }
-
-    .post-nav .nav-label {
-        display: block;
-        font-size: 0.72rem;
-        color: var(--muted);
-        margin-bottom: 0.25rem;
-        letter-spacing: 0.02em;
-    }
-
-    .post-nav .nav-title {
-        font-family: "Shippori Mincho", serif;
-        font-size: 0.9rem;
-        font-weight: 500;
-        line-height: 1.4;
-        color: var(--ink);
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .post-nav .nav-prev { text-align: left; }
-    .post-nav .nav-next {
-        text-align: right;
-        grid-column: 2;
-    }
-    .post-nav .nav-empty { visibility: hidden; }
-
-    @media (max-width: 540px) {
-        .post-nav {
-            grid-template-columns: 1fr;
-            gap: 0.6rem;
-        }
-        .post-nav .nav-next {
-            grid-column: 1;
-            text-align: left;
-        }
-        .post-nav a {
-            min-height: 64px;
-            padding: 0.85rem 0.95rem;
-        }
-    }
-
-    .state-block {
-        text-align: center;
-        padding: 3rem 1rem;
-        color: var(--muted);
-        background: var(--paper);
-        border-radius: var(--radius);
-        border: 1px solid var(--line);
-    }
-
-    .state-block h2 {
-        font-family: "Shippori Mincho", serif;
-        color: var(--ink);
-        font-size: 1.1rem;
-        margin: 0 0 0.45rem;
-        font-weight: 500;
-    }
-
-    .state-block p {
-        margin: 0;
-        font-size: 0.9rem;
-    }
-
-    .error-message {
-        background: var(--danger-soft);
-        color: var(--danger);
-        padding: 1rem 1.15rem;
-        border-radius: var(--radius);
-        font-size: 0.9rem;
-        margin-top: 1.25rem;
-        border: 1px solid #e8cfc9;
-    }
-
-    footer {
-        text-align: center;
-        padding: 2rem 1rem calc(2.2rem + var(--safe-bottom));
-        color: var(--muted);
-        font-size: 0.8rem;
-        border-top: 1px solid var(--line);
-        margin-top: auto;
-        background: var(--paper);
-    }
-
-    footer a {
-        color: var(--accent-ink);
-        text-decoration: none;
-        border-bottom: 1px solid transparent;
-        transition: border-color 0.15s ease;
-    }
-
-    footer a:hover { border-bottom-color: var(--accent); }
-
-    .clear-link {
-        color: var(--accent-ink);
-        text-decoration: none;
-        font-size: 0.85rem;
-        border-bottom: 1px solid transparent;
-    }
-    .clear-link:hover { border-bottom-color: var(--accent); }
+:root {
+  --header-h: 68px;
+  --bg: #f4f1e9;
+  --paper: #fdfcf9;
+  --ink: #1f1e19;
+  --blog-muted: #6f6c60;
+  --line: #e0dbcb;
+  --accent: #3a5f3e;
+  --accent-ink: #2a4a2e;
+  --accent-soft: #e8efe4;
+  --danger: #9a3b34;
+  --danger-soft: #f7e9e6;
+  --sidebar-bg: #faf8f2;
+  --blog-radius: 10px;
+  --blog-shadow: 0 1px 3px rgba(32, 31, 26, 0.06);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html[data-theme="dark"] {
+  --bg: #12101a;
+  --paper: #1a1726;
+  --ink: #f0ecf8;
+  --blog-muted: #9d97c6;
+  --line: rgba(178,150,255,0.18);
+  --accent: #7ecf8a;
+  --accent-ink: #a8e0b0;
+  --accent-soft: rgba(126, 207, 138, 0.12);
+  --sidebar-bg: #16131f;
+  --danger: #ff7a72;
+  --danger-soft: rgba(255, 122, 114, 0.12);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: "Zen Kaku Gothic New", "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.75;
+  margin: 0;
+  padding-top: var(--header-h);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.blog-hero {
+  padding: 2.2rem 1.25rem 1.6rem;
+  text-align: center;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+}
+.blog-hero .mark {
+  display: inline-block;
+  width: 28px; height: 28px;
+  border: 1.5px solid var(--accent);
+  border-radius: 50%;
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+.blog-hero .mark::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1.5px solid var(--accent);
+  border-radius: 50%;
+}
+.blog-hero h1 {
+  margin: 0;
+  font-family: "Shippori Mincho", serif;
+  font-weight: 700;
+  font-size: clamp(1.4rem, 5vw, 1.85rem);
+  letter-spacing: 0.04em;
+}
+.blog-hero h1 a { text-decoration: none; color: var(--ink); }
+.blog-hero h1 a:hover { color: var(--accent-ink); }
+.blog-hero p {
+  color: var(--blog-muted);
+  margin: 0.4rem 0 0;
+  font-size: 0.88rem;
+}
+
+.container {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.15rem;
+  flex: 1;
+}
+
+#loading {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: var(--blog-muted);
+  font-size: 0.9rem;
+}
+
+.blog-layout {
+  display: grid;
+  grid-template-columns: 1fr 230px;
+  gap: 2rem;
+  margin-top: 1.75rem;
+  align-items: start;
+  padding-bottom: 1.5rem;
+}
+@media (max-width: 800px) {
+  .blog-layout { grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1.25rem; }
+  .sidebar { order: 2; }
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+  flex-wrap: wrap;
+}
+.search-field { position: relative; flex: 1; min-width: 0; }
+.search-field input {
+  width: 100%;
+  font: inherit;
+  font-size: 16px;
+  padding: 0.72rem 0.9rem 0.72rem 2.35rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-appearance: none;
+}
+.search-field input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+  outline: none;
+}
+.search-field input::placeholder { color: #a39e90; }
+.search-field svg {
+  position: absolute;
+  left: 0.8rem; top: 50%;
+  transform: translateY(-50%);
+  width: 16px; height: 16px;
+  stroke: var(--blog-muted);
+  pointer-events: none;
+}
+.result-count {
+  font-size: 0.78rem;
+  color: var(--blog-muted);
+  white-space: nowrap;
+}
+
+.post-list {
+  list-style: none;
+  margin: 0; padding: 0;
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+  border-radius: 0 0 var(--blog-radius) var(--blog-radius);
+  overflow: hidden;
+  box-shadow: var(--blog-shadow);
+}
+.post-row { border-bottom: 1px solid var(--line); }
+.post-row:last-child { border-bottom: none; }
+.post-row a {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 1.05rem 1rem;
+  text-decoration: none;
+  min-height: 48px;
+  transition: background 0.15s ease;
+}
+.post-row a:hover, .post-row a:focus-visible { background: var(--accent-soft); }
+.post-row time {
+  flex: 0 0 auto;
+  font-size: 0.78rem;
+  color: var(--blog-muted);
+  white-space: nowrap;
+  min-width: 5.8em;
+}
+.post-row h2 {
+  margin: 0;
+  font-family: "Shippori Mincho", serif;
+  font-weight: 500;
+  font-size: 1.02rem;
+  line-height: 1.5;
+  word-break: break-word;
+}
+.post-row mark, .post-title mark {
+  background: #fbe7a1;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+html[data-theme="dark"] .post-row mark,
+html[data-theme="dark"] .post-title mark {
+  background: rgba(255, 200, 80, 0.35);
+}
+@media (max-width: 520px) {
+  .post-row a { flex-direction: column; gap: 0.2rem; padding: 0.95rem 0.9rem; }
+  .post-row time { min-width: auto; font-size: 0.74rem; }
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1.5rem 0 0.5rem;
+  font-size: 0.88rem;
+}
+.pagination button {
+  font: inherit;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.55rem 1.1rem;
+  cursor: pointer;
+  color: var(--ink);
+  min-height: 44px;
+}
+.pagination button:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.pagination button:disabled { opacity: 0.4; cursor: default; }
+.pagination .page-info { color: var(--blog-muted); min-width: 3.5em; text-align: center; }
+
+.sidebar { position: sticky; top: calc(var(--header-h) + 1rem); }
+.sidebar-section {
+  background: var(--sidebar-bg);
+  border: 1px solid var(--line);
+  border-radius: var(--blog-radius);
+  padding: 1.1rem 1rem;
+  box-shadow: var(--blog-shadow);
+}
+.sidebar-section h3 {
+  font-family: "Shippori Mincho", serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem;
+  color: var(--accent-ink);
+}
+.archive-list { list-style: none; margin: 0; padding: 0; }
+.archive-list li { margin-bottom: 0.15rem; }
+.archive-list a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+  font-size: 0.86rem;
+  color: var(--ink);
+  padding: 0.4rem 0.45rem;
+  border-radius: 6px;
+  min-height: 36px;
+}
+.archive-list a:hover, .archive-list a.active {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.archive-list .count {
+  font-size: 0.74rem;
+  color: var(--blog-muted);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.05rem 0.45rem;
+  min-width: 1.5em;
+  text-align: center;
+}
+.archive-year {
+  font-weight: 500;
+  margin-top: 0.55rem;
+  margin-bottom: 0.15rem;
+  font-size: 0.78rem;
+  color: var(--blog-muted);
+}
+.archive-year:first-child { margin-top: 0; }
+
+@media (max-width: 800px) {
+  .sidebar { position: static; }
+  .archive-list { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .archive-year { width: 100%; }
+  .archive-list a {
+    padding: 0.35rem 0.65rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 0.82rem;
+  }
+  .archive-list a.active {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+  .archive-list .count { border: none; background: transparent; padding: 0; }
+}
+
+.back-link {
+  display: inline-flex;
+  margin: 1.5rem 0 1.1rem;
+  color: var(--accent-ink);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  border-bottom: 1px solid transparent;
+}
+.back-link:hover { border-bottom-color: var(--accent); }
+
+article.post-full {
+  padding: 0 0 1.5rem;
+  max-width: 680px;
+  margin: 0 auto;
+}
+.post-title {
+  font-family: "Shippori Mincho", serif;
+  font-weight: 700;
+  font-size: clamp(1.35rem, 4.5vw, 1.65rem);
+  line-height: 1.45;
+  margin: 0 0 0.9rem;
+  word-break: break-word;
+}
+.post-meta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  color: var(--blog-muted);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 0.75rem 0;
+  margin-bottom: 1.6rem;
+}
+.post-content {
+  white-space: pre-line;
+  font-size: 1.02rem;
+  color: var(--ink);
+  line-height: 1.85;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+.post-content h2, .post-content h3 {
+  font-family: "Shippori Mincho", serif;
+  margin-top: 1.8rem;
+  margin-bottom: 0.65rem;
+  border-left: 3px solid var(--accent);
+  padding-left: 0.65rem;
+}
+.post-content h2 { font-size: 1.2rem; }
+.post-content h3 { font-size: 1.08rem; }
+.post-content ul, .post-content ol { padding-left: 1.35rem; margin: 0.6rem 0; }
+
+.post-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 2.2rem 0 0.5rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--line);
+}
+.post-nav a {
+  display: block;
+  text-decoration: none;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--blog-radius);
+  background: var(--paper);
+  min-height: 72px;
+  box-shadow: var(--blog-shadow);
+  transition: border-color 0.15s, background 0.15s;
+}
+.post-nav a:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.post-nav .nav-label {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--blog-muted);
+  margin-bottom: 0.25rem;
+}
+.post-nav .nav-title {
+  font-family: "Shippori Mincho", serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.post-nav .nav-prev { text-align: left; }
+.post-nav .nav-next { text-align: right; grid-column: 2; }
+.post-nav .nav-empty { visibility: hidden; }
+@media (max-width: 540px) {
+  .post-nav { grid-template-columns: 1fr; }
+  .post-nav .nav-next { grid-column: 1; text-align: left; }
+}
+
+.state-block {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--blog-muted);
+  background: var(--paper);
+  border-radius: var(--blog-radius);
+  border: 1px solid var(--line);
+}
+.state-block h2 {
+  font-family: "Shippori Mincho", serif;
+  color: var(--ink);
+  font-size: 1.1rem;
+  margin: 0 0 0.45rem;
+  font-weight: 500;
+}
+.error-message {
+  background: var(--danger-soft);
+  color: var(--danger);
+  padding: 1rem 1.15rem;
+  border-radius: var(--blog-radius);
+  font-size: 0.9rem;
+  margin-top: 1.25rem;
+}
+
+.blog-footer {
+  text-align: center;
+  padding: 2rem 1rem calc(2.2rem + var(--safe-bottom));
+  color: var(--blog-muted);
+  font-size: 0.8rem;
+  border-top: 1px solid var(--line);
+  margin-top: auto;
+  background: var(--paper);
+}
+.blog-footer a {
+  color: var(--accent-ink);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.blog-footer a:hover { border-bottom-color: var(--accent); }
+
+.clear-link {
+  color: var(--accent-ink);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
 </style>
 </head>
 <body>
 
-<header>
-    <span class="mark" aria-hidden="true"></span>
-    <h1><a href="https://www.zojezu.f5.si/blog">ZoJeZuブログ</a></h1>
-    <p>毎日届けるトレンドノート</p>
-</header>
+<!-- ヘッダー挿入先 -->
+<div id="header-slot"></div>
 
-<div class="container">
-    <div id="loading">記事を読み込んでいます…</div>
-    <div id="posts-container"></div>
+<div class="blog-hero">
+  <span class="mark" aria-hidden="true"></span>
+  <h1><a href="https://www.zojezu.f5.si/blog">ZoJeZuブログ</a></h1>
+  <p>毎日届けるトレンドノート</p>
 </div>
 
-<footer>
-    <p>© ZoJeZu — <a href="https://www.zojezu.f5.si/blog">ブログトップ</a></p>
+<div class="container">
+  <div id="loading">記事を読み込んでいます…</div>
+  <div id="posts-container"></div>
+</div>
+
+<footer class="blog-footer">
+  <p>© ZoJeZu — <a href="https://www.zojezu.f5.si/blog">ブログトップ</a></p>
 </footer>
 
 <script>
-    const API_URL = 'https://blog-api.oisasioisasi.workers.dev';
-    const BLOG_HOME = 'https://www.zojezu.f5.si/blog';
-    const PAGE_SIZE = 10;
+/* 共有ヘッダーを外部から読み込み */
+(function () {
+  var slot = document.getElementById('header-slot');
+  if (!slot) return;
 
-    let allPosts = [];
-    let currentPage = 1;
-    let currentQuery = '';
-    let currentArchiveKey = '';
+  // 同じディレクトリの header.html を想定。パスが違う場合は変更してください
+  var HEADER_URL = 'header.html';
 
-    async function initBlog() {
-        const container = document.getElementById('posts-container');
-        const loading = document.getElementById('loading');
-        const urlParams = new URLSearchParams(window.location.search);
-        const postId = urlParams.get('id');
+  fetch(HEADER_URL)
+    .then(function (res) {
+      if (!res.ok) throw new Error('header load failed: ' + res.status);
+      return res.text();
+    })
+    .then(function (html) {
+      slot.innerHTML = html;
+      // <script> は innerHTML では実行されないので、手動で実行
+      slot.querySelectorAll('script').forEach(function (old) {
+        var s = document.createElement('script');
+        if (old.src) s.src = old.src;
+        else s.textContent = old.textContent;
+        document.body.appendChild(s);
+        old.remove();
+      });
+    })
+    .catch(function (err) {
+      console.warn('共有ヘッダーの読み込みに失敗しました:', err);
+      slot.innerHTML = '';
+    });
+})();
+</script>
 
-        try {
-            const response = await fetch(API_URL);
-            if (!response.ok) throw new Error(`サーバーエラー: ${response.status}`);
+<script>
+/* ========== Blog logic ========== */
+(function () {
+  const API_URL = 'https://blog-api.oisasioisasi.workers.dev';
+  const BLOG_HOME = 'https://www.zojezu.f5.si/blog';
+  const PAGE_SIZE = 10;
 
-            const data = await response.json();
-            loading.style.display = 'none';
+  let allPosts = [];
+  let currentPage = 1;
+  let currentQuery = '';
+  let currentArchiveKey = '';
 
-            if (!data.success) throw new Error('データの取得に失敗しました。');
+  async function initBlog() {
+    const container = document.getElementById('posts-container');
+    const loading = document.getElementById('loading');
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get('id');
 
-            allPosts = (data.posts || []).slice().sort(
-                (a, b) => new Date(b.created_at) - new Date(a.created_at)
-            );
+    try {
+      const response = await fetch(API_URL);
+      if (!response.ok) throw new Error(`サーバーエラー: ${response.status}`);
+      const data = await response.json();
+      loading.style.display = 'none';
+      if (!data.success) throw new Error('データの取得に失敗しました。');
 
-            if (postId) {
-                renderSinglePost(container, postId);
-            } else {
-                renderListPage(container);
-            }
-        } catch (error) {
-            loading.style.display = 'none';
-            container.innerHTML = `<div class="error-message">エラーが発生しました: ${escapeHTML(error.message)}</div>`;
-            console.error('Error fetching posts:', error);
-        }
+      allPosts = (data.posts || []).slice().sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
+
+      if (postId) renderSinglePost(container, postId);
+      else renderListPage(container);
+    } catch (error) {
+      loading.style.display = 'none';
+      container.innerHTML = `<div class="error-message">エラーが発生しました: ${escapeHTML(error.message)}</div>`;
+      console.error(error);
     }
+  }
 
-    function renderListPage(container) {
-        document.title = 'ZoJeZuブログ — 毎日届けるトレンドノート';
-
-        container.innerHTML = `
-            <div class="blog-layout">
-                <div class="main-col">
-                    <div class="toolbar">
-                        <div class="search-field">
-                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <circle cx="11" cy="11" r="7"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
-                            <input id="search-input" type="search" placeholder="記事を検索" aria-label="記事を検索" enterkeyhint="search">
-                        </div>
-                        <span class="result-count" id="result-count"></span>
-                    </div>
-                    <div id="list-body"></div>
-                </div>
-                <aside class="sidebar" aria-label="アーカイブ">
-                    <div class="sidebar-section">
-                        <h3>アーカイブ</h3>
-                        <div id="archive-body"></div>
-                    </div>
-                </aside>
+  function renderListPage(container) {
+    document.title = 'ZoJeZuブログ — 毎日届けるトレンドノート';
+    container.innerHTML = `
+      <div class="blog-layout">
+        <div class="main-col">
+          <div class="toolbar">
+            <div class="search-field">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="7"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input id="blog-search-input" type="search" placeholder="記事を検索" aria-label="記事を検索">
             </div>
-        `;
+            <span class="result-count" id="result-count"></span>
+          </div>
+          <div id="list-body"></div>
+        </div>
+        <aside class="sidebar">
+          <div class="sidebar-section">
+            <h3>アーカイブ</h3>
+            <div id="archive-body"></div>
+          </div>
+        </aside>
+      </div>
+    `;
+    document.getElementById('blog-search-input').addEventListener('input', function () {
+      currentQuery = this.value.trim();
+      currentPage = 1;
+      currentArchiveKey = '';
+      renderListBody();
+      renderArchive();
+    });
+    renderListBody();
+    renderArchive();
+  }
 
-        const searchInput = document.getElementById('search-input');
-        searchInput.addEventListener('input', () => {
-            currentQuery = searchInput.value.trim();
-            currentPage = 1;
-            currentArchiveKey = '';
-            renderListBody();
-            renderArchive();
-        });
+  function getFilteredPosts() {
+    let filtered = allPosts;
+    if (currentArchiveKey) {
+      filtered = filtered.filter(p => {
+        const d = new Date(p.created_at);
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        return key === currentArchiveKey;
+      });
+    }
+    const q = currentQuery.toLowerCase();
+    if (q) {
+      filtered = filtered.filter(p =>
+        p.title.toLowerCase().includes(q) || p.content.toLowerCase().includes(q)
+      );
+    }
+    return filtered;
+  }
 
-        renderListBody();
-        renderArchive();
+  function renderListBody() {
+    const listBody = document.getElementById('list-body');
+    const resultCount = document.getElementById('result-count');
+    if (!listBody) return;
+    const filtered = getFilteredPosts();
+
+    let countText = `全${allPosts.length}件`;
+    if (currentArchiveKey || currentQuery) {
+      if (currentArchiveKey) {
+        const [y, m] = currentArchiveKey.split('-');
+        countText = `${y}年${parseInt(m, 10)}月：${filtered.length}件`;
+        if (currentQuery) countText += '（検索中）';
+      } else countText = `${filtered.length}件ヒット`;
+    }
+    resultCount.textContent = countText;
+
+    if (filtered.length === 0) {
+      listBody.innerHTML = `
+        <div class="state-block">
+          <h2>${currentQuery || currentArchiveKey ? '該当する記事が見つかりませんでした' : 'まだ記事がありません'}</h2>
+          <p>${currentQuery || currentArchiveKey ? '条件を変えてもう一度お試しください。' : '最初の記事が自動投稿されるのをお待ちください。'}</p>
+          ${(currentArchiveKey || currentQuery) ? `<p style="margin-top:1rem;"><a href="#" id="clear-filter" class="clear-link">フィルターをクリア</a></p>` : ''}
+        </div>`;
+      const clearBtn = document.getElementById('clear-filter');
+      if (clearBtn) clearBtn.addEventListener('click', e => {
+        e.preventDefault();
+        currentQuery = ''; currentArchiveKey = ''; currentPage = 1;
+        const input = document.getElementById('blog-search-input');
+        if (input) input.value = '';
+        renderListBody(); renderArchive();
+      });
+      return;
     }
 
-    function getFilteredPosts() {
-        let filtered = allPosts;
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    if (currentPage > totalPages) currentPage = totalPages;
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const pagePosts = filtered.slice(start, start + PAGE_SIZE);
 
-        if (currentArchiveKey) {
-            filtered = filtered.filter(p => {
-                const d = new Date(p.created_at);
-                const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-                return key === currentArchiveKey;
-            });
-        }
+    listBody.innerHTML = `
+      <ul class="post-list">${pagePosts.map(post => `
+        <li class="post-row">
+          <a href="?id=${post.id}">
+            <time datetime="${post.created_at}">${formatDateShort(post.created_at)}</time>
+            <h2>${highlight(escapeHTML(post.title), currentQuery)}</h2>
+          </a>
+        </li>`).join('')}</ul>
+      ${totalPages > 1 ? `
+        <div class="pagination">
+          <button type="button" id="prev-page" ${currentPage === 1 ? 'disabled' : ''}>← 前へ</button>
+          <span class="page-info">${currentPage} / ${totalPages}</span>
+          <button type="button" id="next-page" ${currentPage === totalPages ? 'disabled' : ''}>次へ →</button>
+        </div>` : ''}`;
 
-        const q = currentQuery.toLowerCase();
-        if (q) {
-            filtered = filtered.filter(p =>
-                p.title.toLowerCase().includes(q) || p.content.toLowerCase().includes(q)
-            );
-        }
+    const prevBtn = document.getElementById('prev-page');
+    const nextBtn = document.getElementById('next-page');
+    if (prevBtn) prevBtn.addEventListener('click', () => { currentPage--; renderListBody(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    if (nextBtn) nextBtn.addEventListener('click', () => { currentPage++; renderListBody(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  }
 
-        return filtered;
+  function buildArchiveData() {
+    const map = new Map();
+    allPosts.forEach(p => {
+      const d = new Date(p.created_at);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      map.set(key, (map.get(key) || 0) + 1);
+    });
+    return Array.from(map.entries()).sort((a, b) => b[0].localeCompare(a[0]));
+  }
+
+  function renderArchive() {
+    const archiveBody = document.getElementById('archive-body');
+    if (!archiveBody) return;
+    const entries = buildArchiveData();
+    if (!entries.length) {
+      archiveBody.innerHTML = `<p style="font-size:0.85rem;color:var(--blog-muted);margin:0;">まだ記事がありません</p>`;
+      return;
     }
+    let html = '<ul class="archive-list">';
+    let lastYear = '';
+    entries.forEach(([key, count]) => {
+      const [y, m] = key.split('-');
+      if (y !== lastYear) { html += `<li class="archive-year">${y}年</li>`; lastYear = y; }
+      const isActive = currentArchiveKey === key;
+      html += `<li><a href="#" data-archive="${key}" class="${isActive ? 'active' : ''}"><span>${parseInt(m, 10)}月</span><span class="count">${count}</span></a></li>`;
+    });
+    html += '</ul>';
+    if (currentArchiveKey) html += `<p style="margin:0.75rem 0 0;"><a href="#" id="clear-archive" class="clear-link">すべて表示</a></p>`;
+    archiveBody.innerHTML = html;
 
-    function renderListBody() {
-        const listBody = document.getElementById('list-body');
-        const resultCount = document.getElementById('result-count');
-        if (!listBody) return;
+    archiveBody.querySelectorAll('[data-archive]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const key = a.getAttribute('data-archive');
+        currentArchiveKey = currentArchiveKey === key ? '' : key;
+        currentPage = 1; currentQuery = '';
+        const input = document.getElementById('blog-search-input');
+        if (input) input.value = '';
+        renderListBody(); renderArchive();
+      });
+    });
+    const clearArchive = document.getElementById('clear-archive');
+    if (clearArchive) clearArchive.addEventListener('click', e => {
+      e.preventDefault();
+      currentArchiveKey = ''; currentPage = 1;
+      renderListBody(); renderArchive();
+    });
+  }
 
-        const filtered = getFilteredPosts();
-
-        let countText = `全${allPosts.length}件`;
-        if (currentArchiveKey || currentQuery) {
-            if (currentArchiveKey) {
-                const [y, m] = currentArchiveKey.split('-');
-                countText = `${y}年${parseInt(m, 10)}月：${filtered.length}件`;
-                if (currentQuery) countText += '（検索中）';
-            } else {
-                countText = `${filtered.length}件ヒット`;
-            }
-        }
-        resultCount.textContent = countText;
-
-        if (filtered.length === 0) {
-            listBody.innerHTML = `
-                <div class="state-block">
-                    <h2>${currentQuery || currentArchiveKey ? '該当する記事が見つかりませんでした' : 'まだ記事がありません'}</h2>
-                    <p>${currentQuery || currentArchiveKey ? '条件を変えてもう一度お試しください。' : '最初の記事が自動投稿されるのをお待ちください。'}</p>
-                    ${(currentArchiveKey || currentQuery) ? `<p style="margin-top:1rem;"><a href="#" id="clear-filter" class="clear-link">フィルターをクリア</a></p>` : ''}
-                </div>
-            `;
-            const clearBtn = document.getElementById('clear-filter');
-            if (clearBtn) {
-                clearBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    currentQuery = '';
-                    currentArchiveKey = '';
-                    currentPage = 1;
-                    const input = document.getElementById('search-input');
-                    if (input) input.value = '';
-                    renderListBody();
-                    renderArchive();
-                });
-            }
-            return;
-        }
-
-        const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-        if (currentPage > totalPages) currentPage = totalPages;
-        const start = (currentPage - 1) * PAGE_SIZE;
-        const pagePosts = filtered.slice(start, start + PAGE_SIZE);
-
-        const rows = pagePosts.map(post => `
-            <li class="post-row">
-                <a href="?id=${post.id}">
-                    <time datetime="${post.created_at}">${formatDateShort(post.created_at)}</time>
-                    <h2>${highlight(escapeHTML(post.title), currentQuery)}</h2>
-                </a>
-            </li>
-        `).join('');
-
-        listBody.innerHTML = `
-            <ul class="post-list">${rows}</ul>
-            ${totalPages > 1 ? `
-                <div class="pagination">
-                    <button type="button" id="prev-page" ${currentPage === 1 ? 'disabled' : ''} aria-label="前のページ">← 前へ</button>
-                    <span class="page-info">${currentPage} / ${totalPages}</span>
-                    <button type="button" id="next-page" ${currentPage === totalPages ? 'disabled' : ''} aria-label="次のページ">次へ →</button>
-                </div>
-            ` : ''}
-        `;
-
-        const prevBtn = document.getElementById('prev-page');
-        const nextBtn = document.getElementById('next-page');
-        if (prevBtn) prevBtn.addEventListener('click', () => {
-            currentPage--;
-            renderListBody();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-        if (nextBtn) nextBtn.addEventListener('click', () => {
-            currentPage++;
-            renderListBody();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+  function renderSinglePost(container, postId) {
+    const idx = allPosts.findIndex(p => String(p.id) === String(postId));
+    const post = idx >= 0 ? allPosts[idx] : null;
+    if (!post) {
+      container.innerHTML = `
+        <a href="${BLOG_HOME}" class="back-link">← 記事一覧に戻る</a>
+        <div class="state-block"><h2>指定された記事が見つかりませんでした</h2><p>URLをご確認ください。</p></div>`;
+      return;
     }
+    document.title = `${post.title} | ZoJeZu`;
+    const minutes = Math.max(1, Math.round(post.content.length / 500));
+    const older = idx < allPosts.length - 1 ? allPosts[idx + 1] : null;
+    const newer = idx > 0 ? allPosts[idx - 1] : null;
 
-    function buildArchiveData() {
-        const map = new Map();
-        allPosts.forEach(p => {
-            const d = new Date(p.created_at);
-            const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-            if (!map.has(key)) map.set(key, 0);
-            map.set(key, map.get(key) + 1);
-        });
-        return Array.from(map.entries()).sort((a, b) => b[0].localeCompare(a[0]));
-    }
+    let navHtml = '<nav class="post-nav" aria-label="前後の記事">';
+    if (older) navHtml += `<a href="?id=${older.id}" class="nav-prev"><span class="nav-label">← 前の記事</span><span class="nav-title">${escapeHTML(older.title)}</span></a>`;
+    else navHtml += `<div class="nav-empty"></div>`;
+    if (newer) navHtml += `<a href="?id=${newer.id}" class="nav-next"><span class="nav-label">次の記事 →</span><span class="nav-title">${escapeHTML(newer.title)}</span></a>`;
+    navHtml += '</nav>';
 
-    function renderArchive() {
-        const archiveBody = document.getElementById('archive-body');
-        if (!archiveBody) return;
+    container.innerHTML = `
+      <a href="${BLOG_HOME}" class="back-link">← 記事一覧に戻る</a>
+      <article class="post-full">
+        <h1 class="post-title">${escapeHTML(post.title)}</h1>
+        <div class="post-meta">
+          <time datetime="${post.created_at}">${formatDate(post.created_at)}</time>
+          <span>読了目安 約${minutes}分</span>
+        </div>
+        <div class="post-content">${formatContent(escapeHTML(post.content))}</div>
+        ${navHtml}
+      </article>`;
+  }
 
-        const entries = buildArchiveData();
-        if (entries.length === 0) {
-            archiveBody.innerHTML = `<p style="font-size:0.85rem;color:var(--muted);margin:0;">まだ記事がありません</p>`;
-            return;
-        }
+  function formatDate(s) {
+    return new Date(s).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+  function formatDateShort(s) {
+    const d = new Date(s);
+    return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  }
+  function escapeHTML(str) {
+    return String(str).replace(/[&<>'"]/g, t => ({ '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;' }[t] || t));
+  }
+  function highlight(text, q) {
+    if (!q) return text;
+    const safe = escapeHTML(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return text.replace(new RegExp(safe, 'gi'), m => `<mark>${m}</mark>`);
+  }
+  function formatContent(text) {
+    let f = text.replace(/\n/g, '<br>');
+    f = f.replace(/^## (.*?)(<br>|$)/gm, '<h2>$1</h2>');
+    f = f.replace(/^### (.*?)(<br>|$)/gm, '<h3>$1</h3>');
+    f = f.replace(/^- (.*?)(<br>|$)/gm, '<ul><li>$1</li></ul>');
+    f = f.replace(/<\/ul><ul>/g, '');
+    return f;
+  }
 
-        let html = '<ul class="archive-list">';
-        let lastYear = '';
-        entries.forEach(([key, count]) => {
-            const [y, m] = key.split('-');
-            if (y !== lastYear) {
-                html += `<li class="archive-year">${y}年</li>`;
-                lastYear = y;
-            }
-            const label = `${parseInt(m, 10)}月`;
-            const isActive = currentArchiveKey === key;
-            html += `
-                <li>
-                    <a href="#" data-archive="${key}" class="${isActive ? 'active' : ''}" aria-current="${isActive ? 'true' : 'false'}">
-                        <span>${label}</span>
-                        <span class="count">${count}</span>
-                    </a>
-                </li>
-            `;
-        });
-        html += '</ul>';
-
-        if (currentArchiveKey) {
-            html += `<p style="margin:0.75rem 0 0;"><a href="#" id="clear-archive" class="clear-link">すべて表示</a></p>`;
-        }
-
-        archiveBody.innerHTML = html;
-
-        archiveBody.querySelectorAll('[data-archive]').forEach(a => {
-            a.addEventListener('click', (e) => {
-                e.preventDefault();
-                const key = a.getAttribute('data-archive');
-                currentArchiveKey = (currentArchiveKey === key) ? '' : key;
-                currentPage = 1;
-                currentQuery = '';
-                const input = document.getElementById('search-input');
-                if (input) input.value = '';
-                renderListBody();
-                renderArchive();
-            });
-        });
-
-        const clearArchive = document.getElementById('clear-archive');
-        if (clearArchive) {
-            clearArchive.addEventListener('click', (e) => {
-                e.preventDefault();
-                currentArchiveKey = '';
-                currentPage = 1;
-                renderListBody();
-                renderArchive();
-            });
-        }
-    }
-
-    function renderSinglePost(container, postId) {
-        const idx = allPosts.findIndex(p => String(p.id) === String(postId));
-        const post = idx >= 0 ? allPosts[idx] : null;
-
-        if (!post) {
-            container.innerHTML = `
-                <a href="${BLOG_HOME}" class="back-link">← 記事一覧に戻る</a>
-                <div class="state-block">
-                    <h2>指定された記事が見つかりませんでした</h2>
-                    <p>URLをご確認いただくか、一覧からお探しください。</p>
-                </div>
-            `;
-            return;
-        }
-
-        document.title = `${post.title} | ZoJeZu`;
-        const minutes = Math.max(1, Math.round(post.content.length / 500));
-
-        const older = idx < allPosts.length - 1 ? allPosts[idx + 1] : null;
-        const newer = idx > 0 ? allPosts[idx - 1] : null;
-
-        let navHtml = '<nav class="post-nav" aria-label="前後の記事">';
-        if (older) {
-            navHtml += `
-                <a href="?id=${older.id}" class="nav-prev">
-                    <span class="nav-label">← 前の記事</span>
-                    <span class="nav-title">${escapeHTML(older.title)}</span>
-                </a>
-            `;
-        } else {
-            navHtml += `<div class="nav-empty" aria-hidden="true"></div>`;
-        }
-        if (newer) {
-            navHtml += `
-                <a href="?id=${newer.id}" class="nav-next">
-                    <span class="nav-label">次の記事 →</span>
-                    <span class="nav-title">${escapeHTML(newer.title)}</span>
-                </a>
-            `;
-        }
-        navHtml += '</nav>';
-
-        container.innerHTML = `
-            <a href="${BLOG_HOME}" class="back-link">← 記事一覧に戻る</a>
-            <article class="post-full">
-                <h1 class="post-title">${escapeHTML(post.title)}</h1>
-                <div class="post-meta">
-                    <time datetime="${post.created_at}">${formatDate(post.created_at)}</time>
-                    <span>読了目安 約${minutes}分</span>
-                </div>
-                <div class="post-content">${formatContent(escapeHTML(post.content))}</div>
-                ${navHtml}
-            </article>
-        `;
-    }
-
-    function formatDate(dateString) {
-        return new Date(dateString).toLocaleDateString('ja-JP', {
-            year: 'numeric', month: 'long', day: 'numeric',
-            hour: '2-digit', minute: '2-digit'
-        });
-    }
-
-    function formatDateShort(dateString) {
-        const d = new Date(dateString);
-        const y = d.getFullYear();
-        const m = d.getMonth() + 1;
-        const day = d.getDate();
-        const h = String(d.getHours()).padStart(2, '0');
-        const min = String(d.getMinutes()).padStart(2, '0');
-        return `${y}/${m}/${day} ${h}:${min}`;
-    }
-
-    function escapeHTML(str) {
-        return String(str).replace(/[&<>'"]/g,
-            tag => ({
-                '&': '&amp;', '<': '&lt;', '>': '&gt;',
-                "'": '&#39;', '"': '&quot;'
-            }[tag] || tag)
-        );
-    }
-
-    function highlight(escapedText, query) {
-        if (!query) return escapedText;
-        const safe = escapeHTML(query).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        return escapedText.replace(new RegExp(safe, 'gi'), m => `<mark>${m}</mark>`);
-    }
-
-    function formatContent(text) {
-        let formatted = text.replace(/\n/g, '<br>');
-        formatted = formatted.replace(/^## (.*?)(<br>|$)/gm, '<h2>$1</h2>');
-        formatted = formatted.replace(/^### (.*?)(<br>|$)/gm, '<h3>$1</h3>');
-        formatted = formatted.replace(/^- (.*?)(<br>|$)/gm, '<ul><li>$1</li></ul>');
-        formatted = formatted.replace(/<\/ul><ul>/g, '');
-        return formatted;
-    }
-
-    document.addEventListener('DOMContentLoaded', initBlog);
+  document.addEventListener('DOMContentLoaded', initBlog);
+})();
 </script>
 </body>
 </html>
