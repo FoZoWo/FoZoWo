@@ -205,6 +205,22 @@ a { color: inherit; }
   border-radius: 2px;
   padding: 0 1px;
 }
+.new-badge {
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+  margin-left: 0.5rem;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
 html[data-theme="dark"] .post-row mark,
 html[data-theme="dark"] .post-title mark {
   background: rgba(255, 200, 80, 0.35);
@@ -520,6 +536,31 @@ article.post-full {
   let currentQuery = '';
   let currentArchiveKey = '';
 
+  const READ_IDS_KEY = 'zojezu_blog_read_ids';
+
+  function loadReadIds() {
+    try {
+      const raw = localStorage.getItem(READ_IDS_KEY);
+      return new Set(raw ? JSON.parse(raw) : []);
+    } catch (e) {
+      return new Set();
+    }
+  }
+  function saveReadIds(set) {
+    try {
+      localStorage.setItem(READ_IDS_KEY, JSON.stringify(Array.from(set)));
+    } catch (e) { /* ignore */ }
+  }
+  function markPostAsRead(id) {
+    const readIds = loadReadIds();
+    if (readIds.has(String(id))) return;
+    readIds.add(String(id));
+    saveReadIds(readIds);
+  }
+  function isPostUnread(id) {
+    return !loadReadIds().has(String(id));
+  }
+
   async function initBlog() {
     const container = document.getElementById('posts-container');
     const loading = document.getElementById('loading');
@@ -536,6 +577,11 @@ article.post-full {
       allPosts = (data.posts || []).slice().sort(
         (a, b) => new Date(b.created_at) - new Date(a.created_at)
       );
+
+      if (localStorage.getItem(READ_IDS_KEY) === null) {
+        // 初回訪問時は既存の記事すべてを既読扱いにし、これ以降に届いた記事だけNEWにする
+        saveReadIds(new Set(allPosts.map(p => String(p.id))));
+      }
 
       if (postId) renderSinglePost(container, postId);
       else renderListPage(container);
@@ -644,7 +690,7 @@ article.post-full {
         <li class="post-row">
           <a href="?id=${post.id}">
             <time datetime="${post.created_at}">${formatDateShort(post.created_at)}</time>
-            <h2>${highlight(escapeHTML(post.title), currentQuery)}</h2>
+            <h2>${highlight(escapeHTML(post.title), currentQuery)}${isPostUnread(post.id) ? '<span class="new-badge">NEW</span>' : ''}</h2>
           </a>
         </li>`).join('')}</ul>
       ${totalPages > 1 ? `
@@ -719,6 +765,7 @@ article.post-full {
       return;
     }
     document.title = `${post.title} | ZoJeZu`;
+    markPostAsRead(post.id);
     const minutes = Math.max(1, Math.round(post.content.length / 500));
     const older = idx < allPosts.length - 1 ? allPosts[idx + 1] : null;
     const newer = idx > 0 ? allPosts[idx - 1] : null;
