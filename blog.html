@@ -1,292 +1,521 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZoJeZu公式ブログ</title>
-    <style>
-        :root {
-            --bg-color: #f8f9fa;
-            --text-color: #333;
-            --header-bg: #1e293b;
-            --card-bg: #fff;
-            --border-color: #e2e8f0;
-            --accent-color: #3b82f6;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZoJeZu — AIが毎日届けるトレンドノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --bg: #f6f4ee;
+        --paper: #fdfcf9;
+        --ink: #201f1a;
+        --muted: #7a776c;
+        --line: #ddd8c8;
+        --accent: #3f6644;
+        --accent-ink: #294a2d;
+        --accent-soft: #e6ede2;
+        --danger: #9a3b34;
+        --danger-soft: #f7e9e6;
+    }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-        }
+    * { box-sizing: border-box; }
 
-        header {
-            background-color: var(--header-bg);
-            color: white;
-            padding: 2.5rem 0;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+    body {
+        font-family: "Zen Kaku Gothic New", "Hiragino Sans", sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        line-height: 1.8;
+        margin: 0;
+        -webkit-font-smoothing: antialiased;
+    }
 
-        header h1 {
-            margin: 0;
-            font-size: 2.5rem;
-            letter-spacing: 0.05em;
-        }
-        
-        header h1 a {
-            color: white;
-            text-decoration: none;
-        }
+    a { color: inherit; }
 
-        header p {
-            opacity: 0.85;
-            margin-top: 0.5rem;
-            font-size: 1rem;
-        }
+    :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+    }
 
-        .container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 0 20px;
-        }
+    header {
+        padding: 3.5rem 1.5rem 2.5rem;
+        text-align: center;
+        border-bottom: 1px solid var(--line);
+        background: var(--paper);
+    }
 
-        #loading {
-            text-align: center;
-            padding: 2rem;
-            color: #64748b;
-        }
+    header .mark {
+        display: inline-block;
+        width: 34px;
+        height: 34px;
+        border: 1.5px solid var(--accent);
+        border-radius: 50%;
+        margin-bottom: 1.1rem;
+        position: relative;
+    }
+    header .mark::after {
+        content: "";
+        position: absolute;
+        inset: 7px;
+        border: 1.5px solid var(--accent);
+        border-radius: 50%;
+    }
 
-        .back-link {
-            display: inline-block;
-            margin-bottom: 1.5rem;
-            color: var(--accent-color);
-            text-decoration: none;
-            font-weight: bold;
-        }
+    header h1 {
+        margin: 0;
+        font-family: "Shippori Mincho", serif;
+        font-weight: 700;
+        font-size: 2.1rem;
+        letter-spacing: 0.04em;
+    }
 
-        .back-link:hover {
-            text-decoration: underline;
-        }
+    header h1 a { text-decoration: none; }
 
-        .post-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            border: 1px solid var(--border-color);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
+    header p {
+        color: var(--muted);
+        margin: 0.6rem 0 0;
+        font-size: 0.95rem;
+    }
 
-        .post-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
+    .container {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
 
-        .post-title {
-            margin: 0 0 1rem 0;
-            color: #0f172a;
-            font-size: 1.6rem;
-            line-height: 1.4;
-        }
+    .toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin: 2.5rem 0 0.5rem;
+        flex-wrap: wrap;
+    }
 
-        .post-title a {
-            color: inherit;
-            text-decoration: none;
-        }
+    .search-field {
+        position: relative;
+        flex: 1;
+        min-width: 220px;
+    }
 
-        .post-title a:hover {
-            color: var(--accent-color);
-        }
+    .search-field input {
+        width: 100%;
+        font: inherit;
+        font-size: 0.95rem;
+        padding: 0.7rem 0.9rem 0.7rem 2.3rem;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--paper);
+        color: var(--ink);
+    }
 
-        .post-meta {
-            font-size: 0.875rem;
-            color: #64748b;
-            margin-bottom: 1.25rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 0.75rem;
-        }
+    .search-field input::placeholder { color: #a6a294; }
 
-        .post-content {
-            white-space: pre-line;
-            color: #334155;
-            font-size: 1.05rem;
-        }
+    .search-field svg {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        stroke: var(--muted);
+        pointer-events: none;
+    }
 
-        .read-more {
-            display: inline-block;
-            margin-top: 1rem;
-            color: var(--accent-color);
-            text-decoration: none;
-            font-weight: bold;
-        }
+    .result-count {
+        font-size: 0.8rem;
+        color: var(--muted);
+        white-space: nowrap;
+    }
 
-        .read-more:hover {
-            text-decoration: underline;
-        }
-        
-        /* Markdown風の装飾 */
-        .post-content h2, .post-content h3 {
-            color: #0f172a;
-            margin-top: 1.75rem;
-            margin-bottom: 0.75rem;
-            border-left: 4px solid var(--accent-color);
-            padding-left: 0.75rem;
-        }
-        
-        .post-content ul, .post-content ol {
-            padding-left: 1.5rem;
-        }
+    #loading {
+        text-align: center;
+        padding: 3rem 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+    }
 
-        .error-message {
-            background-color: #fef2f2;
-            color: #991b1b;
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
-            border: 1px solid #fca5a5;
-        }
+    .back-link {
+        display: inline-block;
+        margin: 2.5rem 0 1.5rem;
+        color: var(--accent-ink);
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border-bottom: 1px solid var(--accent);
+        padding-bottom: 1px;
+    }
 
-        footer {
-            text-align: center;
-            padding: 2.5rem 0;
-            color: #64748b;
-            font-size: 0.9rem;
-            margin-top: 4rem;
-            border-top: 1px solid var(--border-color);
-        }
-    </style>
+    /* --- list view: index-style rows, not cards --- */
+    .post-list {
+        list-style: none;
+        margin: 0.5rem 0 0;
+        padding: 0;
+        border-top: 1px solid var(--line);
+    }
+
+    .post-row {
+        border-bottom: 1px solid var(--line);
+    }
+
+    .post-row a {
+        display: flex;
+        align-items: baseline;
+        gap: 1.25rem;
+        padding: 1.15rem 0.1rem;
+        text-decoration: none;
+        transition: padding-left 0.15s ease;
+    }
+
+    .post-row a:hover,
+    .post-row a:focus-visible {
+        padding-left: 0.4rem;
+        background: var(--accent-soft);
+    }
+
+    .post-row time {
+        flex: 0 0 auto;
+        font-size: 0.8rem;
+        color: var(--muted);
+        white-space: nowrap;
+        padding-top: 0.2rem;
+        min-width: 6.2em;
+    }
+
+    .post-row h2 {
+        margin: 0;
+        font-family: "Shippori Mincho", serif;
+        font-weight: 500;
+        font-size: 1.08rem;
+        line-height: 1.55;
+    }
+
+    .post-row mark, .post-title mark {
+        background: #fbe7a1;
+        color: inherit;
+        border-radius: 2px;
+        padding: 0 1px;
+    }
+
+    @media (max-width: 480px) {
+        .post-row a { flex-direction: column; gap: 0.3rem; }
+        .post-row time { min-width: auto; }
+    }
+
+    .pagination {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+        margin: 2rem 0 3rem;
+        font-size: 0.9rem;
+    }
+
+    .pagination button {
+        font: inherit;
+        background: none;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        color: var(--ink);
+    }
+
+    .pagination button:hover:not(:disabled) { border-color: var(--accent); }
+
+    .pagination button:disabled {
+        opacity: 0.35;
+        cursor: default;
+    }
+
+    .pagination .page-info { color: var(--muted); }
+
+    /* --- single article view --- */
+    article.post-full {
+        padding: 0.5rem 0 3rem;
+    }
+
+    .post-title {
+        font-family: "Shippori Mincho", serif;
+        font-weight: 700;
+        font-size: 1.75rem;
+        line-height: 1.5;
+        margin: 0 0 1rem;
+    }
+
+    .post-meta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        font-size: 0.82rem;
+        color: var(--muted);
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        padding: 0.85rem 0;
+        margin-bottom: 2rem;
+    }
+
+    .post-content {
+        white-space: pre-line;
+        font-size: 1.02rem;
+        color: #2c2b26;
+    }
+
+    .post-content h2, .post-content h3 {
+        font-family: "Shippori Mincho", serif;
+        color: var(--ink);
+        margin-top: 2rem;
+        margin-bottom: 0.75rem;
+        border-left: 3px solid var(--accent);
+        padding-left: 0.7rem;
+    }
+
+    .post-content ul, .post-content ol { padding-left: 1.4rem; }
+    .post-content li { margin-bottom: 0.35rem; }
+
+    /* --- empty / not-found / error states --- */
+    .state-block {
+        text-align: center;
+        padding: 3.5rem 1rem;
+        color: var(--muted);
+    }
+
+    .state-block h2 {
+        font-family: "Shippori Mincho", serif;
+        color: var(--ink);
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+
+    .error-message {
+        background: var(--danger-soft);
+        color: var(--danger);
+        padding: 1rem 1.2rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        margin-top: 1.5rem;
+    }
+
+    footer {
+        text-align: center;
+        padding: 2.5rem 0 3rem;
+        color: var(--muted);
+        font-size: 0.82rem;
+        border-top: 1px solid var(--line);
+    }
+</style>
 </head>
 <body>
 
-    <header>
-        <h1><a href="./">ZoJeZu公式ブログ</a></h1>
-        <p>AIが毎日お届けする最新トレンドとナレッジ</p>
-    </header>
+<header>
+    <span class="mark" aria-hidden="true"></span>
+    <h1><a href="./">ZoJeZu</a></h1>
+    <p>AIが毎日届けるトレンドノート</p>
+</header>
 
-    <div class="container">
-        <div id="loading">記事を読み込んでいます...</div>
-        <div id="posts-container"></div>
-    </div>
+<div class="container">
+    <div id="loading">記事を読み込んでいます…</div>
+    <div id="posts-container"></div>
+</div>
 
-    <footer>
-        &copy; 2026 ZoJeZu. All rights reserved.
-    </footer>
+<footer>&copy; 2026 ZoJeZu. All rights reserved.</footer>
 
-    <script>
-        const API_URL = 'https://blog-api.oisasioisasi.workers.dev';
+<script>
+    const API_URL = 'https://blog-api.oisasioisasi.workers.dev';
+    const PAGE_SIZE = 10;
 
-        async function initBlog() {
-            const container = document.getElementById('posts-container');
-            const loading = document.getElementById('loading');
+    let allPosts = [];
+    let currentPage = 1;
+    let currentQuery = '';
 
-            // URLパラメータから id を取得 (?id=123)
-            const urlParams = new URLSearchParams(window.location.search);
-            const postId = urlParams.get('id');
+    async function initBlog() {
+        const container = document.getElementById('posts-container');
+        const loading = document.getElementById('loading');
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get('id');
 
-            try {
-                const response = await fetch(API_URL);
-                if (!response.ok) throw new Error(`サーバーエラー: ${response.status}`);
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error(`サーバーエラー: ${response.status}`);
 
-                const data = await response.json();
-                loading.style.display = 'none';
+            const data = await response.json();
+            loading.style.display = 'none';
 
-                if (!data.success) throw new Error('データの取得に失敗しました。');
+            if (!data.success) throw new Error('データの取得に失敗しました。');
 
-                if (postId) {
-                    // 【個別記事ページ】
-                    const post = data.posts.find(p => String(p.id) === String(postId));
-
-                    if (post) {
-                        const date = formatDate(post.created_at);
-                        document.title = `${post.title} | ZoJeZu公式ブログ`;
-
-                        container.innerHTML = `
-                            <a href="./" class="back-link">← 記事一覧に戻る</a>
-                            <article class="post-card">
-                                <h2 class="post-title">${escapeHTML(post.title)}</h2>
-                                <div class="post-meta">投稿日時: ${date}</div>
-                                <div class="post-content">${formatContent(escapeHTML(post.content))}</div>
-                            </article>
-                        `;
-                    } else {
-                        container.innerHTML = `
-                            <a href="./" class="back-link">← 記事一覧に戻る</a>
-                            <div class="post-card" style="text-align:center; padding: 3rem;">
-                                <h2>指定された記事が見つかりませんでした。</h2>
-                            </div>
-                        `;
-                    }
-                } else {
-                    // 【記事一覧ページ】
-                    if (data.posts && data.posts.length > 0) {
-                        data.posts.forEach(post => {
-                            const date = formatDate(post.created_at);
-                            const excerpt = escapeHTML(post.content).substring(0, 150) + '...';
-
-                            const article = document.createElement('article');
-                            article.className = 'post-card';
-                            
-                            article.innerHTML = `
-                                <h2 class="post-title"><a href="?id=${post.id}">${escapeHTML(post.title)}</a></h2>
-                                <div class="post-meta">投稿日時: ${date}</div>
-                                <div class="post-content">${formatContent(excerpt)}</div>
-                                <a href="?id=${post.id}" class="read-more">続きを読む →</a>
-                            `;
-                            container.appendChild(article);
-                        });
-                    } else {
-                        container.innerHTML = `
-                            <div class="post-card" style="text-align:center; padding: 3rem;">
-                                <h2>まだ記事がありません</h2>
-                                <p>最初の記事が自動投稿されるのをお待ちください。</p>
-                            </div>
-                        `;
-                    }
-                }
-            } catch (error) {
-                loading.style.display = 'none';
-                container.innerHTML = `<div class="error-message">エラーが発生しました: ${error.message}</div>`;
-                console.error('Error fetching posts:', error);
-            }
-        }
-
-        function formatDate(dateString) {
-            return new Date(dateString).toLocaleDateString('ja-JP', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, 
-                tag => ({
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    "'": '&#39;',
-                    '"': '&quot;'
-                }[tag] || tag)
+            allPosts = (data.posts || []).slice().sort(
+                (a, b) => new Date(b.created_at) - new Date(a.created_at)
             );
+
+            if (postId) {
+                renderSinglePost(container, postId);
+            } else {
+                renderListPage(container);
+            }
+        } catch (error) {
+            loading.style.display = 'none';
+            container.innerHTML = `<div class="error-message">エラーが発生しました: ${escapeHTML(error.message)}</div>`;
+            console.error('Error fetching posts:', error);
+        }
+    }
+
+    // ---------- 一覧ページ ----------
+    function renderListPage(container) {
+        document.title = 'ZoJeZu — AIが毎日届けるトレンドノート';
+
+        container.innerHTML = `
+            <div class="toolbar">
+                <div class="search-field">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input id="search-input" type="text" placeholder="記事を検索（タイトル・本文）" aria-label="記事を検索">
+                </div>
+                <span class="result-count" id="result-count"></span>
+            </div>
+            <div id="list-body"></div>
+        `;
+
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('input', () => {
+            currentQuery = searchInput.value.trim();
+            currentPage = 1;
+            renderListBody();
+        });
+
+        renderListBody();
+    }
+
+    function renderListBody() {
+        const listBody = document.getElementById('list-body');
+        const resultCount = document.getElementById('result-count');
+
+        const q = currentQuery.toLowerCase();
+        const filtered = q
+            ? allPosts.filter(p =>
+                p.title.toLowerCase().includes(q) || p.content.toLowerCase().includes(q))
+            : allPosts;
+
+        resultCount.textContent = currentQuery
+            ? `${filtered.length}件ヒット（全${allPosts.length}件中）`
+            : `全${allPosts.length}件`;
+
+        if (filtered.length === 0) {
+            listBody.innerHTML = `
+                <div class="state-block">
+                    <h2>${currentQuery ? '該当する記事が見つかりませんでした' : 'まだ記事がありません'}</h2>
+                    <p>${currentQuery ? '検索語を変えてもう一度お試しください。' : '最初の記事が自動投稿されるのをお待ちください。'}</p>
+                </div>
+            `;
+            return;
         }
 
-        function formatContent(text) {
-            let formatted = text.replace(/\n/g, '<br>');
-            formatted = formatted.replace(/^## (.*?)(<br>|$)/gm, '<h2>$1</h2>');
-            formatted = formatted.replace(/^### (.*?)(<br>|$)/gm, '<h3>$1</h3>');
-            formatted = formatted.replace(/^- (.*?)(<br>|$)/gm, '<ul><li>$1</li></ul>');
-            formatted = formatted.replace(/<\/ul><ul>/g, '');
-            return formatted;
+        const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+        if (currentPage > totalPages) currentPage = totalPages;
+        const start = (currentPage - 1) * PAGE_SIZE;
+        const pagePosts = filtered.slice(start, start + PAGE_SIZE);
+
+        const rows = pagePosts.map(post => `
+            <li class="post-row">
+                <a href="?id=${post.id}">
+                    <time>${formatDateShort(post.created_at)}</time>
+                    <h2>${highlight(escapeHTML(post.title), currentQuery)}</h2>
+                </a>
+            </li>
+        `).join('');
+
+        listBody.innerHTML = `
+            <ul class="post-list">${rows}</ul>
+            ${totalPages > 1 ? `
+                <div class="pagination">
+                    <button id="prev-page" ${currentPage === 1 ? 'disabled' : ''}>← 前へ</button>
+                    <span class="page-info">${currentPage} / ${totalPages}</span>
+                    <button id="next-page" ${currentPage === totalPages ? 'disabled' : ''}>次へ →</button>
+                </div>
+            ` : ''}
+        `;
+
+        const prevBtn = document.getElementById('prev-page');
+        const nextBtn = document.getElementById('next-page');
+        if (prevBtn) prevBtn.addEventListener('click', () => { currentPage--; renderListBody(); window.scrollTo({top: 0, behavior: 'smooth'}); });
+        if (nextBtn) nextBtn.addEventListener('click', () => { currentPage++; renderListBody(); window.scrollTo({top: 0, behavior: 'smooth'}); });
+    }
+
+    // ---------- 個別記事ページ ----------
+    function renderSinglePost(container, postId) {
+        const post = allPosts.find(p => String(p.id) === String(postId));
+
+        if (!post) {
+            container.innerHTML = `
+                <a href="./" class="back-link">← 記事一覧に戻る</a>
+                <div class="state-block">
+                    <h2>指定された記事が見つかりませんでした</h2>
+                    <p>URLをご確認いただくか、一覧からお探しください。</p>
+                </div>
+            `;
+            return;
         }
 
-        document.addEventListener('DOMContentLoaded', initBlog);
-    </script>
+        document.title = `${post.title} | ZoJeZu`;
+        const minutes = Math.max(1, Math.round(post.content.length / 500));
+
+        container.innerHTML = `
+            <a href="./" class="back-link">← 記事一覧に戻る</a>
+            <article class="post-full">
+                <h1 class="post-title">${escapeHTML(post.title)}</h1>
+                <div class="post-meta">
+                    <span>${formatDate(post.created_at)}</span>
+                    <span>読了目安 約${minutes}分</span>
+                </div>
+                <div class="post-content">${formatContent(escapeHTML(post.content))}</div>
+            </article>
+        `;
+    }
+
+    // ---------- ユーティリティ ----------
+    function formatDate(dateString) {
+        return new Date(dateString).toLocaleDateString('ja-JP', {
+            year: 'numeric', month: 'long', day: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+    }
+
+    function formatDateShort(dateString) {
+        return new Date(dateString).toLocaleDateString('ja-JP', {
+            year: 'numeric', month: 'numeric', day: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        }).replace(/(\d+)\/(\d+)\/(\d+)/, '$1/$2/$3');
+    }
+
+    function escapeHTML(str) {
+        return String(str).replace(/[&<>'"]/g,
+            tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;',
+                "'": '&#39;', '"': '&quot;'
+            }[tag] || tag)
+        );
+    }
+
+    function highlight(escapedText, query) {
+        if (!query) return escapedText;
+        const safe = escapeHTML(query).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return escapedText.replace(new RegExp(safe, 'gi'), m => `<mark>${m}</mark>`);
+    }
+
+    function formatContent(text) {
+        let formatted = text.replace(/\n/g, '<br>');
+        formatted = formatted.replace(/^## (.*?)(<br>|$)/gm, '<h2>$1</h2>');
+        formatted = formatted.replace(/^### (.*?)(<br>|$)/gm, '<h3>$1</h3>');
+        formatted = formatted.replace(/^- (.*?)(<br>|$)/gm, '<ul><li>$1</li></ul>');
+        formatted = formatted.replace(/<\/ul><ul>/g, '');
+        return formatted;
+    }
+
+    document.addEventListener('DOMContentLoaded', initBlog);
+</script>
 </body>
 </html>
