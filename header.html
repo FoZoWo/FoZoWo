@@ -399,33 +399,592 @@
     }
     window.closeAll = closeAll;
 
-    if (hamburger && navMobile) {
-      hamburger.addEventListener('click', function (e) {
-        e.stopPropagation();
-        var open = navMobile.classList.toggle('open');
-        hamburger.classList.toggle('active', open);
-        hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
-        if (open) {
-          if (settingsPanel) settingsPanel.classList.remove('open');
-          if (searchPanel) searchPanel.classList.remove('open');
-          if (searchBtn) searchBtn.setAttribute('aria-expanded', 'false');
-        }
+    /* ハンバーガーメニュー・設定パネルの開閉は、このheader.htmlを読み込む
+       各ページ側（index.html / faq.html / logo.html）のスクリプトが
+       既に同じ要素へ同じ処理（トグル）を実装しているため、ここでも
+       クリックイベントを登録すると「1回のクリックで2回トグルされて
+       見た目には何も起きない（＝ボタンが反応しないように見える）」
+       という不具合が発生していた。
+       そのため、ここでは重複登録をせず、各ページ側の実装に任せる。 */
+
+    function applyTheme(value) {
+      var root = document.documentElement;
+      if (value === 'auto') {
+        root.removeAttribute('data-theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        root.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      } else {
+        root.setAttribute('data-theme', value);
+      }
+      try { localStorage.setItem('zojezu-theme', value); } catch (e) {}
+      if (themeOptions) {
+        themeOptions.querySelectorAll('button').forEach(function (btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-value') === value);
+        });
+      }
+    }
+
+    var savedTheme = 'auto';
+    try { savedTheme = localStorage.getItem('zojezu-theme') || 'auto'; } catch (e) {}
+    applyTheme(savedTheme);
+
+    if (themeOptions) {
+      themeOptions.addEventListener('click', function (e) {
+        var btn = e.target.closest('button[data-value]');
+        if (!btn) return;
+        applyTheme(btn.getAttribute('data-value'));
       });
     }
 
-    if (settingsBtn && settingsPanel) {
-      settingsBtn.addEventListener('click', function (e) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
+      var current = 'auto';
+      try { current = localStorage.getItem('zojezu-theme') || 'auto'; } catch (e) {}
+      if (current === 'auto') applyTheme('auto');
+    });
+
+    if (langOptions) {
+      var savedLang = 'auto';
+      try { savedLang = localStorage.getItem('zojezu-lang') || 'auto'; } catch (e) {}
+      langOptions.querySelectorAll('button').forEach(function (btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-value') === savedLang);
+      });
+      langOptions.addEventListener('click', function (e) {
+        var btn = e.target.closest('button[data-value]');
+        if (!btn) return;
+        var val = btn.getAttribute('data-value');
+        langOptions.querySelectorAll('button').forEach(function (b) {
+          b.classList.toggle('active', b.getAttribute('data-value') === val);
+        });
+        try { localStorage.setItem('zojezu-lang', val); } catch (err) {}
+      });
+    }
+
+    function openSearch() {
+      if (!searchPanel) return;
+      searchPanel.classList.add('open');
+      if (searchBtn) searchBtn.setAttribute('aria-expanded', 'true');
+      window.setTimeout(function () { if (searchInput) searchInput.focus(); }, 60);
+    }
+    function closeSearch() {
+      if (!searchPanel) return;
+      searchPanel.classList.remove('open');
+      if (searchBtn) searchBtn.setAttribute('aria-expanded', 'false');
+    }
+    window.closeZojezuSearch = closeSearch;
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    function renderSearch(query) {
+      if (!searchResults) return;
+      var q = query.trim().toLowerCase();
+      if (searchClear) searchClear.hidden = q.length === 0;
+      if (!q) {
+        searchResults.innerHTML = '<div class="search-empty">キーワードを入力してください</div>';
+        return;
+      }
+      var matches = ZOJEZU_SEARCH_INDEX.filter(function (item) {
+        return item.title.toLowerCase().indexOf(q) !== -1 ||
+               item.keywords.toLowerCase().indexOf(q) !== -1;
+      });
+      if (matches.length === 0) {
+        searchResults.innerHTML = '<div class="search-empty">見つかりませんでした</div>';
+        return;
+      }
+      searchResults.innerHTML = matches.map(function (item) {
+        return '<a class="search-result" href="' + item.url + '">' +
+                 '<span class="icon">' + item.icon + '</span>' +
+                 '<span class="label">' + escapeHtml(item.title) + '</span>' +
+               '</a>';
+      }).join('');
+    }
+
+    if (searchBtn) {
+      searchBtn.addEventListener('click', function (e) {
         e.stopPropagation();
-        var open = !settingsPanel.classList.contains('open');
-        closeAll();
-        if (open) settingsPanel.classList.add('open');
+        if (searchPanel && searchPanel.classList.contains('open')) {
+          closeSearch();
+        } else {
+          closeAll();
+          openSearch();
+        }
       });
     }
-    if (settingsClose) {
-      settingsClose.addEventListener('click', function () {
+    if (searchInput) {
+      searchInput.addEventListener('input', function () { renderSearch(this.value); });
+    }
+    if (searchClear) {
+      searchClear.addEventListener('click', function () {
+        if (searchInput) {
+          searchInput.value = '';
+          renderSearch('');
+          searchInput.focus();
+        }
+      });
+    }
+    if (searchResults) {
+      searchResults.addEventListener('click', function (e) {
+        if (e.target.closest('a')) closeSearch();
+      });
+    }
+
+    document.addEventListener('click', function (e) {
+      if (settingsPanel && settingsPanel.classList.contains('open') &&
+          !settingsPanel.contains(e.target) && e.target !== settingsBtn && !(settingsBtn && settingsBtn.contains(e.target))) {
         settingsPanel.classList.remove('open');
-      });
+      }
+      if (searchPanel && searchPanel.classList.contains('open') &&
+          !searchPanel.contains(e.target) && e.target !== searchBtn && !(searchBtn && searchBtn.contains(e.target))) {
+        closeSearch();
+      }
+      if (navMobile && navMobile.classList.contains('open') &&
+          !navMobile.contains(e.target) && e.target !== hamburger && !(hamburger && hamburger.contains(e.target))) {
+        closeAll();
+      }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeAll();
+    });
+
+    if (header) {
+      window.addEventListener('scroll', function () {
+        header.classList.toggle('scrolled', window.scrollY > 8);
+      }, { passive: true });
     }
+
+    function showNetworkToast(online) {
+      if (!networkToast) return;
+      networkToast.classList.remove('online', 'offline', 'show');
+      networkToast.classList.add(online ? 'online' : 'offline');
+      if (networkToastText) networkToastText.textContent = online ? 'オンラインに戻りました' : 'オフラインです';
+      networkToast.classList.add('show');
+      window.clearTimeout(showNetworkToast._t);
+      showNetworkToast._t = window.setTimeout(function () {
+        networkToast.classList.remove('show');
+      }, 2800);
+    }
+    window.addEventListener('online', function () { showNetworkToast(true); });
+    window.addEventListener('offline', function () { showNetworkToast(false); });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeader);
+  } else {
+    initHeader();
+  }
+})();
+</script>
+<!-- ========================================
+     ZOJEZU Official — Shared Header
+======================================== -->
+<style>
+:root {
+  --header-h: 68px;
+  --nav-max: 1180px;
+}
+.network-toast {
+  position: fixed; top: 14px; left: 50%;
+  transform: translate(-50%, -140%);
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 18px; border-radius: 999px;
+  background: var(--menu-bg, var(--panel, rgba(6,5,15,0.96)));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-strong, var(--line-strong, rgba(178,150,255,0.4)));
+  color: var(--text, #f3f0ff); font-size: 13px; font-weight: 700;
+  box-shadow: var(--shadow, 0 22px 60px rgba(0,0,0,0.6)); z-index: 200;
+  opacity: 0; transition: transform .4s cubic-bezier(.4,0,.2,1), opacity .4s;
+  pointer-events: none; max-width: calc(100vw - 24px);
+}
+.network-toast.show { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
+.network-toast svg { width: 18px; height: 18px; flex: 0 0 auto; }
+.network-toast.offline { border-color: rgba(255,107,203,0.6); }
+.network-toast.offline svg { color: var(--pink, #ff5fa8); }
+.network-toast.online { border-color: rgba(102,240,255,0.6); }
+.network-toast.online svg { color: var(--cyan, #57e8ff); }
+
+.header {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: var(--header-bg, color-mix(in srgb, var(--panel, #120e22) 85%, transparent));
+  backdrop-filter: blur(22px) saturate(1.4);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  border-bottom: 1px solid var(--border, var(--line, rgba(178,150,255,0.16)));
+  z-index: 100;
+  transition: background .3s ease, border-color .3s ease;
+}
+.header.scrolled {
+  background: var(--header-bg-scrolled, var(--panel, #120e22));
+  border-bottom-color: var(--border-strong, var(--line-strong, rgba(178,150,255,0.4)));
+}
+.header-inner {
+  max-width: var(--nav-max); height: 100%; margin: 0 auto;
+  padding: 0 clamp(14px, 3vw, 28px);
+  display: flex; align-items: center; justify-content: space-between; gap: 18px;
+}
+.logo {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none; color: var(--text, #f3f0ff);
+  padding: 6px 10px; border-radius: 14px;
+  transition: transform .25s;
+}
+.logo:hover { transform: translateY(-1px); }
+.logo-img {
+  width: 40px; height: 40px; border-radius: 12px;
+  border: 1.5px solid var(--border-strong, var(--line-strong, rgba(178,150,255,0.4)));
+  box-shadow: 0 0 16px rgba(139,108,255,0.5);
+  background: var(--surface, var(--glass, rgba(255,255,255,0.04)));
+  object-fit: cover;
+}
+.logo-text {
+  font-family: 'Cinzel', serif;
+  font-weight: 900; font-size: 17px; letter-spacing: 3px;
+  background: linear-gradient(120deg, var(--pink, #ff5fa8) 0%, var(--violet, var(--purple, #8b6cff)) 40%, var(--cyan, #57e8ff) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  text-transform: uppercase;
+}
+.logo-text span { font-family: 'Zen Maru Gothic', sans-serif; letter-spacing: 0.5px; }
+
+.nav-desktop { display: none; gap: 4px; }
+.nav-desktop a {
+  color: var(--text, #f3f0ff); text-decoration: none;
+  font-size: 14px; font-weight: 600;
+  padding: 8px 14px; border-radius: 12px;
+  transition: background .2s, color .2s;
+  white-space: nowrap;
+}
+.nav-desktop a:hover { background: var(--surface-hover, var(--glass-2, rgba(255,255,255,0.09))); color: var(--pink, #ff5fa8); }
+.nav-desktop a.accent {
+  background: linear-gradient(120deg, var(--pink, #ff5fa8) 0%, var(--violet, var(--purple, #8b6cff)) 40%, var(--cyan, #57e8ff) 100%);
+  color: #fff;
+  box-shadow: 0 4px 18px rgba(139,108,255,0.5);
+}
+.nav-desktop a.accent:hover { transform: translateY(-1px); }
+
+.header-actions { display: flex; align-items: center; gap: 6px; }
+.icon-btn, .hamburger {
+  width: 42px; height: 42px; border-radius: 12px;
+  background: var(--surface, var(--glass, rgba(255,255,255,0.04)));
+  border: 1px solid var(--border, var(--line, rgba(178,150,255,0.16)));
+  color: var(--text, #f3f0ff); display: grid; place-items: center;
+  transition: background .2s, transform .2s, border-color .2s;
+  cursor: pointer;
+}
+.icon-btn:hover, .hamburger:hover {
+  background: var(--surface-hover, var(--glass-2, rgba(255,255,255,0.09)));
+  border-color: var(--border-strong, var(--line-strong, rgba(178,150,255,0.4)));
+  transform: translateY(-1px);
+}
+.icon-btn svg { width: 20px; height: 20px; }
+.hamburger { position: relative; }
+.hamburger span {
+  position: absolute; left: 11px; width: 20px; height: 2px;
+  background: currentColor; border-radius: 2px; transition: transform .3s, opacity .3s, top .3s;
+}
+.hamburger span:nth-child(1) { top: 14px; }
+.hamburger span:nth-child(2) { top: 20px; }
+.hamburger span:nth-child(3) { top: 26px; }
+.hamburger.active span:nth-child(1) { top: 20px; transform: rotate(45deg); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { top: 20px; transform: rotate(-45deg); }
+
+@media (min-width: 900px) {
+  .nav-desktop { display: flex; }
+  .hamburger { display: none; }
+}
+
+.settings-panel {
+  position: fixed; top: calc(var(--header-h) + 10px);
+  right: clamp(10px, 3vw, 22px);
+  width: min(320px, calc(100vw - 20px));
+  background: var(--menu-bg, var(--panel, rgba(6,5,15,0.96)));
+  backdrop-filter: blur(22px) saturate(1.4);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  border: 1px solid var(--border-strong, var(--line-strong, rgba(178,150,255,0.4)));
+  border-radius: var(--radius, 20px);
+  padding: 18px;
+  box-shadow: var(--shadow, 0 22px 60px rgba(0,0,0,0.6)), 0 0 40px rgba(139,108,255,0.25);
+  transform: translateY(-8px); opacity: 0; pointer-events: none;
+  transition: transform .28s, opacity .28s;
+  z-index: 90;
+}
+.settings-panel.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.settings-title {
+  display: flex; justify-content: space-between; align-items: center;
+  font-weight: 700; font-size: 15px; margin-bottom: 14px;
+  font-family: 'Cinzel', serif; letter-spacing: 2px;
+  color: var(--text, #f3f0ff);
+}
+.settings-close {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: var(--surface, var(--glass, rgba(255,255,255,0.04)));
+  border: 1px solid var(--border, var(--line, rgba(178,150,255,0.16)));
+  color: var(--text, #f3f0ff); font-size: 20px; line-height: 1;
+  cursor: pointer;
+}
+.settings-close:hover { background: var(--surface-hover, var(--glass-2, rgba(255,255,255,0.09))); }
+.settings-group { margin-bottom: 14px; }
+.settings-group:last-child { margin-bottom: 0; }
+.settings-label {
+  display: block; font-size: 12px; color: var(--muted, #9d97c6);
+  margin-bottom: 8px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700;
+}
+.settings-options {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+  background: var(--surface, var(--glass, rgba(255,255,255,0.04)));
+  border-radius: 12px; padding: 4px;
+}
+.settings-options button {
+  padding: 8px 6px; border: none; background: transparent;
+  color: var(--text, #f3f0ff); border-radius: 9px;
+  font-size: 13px; font-weight: 600; font-family: inherit;
+  transition: background .2s, color .2s; cursor: pointer;
+}
+.settings-options button:hover { background: var(--surface-hover, var(--glass-2, rgba(255,255,255,0.09))); }
+.settings-options button.active {
+  background: linear-gradient(120deg, var(--pink, #ff5fa8), var(--violet, var(--purple, #8b6cff)));
+  color: #fff; box-shadow: 0 2px 10px rgba(139,108,255,0.4);
+}
+
+.search-panel {
+  position: fixed; top: calc(var(--header-h) + 10px);
+  right: clamp(10px, 3vw, 22px);
+  width: min(360px, calc(100vw - 20px));
+  background: var(--menu-bg, var(--panel, rgba(6,5,15,0.96)));
+  backdrop-filter: blur(22px) saturate(1.4);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  border: 1px solid var(--border-strong, var(--line-strong, rgba(178,150,255,0.4)));
+  border-radius: var(--radius, 20px);
+  padding: 14px;
+  box-shadow: var(--shadow, 0 22px 60px rgba(0,0,0,0.6)), 0 0 40px rgba(139,108,255,0.25);
+  transform: translateY(-8px); opacity: 0; pointer-events: none;
+  transition: transform .28s, opacity .28s;
+  z-index: 91;
+}
+.search-panel.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.search-input-wrap {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface, var(--glass, rgba(255,255,255,0.04)));
+  border: 1px solid var(--border, var(--line, rgba(178,150,255,0.16)));
+  border-radius: 12px; padding: 10px 12px;
+}
+.search-input-wrap:focus-within {
+  border-color: var(--border-strong, var(--line-strong, rgba(178,150,255,0.4)));
+}
+.search-input-wrap svg {
+  width: 18px; height: 18px; flex: 0 0 auto;
+  color: var(--muted, #9d97c6);
+}
+.search-input-wrap input {
+  flex: 1; min-width: 0; background: transparent; border: none; outline: none;
+  color: var(--text, #f3f0ff); font-size: 14px; font-family: inherit; font-weight: 600;
+}
+.search-input-wrap input::placeholder { color: var(--muted, #9d97c6); font-weight: 500; }
+.search-clear {
+  flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--surface-hover, var(--glass-2, rgba(255,255,255,0.09)));
+  border: none; color: var(--text, #f3f0ff); font-size: 14px; line-height: 1;
+  cursor: pointer; display: grid; place-items: center;
+}
+.search-clear:hover { background: var(--surface-hover-strong, rgba(255,255,255,0.16)); }
+.search-results { margin-top: 10px; max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+.search-result {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px; border-radius: 12px;
+  color: var(--text, #f3f0ff); text-decoration: none; font-weight: 600; font-size: 14px;
+  background: var(--surface, var(--glass, rgba(255,255,255,0.04)));
+  border: 1px solid var(--border, var(--line, rgba(178,150,255,0.16)));
+  transition: background .2s, transform .2s;
+}
+.search-result:hover, .search-result:active {
+  background: var(--surface-hover, var(--glass-2, rgba(255,255,255,0.09)));
+  color: var(--pink, #ff5fa8);
+  transform: translateX(2px);
+}
+.search-result .icon { font-size: 17px; flex: 0 0 auto; }
+.search-empty {
+  padding: 16px 6px; text-align: center;
+  color: var(--muted, #9d97c6); font-size: 13px; font-weight: 600;
+}
+
+.nav-mobile {
+  position: fixed; top: var(--header-h); left: 0; right: 0;
+  background: var(--menu-bg, var(--panel, rgba(6,5,15,0.96)));
+  backdrop-filter: blur(22px) saturate(1.4);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  border-bottom: 1px solid var(--border, var(--line, rgba(178,150,255,0.16)));
+  padding: 16px clamp(14px, 4vw, 24px) 22px;
+  transform: translateY(-110%); opacity: 0; pointer-events: none;
+  transition: transform .35s cubic-bezier(.4,0,.2,1), opacity .3s;
+  z-index: 85; max-height: calc(100dvh - var(--header-h)); overflow-y: auto;
+}
+.nav-mobile.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.nav-mobile a {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px; margin: 4px 0;
+  color: var(--text, #f3f0ff); text-decoration: none; font-weight: 600;
+  border-radius: 14px;
+  background: var(--surface, var(--glass, rgba(255,255,255,0.04)));
+  border: 1px solid var(--border, var(--line, rgba(178,150,255,0.16)));
+  transition: background .2s, transform .2s;
+}
+.nav-mobile a:hover, .nav-mobile a:active {
+  background: var(--surface-hover, var(--glass-2, rgba(255,255,255,0.09)));
+  transform: translateX(4px);
+}
+.nav-mobile a .icon { font-size: 20px; }
+.nav-mobile-footer {
+  text-align: center; margin-top: 16px; padding-top: 16px;
+  border-top: 1px solid var(--border, var(--line, rgba(178,150,255,0.16)));
+  color: var(--muted, #9d97c6); font-size: 12px;
+  letter-spacing: 2px; font-family: 'Cinzel', serif;
+}
+</style>
+
+<div class="network-toast" id="networkToast" role="status" aria-live="polite">
+  <svg id="networkToastIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="1" y1="1" x2="23" y2="23"/>
+    <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
+    <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/>
+    <path d="M10.71 5.05A16 16 0 0 1 22.58 9"/>
+    <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/>
+    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+    <line x1="12" y1="20" x2="12.01" y2="20"/>
+  </svg>
+  <span id="networkToastText">オフラインです</span>
+</div>
+
+<header class="header" id="header">
+  <div class="header-inner">
+    <a href="https://www.zojezu.f5.si/" class="logo" onclick="typeof closeAll==='function'&&closeAll()">
+      <img class="logo-img" src="おいさしロゴ.png" alt="ZoJeZu" width="40" height="40" onerror="this.style.display='none'">
+      <div class="logo-text"><span>ZoJeZu</span></div>
+    </a>
+    <nav class="nav-desktop" aria-label="メインナビゲーション">
+      <a href="https://www.zojezu.f5.si/oijiiw">おいじぃ魔女のホームページ</a>
+      <a href="https://www.zojezu.f5.si/logo">ゾジェズのロゴページ</a>
+      <a href="https://www.zojezu.f5.si/faq">FAQ</a>
+      <a href="https://www.zojezu.f5.si/character">キャラクター</a>
+      <a href="https://www.zojezu.f5.si/blog">ブログ</a>
+      <a class="accent" href="https://www.zojezu.f5.si/ai">ゾジェズAI</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="searchBtn" aria-label="検索" title="検索" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="settingsBtn" aria-label="設定" title="設定">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="メニューを開く" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="settings-panel" id="settingsPanel" role="dialog" aria-label="設定">
+  <div class="settings-title">
+    <span>設定</span>
+    <button class="settings-close" id="settingsClose" aria-label="閉じる">×</button>
+  </div>
+  <div class="settings-group">
+    <span class="settings-label">テーマ</span>
+    <div class="settings-options" id="themeOptions">
+      <button data-value="auto" class="active">自動</button>
+      <button data-value="dark">ダーク</button>
+      <button data-value="light">ライト</button>
+    </div>
+  </div>
+  <div class="settings-group">
+    <span class="settings-label">言語</span>
+    <div class="settings-options" id="langOptions">
+      <button data-value="auto" class="active">自動</button>
+      <button data-value="ja">日本語</button>
+      <button data-value="en">English</button>
+    </div>
+  </div>
+</div>
+
+<div class="search-panel" id="searchPanel" role="dialog" aria-label="検索">
+  <div class="search-input-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="7"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input type="text" id="searchInput" autocomplete="off" placeholder="ページを検索…">
+    <button class="search-clear" id="searchClear" aria-label="クリア" hidden>×</button>
+  </div>
+  <div class="search-results" id="searchResults">
+    <div class="search-empty">キーワードを入力してください</div>
+  </div>
+</div>
+
+<nav class="nav-mobile" id="navMobile" aria-label="モバイルメニュー">
+  <a href="https://www.zojezu.f5.si/oijiiw" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🔮</span> <span>おいじぃ魔女のホームページ</span></a>
+  <a href="https://www.zojezu.f5.si/logo" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🎀</span> <span>ゾジェズのロゴページ</span></a>
+  <a href="https://www.zojezu.f5.si/ai" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🤖</span> <span>ゾジェズAIページ</span></a>
+  <a href="https://www.zojezu.f5.si/character" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">👤</span> <span>キャラクターページ</span></a>
+  <a href="https://www.zojezu.f5.si/faq" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">💬</span> <span>FAQページ</span></a>
+  <a href="https://www.zojezu.f5.si/blog" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">📝</span> <span>ブログ</span></a>
+  <div class="nav-mobile-footer">ZOJEZU · OFFICIAL</div>
+</nav>
+
+<script>
+(function () {
+  var ZOJEZU_SEARCH_INDEX = [
+    { title: "おいじぃ魔女のホームページ", url: "https://www.zojezu.f5.si/oijiiw", icon: "🔮", keywords: "おいじい おいじぃ 魔女 witch home ホーム" },
+    { title: "ゾジェズのロゴページ", url: "https://www.zojezu.f5.si/logo", icon: "🎀", keywords: "ロゴ logo デザイン" },
+    { title: "FAQ", url: "https://www.zojezu.f5.si/faq", icon: "💬", keywords: "faq よくある質問 question ヘルプ help" },
+    { title: "キャラクター", url: "https://www.zojezu.f5.si/character", icon: "👤", keywords: "キャラクター character 人物 プロフィール" },
+    { title: "ゾジェズAI", url: "https://www.zojezu.f5.si/ai", icon: "🤖", keywords: "ai チャット bot ボット 人工知能" },
+    { title: "ブログ", url: "https://www.zojezu.f5.si/blog", icon: "📝", keywords: "ブログ blog 記事 トレンド ノート" }
+  ];
+
+  function initHeader() {
+    var header = document.getElementById('header');
+    var hamburger = document.getElementById('hamburger');
+    var navMobile = document.getElementById('navMobile');
+    var settingsBtn = document.getElementById('settingsBtn');
+    var settingsPanel = document.getElementById('settingsPanel');
+    var settingsClose = document.getElementById('settingsClose');
+    var searchBtn = document.getElementById('searchBtn');
+    var searchPanel = document.getElementById('searchPanel');
+    var searchInput = document.getElementById('searchInput');
+    var searchResults = document.getElementById('searchResults');
+    var searchClear = document.getElementById('searchClear');
+    var themeOptions = document.getElementById('themeOptions');
+    var langOptions = document.getElementById('langOptions');
+    var networkToast = document.getElementById('networkToast');
+    var networkToastText = document.getElementById('networkToastText');
+
+    function closeAll() {
+      if (navMobile) navMobile.classList.remove('open');
+      if (hamburger) {
+        hamburger.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+      if (settingsPanel) settingsPanel.classList.remove('open');
+      if (searchPanel) searchPanel.classList.remove('open');
+      if (searchBtn) searchBtn.setAttribute('aria-expanded', 'false');
+    }
+    window.closeAll = closeAll;
+
+    /* ハンバーガーメニュー・設定パネルの開閉は、このheader.htmlを読み込む
+       各ページ側（index.html / faq.html / logo.html）のスクリプトが
+       既に同じ要素へ同じ処理（トグル）を実装しているため、ここでも
+       クリックイベントを登録すると「1回のクリックで2回トグルされて
+       見た目には何も起きない（＝ボタンが反応しないように見える）」
+       という不具合が発生していた。
+       そのため、ここでは重複登録をせず、各ページ側の実装に任せる。 */
 
     function applyTheme(value) {
       var root = document.documentElement;
