@@ -251,8 +251,25 @@ body{margin:0;overflow:hidden;background:#7ab8e8;font-family:'Segoe UI','Hiragin
 
 #cinema-hint{display:none;position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);color:#ffccdd;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:bold;pointer-events:none;z-index:9;text-align:center}
 
+#quality-btn{position:fixed;top:14px;left:354px;z-index:120;padding:8px 14px;background:rgba(15,25,40,0.88);color:#aaddff;border:1px solid rgba(100,180,255,0.35);border-radius:12px;font-weight:bold;font-size:13px;cursor:pointer;backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,0.4)}
+#quality-btn:hover{background:rgba(30,50,80,0.95);color:#fff}
+@media(max-width:820px){#quality-btn{left:auto;right:12px;top:12px}}
+#quality-panel{display:none;position:fixed;top:52px;left:354px;z-index:120;width:min(320px,92vw);background:rgba(10,18,32,0.94);border:1px solid rgba(100,180,255,0.35);border-radius:14px;padding:14px;color:#cfe8ff;box-shadow:0 10px 30px rgba(0,0,0,0.6);backdrop-filter:blur(12px)}
+@media(max-width:820px){#quality-panel{left:auto;right:12px}}
+.qs-title{font-size:14px;font-weight:bold;color:#fff;margin-bottom:8px}
+.qs-presets{display:flex;gap:6px;margin-bottom:10px}
+.qs-preset{flex:1;padding:7px 0;background:rgba(40,70,110,0.5);border:1px solid rgba(100,180,255,0.3);color:#aaddff;border-radius:9px;font-weight:bold;cursor:pointer;font-size:13px}
+.qs-preset.active{background:linear-gradient(135deg,#0066ff,#00ccff);color:#fff;border-color:#66ccff}
+.qs-rows label{display:block;font-size:12px;margin:9px 0;color:#aaddff}
+.qs-rows input[type=range]{width:100%;accent-color:#00aaff}
+.qs-check{display:flex;align-items:center;gap:6px}
+.qs-check input{accent-color:#00aaff}
+.qs-note{font-size:11px;color:#7788aa;margin-top:8px;line-height:1.5}
 
 </style>
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="modulepreload" href="https://unpkg.com/three@0.150.1/build/three.module.js" crossorigin>
 <script type="importmap">
 {"imports":{"three":"https://unpkg.com/three@0.150.1/build/three.module.js"}}
 </script>
@@ -302,6 +319,10 @@ body{margin:0;overflow:hidden;background:#7ab8e8;font-family:'Segoe UI','Hiragin
     <p>🎵 車内BGM・駅スピーカー（任意）</p>
     <label class="music-upload-label"><input type="file" id="music-file" accept="audio/*" style="display:none">📁 MP3を選択</label>
     <div id="music-name" style="color:#999;font-size:12px;margin-top:4px">未選択（車内：乗車中／駅：電車の通過・停車 約15秒前〜・通過後すぐ停止・バス対象外）</div>
+  </div>
+  <div class="info-box" id="quality-box-start">
+    <p>🎚️ クオリティ設定（超細かく調整可・自動保存・ゲーム中は左上⚙️からも変更可）</p>
+    <div class="qs-body" data-qs-root></div>
   </div>
   <div class="btn-container">
     <button id="start-btn">出発する（電車・バス同時運行）</button>
@@ -591,6 +612,8 @@ body{margin:0;overflow:hidden;background:#7ab8e8;font-family:'Segoe UI','Hiragin
     </div>
   </div>
 </div>
+<button id="quality-btn" type="button">⚙️ 画質</button>
+<div id="quality-panel"><div class="qs-title">🎚️ クオリティ設定</div><div class="qs-body" data-qs-root></div></div>
 <div id="crosshair"></div>
 <div id="tunnel-overlay"></div>
 <div id="mobile-ui">
@@ -604,6 +627,112 @@ body{margin:0;overflow:hidden;background:#7ab8e8;font-family:'Segoe UI','Hiragin
     <button id="btn-decel" style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ff9900,#ff5500);border:2px solid #fff;color:#fff;font-weight:bold;font-size:14px;box-shadow:0 4px 10px rgba(0,0,0,0.5)">減速</button>
   </div>
 </div>
+<script>
+window.QSYS=(function(){
+  var DEF={preset:'mid',pr:0.85,aa:false,fog:0.0012,far:2400,shadow:false};
+  var PRESETS={
+    low:{pr:0.55,aa:false,fog:0.0018,far:1400,shadow:false},
+    mid:{pr:0.85,aa:false,fog:0.0012,far:2400,shadow:false},
+    high:{pr:1.25,aa:true,fog:0.0010,far:3200,shadow:false},
+    ultra:{pr:2.0,aa:true,fog:0.0008,far:4200,shadow:true}
+  };
+  var conf={};
+  for(var k in DEF)conf[k]=DEF[k];
+  try{var s=JSON.parse(localStorage.getItem('oijii-quality')||'null');if(s){for(var k2 in DEF)if(s[k2]!==undefined)conf[k2]=s[k2];}}catch(e){}
+  var R=null,S=null,C=null;
+  function effPR(){return Math.min(window.devicePixelRatio||1,conf.pr);}
+  function save(){try{localStorage.setItem('oijii-quality',JSON.stringify(conf));}catch(e){}}
+  function apply(){
+    if(R){R.setPixelRatio(effPR());R.shadowMap.enabled=!!conf.shadow;}
+    if(S&&S.fog)S.fog.density=conf.fog;
+    if(C){C.far=conf.far;C.updateProjectionMatrix();}
+    save();
+  }
+  function bind(r,s,c){R=r;S=s;C=c;apply();}
+  var TPL=
+    '<div class="qs-presets">'+
+    '<button type="button" class="qs-preset" data-preset="low">低</button>'+
+    '<button type="button" class="qs-preset" data-preset="mid">中</button>'+
+    '<button type="button" class="qs-preset" data-preset="high">高</button>'+
+    '<button type="button" class="qs-preset" data-preset="ultra">最高</button>'+
+    '</div>'+
+    '<div class="qs-rows">'+
+    '<label>解像度倍率 <span data-qout="pr"></span><input type="range" min="0.5" max="2" step="0.05" data-q="pr"></label>'+
+    '<label>視界距離 <span data-qout="far"></span> m<input type="range" min="800" max="4500" step="50" data-q="far"></label>'+
+    '<label>霧の濃さ <span data-qout="fog"></span><input type="range" min="0" max="0.003" step="0.0001" data-q="fog"></label>'+
+    '<label class="qs-check"><input type="checkbox" data-q="aa"> アンチエイリアス（再読み込みで反映）</label>'+
+    '<label class="qs-check"><input type="checkbox" data-q="shadow"> 影を有効化（再読み込み推奨）</label>'+
+    '</div>'+
+    '<div class="qs-note">設定は自動保存・即時反映されます。<br>低：軽量優先 ／ 中：標準 ／ 高：綺麗 ／ 最高：最高画質</div>';
+  function fmt(key){
+    if(key==='pr')return conf.pr.toFixed(2)+'×';
+    if(key==='far')return String(Math.round(conf.far));
+    if(key==='fog')return conf.fog.toFixed(4);
+    return '';
+  }
+  function syncAll(){
+    var roots=document.querySelectorAll('[data-qs-root]');
+    for(var i=0;i<roots.length;i++){
+      var root=roots[i];
+      var ins=root.querySelectorAll('[data-q]');
+      for(var j=0;j<ins.length;j++){
+        var el=ins[j],key=el.getAttribute('data-q');
+        if(el.type==='checkbox')el.checked=!!conf[key];
+        else el.value=conf[key];
+      }
+      var outs=root.querySelectorAll('[data-qout]');
+      for(var m=0;m<outs.length;m++){outs[m].textContent=fmt(outs[m].getAttribute('data-qout'));}
+      var ps=root.querySelectorAll('.qs-preset');
+      for(var p2=0;p2<ps.length;p2++){
+        var on=ps[p2].getAttribute('data-preset')===conf.preset;
+        if(on)ps[p2].classList.add('active');else ps[p2].classList.remove('active');
+      }
+    }
+  }
+  function initUI(){
+    var roots=document.querySelectorAll('[data-qs-root]');
+    for(var i=0;i<roots.length;i++){
+      (function(root){
+        root.innerHTML=TPL;
+        var ps=root.querySelectorAll('.qs-preset');
+        for(var p2=0;p2<ps.length;p2++){
+          (function(btn){
+            btn.addEventListener('click',function(){
+              var p=btn.getAttribute('data-preset'),pre=PRESETS[p];
+              for(var k in pre)conf[k]=pre[k];
+              conf.preset=p;syncAll();apply();
+            });
+          })(ps[p2]);
+        }
+        var ins=root.querySelectorAll('[data-q]');
+        for(var j=0;j<ins.length;j++){
+          (function(el){
+            var key=el.getAttribute('data-q');
+            el.addEventListener('input',function(){
+              if(el.type==='checkbox')conf[key]=el.checked;
+              else conf[key]=parseFloat(el.value);
+              conf.preset='custom';syncAll();apply();
+            });
+          })(ins[j]);
+        }
+      })(roots[i]);
+    }
+    var qb=document.getElementById('quality-btn'),qp=document.getElementById('quality-panel');
+    if(qb&&qp){
+      qb.addEventListener('click',function(){
+        qp.style.display=(qp.style.display==='block')?'none':'block';
+      });
+      document.addEventListener('pointerdown',function(e){
+        if(qp.style.display==='block'&&!qp.contains(e.target)&&e.target!==qb&&!qb.contains(e.target))qp.style.display='none';
+      });
+    }
+    syncAll();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initUI);
+  else initUI();
+  return {conf:conf,effPR:effPR,bind:bind,apply:apply};
+})();
+</script>
 <script type="module">
 import * as THREE from 'three';
 
@@ -6309,11 +6438,12 @@ let airportBuilt=false;
 
 const scene=new THREE.Scene();
 scene.background=new THREE.Color(0x7ab4e5);
-scene.fog=new THREE.FogExp2(0x7ab4e5,0.0012);
-const camera=new THREE.PerspectiveCamera(85,innerWidth/innerHeight,0.1,2400);
+scene.fog=new THREE.FogExp2(0x7ab4e5,(window.QSYS?QSYS.conf.fog:0.0012));
+const camera=new THREE.PerspectiveCamera(85,innerWidth/innerHeight,0.1,(window.QSYS?QSYS.conf.far:2400));
 const camObj=new THREE.Object3D();camObj.position.set(0,2.2,0);camObj.add(camera);scene.add(camObj);
-const renderer=new THREE.WebGLRenderer({antialias:false,powerPreference:'high-performance'});
-renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,0.85));renderer.sortObjects=true;renderer.shadowMap.enabled=false;
+const renderer=new THREE.WebGLRenderer({antialias:(window.QSYS?!!QSYS.conf.aa:false),powerPreference:'high-performance'});
+renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(window.QSYS?QSYS.effPR():Math.min(window.devicePixelRatio||1,0.85));renderer.sortObjects=true;renderer.shadowMap.enabled=!!(window.QSYS&&QSYS.conf.shadow);
+if(window.QSYS)QSYS.bind(renderer,scene,camera);
 document.body.appendChild(renderer.domElement);
 const hemi=new THREE.HemisphereLight(0xc8e8ff,0x3a5a22,0.85);scene.add(hemi);
 const sun=new THREE.DirectionalLight(0xfff5dd,1.15);sun.position.set(250,550,180);scene.add(sun);scene.add(sun.target);
@@ -22000,7 +22130,7 @@ document.addEventListener('keydown',e=>{
     if(document.getElementById('start-screen').style.display==='none')triggerEmergencyStop();
   }
 });
-window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,0.85));});
+window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(window.QSYS?QSYS.effPR():Math.min(window.devicePixelRatio||1,0.85));});
 
 // ══════════════════════════════════════════════════════════════
 // 高速鉄道「超特急ジョジェズ号」 最高速度320km/h
@@ -22014,8 +22144,8 @@ const HSR_STATIONS=[
   {name:'おいじぃ魔女本社駅',pos:9350,ps:-1}
 ];
 const HSR_MAX_SPEED=320/3.6;   // m/s (320km/h)
-const HSR_ACCEL=0.85;          // m/s^2
-const HSR_DECEL=1.05;          // m/s^2
+const HSR_ACCEL=1.50;          // m/s^2（強化：約5.4km/h毎秒・お客さんが困らない上限内）
+const HSR_DECEL=1.70;          // m/s^2（強化：約6.1km/h毎秒・快適性確保の範囲）
 const HSR_ELEV=0.15;           // 既存路線とほぼ同じ高さ（地上）
 const HSR_LAT=22;              // 既存路線からの横オフセット
 const HSR_CAR_LEN=22;
@@ -22602,5 +22732,6 @@ try{
 
 animate();
 </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
