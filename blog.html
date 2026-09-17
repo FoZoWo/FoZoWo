@@ -69,6 +69,10 @@ body::before {
 }
 html[data-theme="dark"] body::before { mix-blend-mode: overlay; opacity: 0.35; }
 body > * { position: relative; z-index: 1; }
+/* header-slot 内の共有ヘッダーは固定表示のため、他の要素と同じ z-index:1 だと
+   後から並ぶ要素（.blog-hero や .container など）に隠れてしまう。
+   ID セレクタの詳細度で上の指定を上書きし、常に最前面に来るようにする */
+#header-slot { z-index: 100; }
 
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
@@ -654,7 +658,7 @@ article.post-full {
 </div>
 
 <footer class="blog-footer">
-  <p> <a href="https://www.zojezu.f5.si/blog">ブログトップ</a></p>
+  <p><a href="https://www.zojezu.f5.si/blog">ブログトップ</a></p>
 </footer>
 
 <script>
@@ -870,7 +874,7 @@ article.post-full {
         stopPolling();
       } else if (perm === 'default') {
         btn.dataset.state = 'default';
-        label.textContent = '通知を有効にする';
+        label.textContent = '🔔 通知を有効にする';
         stopPolling();
       } else if (notifEnabled) {
         btn.dataset.state = 'granted';
