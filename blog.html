@@ -493,6 +493,7 @@ article.post-full {
 }
 .notif-toggle:hover { border-color: var(--accent); background: var(--accent-soft); }
 .notif-toggle[data-state="granted"] { color: var(--accent-ink); border-color: var(--accent); background: var(--accent-soft); }
+.notif-toggle[data-state="off"] { color: var(--blog-muted); border-color: var(--line); background: var(--paper); }
 .notif-toggle[data-state="denied"] { color: var(--danger); border-color: var(--danger); background: var(--danger-soft); cursor: default; }
 .notif-toggle[data-state="unsupported"] { display: none; }
 @media (max-width: 480px) {
@@ -521,7 +522,7 @@ article.post-full {
 </div>
 
 <footer class="blog-footer">
-  <p>© ZoJeZu — <a href="https://www.zojezu.f5.si/blog">ブログトップ</a></p>
+  <p><a href="https://www.zojezu.f5.si/blog">ブログトップ</a></p>
 </footer>
 
 <script>
@@ -595,7 +596,16 @@ article.post-full {
 
   /* ---------- 通知（ブラウザ Notification API） ---------- */
   const NOTIFIED_IDS_KEY = 'zojezu_notified_ids';
+  const NOTIF_ENABLED_KEY = 'zojezu_notif_enabled';
   const POLL_MINUTES = 5; // 新着記事を確認する間隔
+
+  function loadNotifEnabled() {
+    try { return localStorage.getItem(NOTIF_ENABLED_KEY) !== '0'; } catch (e) { return true; }
+  }
+  function saveNotifEnabled(enabled) {
+    try { localStorage.setItem(NOTIF_ENABLED_KEY, enabled ? '1' : '0'); } catch (e) { /* ignore */ }
+  }
+  let notifEnabled = loadNotifEnabled();
 
   function loadNotifiedIds() {
     try {
@@ -623,7 +633,7 @@ article.post-full {
 
   let pollTimerId = null;
   async function pollForNewPosts() {
-    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    if (!('Notification' in window) || Notification.permission !== 'granted' || !notifEnabled) return;
     try {
       const response = await fetch(API_URL);
       if (!response.ok) return;
@@ -660,6 +670,9 @@ article.post-full {
     if (pollTimerId) return;
     pollTimerId = setInterval(pollForNewPosts, POLL_MINUTES * 60 * 1000);
   }
+  function stopPolling() {
+    if (pollTimerId) { clearInterval(pollTimerId); pollTimerId = null; }
+  }
 
   function initNotifToggle() {
     const btn = document.getElementById('notif-toggle');
@@ -672,23 +685,43 @@ article.post-full {
         return;
       }
       const perm = Notification.permission;
-      btn.dataset.state = perm;
-      if (perm === 'granted') {
-        label.textContent = '通知オン';
-        startPolling();
-      } else if (perm === 'denied') {
+      if (perm === 'denied') {
+        btn.dataset.state = 'denied';
         label.textContent = '通知がブロックされています';
-      } else {
+        stopPolling();
+      } else if (perm === 'default') {
+        btn.dataset.state = 'default';
         label.textContent = '通知を有効にする';
+        stopPolling();
+      } else if (notifEnabled) {
+        btn.dataset.state = 'granted';
+        label.textContent = '通知オン（クリックでオフ）';
+        startPolling();
+      } else {
+        btn.dataset.state = 'off';
+        label.textContent = '通知はオフです（クリックでオン）';
+        stopPolling();
       }
     }
 
     btn.addEventListener('click', async function () {
-      if (!('Notification' in window) || Notification.permission !== 'default') return;
-      const perm = await Notification.requestPermission();
-      if (perm === 'granted') {
-        // 有効化した時点までの記事は通知済み扱いにし、これ以降の新着だけ通知する
-        saveNotifiedIds(new Set(allPosts.map(p => String(p.id))));
+      if (!('Notification' in window) || Notification.permission === 'denied') return;
+      if (Notification.permission === 'default') {
+        const perm = await Notification.requestPermission();
+        if (perm === 'granted') {
+          notifEnabled = true;
+          saveNotifEnabled(true);
+          // 有効化した時点までの記事は通知済み扱いにし、これ以降の新着だけ通知する
+          saveNotifiedIds(new Set(allPosts.map(p => String(p.id))));
+        }
+      } else {
+        // 許可済みなら ON / OFF を切り替えるだけ（ブラウザの許可自体は取り消せないため）
+        notifEnabled = !notifEnabled;
+        saveNotifEnabled(notifEnabled);
+        if (notifEnabled) {
+          // 再度ONにした時点までの新着はまとめて通知済み扱いにする
+          saveNotifiedIds(new Set(allPosts.map(p => String(p.id))));
+        }
       }
       refresh();
     });
