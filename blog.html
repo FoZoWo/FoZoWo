@@ -470,12 +470,44 @@ article.post-full {
   text-decoration: none;
   font-size: 0.85rem;
 }
+
+/* ===== 通知（ブラウザ Notification API） ===== */
+.notif-toggle {
+  position: fixed;
+  top: 14px;
+  right: 0.7rem;
+  z-index: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font: inherit;
+  font-size: 0.76rem;
+  padding: 0.42rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: var(--blog-shadow);
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.notif-toggle:hover { border-color: var(--accent); background: var(--accent-soft); }
+.notif-toggle[data-state="granted"] { color: var(--accent-ink); border-color: var(--accent); background: var(--accent-soft); }
+.notif-toggle[data-state="denied"] { color: var(--danger); border-color: var(--danger); background: var(--danger-soft); cursor: default; }
+.notif-toggle[data-state="unsupported"] { display: none; }
+@media (max-width: 480px) {
+  .notif-toggle { font-size: 0.7rem; padding: 0.36rem 0.65rem; top: 12px; }
+}
 </style>
 </head>
 <body>
 
 <!-- ヘッダー挿入先 -->
 <div id="header-slot"></div>
+
+<button type="button" id="notif-toggle" class="notif-toggle" data-state="default">
+  <span aria-hidden="true">🔔</span><span id="notif-toggle-label">通知を有効にする</span>
+</button>
 
 <div class="blog-hero">
   <span class="mark" aria-hidden="true"></span>
@@ -561,6 +593,109 @@ article.post-full {
     return !loadReadIds().has(String(id));
   }
 
+  /* ---------- 通知（ブラウザ Notification API） ---------- */
+  const NOTIFIED_IDS_KEY = 'zojezu_notified_ids';
+  const POLL_MINUTES = 5; // 新着記事を確認する間隔
+
+  function loadNotifiedIds() {
+    try {
+      const raw = localStorage.getItem(NOTIFIED_IDS_KEY);
+      return new Set(raw ? JSON.parse(raw) : []);
+    } catch (e) { return new Set(); }
+  }
+  function saveNotifiedIds(set) {
+    try { localStorage.setItem(NOTIFIED_IDS_KEY, JSON.stringify(Array.from(set))); } catch (e) { /* ignore */ }
+  }
+
+  function fireNotification(post) {
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    try {
+      const n = new Notification('ZoJeZuブログ — 新着記事', {
+        body: post.title,
+        tag: 'zojezu-post-' + post.id,
+      });
+      n.onclick = function () {
+        window.focus();
+        window.location.href = `?id=${post.id}`;
+      };
+    } catch (e) { /* ignore */ }
+  }
+
+  let pollTimerId = null;
+  async function pollForNewPosts() {
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    try {
+      const response = await fetch(API_URL);
+      if (!response.ok) return;
+      const data = await response.json();
+      if (!data.success) return;
+      const fetched = data.posts || [];
+      const notifiedIds = loadNotifiedIds();
+      const existingIds = new Set(allPosts.map(p => String(p.id)));
+      const newOnes = fetched.filter(p => !notifiedIds.has(String(p.id)));
+      if (newOnes.length === 0) return;
+
+      newOnes.forEach(p => {
+        if (!existingIds.has(String(p.id))) allPosts.push(p);
+        notifiedIds.add(String(p.id));
+      });
+      allPosts.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      saveNotifiedIds(notifiedIds);
+
+      newOnes
+        .slice()
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .forEach(fireNotification);
+
+      // 開いているリスト表示があれば更新（NEWバッジ・件数を反映）
+      const listBody = document.getElementById('list-body');
+      if (listBody) renderListBody();
+      renderArchive();
+    } catch (e) {
+      console.warn('新着記事の確認に失敗しました:', e);
+    }
+  }
+
+  function startPolling() {
+    if (pollTimerId) return;
+    pollTimerId = setInterval(pollForNewPosts, POLL_MINUTES * 60 * 1000);
+  }
+
+  function initNotifToggle() {
+    const btn = document.getElementById('notif-toggle');
+    const label = document.getElementById('notif-toggle-label');
+    if (!btn) return;
+
+    function refresh() {
+      if (!('Notification' in window)) {
+        btn.dataset.state = 'unsupported';
+        return;
+      }
+      const perm = Notification.permission;
+      btn.dataset.state = perm;
+      if (perm === 'granted') {
+        label.textContent = '通知オン';
+        startPolling();
+      } else if (perm === 'denied') {
+        label.textContent = '通知がブロックされています';
+      } else {
+        label.textContent = '通知を有効にする';
+      }
+    }
+
+    btn.addEventListener('click', async function () {
+      if (!('Notification' in window) || Notification.permission !== 'default') return;
+      const perm = await Notification.requestPermission();
+      if (perm === 'granted') {
+        // 有効化した時点までの記事は通知済み扱いにし、これ以降の新着だけ通知する
+        saveNotifiedIds(new Set(allPosts.map(p => String(p.id))));
+      }
+      refresh();
+    });
+
+    refresh();
+  }
+
   async function initBlog() {
     const container = document.getElementById('posts-container');
     const loading = document.getElementById('loading');
@@ -582,9 +717,14 @@ article.post-full {
         // 初回訪問時は既存の記事すべてを既読扱いにし、これ以降に届いた記事だけNEWにする
         saveReadIds(new Set(allPosts.map(p => String(p.id))));
       }
+      if (localStorage.getItem(NOTIFIED_IDS_KEY) === null) {
+        // 初回訪問時は既存の記事を通知済み扱いにし、これ以降に届いた記事だけ通知する
+        saveNotifiedIds(new Set(allPosts.map(p => String(p.id))));
+      }
 
       if (postId) renderSinglePost(container, postId);
       else renderListPage(container);
+      initNotifToggle();
     } catch (error) {
       loading.style.display = 'none';
       container.innerHTML = `<div class="error-message">エラーが発生しました: ${escapeHTML(error.message)}</div>`;
