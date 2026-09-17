@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#3a1c5e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -346,6 +346,346 @@
     .online-home-btn .ohb-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
     .online-home-btn .ohb-title { font-size: 0.88rem; font-weight: 800; letter-spacing: 0.3px; }
     .online-home-btn .ohb-sub { font-size: 0.65rem; color: #e0c4ff; opacity: 0.9; }
+
+
+
+
+
+
+/* ===== すごろく Three.js 超リアル 3D（スマホ対応） ===== */
+.sugoroku-home-btn {
+    display: flex; align-items: center; gap: 8px;
+    width: 100%; max-width: 480px; margin: 8px auto 4px;
+    padding: 12px 14px; border: 1.5px solid rgba(241, 196, 15, 0.55);
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(241,196,15,0.28), rgba(155,89,182,0.42));
+    color: #fff; cursor: pointer;
+    box-shadow: 0 4px 12px rgba(120, 80, 20, 0.28);
+    text-align: left; transition: transform 0.12s ease, filter 0.12s ease;
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+.sugoroku-home-btn:active { transform: scale(0.97); filter: brightness(1.1); }
+.sugoroku-home-btn .ohb-icon { font-size: 1.4rem; }
+.sugoroku-home-btn .ohb-title { font-size: 0.88rem; font-weight: 800; }
+.sugoroku-home-btn .ohb-sub { font-size: 0.65rem; color: #ffe9a8; opacity: 0.95; }
+
+#sugoroku-overlay {
+    display: none; position: fixed; inset: 0; z-index: 13000;
+    background: #05030e; color: #f5eeff; flex-direction: column; overflow: hidden;
+    /* iOS safe area */
+    padding-top: env(safe-area-inset-top, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    padding-left: env(safe-area-inset-left, 0);
+    padding-right: env(safe-area-inset-right, 0);
+    -webkit-overflow-scrolling: touch;
+}
+#sugoroku-overlay.show { display: flex; }
+
+.sg-header {
+    position: relative; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 12px; gap: 8px;
+    background: linear-gradient(90deg, rgba(40,20,70,0.92), rgba(20,10,40,0.92));
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-bottom: 2px solid rgba(241,196,15,0.4);
+    flex-shrink: 0;
+}
+.sg-header h2 {
+    margin: 0; font-size: 0.95rem; font-weight: 800;
+    text-shadow: 0 0 12px rgba(241,196,15,0.5);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 70vw;
+}
+.sg-header .sg-close {
+    background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.25);
+    color: #fff; border-radius: 10px; padding: 8px 14px; cursor: pointer; font-weight: 700;
+    font-size: 0.85rem; min-height: 40px;
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+
+.sg-body {
+    position: relative; z-index: 2;
+    flex: 1; min-height: 0; overflow: hidden;
+    display: flex; flex-direction: column;
+}
+
+#sg-three-wrap {
+    position: relative; flex: 1 1 42%;
+    min-height: 160px; max-height: 52vh;
+    background: radial-gradient(ellipse at center, #1a1040 0%, #0a0618 70%);
+}
+#sg-three-canvas {
+    display: block; width: 100%; height: 100%;
+    touch-action: none;
+}
+.sg-view-badge {
+    position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
+    z-index: 15; font-size: 0.65rem; font-weight: 800;
+    background: rgba(0,0,0,0.7); border: 1px solid rgba(241,196,15,0.5);
+    border-radius: 20px; padding: 4px 10px; color: #ffe9a0;
+    pointer-events: none; white-space: nowrap; max-width: 90%;
+    overflow: hidden; text-overflow: ellipsis;
+}
+.sg-round-chip {
+    position: absolute; top: 6px; right: 6px; z-index: 15;
+    font-size: 0.68rem; font-weight: 900;
+    background: linear-gradient(135deg, rgba(241,196,15,0.4), rgba(230,126,34,0.35));
+    border: 1.5px solid rgba(241,196,15,0.65);
+    border-radius: 20px; padding: 4px 10px; color: #fff8e0; pointer-events: none;
+}
+.sg-legend {
+    position: absolute; bottom: 4px; left: 4px; z-index: 15;
+    font-size: 0.55rem; line-height: 1.35;
+    background: rgba(0,0,0,0.75); border-radius: 10px; padding: 5px 7px;
+    color: #e8dcf8; max-width: 48%; pointer-events: none;
+    border: 1px solid rgba(180,140,255,0.3);
+}
+.sg-legend b { color: #ffe9a0; display: block; margin-bottom: 1px; }
+.sg-legend .lg-row { display: flex; align-items: center; gap: 4px; margin: 1px 0; }
+.sg-legend .lg-dot {
+    width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,0.35);
+}
+
+.sg-hud {
+    position: relative; z-index: 15;
+    flex: 1 1 48%; min-height: 0;
+    background: linear-gradient(180deg, rgba(12,8,28,0.55), rgba(8,4,20,0.98) 10%);
+    padding: 6px 8px 10px;
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+    border-top: 1px solid rgba(180,140,255,0.25);
+}
+.sg-status-bar {
+    display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;
+    margin-bottom: 6px;
+}
+.sg-chip {
+    font-size: 0.68rem; font-weight: 800;
+    background: rgba(155,89,182,0.4); border: 1px solid rgba(199,125,255,0.45);
+    border-radius: 12px; padding: 4px 9px; color: #f0e6ff;
+}
+.sg-chip.gold {
+    background: linear-gradient(135deg, rgba(241,196,15,0.35), rgba(230,126,34,0.3));
+    border-color: rgba(241,196,15,0.6); color: #ffe9a0;
+}
+
+.sg-players {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+}
+.sg-player {
+    background: linear-gradient(160deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04));
+    border: 2px solid rgba(180,140,255,0.35);
+    border-radius: 12px; padding: 7px 8px;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    position: relative; overflow: hidden;
+}
+.sg-player.active {
+    border-color: #f1c40f;
+    box-shadow: 0 0 0 2px rgba(241,196,15,0.5), 0 0 16px rgba(241,196,15,0.25);
+    background: linear-gradient(160deg, rgba(241,196,15,0.22), rgba(155,89,182,0.15));
+}
+.sg-player.active::before {
+    content: '▶ 番';
+    position: absolute; top: 0; right: 0;
+    font-size: 0.5rem; font-weight: 900;
+    background: #f1c40f; color: #2c1a00;
+    padding: 2px 6px; border-radius: 0 10px 0 8px;
+}
+.sg-player .sp-top { display: flex; align-items: center; gap: 4px; font-weight: 800; font-size: 0.78rem; }
+.sg-player .sp-badge { font-size: 0.5rem; padding: 2px 5px; border-radius: 6px; font-weight: 800; }
+.sg-player .sp-badge.you { background: #e74c3c; color: #fff; }
+.sg-player .sp-badge.cpu { background: #5a6a8a; color: #e0e8ff; }
+.sg-player .sp-meta {
+    font-size: 0.65rem; color: #c9b3e8;
+    display: flex; justify-content: space-between; margin-top: 3px; align-items: center;
+}
+.sg-player .sp-score {
+    color: #f1c40f; font-weight: 900; font-size: 0.78rem;
+    background: rgba(241,196,15,0.15); padding: 2px 6px; border-radius: 8px;
+}
+.sg-player .sp-rank-hint { font-size: 0.58rem; color: #b8a0d8; margin-top: 2px; font-weight: 700; }
+.sg-player .sp-buffs { font-size: 0.55rem; margin-top: 2px; color: #9fdf9f; }
+
+.sg-dice-area {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 10px; margin-top: 6px;
+    background: linear-gradient(160deg, rgba(40,25,70,0.75), rgba(0,0,0,0.55));
+    border-radius: 14px;
+    border: 2px solid rgba(241,196,15,0.4);
+}
+.sg-turn-label { font-size: 0.92rem; font-weight: 900; width: 100%; text-align: center; }
+.sg-turn-label span { color: #f1c40f; text-shadow: 0 0 10px rgba(241,196,15,0.5); }
+.sg-roll-btn {
+    background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
+    color: #2c1a00; font-weight: 900; font-size: 1.05rem;
+    border: none; border-radius: 16px;
+    padding: 14px 24px; cursor: pointer;
+    box-shadow: 0 5px 18px rgba(241,196,15,0.55);
+    min-width: min(90vw, 260px); min-height: 52px;
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+    user-select: none; -webkit-user-select: none;
+}
+.sg-roll-btn:not(:disabled):active { transform: scale(0.96); filter: brightness(1.08); }
+.sg-roll-btn:disabled { opacity: 0.42; cursor: not-allowed; filter: grayscale(0.45); }
+.sg-dice-readout {
+    font-size: 2.2rem; font-weight: 900; color: #fff;
+    min-width: 52px; text-align: center;
+    text-shadow: 0 0 16px rgba(241,196,15,0.8), 0 2px 0 #c0392b;
+    background: rgba(0,0,0,0.35); border-radius: 12px; padding: 4px 10px;
+    border: 1px solid rgba(241,196,15,0.35);
+}
+
+.sg-log {
+    font-size: 0.68rem; color: #c9b3e8; max-height: 56px; overflow-y: auto;
+    background: rgba(0,0,0,0.45); border-radius: 10px; padding: 6px 8px; line-height: 1.35;
+    margin-top: 6px; border: 1px solid rgba(180,140,255,0.2);
+    -webkit-overflow-scrolling: touch;
+}
+.sg-log div { margin-bottom: 2px; }
+.sg-log .lg-gain { color: #2ecc71; font-weight: 700; }
+.sg-log .lg-lose { color: #e74c3c; font-weight: 700; }
+.sg-log .lg-special { color: #f1c40f; font-weight: 700; }
+
+.sg-mini-banner {
+    display: none; text-align: center; padding: 12px; margin-top: 6px;
+    background: linear-gradient(135deg, rgba(155,89,182,0.65), rgba(241,196,15,0.45));
+    border-radius: 14px; border: 2px solid rgba(241,196,15,0.6);
+    font-weight: 800; font-size: 0.85rem;
+}
+.sg-mini-banner.show { display: block; animation: sgPulse 0.8s ease; }
+@keyframes sgPulse {
+    0% { transform: scale(0.9); opacity: 0; }
+    60% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.sg-setup {
+    position: absolute; inset: 0; z-index: 30;
+    display: flex; flex-direction: column; gap: 10px;
+    padding: 14px; padding-bottom: max(14px, env(safe-area-inset-bottom));
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+    background: rgba(8,4,20,0.96);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+.sg-setup input, .sg-setup select {
+    width: 100%; padding: 12px 12px; border-radius: 10px;
+    border: 1.5px solid rgba(180,140,255,0.4);
+    background: rgba(0,0,0,0.35); color: #fff; font-size: 16px; /* 16pxでiOSズーム防止 */
+    box-sizing: border-box;
+}
+.sg-setup-row { display: flex; align-items: center; gap: 8px; }
+.sg-start-btn {
+    background: linear-gradient(135deg, #9b59b6, #6c3483);
+    color: #fff; font-weight: 900; font-size: 1.05rem; border: none;
+    border-radius: 14px; padding: 16px; cursor: pointer; margin-top: 6px;
+    box-shadow: 0 4px 16px rgba(155,89,182,0.4);
+    min-height: 52px;
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+.sg-start-btn:active { transform: scale(0.98); }
+.sg-rules {
+    font-size: 0.72rem; color: #cdb8e8; line-height: 1.5;
+    background: rgba(0,0,0,0.28); border-radius: 12px; padding: 10px 12px;
+    border: 1px solid rgba(180,140,255,0.2);
+}
+
+.sg-goal-overlay {
+    display: none; position: absolute; inset: 0; z-index: 40;
+    background: rgba(8,4,20,0.96); align-items: center; justify-content: center;
+    flex-direction: column; gap: 12px; padding: 20px; text-align: center;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.sg-goal-overlay.show { display: flex; }
+.sg-goal-overlay h3 { margin: 0; font-size: 1.4rem; color: #f1c40f;
+    text-shadow: 0 0 24px rgba(241,196,15,0.7); }
+.sg-goal-overlay .sg-final { font-size: 0.88rem; line-height: 1.65; white-space: pre-line; }
+
+.sg-event-popup {
+    display: none; position: absolute; left: 50%; top: 32%; transform: translate(-50%,-50%) scale(0.8);
+    z-index: 25; min-width: 200px; max-width: 92%;
+    background: linear-gradient(165deg, #3a1d6af5, #1a0c2ef5);
+    border: 3px solid rgba(241,196,15,0.65); border-radius: 18px;
+    padding: 16px 18px; text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    opacity: 0; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+    pointer-events: none;
+}
+.sg-event-popup.show { display: block; opacity: 1; transform: translate(-50%,-50%) scale(1); }
+.sg-event-popup.good { border-color: #2ecc71; }
+.sg-event-popup.bad { border-color: #e74c3c; }
+.sg-event-popup .ep-icon { font-size: 2.3rem; margin-bottom: 4px; }
+.sg-event-popup .ep-title { font-weight: 900; font-size: 1.05rem; color: #f1c40f; }
+.sg-event-popup .ep-desc { font-size: 0.85rem; color: #e0d0f5; margin-top: 5px; line-height: 1.4; }
+
+.sg-dice-telop {
+    display: none; position: absolute; inset: 0; z-index: 28;
+    align-items: center; justify-content: center; flex-direction: column;
+    background: rgba(5,3,18,0.72); pointer-events: none;
+}
+.sg-dice-telop.show { display: flex; animation: sgTelopIn 0.35s ease; }
+.sg-dice-telop .dt-label {
+    font-size: 0.85rem; font-weight: 800; color: #ffe9a0; letter-spacing: 2px;
+    margin-bottom: 6px;
+}
+.sg-dice-telop .dt-num {
+    font-size: clamp(3.5rem, 18vw, 5.5rem); font-weight: 900; color: #fff;
+    line-height: 1;
+    text-shadow: 0 0 30px rgba(241,196,15,0.9), 0 4px 0 #c0392b;
+    animation: sgTelopBounce 0.55s cubic-bezier(0.34,1.56,0.64,1);
+}
+.sg-dice-telop .dt-sub {
+    margin-top: 8px; font-size: 0.95rem; font-weight: 800; color: #e0d0f5;
+    padding: 0 12px; text-align: center;
+}
+@keyframes sgTelopIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sgTelopBounce {
+    0% { transform: scale(0.2) rotate(-12deg); opacity: 0; }
+    60% { transform: scale(1.15) rotate(3deg); }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+.sg-fx-float {
+    position: absolute; font-weight: 900; font-size: 1.5rem; z-index: 26;
+    animation: sgFloatUp 1.3s ease forwards; pointer-events: none;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.7);
+}
+.sg-fx-float.plus { color: #2ecc71; }
+.sg-fx-float.minus { color: #e74c3c; }
+@keyframes sgFloatUp {
+    0% { opacity: 1; transform: translate(-50%,0) scale(0.5); }
+    25% { transform: translate(-50%,-28px) scale(1.35); }
+    100% { opacity: 0; transform: translate(-50%,-95px) scale(1); }
+}
+
+.sg-screen-flash {
+    position: absolute; inset: 0; z-index: 22; pointer-events: none;
+    opacity: 0; transition: opacity 0.15s;
+}
+.sg-screen-flash.show { opacity: 1; }
+.sg-screen-flash.green { background: rgba(46,204,113,0.25); }
+.sg-screen-flash.red { background: rgba(231,76,60,0.25); }
+.sg-screen-flash.gold { background: rgba(241,196,15,0.3); }
+.sg-screen-flash.purple { background: rgba(155,89,182,0.3); }
+
+/* --- スマホ縦向き --- */
+@media (max-width: 600px) {
+    #sg-three-wrap { flex: 0 0 auto; height: 38vh; min-height: 150px; max-height: 42vh; }
+    .sg-hud { flex: 1 1 auto; max-height: none; padding-bottom: max(10px, env(safe-area-inset-bottom)); }
+    .sg-legend { font-size: 0.5rem; max-width: 42%; }
+    .sg-header h2 { font-size: 0.85rem; }
+    .sg-players { gap: 5px; }
+    .sg-roll-btn { width: 100%; max-width: none; min-width: 0; font-size: 1.1rem; padding: 16px 20px; }
+    .sg-dice-area { padding: 10px 8px; }
+    .sg-log { max-height: 48px; }
+}
+/* 横向きスマホ */
+@media (max-width: 900px) and (orientation: landscape) {
+    #sg-three-wrap { flex: 1 1 50%; max-height: none; min-height: 120px; }
+    .sg-hud { flex: 1 1 50%; }
+    .sg-legend { display: none; }
+    .sg-log { max-height: 36px; }
+    .sg-roll-btn { min-height: 44px; padding: 10px 18px; font-size: 0.95rem; }
+}
 
     #online-flow-overlay {
         display: none;
@@ -4343,6 +4683,15 @@ function __notifySplashDone(){
                         <span class="ohb-sub" data-i18n="home.online.sub">友達と合言葉でつながる</span>
                     </span>
                 </button>
+
+                <button class="sugoroku-home-btn" id="sugoroku-home-btn" onclick="openSugorokuMode()" type="button">
+                    <span class="ohb-icon">🎲</span>
+                    <span class="ohb-text">
+                        <span class="ohb-title">Three.js超リアルすごろく</span>
+                        <span class="ohb-sub">自分視点・Three.js・CPU3人・毎回違う世界</span>
+                    </span>
+                </button>
+
             </div>
 
             <!-- ゲーム -->
@@ -11669,6 +12018,14 @@ document.addEventListener('click', function(e) {
 ========================================================= */
 let currentGameId = null;
 let isChallengeMode = false;
+
+let isSugorokuMode = false;
+const SUGOROKU_RANK_POINTS = { 1: 10, 2: 5, 3: 3, 4: 1 }; /* ミニゲームポイント */
+const SG_BOARD_LEN = 20;
+const SG_AVATARS = ['🔴','🔵','🟢','🟡'];
+const SG_COLORS = ['#e74c3c','#3498db','#2ecc71','#f1c40f'];
+let sgState = null;
+
 let currentBlobUrl = null;
 
 /* =========================================================
@@ -12203,6 +12560,7 @@ function goHome() {
 
     currentGameId = null;
     isChallengeMode = false;
+    /* isSugorokuMode はすごろく復帰時に別途クリア */
 
     refreshHome();
     if (typeof refreshClockWidget === 'function') refreshClockWidget();
@@ -12215,9 +12573,56 @@ window.addEventListener('message', (e) => {
     const d = getAppData();
 
     if (data.type === 'goHome') {
+        if (isSugorokuMode) {
+            /* すごろく中のホーム要求はボードに戻す */
+            try { document.getElementById('game-screen').style.display = 'none'; } catch(ex){}
+            const ov = document.getElementById('sugoroku-overlay');
+            if (ov) { ov.classList.add('show'); }
+            isSugorokuMode = false;
+            if (typeof resumeThree === 'function') try { resumeThree(); } catch(ex){}
+            if (sgState) {
+                if (data.rank != null) {
+                    onSugorokuMiniGameEnd(data.rank);
+                } else {
+                    /* 順位なしで戻った場合はミニゲームをスキップ扱い（最下位相当） */
+                    onSugorokuMiniGameEnd(4);
+                }
+            }
+            return;
+        }
         goHome();
     } else if (data.type === 'gameEnd') {
         const rank = data.rank;
+        if (isSugorokuMode) {
+            /* ミニゲームポイントはすごろく側で加算。ここでは本体ptを増やさない */
+            if (d) {
+                d.totalGamesPlayed = (d.totalGamesPlayed || 0) + 1;
+                d.gameCounts = d.gameCounts || {};
+                if (currentGameId) d.gameCounts[currentGameId] = (d.gameCounts[currentGameId] || 0) + 1;
+                saveRoot();
+            }
+            const mp = (SUGOROKU_RANK_POINTS && SUGOROKU_RANK_POINTS[rank]) || 1;
+            showPointToast((typeof getAppLang==='function'&&getAppLang()==='en')
+                ? (`+${mp} MP 🎲 Mini-game!`)
+                : (`+${mp} MP 🎲 ミニゲームポイント！`));
+            witchSpeak((typeof getAppLang==='function'&&getAppLang()==='en')
+                ? (`Rank ${rank}! +${mp} mini-game points!`)
+                : (`すごろく ${rank}位！ミニゲームポイント +${mp} じゃ！`));
+            setTimeout(function(){
+                try {
+                    const frame = document.getElementById('game-frame');
+                    if (frame) frame.src = 'about:blank';
+                    const gs = document.getElementById('game-screen');
+                    if (gs) gs.style.display = 'none';
+                } catch(ex){}
+                isSugorokuMode = false;
+                isChallengeMode = false;
+                const ov = document.getElementById('sugoroku-overlay');
+                if (ov) ov.classList.add('show');
+                if (typeof onSugorokuMiniGameEnd === 'function') onSugorokuMiniGameEnd(rank);
+            }, 900);
+            return;
+        }
         if (isChallengeMode) {
             const points = RANK_POINTS[rank] || 5;
             d.totalPoints = (d.totalPoints || 0) + points;
@@ -22265,6 +22670,1610 @@ async function ensureGameHtml(gameId) {
         window.oijPrompt(msg, def);
         return null;
     };
+})();
+</script>
+
+
+
+
+<!-- ===== すごろくモード Three.js 超リアル ===== -->
+<div id="sugoroku-overlay" aria-hidden="true">
+  <div class="sg-header">
+    <h2>🎲 Three.js 超リアルすごろく</h2>
+    <button type="button" class="sg-close" onclick="closeSugorokuMode()">閉じる</button>
+  </div>
+  <div class="sg-body">
+    <div id="sg-setup-panel" class="sg-setup">
+      <div class="sg-rules">
+        <b>✨ Three.js 超リアル3D世界</b><br>
+        ・円形盤＋色分けマス<br>
+        ・複雑ギミック・効果音・出目テロップ<br>
+        ・ラウンド 3〜10 / MPで最終報酬<br>
+        ・出目6ボーナス / 同じマスで出会い
+      </div>
+      <div class="sg-setup-row"><span style="font-size:1.4rem">🧙</span><input id="sg-name0" maxlength="12" value="" placeholder="あなたの名前"></div>
+      <div class="sg-setup-row" style="opacity:0.85"><span style="font-size:1.2rem">🤖</span><span style="font-size:0.85rem;color:#b8a0d8;">CPU・蒼 / 翠 / 金 が自動参加</span></div>
+      <div class="sg-setup-row" style="flex-direction:column;align-items:stretch;gap:6px;">
+        <label style="font-size:0.85rem;font-weight:800;color:#ffe9a0;">ラウンド数</label>
+        <select id="sg-rounds" style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid rgba(180,140,255,0.4);background:rgba(0,0,0,0.35);color:#fff;font-size:0.95rem;">
+          <option value="3">3 ラウンド</option>
+          <option value="4">4 ラウンド</option>
+          <option value="5" selected>5 ラウンド</option>
+          <option value="6">6 ラウンド</option>
+          <option value="7">7 ラウンド</option>
+          <option value="8">8 ラウンド</option>
+          <option value="9">9 ラウンド</option>
+          <option value="10">10 ラウンド</option>
+        </select>
+      </div>
+      <div class="sg-rules">
+        <b>ポイント</b><br>
+        ミニゲーム：1位10 / 2位5 / 3位3 / 4位1 MP<br>
+        終了後：1位100pt / 2位50 / 3位30 / 4位10
+      </div>
+      <button type="button" class="sg-start-btn" onclick="startSugorokuGame()">⚔️ 3D世界へ入る！</button>
+    </div>
+
+    <div id="sg-play-panel" style="display:none;flex:1;min-height:0;flex-direction:column;">
+      <div id="sg-three-wrap">
+        <canvas id="sg-three-canvas"></canvas>
+        <div class="sg-view-badge" id="sg-view-badge">視点: 円形盤</div>
+        <div class="sg-round-chip" id="sg-round-chip">R1</div>
+        <div class="sg-legend" id="sg-legend">
+          <b>マスの色</b>
+          <div class="lg-row"><span class="lg-dot" style="background:#2ecc71"></span>緑＝獲得</div>
+          <div class="lg-row"><span class="lg-dot" style="background:#e74c3c"></span>赤＝減少</div>
+          <div class="lg-row"><span class="lg-dot" style="background:#3498db"></span>青＝進む</div>
+          <div class="lg-row"><span class="lg-dot" style="background:#9b59b6"></span>紫＝戻る</div>
+          <div class="lg-row"><span class="lg-dot" style="background:#f1c40f"></span>金＝特殊</div>
+        </div>
+        <div class="sg-screen-flash" id="sg-flash"></div>
+        <div class="sg-dice-telop" id="sg-dice-telop">
+          <div class="dt-label">出目</div>
+          <div class="dt-num" id="sg-dt-num">?</div>
+          <div class="dt-sub" id="sg-dt-sub">マスへ進む…</div>
+        </div>
+        <div class="sg-event-popup" id="sg-event-popup">
+          <div class="ep-icon" id="sg-ep-icon">✨</div>
+          <div class="ep-title" id="sg-ep-title">イベント</div>
+          <div class="ep-desc" id="sg-ep-desc"></div>
+        </div>
+      </div>
+      <div class="sg-hud">
+        <div class="sg-status-bar" id="sg-status-bar">
+          <span class="sg-chip gold" id="sg-chip-round">ラウンド 1/5</span>
+          <span class="sg-chip" id="sg-chip-turn">ターン: —</span>
+          <span class="sg-chip" id="sg-chip-lead">首位: —</span>
+        </div>
+        <div class="sg-players" id="sg-players"></div>
+        <div id="sg-mini-banner" class="sg-mini-banner"></div>
+        <div class="sg-dice-area">
+          <div class="sg-turn-label" id="sg-turn-label">ターン</div>
+          <div class="sg-dice-readout" id="sg-dice-readout">?</div>
+          <button type="button" class="sg-roll-btn" id="sg-roll-btn" onclick="sugorokuRollDice()">🎲 サイコロを振る</button>
+        </div>
+        <div class="sg-log" id="sg-log"></div>
+      </div>
+    </div>
+
+    <div id="sg-goal-overlay" class="sg-goal-overlay">
+      <h3>🏆 全ラウンド終了！</h3>
+      <div class="sg-final" id="sg-final-text"></div>
+      <button type="button" class="sg-start-btn" onclick="resetSugorokuToSetup()">もう一度</button>
+      <button type="button" class="sg-close" onclick="closeSugorokuMode()">ホームへ</button>
+    </div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+
+/* =========================================================
+   Three.js すごろく — わかりやすい見た目 / 楽しい演出 / 複雑ギミック
+========================================================= */
+(function(){ try {
+
+    const BOARD_LEN = 24;
+    const CPU_NAMES = ['CPU・蒼', 'CPU・翠', 'CPU・金'];
+    const COLORS = [0xe74c3c, 0x3498db, 0x2ecc71, 0xf1c40f];
+    const FACES = ['🧙', '🤖', '🦾', '👾'];
+    const MINI_PTS = { 1: 10, 2: 5, 3: 3, 4: 1 };
+    const FINAL_PTS = { 1: 100, 2: 50, 3: 30, 4: 10 };
+
+    /* 複雑ギミック多数 */
+    const GIMMICKS = [
+        { id:'n0', type:'normal', icon:'・', lab:'通常', w:8 },
+        /* ポイント */
+        { id:'g1', type:'gain', icon:'💰', lab:'+1MP', pts:1, w:5 },
+        { id:'g2', type:'gain', icon:'💎', lab:'+2MP', pts:2, w:4 },
+        { id:'g3', type:'gain', icon:'👑', lab:'+3MP', pts:3, w:3 },
+        { id:'g5', type:'gain', icon:'🌟', lab:'+5MP', pts:5, w:2 },
+        { id:'l1', type:'lose', icon:'💸', lab:'-1MP', pts:-1, w:4 },
+        { id:'l2', type:'lose', icon:'🔥', lab:'-2MP', pts:-2, w:3 },
+        { id:'l3', type:'lose', icon:'💀', lab:'-3MP', pts:-3, w:2 },
+        /* 移動 */
+        { id:'fw1', type:'boost', icon:'➡️', lab:'+1進', move:1, w:4 },
+        { id:'fw2', type:'boost', icon:'⏩', lab:'+2進', move:2, w:3 },
+        { id:'fw3', type:'boost', icon:'🚀', lab:'+3進', move:3, w:2 },
+        { id:'bk1', type:'back', icon:'⬅️', lab:'-1戻', move:-1, w:4 },
+        { id:'bk2', type:'back', icon:'⏪', lab:'-2戻', move:-2, w:3 },
+        { id:'bk3', type:'back', icon:'🌀', lab:'-3戻', move:-3, w:2 },
+        /* 基本特殊 */
+        { id:'wp', type:'warp', icon:'🌌', lab:'ワープ', w:2 },
+        { id:'mi', type:'mini', icon:'🎮', lab:'ミニG', w:2 },
+        { id:'db', type:'double', icon:'✨', lab:'次×2', flag:'doubleNext', w:2 },
+        { id:'sh', type:'shield', icon:'🛡️', lab:'盾', flag:'shield', w:2 },
+        { id:'rd', type:'lucky', icon:'🎲', lab:'再振', flag:'reroll', w:2 },
+        { id:'fr', type:'trap', icon:'❄️', lab:'凍結', flag:'skip', w:2 },
+        { id:'st', type:'steal', icon:'🦹', lab:'盗む', steal:2, w:2 },
+        { id:'jp', type:'jackpot', icon:'🎰', lab:'大当たり', pts:8, w:1 },
+        /* ===== 複雑ギミック ===== */
+        { id:'swap', type:'complex', icon:'🔄', lab:'入替', complex:'swapPos', w:2 },
+        { id:'mirror', type:'complex', icon:'🪞', lab:'鏡写し', complex:'mirrorPts', w:1 },
+        { id:'gamble', type:'complex', icon:'🃏', lab:'ギャンブル', complex:'gamble', w:2 },
+        { id:'tax', type:'complex', icon:'📜', lab:'税金', complex:'taxAll', w:2 },
+        { id:'party', type:'complex', icon:'🎉', lab:'パーティー', complex:'party', w:2 },
+        { id:'bomb', type:'complex', icon:'💣', lab:'時限爆弾', complex:'bomb', w:2 },
+        { id:'magnet', type:'complex', icon:'🧲', lab:'磁石', complex:'magnet', w:2 },
+        { id:'roulette', type:'complex', icon:'🎡', lab:'ルーレット', complex:'roulette', w:2 },
+        { id:'duel', type:'complex', icon:'⚔️', lab:'決闘', complex:'duel', w:2 },
+        { id:'bank', type:'complex', icon:'🏦', lab:'銀行', complex:'bank', w:2 },
+        { id:'curse', type:'complex', icon:'🧿', lab:'呪い', complex:'curse', w:1 },
+        { id:'bless', type:'complex', icon:'🙏', lab:'祝福', complex:'bless', w:2 },
+        { id:'chain', type:'complex', icon:'⛓️', lab:'連鎖', complex:'chain', w:1 },
+        { id:'copy', type:'complex', icon:'📋', lab:'コピー', complex:'copyLead', w:1 },
+        { id:'equal', type:'complex', icon:'⚖️', lab:'平均化', complex:'equalize', w:1 },
+        { id:'thief', type:'complex', icon:'🦊', lab:'大泥棒', complex:'thiefAll', w:1 },
+        { id:'boostAll', type:'complex', icon:'🌪️', lab:'大嵐', complex:'storm', w:1 },
+        { id:'safe', type:'complex', icon:'🏠', lab:'安全地帯', complex:'safe', w:2 },
+        { id:'mystery', type:'complex', icon:'❓', lab:'謎の箱', complex:'mystery', w:2 },
+        { id:'combo', type:'complex', icon:'🔥', lab:'コンボ', complex:'combo', w:2 },
+        { id:'time', type:'complex', icon:'⏰', lab:'時よ止まれ', complex:'freezeOthers', w:1 },
+        { id:'rich', type:'complex', icon:'💎', lab:'成金', complex:'rich', w:1 },
+        { id:'poor', type:'complex', icon:'🧺', lab:'貧乏神', complex:'poor', w:1 }
+    ];
+
+    const TILE_COLOR = {
+        start: 0x27ae60, goal: 0xf1c40f, gain: 0x2ecc71, lose: 0xe74c3c,
+        boost: 0x3498db, back: 0x9b59b6, warp: 0x1abc9c, mini: 0xe67e22,
+        lucky: 0xf39c12, trap: 0x5d6d7e, normal: 0x6a4a9a, double: 0xe91e63,
+        shield: 0x00bcd4, steal: 0xff5722, jackpot: 0xffd700, complex: 0xc39bd3
+    };
+
+    let sgState = null;
+    let three = null;
+    let pathPoints = [];
+
+    function el(id){ return document.getElementById(id); }
+    function wait(ms){ return new Promise(r => setTimeout(r, ms)); }
+    function escapeHtml(s){
+        return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+    function sgSpeak(msg){
+        try { if (typeof witchSpeak === 'function') witchSpeak(msg); } catch (e) {}
+    }
+
+    /* ===== 効果音（Web Audio） ===== */
+    let _sgAudio = null;
+    function sgAudioCtx() {
+        if (!_sgAudio) {
+            try { _sgAudio = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) { return null; }
+        }
+        if (_sgAudio.state === 'suspended') _sgAudio.resume();
+        return _sgAudio;
+    }
+    function sgBeep(freq, dur, type, vol, slide) {
+        const ctx = sgAudioCtx();
+        if (!ctx) return;
+        const t0 = ctx.currentTime;
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = type || 'square';
+        o.frequency.setValueAtTime(freq, t0);
+        if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(40, slide), t0 + dur);
+        g.gain.setValueAtTime(0.0001, t0);
+        g.gain.exponentialRampToValueAtTime(vol || 0.12, t0 + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(t0); o.stop(t0 + dur + 0.02);
+    }
+    function sfxDiceShake() {
+        const ctx = sgAudioCtx();
+        if (!ctx) return;
+        for (let i = 0; i < 8; i++) {
+            setTimeout(function(){
+                sgBeep(180 + Math.random()*220, 0.05, 'triangle', 0.06);
+            }, i * 45);
+        }
+    }
+    function sfxDiceLand(n) {
+        sgBeep(320, 0.08, 'square', 0.1);
+        setTimeout(function(){ sgBeep(480 + n * 30, 0.15, 'square', 0.12); }, 70);
+        setTimeout(function(){ sgBeep(640, 0.2, 'triangle', 0.08); }, 140);
+    }
+    function sfxMove() {
+        sgBeep(420, 0.07, 'sine', 0.07, 280);
+    }
+    function sfxGain() {
+        sgBeep(520, 0.1, 'sine', 0.1);
+        setTimeout(function(){ sgBeep(720, 0.12, 'sine', 0.1); }, 80);
+        setTimeout(function(){ sgBeep(920, 0.18, 'sine', 0.09); }, 160);
+    }
+    function sfxLose() {
+        sgBeep(300, 0.15, 'sawtooth', 0.08, 120);
+    }
+    function sfxSpecial() {
+        sgBeep(400, 0.1, 'square', 0.09);
+        setTimeout(function(){ sgBeep(600, 0.1, 'square', 0.09); }, 90);
+        setTimeout(function(){ sgBeep(800, 0.2, 'triangle', 0.1); }, 180);
+    }
+    function sfxMini() {
+        [0,1,2,3].forEach(function(i){
+            setTimeout(function(){ sgBeep(440 + i*120, 0.12, 'square', 0.09); }, i * 100);
+        });
+    }
+    function sfxWin() {
+        [523,659,784,1046].forEach(function(f,i){
+            setTimeout(function(){ sgBeep(f, 0.22, 'sine', 0.1); }, i * 140);
+        });
+    }
+    function showDiceTelop(n, extra) {
+        return new Promise(function(resolve){
+            const box = el('sg-dice-telop');
+            const num = el('sg-dt-num');
+            const sub = el('sg-dt-sub');
+            if (!box || !num) { resolve(); return; }
+            num.textContent = String(n);
+            sub.textContent = extra || (n + 'マス進む！');
+            box.classList.add('show');
+            sfxDiceLand(n);
+            setTimeout(function(){
+                box.classList.remove('show');
+                setTimeout(resolve, 200);
+            }, 1100);
+        });
+    }
+
+    function leadName(){
+        if (!sgState) return '—';
+        const sorted = sgState.players.slice().sort(function(a,b){ return b.miniPts - a.miniPts; });
+        return sorted[0].name + '（' + sorted[0].miniPts + 'MP）';
+    }
+    function updateStatusBar(){
+        if (!sgState) return;
+        const r = el('sg-chip-round');
+        const t = el('sg-chip-turn');
+        const l = el('sg-chip-lead');
+        if (r) r.textContent = 'ラウンド ' + sgState.round + '/' + sgState.maxRounds;
+        if (t) {
+            const p = sgState.players[sgState.turn];
+            t.textContent = 'ターン: ' + (p ? p.name : '—');
+        }
+        if (l) l.textContent = '首位: ' + leadName();
+        const chip = el('sg-round-chip');
+        if (chip) chip.textContent = 'R' + sgState.round + '/' + sgState.maxRounds;
+    }
+    function weightedPick(list) {
+        let t = 0;
+        for (let i = 0; i < list.length; i++) t += list[i].w || 1;
+        let r = Math.random() * t;
+        for (let i = 0; i < list.length; i++) {
+            r -= list[i].w || 1;
+            if (r <= 0) return list[i];
+        }
+        return list[0];
+    }
+    function generateBoard() {
+        const cells = [];
+        cells.push({ idx: 0, type: 'start', icon: '🏁', lab: 'スタート', gimmick: null });
+        for (let i = 1; i < BOARD_LEN - 1; i++) {
+            const g = Object.assign({}, weightedPick(GIMMICKS));
+            cells.push({ idx: i, type: g.type || 'normal', icon: g.icon || '・', lab: g.lab || '通常', gimmick: g });
+        }
+        cells.push({ idx: BOARD_LEN - 1, type: 'goal', icon: '🏆', lab: '一周', gimmick: null });
+        return cells;
+    }
+    function generateCirclePath(n) {
+        const pts = [];
+        const radius = 7.2;
+        const startAng = -Math.PI / 2;
+        for (let i = 0; i < n; i++) {
+            const t = i / n;
+            const ang = startAng + t * Math.PI * 2 * ((n - 1) / n);
+            pts.push({ x: Math.cos(ang) * radius, z: Math.sin(ang) * radius });
+        }
+        return pts;
+    }
+    function pathPos(idx) {
+        const p = pathPoints[idx] || pathPoints[0] || { x: 0, z: 0 };
+        return { x: p.x, y: 0, z: p.z };
+    }
+    function pathDir(idx) {
+        const a = pathPos(idx);
+        const b = pathPos(Math.min(idx + 1, pathPoints.length - 1));
+        let dx = b.x - a.x, dz = b.z - a.z;
+        const len = Math.sqrt(dx*dx + dz*dz) || 1;
+        return { x: dx/len, z: dz/len };
+    }
+    function log(msg, cls){
+        const box = el('sg-log');
+        if (!box) return;
+        const d = document.createElement('div');
+        if (cls) d.className = cls;
+        d.textContent = msg;
+        box.insertBefore(d, box.firstChild);
+    }
+    function floatText(text, isPlus) {
+        const wrap = el('sg-three-wrap');
+        if (!wrap) return;
+        const n = document.createElement('div');
+        n.className = 'sg-fx-float ' + (isPlus ? 'plus' : 'minus');
+        n.textContent = text;
+        n.style.left = (42 + Math.random() * 16) + '%';
+        n.style.top = (34 + Math.random() * 12) + '%';
+        wrap.appendChild(n);
+        setTimeout(function(){ if (n.parentNode) n.parentNode.removeChild(n); }, 1300);
+    }
+    function flash(kind) {
+        const f = el('sg-flash');
+        if (!f) return;
+        f.className = 'sg-screen-flash show ' + (kind || 'gold');
+        setTimeout(function(){ f.className = 'sg-screen-flash'; }, 220);
+    }
+    function showEvent(icon, title, desc, mood) {
+        return new Promise(function(resolve){
+            const pop = el('sg-event-popup');
+            if (!pop) { resolve(); return; }
+            el('sg-ep-icon').textContent = icon || '✨';
+            el('sg-ep-title').textContent = title || '';
+            el('sg-ep-desc').textContent = desc || '';
+            pop.classList.remove('good', 'bad');
+            if (mood === 'good') pop.classList.add('good');
+            if (mood === 'bad') pop.classList.add('bad');
+            pop.classList.add('show');
+            setTimeout(function(){
+                pop.classList.remove('show', 'good', 'bad');
+                setTimeout(resolve, 250);
+            }, 1150);
+        });
+    }
+
+    function disposeThree() {
+        if (!three) return;
+        if (three.animId) cancelAnimationFrame(three.animId);
+        window.removeEventListener('resize', three.onResize);
+        if (three.renderer) three.renderer.dispose();
+        three = null;
+    }
+
+    function makeCharacter(color) {
+        const g = new THREE.Group();
+        const bodyMat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.4, metalness: 0.2 });
+        const skinMat = new THREE.MeshStandardMaterial({ color: 0xffe0bd, roughness: 0.55, metalness: 0.05 });
+        const body = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.34, 0.7, 12), bodyMat);
+        body.position.y = 0.5; body.castShadow = true;
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.28, 14, 14), skinMat);
+        head.position.y = 1.1; head.castShadow = true;
+        const hat = new THREE.Mesh(new THREE.ConeGeometry(0.32, 0.38, 10), bodyMat);
+        hat.position.y = 1.4; hat.castShadow = true;
+        g.add(body); g.add(head); g.add(hat);
+        return g;
+    }
+
+    function makeTileLabelTexture(line1, line2, bgHex, isSpecial) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 256; canvas.height = 256;
+        const ctx = canvas.getContext('2d');
+        const r = (bgHex >> 16) & 255, g = (bgHex >> 8) & 255, b = bgHex & 255;
+        /* グラデーション風背景 */
+        const grd = ctx.createLinearGradient(0, 0, 256, 256);
+        grd.addColorStop(0, 'rgb(' + Math.min(255,r+30) + ',' + Math.min(255,g+30) + ',' + Math.min(255,b+30) + ')');
+        grd.addColorStop(1, 'rgb(' + r + ',' + g + ',' + b + ')');
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, 256, 256);
+        ctx.strokeStyle = isSpecial ? 'rgba(255,215,0,0.9)' : 'rgba(255,255,255,0.6)';
+        ctx.lineWidth = isSpecial ? 14 : 10;
+        ctx.strokeRect(6, 6, 244, 244);
+        ctx.fillStyle = 'rgba(0,0,0,0.2)';
+        ctx.fillRect(20, 140, 216, 70);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = 'rgba(0,0,0,0.7)';
+        ctx.shadowBlur = 8;
+        ctx.font = 'bold 78px sans-serif';
+        ctx.fillText(String(line1 || '').slice(0, 4), 128, 95);
+        ctx.shadowBlur = 4;
+        ctx.font = 'bold 32px "Hiragino Sans", "Meiryo", sans-serif';
+        const lab = String(line2 || '');
+        ctx.fillText(lab.length > 7 ? lab.slice(0, 7) : lab, 128, 175);
+        return new THREE.CanvasTexture(canvas);
+    }
+
+    function makeDice() {
+        const size = 0.58;
+        const geo = new THREE.BoxGeometry(size, size, size);
+        const mats = [];
+        for (let i = 0; i < 6; i++) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 128; canvas.height = 128;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#fffef8';
+            ctx.fillRect(0,0,128,128);
+            ctx.strokeStyle = '#b090d0';
+            ctx.lineWidth = 7;
+            ctx.strokeRect(3,3,122,122);
+            ctx.fillStyle = '#2c1a50';
+            const pips = [
+                [[64,64]], [[40,40],[88,88]], [[40,40],[64,64],[88,88]],
+                [[40,40],[40,88],[88,40],[88,88]],
+                [[40,40],[40,88],[88,40],[88,88],[64,64]],
+                [[40,36],[40,64],[40,92],[88,36],[88,64],[88,92]]
+            ][i];
+            pips.forEach(function(p){ ctx.beginPath(); ctx.arc(p[0], p[1], 12, 0, Math.PI*2); ctx.fill(); });
+            mats.push(new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(canvas), roughness: 0.3, metalness: 0.12 }));
+        }
+        const mesh = new THREE.Mesh(geo, mats);
+        mesh.castShadow = true;
+        return mesh;
+    }
+
+    function initThreeWorld(cells) {
+        disposeThree();
+        pathPoints = generateCirclePath(cells.length);
+        const canvas = el('sg-three-canvas');
+        const wrap = el('sg-three-wrap');
+        const w = wrap.clientWidth || 320;
+        const h = Math.max(wrap.clientHeight || 300, 260);
+
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        renderer.setSize(w, h, false);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.15;
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0e0a22);
+        scene.fog = new THREE.FogExp2(0x120830, 0.02);
+
+        const camera = new THREE.PerspectiveCamera(40, w / h, 0.1, 200);
+        camera.position.set(0, 12.5, 9.5);
+        camera.up.set(0, 1, 0);
+        camera.lookAt(0, 0, 0);
+
+        scene.add(new THREE.HemisphereLight(0xd0c0ff, 0x1a1030, 0.75));
+        const sun = new THREE.DirectionalLight(0xfff5e0, 1.1);
+        sun.position.set(5, 18, 8);
+        sun.castShadow = true;
+        sun.shadow.mapSize.set(1024, 1024);
+        sun.shadow.camera.left = -14; sun.shadow.camera.right = 14;
+        sun.shadow.camera.top = 14; sun.shadow.camera.bottom = -14;
+        scene.add(sun);
+        const fillL = new THREE.PointLight(0x9b59b6, 0.55, 35);
+        fillL.position.set(-4, 5, -2);
+        scene.add(fillL);
+        const centerGlow = new THREE.PointLight(0xf1c40f, 0.35, 18);
+        centerGlow.position.set(0, 2, 0);
+        scene.add(centerGlow);
+
+        const ground = new THREE.Mesh(
+            new THREE.CircleGeometry(14, 64),
+            new THREE.MeshStandardMaterial({ color: 0x16122a, roughness: 0.9, metalness: 0.08 })
+        );
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.y = -0.04;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        const ring = new THREE.Mesh(
+            new THREE.RingGeometry(5.6, 6.4, 64),
+            new THREE.MeshStandardMaterial({ color: 0x5a3a90, roughness: 0.5, metalness: 0.3, side: THREE.DoubleSide, emissive: 0x3a2060, emissiveIntensity: 0.2 })
+        );
+        ring.rotation.x = -Math.PI / 2;
+        ring.position.y = 0.01;
+        scene.add(ring);
+
+        const roadMat = new THREE.MeshStandardMaterial({ color: 0x4a3570, roughness: 0.7, metalness: 0.15, emissive: 0x2a1840, emissiveIntensity: 0.15 });
+        for (let i = 0; i < pathPoints.length; i++) {
+            const a = pathPoints[i];
+            const b = pathPoints[(i + 1) % pathPoints.length];
+            const dx = b.x - a.x, dz = b.z - a.z;
+            const len = Math.sqrt(dx*dx + dz*dz) || 0.1;
+            const road = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.07, len * 0.95), roadMat);
+            road.position.set((a.x + b.x) / 2, 0.02, (a.z + b.z) / 2);
+            road.rotation.y = Math.atan2(dx, dz);
+            road.receiveShadow = true;
+            scene.add(road);
+        }
+
+        const tiles = [];
+        cells.forEach(function(c, i) {
+            const pos = pathPos(i);
+            const col = TILE_COLOR[c.type] || TILE_COLOR.normal;
+            const isSpecial = c.type === 'complex' || c.type === 'jackpot' || c.type === 'mini';
+            const topTex = makeTileLabelTexture(c.icon, c.lab, col, isSpecial);
+            const sideMat = new THREE.MeshStandardMaterial({
+                color: col, roughness: 0.38, metalness: 0.22, emissive: col, emissiveIntensity: isSpecial ? 0.2 : 0.1
+            });
+            const topMat = new THREE.MeshStandardMaterial({
+                map: topTex, roughness: 0.32, metalness: 0.15, emissive: col, emissiveIntensity: 0.1
+            });
+            const mats = [sideMat, sideMat, topMat, sideMat, sideMat, sideMat];
+            const mesh = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.36, 1.7), mats);
+            mesh.position.set(pos.x, 0.18, pos.z);
+            mesh.castShadow = true; mesh.receiveShadow = true;
+            const dir = pathDir(i);
+            mesh.rotation.y = Math.atan2(dir.x, dir.z);
+            scene.add(mesh);
+
+            const numCanvas = document.createElement('canvas');
+            numCanvas.width = 64; numCanvas.height = 64;
+            const nctx = numCanvas.getContext('2d');
+            nctx.fillStyle = 'rgba(0,0,0,0.6)';
+            nctx.beginPath(); nctx.arc(32, 32, 28, 0, Math.PI * 2); nctx.fill();
+            nctx.fillStyle = '#ffe9a0';
+            nctx.font = 'bold 26px sans-serif';
+            nctx.textAlign = 'center'; nctx.textBaseline = 'middle';
+            nctx.fillText(String(i), 32, 34);
+            const numPlane = new THREE.Mesh(
+                new THREE.PlaneGeometry(0.52, 0.52),
+                new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(numCanvas), transparent: true })
+            );
+            numPlane.rotation.x = -Math.PI / 2;
+            numPlane.position.set(pos.x * 0.9, 0.38, pos.z * 0.9);
+            scene.add(numPlane);
+            tiles.push({ mesh: mesh, baseY: 0.18, numPlane: numPlane });
+        });
+
+        const chars = [];
+        for (let i = 0; i < 4; i++) {
+            const ch = makeCharacter(COLORS[i]);
+            const pos = pathPos(0);
+            const ox = ((i % 2) * 0.34) - 0.15;
+            const oz = (Math.floor(i / 2) * 0.34) - 0.15;
+            ch.position.set(pos.x + ox, 0, pos.z + oz);
+            scene.add(ch);
+            chars.push(ch);
+        }
+
+        const dice = makeDice();
+        dice.position.set(0, 1.3, 0);
+        scene.add(dice);
+
+        const pGeo = new THREE.BufferGeometry();
+        const pCount = 70;
+        const pPos = new Float32Array(pCount * 3);
+        for (let i = 0; i < pCount; i++) {
+            pPos[i*3] = (Math.random()-0.5)*22;
+            pPos[i*3+1] = 0.2 + Math.random()*4;
+            pPos[i*3+2] = (Math.random()-0.5)*22;
+        }
+        pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+        const points = new THREE.Points(pGeo, new THREE.PointsMaterial({
+            color: 0xe0c0ff, size: 0.08, transparent: true, opacity: 0.5
+        }));
+        scene.add(points);
+
+        const clock = new THREE.Clock();
+        const camDesired = new THREE.Vector3(0, 12.5, 9.5);
+        const camTarget = new THREE.Vector3(0, 0, 0);
+        let focusIdx = 0;
+        let diceRolling = false;
+        const diceSpin = { x: 0, y: 0, z: 0 };
+
+        function onResize() {
+            const ww = wrap.clientWidth || 320;
+            const hh = Math.max(wrap.clientHeight || 200, 140);
+            camera.aspect = ww / Math.max(hh, 1);
+            camera.updateProjectionMatrix();
+            renderer.setSize(ww, hh, false);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        }
+        window.addEventListener('resize', onResize);
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', onResize);
+        }
+        /* 向き変更 */
+        window.addEventListener('orientationchange', function(){ setTimeout(onResize, 200); });
+
+        function animate() {
+            three.animId = requestAnimationFrame(animate);
+            const t = clock.getElapsedTime();
+            points.rotation.y = t * 0.025;
+            centerGlow.intensity = 0.3 + Math.sin(t * 2) * 0.12;
+            tiles.forEach(function(ti, i) {
+                ti.mesh.position.y = ti.baseY + Math.sin(t * 1.15 + i * 0.3) * 0.014;
+            });
+            chars.forEach(function(ch, i) {
+                if (ch.userData.moving) return;
+                ch.position.y = Math.sin(t * 2.3 + i) * 0.025;
+            });
+            if (diceRolling) {
+                dice.rotation.x += diceSpin.x;
+                dice.rotation.y += diceSpin.y;
+                dice.rotation.z += diceSpin.z;
+            }
+            if (sgState) {
+                const fi = Math.max(0, Math.min(pathPoints.length - 1, focusIdx));
+                const fp = pathPos(fi);
+                const tx = fp.x * 0.35, tz = fp.z * 0.35;
+                camTarget.x += (tx - camTarget.x) * 0.05;
+                camTarget.z += (tz - camTarget.z) * 0.05;
+                const desired = new THREE.Vector3(tx * 0.15, 12.5, 9.5 + tz * 0.12);
+                camDesired.x += (desired.x - camDesired.x) * 0.04;
+                camDesired.z += (desired.z - camDesired.z) * 0.04;
+            }
+            camera.position.lerp(camDesired, 0.08);
+            camera.up.set(0, 1, 0);
+            camera.lookAt(camTarget);
+            renderer.render(scene, camera);
+        }
+
+        three = {
+            renderer, scene, camera, dice, tiles, chars, clock, points,
+            camDesired, camTarget,
+            get focusIdx(){ return focusIdx; }, set focusIdx(v){ focusIdx = v; },
+            get diceRolling(){ return diceRolling; }, set diceRolling(v){ diceRolling = v; },
+            diceSpin, onResize, animId: 0
+        };
+        animate();
+        onResize();
+    }
+
+    function setCameraForTurn() {
+        if (!three || !sgState) return;
+        const p = sgState.players[sgState.turn];
+        three.focusIdx = p.pos;
+        const badge = el('sg-view-badge');
+        if (badge) badge.textContent = '👀 ' + p.name + ' の番';
+    }
+
+    function updateCharPositions(animateIdx) {
+        if (!three || !sgState) return;
+        sgState.players.forEach(function(p, i) {
+            const ch = three.chars[i];
+            const pos = pathPos(p.pos);
+            const ox = ((i % 2) * 0.34) - 0.15;
+            const oz = (Math.floor(i / 2) * 0.34) - 0.15;
+            const tx = pos.x + ox, tz = pos.z + oz;
+            const dir = pathDir(p.pos);
+            ch.rotation.y = Math.atan2(dir.x, dir.z);
+            if (i === animateIdx) {
+                ch.userData.moving = true;
+                const start = ch.position.clone();
+                const end = new THREE.Vector3(tx, 0, tz);
+                let t0 = performance.now();
+                function step(now) {
+                    const u = Math.min(1, (now - t0) / 280);
+                    const ease = 1 - Math.pow(1 - u, 3);
+                    ch.position.lerpVectors(start, end, ease);
+                    ch.position.y = Math.sin(ease * Math.PI) * 0.32;
+                    if (u < 1) requestAnimationFrame(step);
+                    else { ch.position.copy(end); ch.userData.moving = false; }
+                }
+                requestAnimationFrame(step);
+            } else {
+                ch.position.set(tx, 0, tz);
+            }
+        });
+        if (animateIdx >= 0 && sgState.players[animateIdx]) {
+            three.focusIdx = sgState.players[animateIdx].pos;
+        }
+    }
+
+    function highlightTile(idx) {
+        if (!three) return;
+        three.tiles.forEach(function(ti, i) {
+            const mats = ti.mesh.material;
+            const list = Array.isArray(mats) ? mats : [mats];
+            list.forEach(function(m) {
+                if (m.emissiveIntensity !== undefined) m.emissiveIntensity = (i === idx) ? 0.5 : 0.1;
+            });
+            ti.baseY = (i === idx) ? 0.32 : 0.18;
+        });
+        three.focusIdx = idx;
+    }
+
+    function buffText(p) {
+        const parts = [];
+        if (p.shield) parts.push('🛡️盾');
+        if (p.doubleNext) parts.push('✨×2');
+        if (p.skip) parts.push('❄️休');
+        if (p.combo) parts.push('🔥×' + p.combo);
+        if (p.safe) parts.push('🏠安全');
+        if (p.cursed) parts.push('🧿呪');
+        return parts.join(' ');
+    }
+
+    function renderPlayers(){
+        const box = el('sg-players');
+        if (!box || !sgState) return;
+        const order = sgState.players.map(function(p, i){ return { p: p, i: i }; })
+            .sort(function(a,b){ return b.p.miniPts - a.p.miniPts; });
+        const placeOf = {};
+        order.forEach(function(x, idx){ placeOf[x.i] = idx + 1; });
+        box.innerHTML = '';
+        sgState.players.forEach(function(p, i) {
+            const div = document.createElement('div');
+            div.className = 'sg-player' + (i === sgState.turn ? ' active' : '');
+            const badge = p.isCpu ? '<span class="sp-badge cpu">CPU</span>' : '<span class="sp-badge you">YOU</span>';
+            const place = placeOf[i];
+            const medal = place === 1 ? '🥇' : place === 2 ? '🥈' : place === 3 ? '🥉' : '🎖️';
+            const buffs = buffText(p);
+            div.innerHTML =
+                '<div class="sp-top"><span>' + FACES[i] + '</span><span>' + escapeHtml(p.name) + '</span> ' + badge + '</div>' +
+                '<div class="sp-meta"><span>マス ' + p.pos + '</span><span class="sp-score">🎮 ' + p.miniPts + ' MP</span></div>' +
+                '<div class="sp-rank-hint">' + medal + ' 暫定' + place + '位</div>' +
+                (buffs ? '<div class="sp-buffs">' + buffs + '</div>' : '');
+            box.appendChild(div);
+        });
+        updateStatusBar();
+    }
+
+    function updateTurnLabel(){
+        if (!sgState) return;
+        const p = sgState.players[sgState.turn];
+        el('sg-turn-label').innerHTML = '<span>' + escapeHtml(p.name) + '</span> のターン' + (p.isCpu ? '（CPU）' : '');
+        const btn = el('sg-roll-btn');
+        if (p.isCpu || sgState.busy) {
+            btn.disabled = true;
+            btn.textContent = p.isCpu ? '🤖 CPUの番…' : '🎲 サイコロを振る';
+        } else if (p.skip) {
+            btn.disabled = true;
+            btn.textContent = '❄️ 凍結中…';
+            /* 人間も凍結なら自動スキップ */
+            if (!sgState._skipScheduled) {
+                sgState._skipScheduled = true;
+                setTimeout(function(){
+                    sgState._skipScheduled = false;
+                    if (!sgState || sgState.busy) return;
+                    const cur = sgState.players[sgState.turn];
+                    if (cur && cur.skip && !cur.isCpu) {
+                        cur.skip = false;
+                        log(cur.name + ' は凍結でスキップ！', 'lg-lose');
+                        sgSpeak('凍っていて動けぬぞい…');
+                        advanceTurn();
+                    }
+                }, 900);
+            }
+        } else {
+            btn.disabled = false;
+            btn.textContent = '🎲 サイコロを振る！';
+        }
+        setCameraForTurn();
+    }
+
+    window.openSugorokuMode = function(){
+        const user = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+        if (!user) {
+            if (typeof witchSpeak === 'function') witchSpeak('まずはユーザーを作るのじゃ。');
+            if (typeof openUserSwitcher === 'function') openUserSwitcher();
+            return;
+        }
+        try { sgAudioCtx(); } catch(e) {}
+        const ov = el('sugoroku-overlay');
+        ov.classList.add('show');
+        ov.setAttribute('aria-hidden', 'false');
+        /* スクロールロック（スマホ） */
+        try { document.body.style.overflow = 'hidden'; } catch(e) {}
+        el('sg-setup-panel').style.display = 'flex';
+        el('sg-play-panel').style.display = 'none';
+        el('sg-goal-overlay').classList.remove('show');
+        const n0 = el('sg-name0');
+        if (n0) n0.value = user.name || '';
+        sgSpeak('円形すごろくの世界じゃ。ラウンドを選んで、楽しい勝負を始めるのじゃ！');
+    };
+
+    window.closeSugorokuMode = function(){
+        disposeThree();
+        const ov = el('sugoroku-overlay');
+        if (ov) { ov.classList.remove('show'); ov.setAttribute('aria-hidden', 'true'); }
+        window.isSugorokuMode = false;
+        sgState = null;
+        try { document.body.style.overflow = ''; } catch(e) {}
+        if (typeof refreshHome === 'function') refreshHome();
+    };
+
+    window.resetSugorokuToSetup = function(){
+        disposeThree();
+        el('sg-goal-overlay').classList.remove('show');
+        el('sg-setup-panel').style.display = 'flex';
+        el('sg-play-panel').style.display = 'none';
+        sgState = null;
+    };
+
+    function mkPlayer(name, isCpu) {
+        return {
+            name: name, pos: 0, miniPts: 0, isCpu: isCpu,
+            doubleNext: false, shield: false, skip: false,
+            combo: 0, safe: false, cursed: false, bank: 0
+        };
+    }
+
+    window.startSugorokuGame = async function(){
+        if (typeof THREE === 'undefined') {
+            oijAlert('Three.jsの読み込みに失敗したぞい。ネット接続を確認してくれ。');
+            return;
+        }
+        const user = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+        let youName = (el('sg-name0') && el('sg-name0').value || '').trim();
+        if (!youName) youName = (user && user.name) || 'あなた';
+        let maxRounds = 5;
+        const sel = el('sg-rounds');
+        if (sel) {
+            maxRounds = Math.max(3, Math.min(10, parseInt(sel.value, 10) || 5));
+        }
+        const cells = generateBoard();
+        sgState = {
+            cells: cells,
+            players: [
+                mkPlayer(youName, false),
+                mkPlayer(CPU_NAMES[0], true),
+                mkPlayer(CPU_NAMES[1], true),
+                mkPlayer(CPU_NAMES[2], true)
+            ],
+            turn: 0, rollsThisRound: 0, busy: false,
+            round: 1, maxRounds: maxRounds,
+            _extraRoll: false, _miniTriggered: false
+        };
+        el('sg-setup-panel').style.display = 'none';
+        const pp = el('sg-play-panel');
+        pp.style.display = 'flex';
+        pp.style.flexDirection = 'column';
+        pp.style.flex = '1';
+        pp.style.minHeight = '0';
+        el('sg-goal-overlay').classList.remove('show');
+        el('sg-log').innerHTML = '';
+        el('sg-dice-readout').textContent = '?';
+        el('sg-mini-banner').classList.remove('show');
+        await wait(80);
+        initThreeWorld(cells);
+        await wait(100);
+        if (three && three.onResize) three.onResize();
+        updateCharPositions(-1);
+        renderPlayers();
+        updateTurnLabel();
+        log('🎉 円形すごろく開始！ 全' + maxRounds + 'ラウンド', 'lg-special');
+        log('ミニG: 1位10 / 2位5 / 3位3 / 4位1 MP');
+        log('終了後報酬: 100 / 50 / 30 / 10 pt');
+        sgSpeak(maxRounds + 'ラウンドの円形勝負、はじまるぞい！ギミック満載じゃ、気をつけるのじゃ！');
+        maybeCpuTurn();
+    };
+
+    function maybeCpuTurn(){
+        if (!sgState || sgState.busy) return;
+        const p = sgState.players[sgState.turn];
+        if (!p.isCpu) return;
+        if (p.skip) {
+            p.skip = false;
+            log(p.name + ' は凍結でスキップ！', 'lg-lose');
+            sgSpeak(p.name + 'は凍って動けぬぞい！');
+            advanceTurn();
+            return;
+        }
+        const turnAt = sgState.turn;
+        setTimeout(function(){
+            if (!sgState || sgState.busy || sgState.turn !== turnAt) return;
+            doRoll();
+        }, 650 + Math.random() * 400);
+    }
+
+    window.sugorokuRollDice = function(){
+        if (!sgState || sgState.busy) return;
+        const p = sgState.players[sgState.turn];
+        if (p.isCpu) return;
+        if (p.skip) {
+            p.skip = false;
+            log(p.name + ' は凍結でスキップ！', 'lg-lose');
+            sgSpeak('凍っていて動けぬぞい…次を待つんじゃ！');
+            advanceTurn();
+            return;
+        }
+        doRoll();
+    };
+
+    function doRoll(){
+        if (!sgState || sgState.busy || !three) return;
+        sgState.busy = true;
+        el('sg-roll-btn').disabled = true;
+        sgAudioCtx();
+        sfxDiceShake();
+        three.diceRolling = true;
+        three.diceSpin.x = 0.38 + Math.random() * 0.28;
+        three.diceSpin.y = 0.42 + Math.random() * 0.3;
+        three.diceSpin.z = 0.28 + Math.random() * 0.22;
+        const p = sgState.players[sgState.turn];
+        const pos = pathPos(p.pos);
+        three.dice.position.set(pos.x * 0.45, 1.4, pos.z * 0.45);
+        let ticks = 0;
+        const iv = setInterval(function(){
+            ticks++;
+            el('sg-dice-readout').textContent = String(1 + Math.floor(Math.random()*6));
+            if (ticks >= 20) {
+                clearInterval(iv);
+                three.diceRolling = false;
+                const val = 1 + Math.floor(Math.random() * 6);
+                el('sg-dice-readout').textContent = String(val);
+                three.dice.rotation.set(Math.random()*6, Math.random()*6, Math.random()*6);
+                /* 出目テロップ表示してから移動 */
+                let sub = val + 'マス進む！';
+                if (p.doubleNext) sub = 'ダブル！' + (val*2) + 'マス進む！';
+                if (val === 6) sub = '🎰 ラッキー6！ ' + sub;
+                showDiceTelop(val, sub).then(function(){
+                    if (!sgState) return;
+                    applyMove(val);
+                }).catch(function(){
+                    if (sgState) { sgState.busy = false; applyMove(val); }
+                });
+            }
+        }, 50);
+    }
+
+    async function applyMove(val){
+        if (!sgState) return;
+        const pi = sgState.turn;
+        const p = sgState.players[pi];
+        if (!p) { sgState.busy = false; return; }
+        let steps = val;
+        if (p.doubleNext) {
+            steps = Math.min(BOARD_LEN - 1 - p.pos, val * 2);
+            p.doubleNext = false;
+            log(p.name + ' ダブル！' + val + '→' + steps, 'lg-special');
+            floatText('×2!', true);
+            flash('gold');
+            sgSpeak('ダブル発動じゃ！');
+        }
+        if (p.combo && p.combo > 0) {
+            steps = Math.min(BOARD_LEN - 1 - p.pos, steps + p.combo);
+            log('コンボ +' + p.combo + 'マス！', 'lg-special');
+            p.combo = 0;
+        }
+
+        /* 楽しいルール */
+        let bonusMsg = '';
+        if (val === 6) {
+            addMiniPts(pi, 1);
+            bonusMsg = '6の目ボーナス +1MP！';
+            log(bonusMsg, 'lg-special');
+            sfxSpecial();
+            if (!p.isCpu) sgSpeak('6の目じゃ！ボーナスポイントゲットぞい！');
+        }
+        if (val === 1) {
+            /* 出目1でも気合で盾チャンス */
+            if (Math.random() < 0.25) {
+                p.shield = true;
+                bonusMsg = '出目1の奇跡！盾をゲット！';
+                log(bonusMsg, 'lg-special');
+                sfxSpecial();
+                sgSpeak('出目1なのに奇跡じゃ！盾を手に入れたぞい！');
+            }
+        }
+
+        for (let s = 0; s < steps; s++) {
+            if (p.pos >= BOARD_LEN - 1) { p.pos = BOARD_LEN - 1; break; }
+            p.pos++;
+            updateCharPositions(pi);
+            highlightTile(p.pos);
+            renderPlayers();
+            try { sfxMove(); } catch (e) {}
+            await wait(300);
+        }
+        log(p.name + ' : ' + val + ' → マス' + p.pos);
+        if (!p.isCpu) sgSpeak(val + 'が出たぞい！マス' + p.pos + 'じゃ！');
+
+        /* 同じマスに他プレイヤーがいたら出会いボーナス/対決 */
+        const same = sgState.players.filter(function(op, j){ return j !== pi && op.pos === p.pos; });
+        if (same.length) {
+            const foe = same[0];
+            if (Math.random() < 0.5) {
+                addMiniPts(pi, 2);
+                log(p.name + ' と ' + foe.name + ' の出会い！仲良く +2MP', 'lg-gain');
+                sgSpeak('出会いじゃ！ポイントゲットぞい！');
+                sfxGain();
+            } else {
+                const take = Math.min(1, foe.miniPts);
+                foe.miniPts -= take;
+                p.miniPts += take;
+                log(p.name + ' が ' + foe.name + ' にちょろまかし +' + take + 'MP', 'lg-special');
+                floatText('+' + take + 'MP', true);
+                sfxSpecial();
+            }
+            renderPlayers();
+            await wait(400);
+        } else if (p.isCpu && Math.random() < 0.4) {
+            sgSpeak(p.name + 'は' + val + 'じゃな。');
+        }
+
+        try {
+            await resolveGimmick(pi);
+        } catch (err) {
+            console.error('[sugoroku gimmick]', err);
+        }
+        if (!sgState) return;
+
+        if (sgState._extraRoll) {
+            sgState._extraRoll = false;
+            sgState.busy = false;
+            updateTurnLabel();
+            renderPlayers();
+            if (sgState.players[sgState.turn] && sgState.players[sgState.turn].isCpu) maybeCpuTurn();
+            return;
+        }
+        if (sgState._miniTriggered) {
+            sgState._miniTriggered = false;
+            /* busy のままミニゲーム待ち */
+            return;
+        }
+
+        sgState.rollsThisRound++;
+        if (sgState.rollsThisRound >= 4) {
+            sgState.rollsThisRound = 0;
+            setTimeout(function(){ triggerMiniGame(); }, 420);
+        } else {
+            advanceTurn();
+        }
+    }
+
+    function advanceTurn(){
+        if (!sgState) return;
+        sgState.turn = (sgState.turn + 1) % 4;
+        sgState.busy = false;
+        updateTurnLabel();
+        renderPlayers();
+        const p = sgState.players[sgState.turn];
+        if (p && !p.isCpu) sgSpeak('お主の番じゃ！サイコロを振るのじゃ！');
+        else if (p && Math.random() < 0.3) sgSpeak(p.name + 'の番じゃ。');
+        maybeCpuTurn();
+    }
+
+    function addMiniPts(pi, amount) {
+        if (!sgState) return;
+        const p = sgState.players[pi];
+        if (amount < 0 && p.shield) {
+            p.shield = false;
+            floatText('🛡️無効!', true);
+            flash('green');
+            sgSpeak('盾がダメージを防いだぞい！');
+            log(p.name + ' の盾が発動！', 'lg-gain');
+            return;
+        }
+        if (amount < 0 && p.safe) {
+            p.safe = false;
+            floatText('🏠安全!', true);
+            sgSpeak('安全地帯のおかげで無事じゃ！');
+            return;
+        }
+        if (amount > 0 && p.cursed) {
+            amount = Math.max(1, Math.floor(amount / 2));
+            log('呪いのため獲得半減…', 'lg-lose');
+        }
+        p.miniPts = Math.max(0, (p.miniPts || 0) + amount);
+        if (amount) {
+            floatText((amount > 0 ? '+' : '') + amount + 'MP', amount > 0);
+            flash(amount > 0 ? 'green' : 'red');
+            if (amount > 0) {
+                if (!p.isCpu) sgSpeak('ポイントゲットぞい！' + amount + 'ミニゲームポイントじゃ！');
+                else if (Math.random() < 0.45) sgSpeak(p.name + 'が' + amount + 'ポイント得たぞい。');
+            } else {
+                if (!p.isCpu) sgSpeak('あらら、' + Math.abs(amount) + 'ポイント失ったぞい…');
+            }
+        }
+    }
+
+    async function resolveComplex(pi, g) {
+        const p = sgState.players[pi];
+        sfxSpecial();
+        const others = sgState.players.filter(function(_, j){ return j !== pi; });
+        const kind = g.complex;
+        let desc = '';
+        let mood = 'good';
+
+        if (kind === 'swapPos') {
+            const t = others[Math.floor(Math.random() * others.length)];
+            const tmp = p.pos; p.pos = t.pos; t.pos = tmp;
+            updateCharPositions(-1);
+            desc = t.name + ' と位置入れ替え！';
+            sgSpeak('位置入れ替えじゃ！');
+            flash('purple');
+        } else if (kind === 'mirrorPts') {
+            const lead = sgState.players.slice().sort(function(a,b){ return b.miniPts - a.miniPts; })[0];
+            if (lead !== p) {
+                const diff = Math.min(5, Math.max(0, lead.miniPts - p.miniPts));
+                addMiniPts(pi, Math.ceil(diff / 2));
+                desc = '首位に近づく +' + Math.ceil(diff / 2) + 'MP';
+            } else desc = 'すでに首位！変化なし';
+            sgSpeak('鏡の力じゃ！');
+        } else if (kind === 'gamble') {
+            if (Math.random() < 0.5) {
+                addMiniPts(pi, 4);
+                desc = 'ギャンブル成功！+4MP';
+                mood = 'good';
+                sgSpeak('ギャンブル成功じゃ！ポイントゲットぞい！');
+            } else {
+                addMiniPts(pi, -3);
+                desc = 'ギャンブル失敗…-3MP';
+                mood = 'bad';
+                sgSpeak('ギャンブル失敗じゃわい…');
+            }
+            flash(mood === 'good' ? 'gold' : 'red');
+        } else if (kind === 'taxAll') {
+            others.forEach(function(op) {
+                const take = Math.min(2, op.miniPts);
+                op.miniPts -= take;
+                p.miniPts += take;
+            });
+            desc = '全員から税を徴収！';
+            floatText('+税', true);
+            flash('gold');
+            sgSpeak('税金じゃ！みなから徴収するぞい！');
+        } else if (kind === 'party') {
+            sgState.players.forEach(function(op, j){ addMiniPts(j, 1); });
+            desc = 'みんな +1MP！';
+            mood = 'good';
+            sgSpeak('パーティーじゃ！みんなポイントゲットぞい！');
+            flash('green');
+        } else if (kind === 'bomb') {
+            /* 前後のマスにいる人にダメージ */
+            sgState.players.forEach(function(op, j) {
+                if (j === pi) return;
+                if (Math.abs(op.pos - p.pos) <= 2) {
+                    addMiniPts(j, -2);
+                }
+            });
+            desc = '近くの相手に-2MP！';
+            mood = 'bad';
+            flash('red');
+            sgSpeak('爆弾が炸裂したぞい！');
+        } else if (kind === 'magnet') {
+            /* 最下位を自分の隣へ */
+            const worst = others.slice().sort(function(a,b){ return a.miniPts - b.miniPts; })[0];
+            worst.pos = Math.max(0, Math.min(BOARD_LEN - 1, p.pos + (Math.random() < 0.5 ? 1 : -1)));
+            updateCharPositions(-1);
+            desc = worst.name + ' を引き寄せた！';
+            sgSpeak('磁石の力じゃ！');
+            flash('purple');
+        } else if (kind === 'roulette') {
+            const outcomes = [
+                { pts: 5, msg: '+5MP' },
+                { pts: 2, msg: '+2MP' },
+                { pts: 0, msg: 'ハズレ' },
+                { pts: -2, msg: '-2MP' },
+                { move: 2, msg: '+2進' },
+                { move: -2, msg: '-2戻' }
+            ];
+            const o = outcomes[Math.floor(Math.random() * outcomes.length)];
+            if (o.pts) addMiniPts(pi, o.pts);
+            if (o.move) {
+                p.pos = Math.max(0, Math.min(BOARD_LEN - 1, p.pos + o.move));
+                updateCharPositions(pi);
+            }
+            desc = 'ルーレット → ' + o.msg;
+            mood = (o.pts || 0) >= 0 ? 'good' : 'bad';
+            sgSpeak('ルーレットの結果は…' + o.msg + 'じゃ！');
+            flash('gold');
+        } else if (kind === 'duel') {
+            const foe = others[Math.floor(Math.random() * others.length)];
+            if (Math.random() < 0.55) {
+                const take = Math.min(3, foe.miniPts);
+                foe.miniPts -= take;
+                p.miniPts += take;
+                desc = foe.name + ' に勝利！+' + take + 'MP';
+                mood = 'good';
+                sgSpeak('決闘に勝ったぞい！ポイントゲットぞい！');
+            } else {
+                const lose = Math.min(2, p.miniPts);
+                p.miniPts -= lose;
+                foe.miniPts += lose;
+                desc = foe.name + ' に敗北…-' + lose + 'MP';
+                mood = 'bad';
+                sgSpeak('決闘に負けてしまったぞい…');
+            }
+            flash(mood === 'good' ? 'green' : 'red');
+        } else if (kind === 'bank') {
+            if (p.bank > 0) {
+                addMiniPts(pi, p.bank);
+                desc = '預金引き出し +' + p.bank + 'MP！';
+                p.bank = 0;
+                sgSpeak('銀行から引き出したぞい！ポイントゲットぞい！');
+            } else {
+                const dep = Math.min(3, p.miniPts);
+                p.miniPts -= dep;
+                p.bank = dep * 2;
+                desc = dep + 'MP預けた。後で' + p.bank + 'MP戻る！';
+                sgSpeak('銀行に預けたぞい。後で倍になって戻るのじゃ！');
+            }
+            flash('gold');
+        } else if (kind === 'curse') {
+            const t = others[Math.floor(Math.random() * others.length)];
+            t.cursed = true;
+            desc = t.name + ' に呪い！（獲得半減）';
+            mood = 'bad';
+            sgSpeak(t.name + 'に呪いをかけたぞい！');
+            flash('purple');
+        } else if (kind === 'bless') {
+            p.cursed = false;
+            p.shield = true;
+            addMiniPts(pi, 2);
+            desc = '呪い解除＋盾＋2MP！';
+            mood = 'good';
+            sgSpeak('祝福じゃ！ポイントゲットぞい！');
+            flash('green');
+        } else if (kind === 'chain') {
+            /* 次の3マスを強制発動風にポイント */
+            addMiniPts(pi, 2);
+            p.pos = Math.min(BOARD_LEN - 1, p.pos + 1);
+            updateCharPositions(pi);
+            desc = '+2MP＆もう1マス進む！';
+            sgSpeak('連鎖じゃ！さらに進むのじゃ！');
+            flash('gold');
+        } else if (kind === 'copyLead') {
+            const lead = sgState.players.slice().sort(function(a,b){ return b.miniPts - a.miniPts; })[0];
+            if (lead !== p) {
+                const gain = Math.min(4, Math.max(1, Math.floor(lead.miniPts * 0.2)));
+                addMiniPts(pi, gain);
+                desc = '首位をコピー +' + gain + 'MP';
+            } else desc = '首位なので変化なし';
+            sgSpeak('コピーの術じゃ！');
+        } else if (kind === 'equalize') {
+            let sum = 0;
+            sgState.players.forEach(function(op){ sum += op.miniPts; });
+            const avg = Math.floor(sum / 4);
+            sgState.players.forEach(function(op){ op.miniPts = avg; });
+            desc = '全員 ' + avg + 'MP に平均化！';
+            flash('purple');
+            sgSpeak('平均化の魔法じゃ！');
+        } else if (kind === 'thiefAll') {
+            let total = 0;
+            others.forEach(function(op) {
+                const take = Math.min(1, op.miniPts);
+                op.miniPts -= take;
+                total += take;
+            });
+            p.miniPts += total;
+            desc = '全員から1ずつ盗んだ！+' + total + 'MP';
+            floatText('+' + total + 'MP', true);
+            flash('gold');
+            sgSpeak('大泥棒の活躍じゃ！ポイントゲットぞい！');
+        } else if (kind === 'storm') {
+            sgState.players.forEach(function(op) {
+                op.pos = Math.max(0, Math.min(BOARD_LEN - 1, op.pos + (Math.random() < 0.5 ? 1 : -1)));
+            });
+            updateCharPositions(-1);
+            desc = '大嵐！全員が1マス流された！';
+            flash('purple');
+            sgSpeak('大嵐じゃ！みんな流されたぞい！');
+        } else if (kind === 'safe') {
+            p.safe = true;
+            p.shield = true;
+            desc = '安全地帯！次のダメージ無効';
+            mood = 'good';
+            sgSpeak('安全地帯に入ったぞい！');
+            flash('green');
+        } else if (kind === 'mystery') {
+            const r = Math.random();
+            if (r < 0.33) {
+                addMiniPts(pi, 6);
+                desc = '謎の箱から宝！+6MP';
+                mood = 'good';
+                sgSpeak('おおっ、宝が出たぞい！ポイントゲットぞい！');
+            } else if (r < 0.66) {
+                addMiniPts(pi, -2);
+                desc = '中身は空っぽ…-2MP';
+                mood = 'bad';
+                sgSpeak('空っぽじゃったわい…');
+            } else {
+                p.doubleNext = true;
+                desc = '次のサイコロ×2！';
+                mood = 'good';
+                sgSpeak('強化の巻物じゃ！');
+            }
+            flash(mood === 'good' ? 'gold' : 'red');
+        } else if (kind === 'combo') {
+            p.combo = (p.combo || 0) + 2;
+            desc = '次の移動 +2マス！';
+            mood = 'good';
+            sgSpeak('コンボ蓄積じゃ！');
+            flash('gold');
+        } else if (kind === 'freezeOthers') {
+            others.forEach(function(op){ op.skip = true; });
+            desc = '他の全員が次ターン休み！';
+            mood = 'good';
+            sgSpeak('時よ止まれ！他の者は動けぬぞい！');
+            flash('purple');
+        } else if (kind === 'rich') {
+            addMiniPts(pi, 7);
+            desc = '成金！+7MP';
+            mood = 'good';
+            sgSpeak('成金マスじゃ！ポイントゲットぞい！');
+            flash('gold');
+        } else if (kind === 'poor') {
+            const lose = Math.min(4, p.miniPts);
+            addMiniPts(pi, -lose);
+            desc = '貧乏神…-' + lose + 'MP';
+            mood = 'bad';
+            sgSpeak('貧乏神がついたぞい…');
+            flash('red');
+        } else {
+            addMiniPts(pi, 1);
+            desc = '謎の効果 +1MP';
+        }
+
+        await showEvent(g.icon, g.lab || '特殊マス', desc, mood);
+        log(p.name + ' : ' + (g.lab || '') + ' → ' + desc, mood === 'bad' ? 'lg-lose' : 'lg-special');
+        renderPlayers();
+    }
+
+    async function resolveGimmick(pi){
+        const p = sgState.players[pi];
+        const cell = sgState.cells[p.pos];
+        if (!cell || !cell.gimmick) return;
+        const g = cell.gimmick;
+
+        if (g.type === 'complex' && g.complex) {
+            await resolveComplex(pi, g);
+            return;
+        }
+
+        let title = cell.lab || g.lab || 'マス効果';
+        let desc = '';
+        let pts = g.pts || 0;
+        let move = g.move || 0;
+        let mood = pts >= 0 ? 'good' : 'bad';
+
+        if (g.flag === 'shield') {
+            p.shield = true;
+            await showEvent(g.icon, title, '次のダメージを防ぐ！', 'good');
+            sgSpeak((p.isCpu ? p.name + 'が' : 'お主が') + '盾を手に入れたぞい！');
+            flash('green');
+            renderPlayers();
+            return;
+        }
+        if (g.flag === 'doubleNext') {
+            p.doubleNext = true;
+            await showEvent(g.icon, title, '次のサイコロが倍！', 'good');
+            flash('gold');
+            renderPlayers();
+            return;
+        }
+        if (g.flag === 'reroll') {
+            await showEvent(g.icon, title, 'もう一度振れる！', 'good');
+            sgSpeak('もう一回じゃ！');
+            sgState._extraRoll = true;
+            return;
+        }
+        if (g.flag === 'skip') {
+            p.skip = true;
+            await showEvent(g.icon, title, '次ターン休み…', 'bad');
+            flash('red');
+            renderPlayers();
+            return;
+        }
+        if (g.type === 'warp') {
+            const dest = 1 + Math.floor(Math.random() * (BOARD_LEN - 2));
+            p.pos = dest;
+            updateCharPositions(pi);
+            await showEvent(g.icon, 'ワープ', 'マス ' + dest + ' へ！', 'good');
+            sgSpeak('ワープじゃ！マス' + dest + 'へ飛んだぞい！');
+            flash('purple');
+            renderPlayers();
+            return;
+        }
+        if (g.type === 'mini') {
+            await showEvent(g.icon, 'ミニゲームマス', 'ミニゲーム発動！', 'good');
+            flash('gold');
+            sgState._miniTriggered = true;
+            triggerMiniGame();
+            return;
+        }
+        if (g.steal) {
+            let best = -1, bestScore = -1;
+            sgState.players.forEach(function(op, j) {
+                if (j !== pi && op.miniPts > bestScore) { bestScore = op.miniPts; best = j; }
+            });
+            if (best >= 0 && bestScore > 0) {
+                const take = Math.min(g.steal, sgState.players[best].miniPts);
+                sgState.players[best].miniPts -= take;
+                p.miniPts += take;
+                desc = sgState.players[best].name + ' から ' + take + 'MP';
+                floatText('+' + take + 'MP', true);
+                flash('gold');
+                sgSpeak('ポイントを奪ったぞい！');
+            } else desc = '奪える相手なし…';
+            await showEvent(g.icon, title, desc, 'good');
+            renderPlayers();
+            return;
+        }
+        if (pts) {
+            addMiniPts(pi, pts);
+            desc += (pts > 0 ? '+' : '') + pts + 'MP。';
+        }
+        if (move) {
+            p.pos = Math.max(0, Math.min(BOARD_LEN - 1, p.pos + move));
+            updateCharPositions(pi);
+            desc += ' 移動' + (move > 0 ? '+' : '') + move;
+            mood = move >= 0 ? 'good' : 'bad';
+        }
+        await showEvent(g.icon, title, desc || '効果発動', mood);
+        log(p.name + ' : ' + title + ' ' + desc, pts < 0 ? 'lg-lose' : 'lg-gain');
+        renderPlayers();
+    }
+
+    function triggerMiniGame(){
+        if (!sgState) return;
+        sgState.busy = true;
+        el('sg-roll-btn').disabled = true;
+        const games = (typeof GAMES !== 'undefined') ? GAMES : [];
+        if (!games.length) {
+            applyMiniGameRanks(randomRanks());
+            return;
+        }
+        const g = games[Math.floor(Math.random() * games.length)];
+        const banner = el('sg-mini-banner');
+        banner.innerHTML = '🎮 ミニゲーム！ ' + (g.icon || '') + ' ' + String(g.name).replace(/\n/g, ' ') +
+            '<br><small>1位10MP / 2位5 / 3位3 / 4位1</small>';
+        banner.classList.add('show');
+        log('🎮 ミニゲーム：' + String(g.name).replace(/\n/g, ' '), 'lg-special');
+        sgSpeak('よし、ミニゲームの時間じゃ！順位でポイントがもらえるぞい！');
+        setTimeout(function(){
+            banner.classList.remove('show');
+            window.isSugorokuMode = true;
+            window.isChallengeMode = false;
+            const ov = el('sugoroku-overlay');
+            if (ov) ov.classList.remove('show');
+            if (three && three.animId) { cancelAnimationFrame(three.animId); three.animId = 0; }
+            if (typeof launchGame === 'function') {
+                launchGame(g.id, false).catch(function(){
+                    window.isSugorokuMode = false;
+                    if (ov) ov.classList.add('show');
+                    resumeThree();
+                    applyMiniGameRanks(randomRanks());
+                });
+            } else {
+                window.isSugorokuMode = false;
+                if (ov) ov.classList.add('show');
+                resumeThree();
+                applyMiniGameRanks(randomRanks());
+            }
+        }, 1400);
+    }
+
+    function randomRanks() {
+        const arr = [1, 2, 3, 4];
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+        }
+        return arr;
+    }
+
+    function applyMiniGameRanks(playerRanks) {
+        if (!sgState) return;
+        if (sgState._applyingMini) return;
+        sgState._applyingMini = true;
+        try {
+        let ranks;
+        if (Array.isArray(playerRanks) && playerRanks.length === 4 && typeof playerRanks[0] === 'number') {
+            ranks = playerRanks;
+        } else {
+            const humanRank = Math.max(1, Math.min(4, Number(playerRanks) || 4));
+            ranks = [humanRank, 0, 0, 0];
+            const remain = [1,2,3,4].filter(function(r){ return r !== humanRank; });
+            for (let i = 0; i < 3; i++) ranks[i + 1] = remain[i];
+        }
+        for (let i = 0; i < 4; i++) {
+            const r = Math.max(1, Math.min(4, Number(ranks[i]) || 4));
+            ranks[i] = r;
+            const mp = MINI_PTS[r] || 1;
+            sgState.players[i].miniPts += mp;
+            log(sgState.players[i].name + ' → ' + r + '位 +' + mp + 'MP（計' + sgState.players[i].miniPts + '）', 'lg-gain');
+        }
+        floatText('+' + (MINI_PTS[ranks[0]] || 1) + 'MP', true);
+        flash('gold');
+        renderPlayers();
+        const hr = ranks[0];
+        const hmp = MINI_PTS[hr] || 1;
+        if (hr === 1) sgSpeak('見事1位じゃ！ポイントゲットぞい！' + hmp + 'ミニゲームポイントじゃ！');
+        else if (hr === 2) sgSpeak('2位じゃな。' + hmp + 'ポイントゲットぞい。');
+        else if (hr === 3) sgSpeak('3位じゃ。' + hmp + 'ポイント入ったぞい。');
+        else sgSpeak('4位じゃが、1ポイントでも大事にするのじゃ。');
+
+        if (sgState.round >= sgState.maxRounds) {
+            sgSpeak('最終ラウンドが終わったぞい！結果発表じゃ！');
+            setTimeout(function(){ finishByMiniPoints(); }, 900);
+            return;
+        }
+        sgState.round++;
+        sgState.turn = 0;
+        sgState.busy = false;
+        sgState.players.forEach(function(p){
+            p.pos = 0;
+            /* 銀行は持ち越し */
+        });
+        updateCharPositions(-1);
+        updateTurnLabel();
+        renderPlayers();
+        log('—— ラウンド ' + sgState.round + '/' + sgState.maxRounds + ' 開始 ——', 'lg-special');
+        sgSpeak('ラウンド' + sgState.round + 'の始まりじゃ！');
+        const ov = el('sugoroku-overlay');
+        if (ov) ov.classList.add('show');
+        resumeThree();
+        if (three) three.onResize();
+        maybeCpuTurn();
+        } finally {
+            if (sgState) sgState._applyingMini = false;
+        }
+    }
+
+    window.onSugorokuMiniGameEnd = function(rank){
+        window.isSugorokuMode = false;
+        const ov = el('sugoroku-overlay');
+        if (ov) ov.classList.add('show');
+        resumeThree();
+        if (three) three.onResize();
+        if (!sgState) {
+            if (typeof refreshHome === 'function') refreshHome();
+            return;
+        }
+        applyMiniGameRanks(rank);
+        if (typeof refreshHome === 'function') refreshHome();
+    };;
+
+    function finishByMiniPoints(){
+        if (!sgState) return;
+        sgState.busy = true;
+        const ranked = sgState.players.map(function(p, i){ return { p: p, i: i }; })
+            .sort(function(a, b){
+                if (b.p.miniPts !== a.p.miniPts) return b.p.miniPts - a.p.miniPts;
+                return a.i - b.i;
+            });
+        let text = '全 ' + sgState.maxRounds + ' ラウンド終了！\n\n【ミニゲームポイント】\n';
+        ranked.forEach(function(x, idx) {
+            const place = idx + 1;
+            const reward = FINAL_PTS[place] || 10;
+            text += place + '位 ' + x.p.name + ' — ' + x.p.miniPts + ' MP → 報酬 ' + reward + 'pt\n';
+        });
+        el('sg-final-text').textContent = text;
+        el('sg-goal-overlay').classList.add('show');
+        if (ranked[0].i === 0) sgSpeak('お主の優勝じゃ！ポイントゲットぞい！めでたいのう！');
+        else sgSpeak(ranked[0].p.name + 'が1位じゃ！また挑戦するのじゃ！');
+        try {
+            const humanPlace = ranked.findIndex(function(x){ return x.i === 0; }) + 1;
+            const reward = FINAL_PTS[humanPlace] || 10;
+            const d = getAppData();
+            if (d) {
+                d.totalPoints = (d.totalPoints || 0) + reward;
+                saveRoot();
+                if (typeof showPointToast === 'function') {
+                    showPointToast('+' + reward + 'pt 🏆 すごろく最終' + humanPlace + '位！');
+                }
+            }
+        } catch(e){}
+        if (typeof refreshHome === 'function') refreshHome();
+    }
+
+    function resumeThree() {
+        if (!three) return;
+        function loop() {
+            if (!three) return;
+            three.animId = requestAnimationFrame(loop);
+            three.camera.position.lerp(three.camDesired, 0.08);
+            three.camera.up.set(0, 1, 0);
+            three.camera.lookAt(three.camTarget);
+            three.renderer.render(three.scene, three.camera);
+        }
+        if (!three.animId) loop();
+    }
+
+    window.SUGOROKU_RANK_POINTS = MINI_PTS;
+    Object.defineProperty(window, 'sgState', {
+        get: function(){ return sgState; },
+        set: function(v){ sgState = v; }
+    });
+} catch (err) {
+    console.error('[sugoroku]', err);
+}
 })();
 </script>
 
