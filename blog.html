@@ -654,7 +654,7 @@ article.post-full {
 </div>
 
 <footer class="blog-footer">
-  <p><a href="https://www.zojezu.f5.si/blog">ブログトップ</a></p>
+  <p> <a href="https://www.zojezu.f5.si/blog">ブログトップ</a></p>
 </footer>
 
 <script>
@@ -698,11 +698,30 @@ article.post-full {
         document.body.appendChild(s);
         old.remove();
       });
+      // 実際のヘッダーの高さを --header-h に反映する。
+      // これまでは 68px 固定だったため、実際のヘッダーがそれより高い／
+      // スクロールで高さが変わる場合に本文と被っていた。
+      syncHeaderHeight();
     })
     .catch(function (err) {
       console.warn('共有ヘッダーの読み込みに失敗しました:', err);
       slot.innerHTML = '';
     });
+
+  function syncHeaderHeight() {
+    var headerEl = slot.firstElementChild;
+    if (!headerEl) return;
+    function update() {
+      var h = headerEl.getBoundingClientRect().height;
+      if (h > 0) document.documentElement.style.setProperty('--header-h', h + 'px');
+    }
+    update();
+    if (window.ResizeObserver) {
+      new ResizeObserver(update).observe(headerEl);
+    } else {
+      window.addEventListener('resize', update);
+    }
+  }
 })();
 </script>
 
@@ -817,11 +836,22 @@ article.post-full {
 
   function startPolling() {
     if (pollTimerId) return;
+    // 以前は最初のチェックが5分後まで行われず、その前にタブを閉じると
+    // 新着があっても一度も通知されないというバグがあったため、開始時に即チェックする
+    pollForNewPosts();
     pollTimerId = setInterval(pollForNewPosts, POLL_MINUTES * 60 * 1000);
   }
   function stopPolling() {
     if (pollTimerId) { clearInterval(pollTimerId); pollTimerId = null; }
   }
+  // バックグラウンドタブでは setInterval が間引かれ、5分待っても
+  // 実際にはチェックされないことがあるため、タブに戻ったタイミングでも確認する
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && notifEnabled &&
+        ('Notification' in window) && Notification.permission === 'granted') {
+      pollForNewPosts();
+    }
+  });
 
   function initNotifToggle() {
     const btn = document.getElementById('notif-toggle');
@@ -840,7 +870,7 @@ article.post-full {
         stopPolling();
       } else if (perm === 'default') {
         btn.dataset.state = 'default';
-        label.textContent = '🔔 通知を有効にする';
+        label.textContent = '通知を有効にする';
         stopPolling();
       } else if (notifEnabled) {
         btn.dataset.state = 'granted';
