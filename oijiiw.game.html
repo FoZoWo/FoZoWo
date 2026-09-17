@@ -12617,9 +12617,17 @@ window.addEventListener('message', (e) => {
                 } catch(ex){}
                 isSugorokuMode = false;
                 isChallengeMode = false;
+                try {
+                    const frame = document.getElementById('game-frame');
+                    if (frame) frame.src = 'about:blank';
+                    const gs = document.getElementById('game-screen');
+                    if (gs) gs.style.display = 'none';
+                } catch(ex){}
                 const ov = document.getElementById('sugoroku-overlay');
                 if (ov) ov.classList.add('show');
-                if (typeof onSugorokuMiniGameEnd === 'function') onSugorokuMiniGameEnd(rank);
+                if (typeof onSugorokuMiniGameEnd === 'function') {
+                    onSugorokuMiniGameEnd(Number(rank) || 4);
+                }
             }, 900);
             return;
         }
@@ -23467,20 +23475,43 @@ async function ensureGameHtml(gameId) {
     };
 
     window.closeSugorokuMode = function(){
+        if (sgState && sgState._miniTimer) {
+            try { clearTimeout(sgState._miniTimer); } catch(e){}
+        }
         disposeThree();
         const ov = el('sugoroku-overlay');
         if (ov) { ov.classList.remove('show'); ov.setAttribute('aria-hidden', 'true'); }
+        const goal = el('sg-goal-overlay');
+        if (goal) goal.classList.remove('show');
         window.isSugorokuMode = false;
+        window.isChallengeMode = false;
         sgState = null;
-        try { document.body.style.overflow = ''; } catch(e) {}
-        if (typeof refreshHome === 'function') refreshHome();
+        try {
+            document.body.style.overflow = '';
+            const frame = document.getElementById('game-frame');
+            if (frame) frame.src = 'about:blank';
+            const gs = document.getElementById('game-screen');
+            if (gs) gs.style.display = 'none';
+            const home = document.getElementById('home-screen');
+            if (home) home.style.display = '';
+        } catch(e) {}
+        if (typeof goHome === 'function') {
+            try { goHome(); } catch(e) {}
+        } else if (typeof refreshHome === 'function') {
+            refreshHome();
+        }
     };
 
     window.resetSugorokuToSetup = function(){
+        if (sgState && sgState._miniTimer) {
+            try { clearTimeout(sgState._miniTimer); } catch(e){}
+        }
         disposeThree();
-        el('sg-goal-overlay').classList.remove('show');
+        const goal = el('sg-goal-overlay');
+        if (goal) goal.classList.remove('show');
         el('sg-setup-panel').style.display = 'flex';
         el('sg-play-panel').style.display = 'none';
+        window.isSugorokuMode = false;
         sgState = null;
     };
 
@@ -23516,7 +23547,11 @@ async function ensureGameHtml(gameId) {
             ],
             turn: 0, rollsThisRound: 0, busy: false,
             round: 1, maxRounds: maxRounds,
-            _extraRoll: false, _miniTriggered: false
+            minisDone: 0,
+            finished: false,
+            _extraRoll: false, _miniTriggered: false,
+            _applyingMini: false,
+            _miniTimer: null
         };
         el('sg-setup-panel').style.display = 'none';
         const pp = el('sg-play-panel');
@@ -23543,7 +23578,7 @@ async function ensureGameHtml(gameId) {
     };
 
     function maybeCpuTurn(){
-        if (!sgState || sgState.busy) return;
+        if (!sgState || sgState.busy || sgState.finished) return;
         const p = sgState.players[sgState.turn];
         if (!p.isCpu) return;
         if (p.skip) {
@@ -23575,7 +23610,7 @@ async function ensureGameHtml(gameId) {
     };
 
     function doRoll(){
-        if (!sgState || sgState.busy || !three) return;
+        if (!sgState || sgState.busy || sgState.finished || !three) return;
         sgState.busy = true;
         el('sg-roll-btn').disabled = true;
         sgAudioCtx();
@@ -24101,9 +24136,14 @@ async function ensureGameHtml(gameId) {
     }
 
     function triggerMiniGame(){
-        if (!sgState) return;
+        if (!sgState || sgState.finished) return;
         sgState.busy = true;
         el('sg-roll-btn').disabled = true;
+        /* 前回タイマー解除 */
+        if (sgState._miniTimer) {
+            try { clearTimeout(sgState._miniTimer); } catch(e){}
+            sgState._miniTimer = null;
+        }
         const games = (typeof GAMES !== 'undefined') ? GAMES : [];
         if (!games.length) {
             applyMiniGameRanks(randomRanks());
@@ -24111,13 +24151,33 @@ async function ensureGameHtml(gameId) {
         }
         const g = games[Math.floor(Math.random() * games.length)];
         const banner = el('sg-mini-banner');
-        banner.innerHTML = '🎮 ミニゲーム！ ' + (g.icon || '') + ' ' + String(g.name).replace(/\n/g, ' ') +
-            '<br><small>1位10MP / 2位5 / 3位3 / 4位1</small>';
-        banner.classList.add('show');
+        if (banner) {
+            banner.innerHTML = '🎮 ミニゲーム！ ' + (g.icon || '') + ' ' + String(g.name).replace(/\n/g, ' ') +
+                '<br><small>1位10MP / 2位5 / 3位3 / 4位1</small>';
+            banner.classList.add('show');
+        }
         log('🎮 ミニゲーム：' + String(g.name).replace(/\n/g, ' '), 'lg-special');
+        try { sfxMini(); } catch(e){}
         sgSpeak('よし、ミニゲームの時間じゃ！順位でポイントがもらえるぞい！');
+
+        /* ミニゲームが終わらなくても必ず戻る安全タイマー（90秒） */
+        sgState._miniTimer = setTimeout(function(){
+            if (!sgState || sgState.finished) return;
+            if (!window.isSugorokuMode && el('sugoroku-overlay') && el('sugoroku-overlay').classList.contains('show')) return;
+            console.warn('[sugoroku] mini-game timeout → force return');
+            try {
+                const frame = document.getElementById('game-frame');
+                if (frame) frame.src = 'about:blank';
+                const gs = document.getElementById('game-screen');
+                if (gs) gs.style.display = 'none';
+            } catch(ex){}
+            window.isSugorokuMode = false;
+            if (typeof onSugorokuMiniGameEnd === 'function') onSugorokuMiniGameEnd(4);
+        }, 90000);
+
         setTimeout(function(){
-            banner.classList.remove('show');
+            if (!sgState || sgState.finished) return;
+            if (banner) banner.classList.remove('show');
             window.isSugorokuMode = true;
             window.isChallengeMode = false;
             const ov = el('sugoroku-overlay');
@@ -24179,17 +24239,29 @@ async function ensureGameHtml(gameId) {
         else if (hr === 3) sgSpeak('3位じゃ。' + hmp + 'ポイント入ったぞい。');
         else sgSpeak('4位じゃが、1ポイントでも大事にするのじゃ。');
 
-        if (sgState.round >= sgState.maxRounds) {
+        /* ミニゲーム完了数で終了判定（ラウンド表示と同期） */
+        sgState.minisDone = (sgState.minisDone || 0) + 1;
+        log('ミニゲーム完了 ' + sgState.minisDone + '/' + sgState.maxRounds, 'lg-special');
+
+        if (sgState.minisDone >= sgState.maxRounds) {
+            sgState.finished = true;
+            sgState.busy = true;
             sgSpeak('最終ラウンドが終わったぞい！結果発表じゃ！');
-            setTimeout(function(){ finishByMiniPoints(); }, 900);
+            const ovEnd = el('sugoroku-overlay');
+            if (ovEnd) ovEnd.classList.add('show');
+            resumeThree();
+            setTimeout(function(){ finishByMiniPoints(); }, 600);
             return;
         }
-        sgState.round++;
+        sgState.round = sgState.minisDone + 1;
         sgState.turn = 0;
+        sgState.rollsThisRound = 0;
         sgState.busy = false;
+        sgState._miniTriggered = false;
+        sgState._extraRoll = false;
         sgState.players.forEach(function(p){
             p.pos = 0;
-            /* 銀行は持ち越し */
+            p.skip = false;
         });
         updateCharPositions(-1);
         updateTurnLabel();
@@ -24208,21 +24280,46 @@ async function ensureGameHtml(gameId) {
 
     window.onSugorokuMiniGameEnd = function(rank){
         window.isSugorokuMode = false;
+        try {
+            const frame = document.getElementById('game-frame');
+            if (frame) frame.src = 'about:blank';
+            const gs = document.getElementById('game-screen');
+            if (gs) gs.style.display = 'none';
+        } catch(ex){}
         const ov = el('sugoroku-overlay');
         if (ov) ov.classList.add('show');
         resumeThree();
-        if (three) three.onResize();
+        if (three && three.onResize) three.onResize();
         if (!sgState) {
             if (typeof refreshHome === 'function') refreshHome();
             return;
         }
+        if (sgState._miniTimer) {
+            try { clearTimeout(sgState._miniTimer); } catch(e){}
+            sgState._miniTimer = null;
+        }
+        if (sgState.finished) return;
         applyMiniGameRanks(rank);
         if (typeof refreshHome === 'function') refreshHome();
     };;
 
     function finishByMiniPoints(){
         if (!sgState) return;
+        sgState.finished = true;
         sgState.busy = true;
+        if (sgState._miniTimer) {
+            try { clearTimeout(sgState._miniTimer); } catch(e){}
+            sgState._miniTimer = null;
+        }
+        window.isSugorokuMode = false;
+        try {
+            const frame = document.getElementById('game-frame');
+            if (frame) frame.src = 'about:blank';
+            const gs = document.getElementById('game-screen');
+            if (gs) gs.style.display = 'none';
+        } catch(ex){}
+        const ov = el('sugoroku-overlay');
+        if (ov) ov.classList.add('show');
         const ranked = sgState.players.map(function(p, i){ return { p: p, i: i }; })
             .sort(function(a, b){
                 if (b.p.miniPts !== a.p.miniPts) return b.p.miniPts - a.p.miniPts;
@@ -24234,22 +24331,30 @@ async function ensureGameHtml(gameId) {
             const reward = FINAL_PTS[place] || 10;
             text += place + '位 ' + x.p.name + ' — ' + x.p.miniPts + ' MP → 報酬 ' + reward + 'pt\n';
         });
-        el('sg-final-text').textContent = text;
-        el('sg-goal-overlay').classList.add('show');
+        const ft = el('sg-final-text');
+        if (ft) ft.textContent = text;
+        const goal = el('sg-goal-overlay');
+        if (goal) goal.classList.add('show');
+        const btn = el('sg-roll-btn');
+        if (btn) { btn.disabled = true; btn.textContent = '終了'; }
+        try { sfxWin(); } catch(e){}
         if (ranked[0].i === 0) sgSpeak('お主の優勝じゃ！ポイントゲットぞい！めでたいのう！');
         else sgSpeak(ranked[0].p.name + 'が1位じゃ！また挑戦するのじゃ！');
-        try {
-            const humanPlace = ranked.findIndex(function(x){ return x.i === 0; }) + 1;
-            const reward = FINAL_PTS[humanPlace] || 10;
-            const d = getAppData();
-            if (d) {
-                d.totalPoints = (d.totalPoints || 0) + reward;
-                saveRoot();
-                if (typeof showPointToast === 'function') {
-                    showPointToast('+' + reward + 'pt 🏆 すごろく最終' + humanPlace + '位！');
+        if (!sgState._rewardGiven) {
+            sgState._rewardGiven = true;
+            try {
+                const humanPlace = ranked.findIndex(function(x){ return x.i === 0; }) + 1;
+                const reward = FINAL_PTS[humanPlace] || 10;
+                const d = getAppData();
+                if (d) {
+                    d.totalPoints = (d.totalPoints || 0) + reward;
+                    saveRoot();
+                    if (typeof showPointToast === 'function') {
+                        showPointToast('+' + reward + 'pt 🏆 すごろく最終' + humanPlace + '位！');
+                    }
                 }
-            }
-        } catch(e){}
+            } catch(e){}
+        }
         if (typeof refreshHome === 'function') refreshHome();
     }
 
