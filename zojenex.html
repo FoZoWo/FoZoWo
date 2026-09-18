@@ -1423,7 +1423,35 @@
         const homeCards = document.querySelectorAll('#feed .card[data-author="oijiiw"]');
         const wrap = document.createElement("div");
         wrap.className = "feed";
-        homeCards.forEach(c => wrap.appendChild(c.cloneNode(true)));
+        homeCards.forEach(c => {
+          const clone = c.cloneNode(true);
+          // クローンしたプレイヤーは未初期化に戻す（data-ready と video 状態をクリア）
+          clone.querySelectorAll(".vplayer").forEach(p => {
+            delete p.dataset.ready;
+            p.classList.add("paused");
+            p.classList.remove("show-ui");
+            const v = p.querySelector("video");
+            if (v) {
+              try { v.pause(); } catch (_) {}
+              try { v.currentTime = 0; } catch (_) {}
+              // クローン後にメディアを再読み込み
+              try { v.load(); } catch (_) {}
+            }
+            const played = p.querySelector(".played");
+            const buffered = p.querySelector(".buffered");
+            const knob = p.querySelector(".knob");
+            const timeEl = p.querySelector(".vplayer-time");
+            if (played) played.style.width = "0%";
+            if (buffered) buffered.style.width = "0%";
+            if (knob) knob.style.left = "0%";
+            if (timeEl) timeEl.textContent = "0:00 / 0:00";
+            const icPlay = p.querySelector(".ic-play");
+            const icPause = p.querySelector(".ic-pause");
+            if (icPlay) icPlay.style.display = "block";
+            if (icPause) icPause.style.display = "none";
+          });
+          wrap.appendChild(clone);
+        });
         document.getElementById("profileFeed").innerHTML = "";
         document.getElementById("profileFeed").appendChild(wrap);
         document.querySelectorAll("#profileFeed .like-btn").forEach(btn => {
