@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>おいじぃ魔女 (@oijiiw) | ZoJeNeX</title>
 
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon/zojefb-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon/zojefb-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="favicon/zojefb-apple-touch-icon.png" />
-  <link rel="icon" href="favicon/zojefb.ico" sizes="any" />
+  <link rel="icon" href="zojefb.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="zojefb-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="zojefb-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="zojefb-apple-touch-icon.png" />
+  <link rel="shortcut icon" href="zojefb.ico" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -278,6 +279,8 @@
       padding: 12px 16px;
       cursor: pointer;
       transition: background 0.15s;
+      text-decoration: none;
+      color: inherit;
     }
     .search-hit:hover { background: var(--bg-3); }
     .search-hit .av {
@@ -330,6 +333,7 @@
       color: var(--text-3);
       transition: all 0.2s;
       position: relative;
+      text-decoration: none;
     }
     .fnav-item:hover { color: var(--text); background: var(--bg-3); }
     .fnav-item.active {
@@ -395,6 +399,8 @@
       gap: 8px;
       cursor: pointer;
       width: 76px;
+      text-decoration: none;
+      color: inherit;
     }
     .person-ring {
       width: 64px;
@@ -472,6 +478,8 @@
       font-weight: 800;
       font-size: 15px;
       flex-shrink: 0;
+      cursor: pointer;
+      text-decoration: none;
       cursor: pointer;
     }
     .card-av.g { background: linear-gradient(135deg, #c9a227, #a67c00); color: #0e0d0b; }
@@ -1031,7 +1039,7 @@
       </div>
       <div class="search-results" id="searchResults">
         <div class="hint">アカウント</div>
-        <div class="search-hit" data-user="zojezu">
+        <a class="search-hit" data-user="zojezu" href="zojenex.@zojezu.html">
           <div class="av g has-img"><img src="おいさしロゴ.png" alt="ゾジェズ" /></div>
           <div class="meta">
             <div class="nm">ゾジェズ/ZoJeZu【公式】
@@ -1039,15 +1047,15 @@
             </div>
             <div class="hd">@zojezu</div>
           </div>
-        </div>
-        <div class="search-hit" data-user="oijiiw">
+        </a>
+        <a class="search-hit" data-user="oijiiw" href="zojenex.@oijiiw.html">
           <div class="av w has-img"><img src="おいじぃ魔女.png" alt="おいじぃ魔女" /></div>
           <div class="meta">
             <div class="nm">おいじぃ魔女</div>
             <div class="hd">@oijiiw</div>
           </div>
-        </div>
-        <div class="search-hit" data-user="zojenex">
+        </a>
+        <a class="search-hit" data-user="zojenex" href="zojenex.@zojenex.html">
           <div class="av z has-img"><img src="zojenex_logo.png" alt="ZoJeNeX" /></div>
           <div class="meta">
             <div class="nm">ZoJeNeX
@@ -1055,7 +1063,7 @@
             </div>
             <div class="hd">@zojenex</div>
           </div>
-        </div>
+        </a>
       </div>
     </div>
 
@@ -1063,18 +1071,18 @@
     <div class="page active" id="page-home">
       <div class="section-label">つながっている人</div>
       <div class="people-row">
-        <div class="person" data-user="zojezu">
+        <a class="person" data-user="zojezu" href="zojenex.@zojezu.html">
           <div class="person-ring"><div class="person-av g has-img"><img src="おいさしロゴ.png" alt="ゾジェズ" /></div></div>
           <span class="person-name">ゾジェズ</span>
-        </div>
-        <div class="person" data-user="oijiiw">
+        </a>
+        <a class="person" data-user="oijiiw" href="zojenex.@oijiiw.html">
           <div class="person-ring"><div class="person-av w has-img"><img src="おいじぃ魔女.png" alt="おいじぃ魔女" /></div></div>
           <span class="person-name">おいじぃ魔女</span>
-        </div>
-        <div class="person" data-user="zojenex">
+        </a>
+        <a class="person" data-user="zojenex" href="zojenex.@zojenex.html">
           <div class="person-ring"><div class="person-av z has-img"><img src="zojenex_logo.png" alt="ZoJeNeX" /></div></div>
           <span class="person-name">ZoJeNeX</span>
-        </div>
+        </a>
       </div>
 
       <div class="section-label">タイムライン</div>
@@ -1082,7 +1090,7 @@
         <!-- Post 1 -->
         <article class="card" data-id="1">
           <div class="card-top">
-            <div class="card-av g has-img" data-user="zojezu"><img src="おいさしロゴ.png" alt="ゾジェズ" /></div>
+            <a class="card-av g has-img" data-user="zojezu" href="zojenex.@zojezu.html"><img src="おいさしロゴ.png" alt="ゾジェズ" /></a>
             <div class="card-who">
               <div class="nm">ゾジェズ/ZoJeZu【公式】
                 <svg class="verified" viewBox="0 0 22 22" fill="#c9a227"><path d="M11 2l1.5 3 3.3.5-2.4 2.3.6 3.3L11 9.5 7.9 11.1l.6-3.3-2.4-2.3 3.3-.5L11 2z"/></svg>
@@ -1113,7 +1121,7 @@
         <!-- おいじぃ魔女 動画投稿 1 -->
         <article class="card" data-id="ow1" data-author="oijiiw">
           <div class="card-top">
-            <div class="card-av w has-img" data-user="oijiiw"><img src="おいじぃ魔女.png" alt="おいじぃ魔女" /></div>
+            <a class="card-av w has-img" data-user="oijiiw" href="zojenex.@oijiiw.html"><img src="おいじぃ魔女.png" alt="おいじぃ魔女" /></a>
             <div class="card-who">
               <div class="nm">おいじぃ魔女</div>
               <div class="hd">@oijiiw</div>
@@ -1156,7 +1164,7 @@
         <!-- おいじぃ魔女 動画投稿 2 -->
         <article class="card" data-id="ow2" data-author="oijiiw">
           <div class="card-top">
-            <div class="card-av w has-img" data-user="oijiiw"><img src="おいじぃ魔女.png" alt="おいじぃ魔女" /></div>
+            <a class="card-av w has-img" data-user="oijiiw" href="zojenex.@oijiiw.html"><img src="おいじぃ魔女.png" alt="おいじぃ魔女" /></a>
             <div class="card-who">
               <div class="nm">おいじぃ魔女</div>
               <div class="hd">@oijiiw</div>
@@ -1199,7 +1207,7 @@
         <!-- おいじぃ魔女 動画投稿 3 -->
         <article class="card" data-id="ow3" data-author="oijiiw">
           <div class="card-top">
-            <div class="card-av w has-img" data-user="oijiiw"><img src="おいじぃ魔女.png" alt="おいじぃ魔女" /></div>
+            <a class="card-av w has-img" data-user="oijiiw" href="zojenex.@oijiiw.html"><img src="おいじぃ魔女.png" alt="おいじぃ魔女" /></a>
             <div class="card-who">
               <div class="nm">おいじぃ魔女</div>
               <div class="hd">@oijiiw</div>
@@ -1242,7 +1250,7 @@
         <!-- おいじぃ魔女 動画投稿 4 -->
         <article class="card" data-id="ow4" data-author="oijiiw">
           <div class="card-top">
-            <div class="card-av w has-img" data-user="oijiiw"><img src="おいじぃ魔女.png" alt="おいじぃ魔女" /></div>
+            <a class="card-av w has-img" data-user="oijiiw" href="zojenex.@oijiiw.html"><img src="おいじぃ魔女.png" alt="おいじぃ魔女" /></a>
             <div class="card-who">
               <div class="nm">おいじぃ魔女</div>
               <div class="hd">@oijiiw</div>
@@ -1285,7 +1293,7 @@
         <!-- Post 3 -->
         <article class="card" data-id="3">
           <div class="card-top">
-            <div class="card-av z has-img" data-user="zojenex"><img src="zojenex_logo.png" alt="ZoJeNeX" /></div>
+            <a class="card-av z has-img" data-user="zojenex" href="zojenex.@zojenex.html"><img src="zojenex_logo.png" alt="ZoJeNeX" /></a>
             <div class="card-who">
               <div class="nm">ZoJeNeX
                 <svg class="verified" viewBox="0 0 22 22" fill="#c9a227"><path d="M11 2l1.5 3 3.3.5-2.4 2.3.6 3.3L11 9.5 7.9 11.1l.6-3.3-2.4-2.3 3.3-.5L11 2z"/></svg>
@@ -1592,7 +1600,6 @@
         });
         document.getElementById("profileFeed").innerHTML = "";
         document.getElementById("profileFeed").appendChild(wrap);
-        });
         document.querySelectorAll("#profileFeed .share-btn").forEach(btn => {
           btn.addEventListener("click", () => sharePost(btn));
         });
@@ -1608,13 +1615,16 @@
       bindFollowBtns();
     }
 
-    // Click avatars / people → dedicated profile HTML
+    // Click avatars / people → dedicated profile HTML (backup for non-link cases)
     document.addEventListener("click", (e) => {
       const t = e.target.closest("[data-user]");
-      if (t && (t.classList.contains("person") || t.classList.contains("card-av") || t.classList.contains("search-hit"))) {
+      if (!t) return;
+      if (t.classList.contains("follow-btn")) return;
+      if (t.tagName === "A" && t.getAttribute("href")) return; // let native <a> work
+      if (t.classList.contains("person") || t.classList.contains("card-av") || t.classList.contains("search-hit")) {
         e.preventDefault();
         const uid = t.dataset.user;
-        window.location.href = "zojenex.@" + uid + ".html";
+        if (uid) window.location.href = "zojenex.@" + uid + ".html";
       }
     });
 
@@ -1635,9 +1645,6 @@
       });
     }
     bindFollowBtns();
-
-    // ========== LIKE ==========
-        });
 
     // ========== SHARE ==========
     function sharePost(btn) {
@@ -1698,7 +1705,7 @@
       card.className = "card";
       card.innerHTML = `
         <div class="card-top">
-          <div class="card-av g has-img" data-user="zojezu"><img src="おいさしロゴ.png" alt="ゾジェズ" /></div>
+          <a class="card-av g has-img" data-user="zojezu" href="zojenex.@zojezu.html"><img src="おいさしロゴ.png" alt="ゾジェズ" /></a>
           <div class="card-who">
             <div class="nm">ゾジェズ/ZoJeZu【公式】
               <svg class="verified" viewBox="0 0 22 22" fill="#c9a227"><path d="M11 2l1.5 3 3.3.5-2.4 2.3.6 3.3L11 9.5 7.9 11.1l.6-3.3-2.4-2.3 3.3-.5L11 2z"/></svg>
