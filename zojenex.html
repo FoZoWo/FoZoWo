@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZoJeNeX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ========== THEME ========== */
+    :root, [data-theme="light"] {
+      --bg: #f6f4f0;
+      --bg-2: #ffffff;
+      --bg-3: #f0ece6;
+      --text: #1a1814;
+      --text-2: #5c574e;
+      --text-3: #8a8478;
+      --border: #e8e2d8;
+      --border-2: #ddd5c8;
+      --accent: #c9a227;
+      --accent-2: #8b5cf6;
+      --accent-3: #ec4899;
+      --gold: #c9a227;
+      --gold-soft: rgba(201, 162, 39, 0.15);
+      --shadow: 0 8px 30px rgba(26, 24, 20, 0.08);
+      --shadow-lg: 0 20px 50px rgba(26, 24, 20, 0.12);
+      --glass: rgba(255, 255, 255, 0.7);
+      --radius: 20px;
+      --radius-sm: 14px;
+      --radius-xs: 10px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0e0d0b;
+      --bg-2: #181612;
+      --bg-3: #221f1a;
+      --text: #f5f2eb;
+      --text-2: #b0a99c;
+      --text-3: #7a7468;
+      --border: #2e2a24;
+      --border-2: #3d372f;
+      --gold-soft: rgba(201, 162, 39, 0.2);
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.5);
+      --glass: rgba(24, 22, 18, 0.75);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Outfit", "Noto Sans JP", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.35s, color 0.35s;
+    }
+
+    /* Soft gradient wash */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 10% 20%, rgba(201, 162, 39, 0.12), transparent 50%),
+        radial-gradient(ellipse 60% 40% at 90% 10%, rgba(139, 92, 246, 0.1), transparent 45%),
+        radial-gradient(ellipse 50% 50% at 50% 90%, rgba(236, 72, 153, 0.08), transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    [data-theme="dark"] body::before {
+      background:
+        radial-gradient(ellipse 80% 50% at 10% 20%, rgba(201, 162, 39, 0.08), transparent 50%),
+        radial-gradient(ellipse 60% 40% at 90% 10%, rgba(139, 92, 246, 0.07), transparent 45%),
+        radial-gradient(ellipse 50% 50% at 50% 90%, rgba(236, 72, 153, 0.05), transparent 50%);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+    input, textarea { font-family: inherit; }
+
+    /* ========== APP SHELL ========== */
+    .app {
+      position: relative;
+      z-index: 1;
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 0 16px 100px;
+      min-height: 100vh;
+    }
+
+    /* ========== HEADER ========== */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 16px 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: linear-gradient(to bottom, var(--bg) 60%, transparent);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #c9a227, #e8d48b 40%, #8b5cf6 100%);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 18px;
+      color: #0e0d0b;
+      box-shadow: 0 4px 20px rgba(201, 162, 39, 0.35);
+    }
+    .brand-name {
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: -0.5px;
+      background: linear-gradient(90deg, var(--text), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      transition: all 0.2s;
+      box-shadow: var(--shadow);
+    }
+    .icon-btn:hover {
+      background: var(--bg-3);
+      color: var(--text);
+      border-color: var(--border-2);
+    }
+    .icon-btn svg { width: 20px; height: 20px; }
+    .icon-btn .badge {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 8px;
+      height: 8px;
+      background: linear-gradient(135deg, #c9a227, #ec4899);
+      border-radius: 50%;
+    }
+    .icon-btn { position: relative; }
+
+    .avatar-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #c9a227, #a67c00);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 14px;
+      color: #0e0d0b;
+      border: 2px solid transparent;
+      transition: border-color 0.2s;
+      box-shadow: var(--shadow);
+    }
+    .avatar-btn:hover { border-color: var(--gold); }
+
+    /* ========== SEARCH ========== */
+    .search-bar {
+      margin: 8px 0 20px;
+      position: relative;
+    }
+    .search-inner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 12px 18px;
+      box-shadow: var(--shadow);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-inner:focus-within {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--gold-soft), var(--shadow);
+    }
+    .search-inner svg {
+      width: 18px;
+      height: 18px;
+      color: var(--text-3);
+      flex-shrink: 0;
+    }
+    .search-inner input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      font-size: 15px;
+      color: var(--text);
+    }
+    .search-inner input::placeholder { color: var(--text-3); }
+
+    .search-results {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      z-index: 40;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+    .search-results.open { display: block; }
+    .search-results .hint {
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .search-hit {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .search-hit:hover { background: var(--bg-3); }
+    .search-hit .av {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .search-hit .av.g { background: linear-gradient(135deg, #c9a227, #a67c00); color: #0e0d0b; }
+    .search-hit .av.w { background: linear-gradient(135deg, #7c3aed, #c026d3); font-size: 18px; }
+    .search-hit .av.z { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; }
+    .search-hit .meta { flex: 1; min-width: 0; }
+    .search-hit .nm {
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .search-hit .hd { font-size: 13px; color: var(--text-2); }
+
+    /* ========== FLOATING NAV ========== */
+    .float-nav {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px;
+      box-shadow: var(--shadow-lg);
+    }
+    .fnav-item {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: var(--text-3);
+      transition: all 0.2s;
+      position: relative;
+    }
+    .fnav-item:hover { color: var(--text); background: var(--bg-3); }
+    .fnav-item.active {
+      color: #0e0d0b;
+      background: linear-gradient(135deg, #c9a227, #e8d48b);
+      box-shadow: 0 4px 16px rgba(201, 162, 39, 0.4);
+    }
+    .fnav-item svg { width: 22px; height: 22px; }
+    .fnav-item .dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 7px;
+      height: 7px;
+      background: linear-gradient(135deg, #ec4899, #c9a227);
+      border-radius: 50%;
+    }
+    .fnav-compose {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #c9a227, #8b5cf6);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      margin: 0 4px;
+      box-shadow: 0 4px 20px rgba(201, 162, 39, 0.4);
+      transition: transform 0.2s;
+    }
+    .fnav-compose:hover { transform: scale(1.08); }
+    .fnav-compose svg { width: 24px; height: 24px; }
+
+    /* ========== PAGES ========== */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ========== HOME ========== */
+    .section-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 12px;
+      padding-left: 4px;
+    }
+
+    .people-row {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+      scrollbar-width: none;
+    }
+    .people-row::-webkit-scrollbar { display: none; }
+
+    .person {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      width: 76px;
+    }
+    .person-ring {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      padding: 3px;
+      background: linear-gradient(135deg, #c9a227, #8b5cf6, #ec4899);
+    }
+    .person-av {
+      width: 100%;
+      height: 100%;
+      border-radius: 17px;
+      border: 3px solid var(--bg);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 16px;
+    }
+    .person-av.g { background: linear-gradient(135deg, #c9a227, #a67c00); color: #0e0d0b; }
+    .person-av.w { background: linear-gradient(135deg, #7c3aed, #c026d3); font-size: 22px; }
+    .person-av.z { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; }
+    .person-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-2);
+      text-align: center;
+      max-width: 76px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Post cards — original */
+    .feed { display: flex; flex-direction: column; gap: 16px; }
+
+    .card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #c9a227, #8b5cf6, #ec4899);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .card:hover::before { opacity: 1; }
+    .card:hover {
+      border-color: var(--border-2);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .card-av {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 15px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .card-av.g { background: linear-gradient(135deg, #c9a227, #a67c00); color: #0e0d0b; }
+    .card-av.w { background: linear-gradient(135deg, #7c3aed, #c026d3); font-size: 20px; }
+    .card-av.z { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; }
+    .card-who { flex: 1; min-width: 0; }
+    .card-who .nm {
+      font-weight: 700;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .card-who .hd {
+      font-size: 13px;
+      color: var(--text-2);
+    }
+    .verified {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+    }
+    .card-time {
+      font-size: 12px;
+      color: var(--text-3);
+    }
+
+    .card-body {
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 14px;
+      white-space: pre-wrap;
+    }
+    .card-body .tag {
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    .card-media {
+      border-radius: var(--radius-sm);
+      height: 180px;
+      margin-bottom: 14px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .card-media.m1 {
+      background: linear-gradient(135deg, #f5e6c8 0%, #e8d4a8 30%, #d4b896 60%, #c9a227 100%);
+    }
+    .card-media.m2 {
+      background: linear-gradient(135deg, #e9d5ff 0%, #c4b5fd 40%, #a78bfa 100%);
+    }
+    .card-media.m3 {
+      background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 40%, #60a5fa 100%);
+    }
+    [data-theme="dark"] .card-media.m1 {
+      background: linear-gradient(135deg, #3d2e0a 0%, #5c4510 40%, #c9a227 100%);
+    }
+    [data-theme="dark"] .card-media.m2 {
+      background: linear-gradient(135deg, #2e1065 0%, #5b21b6 50%, #a78bfa 100%);
+    }
+    [data-theme="dark"] .card-media.m3 {
+      background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 50%, #60a5fa 100%);
+    }
+    .card-media span {
+      font-size: 36px;
+      font-weight: 800;
+      opacity: 0.35;
+      letter-spacing: -1px;
+    }
+    .card-media.video-wrap {
+      height: auto;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      padding: 0;
+    }
+    .card-media.video-wrap video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      border-radius: var(--radius-sm);
+      background: #000;
+    }
+
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding-top: 4px;
+      border-top: 1px solid var(--border);
+    }
+    .act {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-2);
+      transition: all 0.2s;
+    }
+    .act:hover { background: var(--bg-3); color: var(--text); }
+    .act svg { width: 18px; height: 18px; }
+    .act.liked {
+      color: #ec4899;
+      background: rgba(236, 72, 153, 0.1);
+    }
+    .act.liked:hover { background: rgba(236, 72, 153, 0.15); }
+    .act .count { font-variant-numeric: tabular-nums; }
+
+    /* ========== PROFILE ========== */
+    .profile-hero {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .profile-hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100px;
+      background: linear-gradient(135deg, rgba(201,162,39,0.2), rgba(139,92,246,0.15), rgba(236,72,153,0.1));
+    }
+    .profile-av-wrap {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 16px;
+    }
+    .profile-av {
+      width: 88px;
+      height: 88px;
+      border-radius: 24px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 28px;
+      border: 4px solid var(--bg-2);
+      box-shadow: var(--shadow);
+    }
+    .profile-av.g { background: linear-gradient(135deg, #c9a227, #a67c00); color: #0e0d0b; }
+    .profile-av.w { background: linear-gradient(135deg, #7c3aed, #c026d3); font-size: 36px; }
+    .profile-av.z { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; }
+
+    .profile-name {
+      font-size: 24px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+    .profile-handle {
+      color: var(--text-2);
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+    .profile-bio {
+      font-size: 15px;
+      line-height: 1.55;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+    .profile-stats {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 16px;
+    }
+    .profile-stats strong {
+      font-weight: 800;
+      margin-right: 4px;
+    }
+    .profile-stats span { color: var(--text-2); font-size: 14px; }
+
+    .profile-btns {
+      display: flex;
+      gap: 10px;
+    }
+    .btn {
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #c9a227, #e8d48b);
+      color: #0e0d0b;
+      box-shadow: 0 4px 16px rgba(201, 162, 39, 0.3);
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201, 162, 39, 0.4); }
+    .btn-primary.following {
+      background: var(--bg-3);
+      color: var(--text);
+      box-shadow: none;
+      border: 1px solid var(--border);
+    }
+    .btn-ghost {
+      background: var(--bg-3);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { background: var(--border); }
+
+    .empty {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--text-2);
+    }
+    .empty h3 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    /* ========== SETTINGS ========== */
+    .settings-card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 8px;
+      box-shadow: var(--shadow);
+    }
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 14px;
+      border-radius: var(--radius-sm);
+      transition: background 0.15s;
+    }
+    .settings-row:hover { background: var(--bg-3); }
+    .settings-row .label {
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .settings-row .desc {
+      font-size: 13px;
+      color: var(--text-2);
+      margin-top: 2px;
+    }
+
+    .theme-toggle {
+      display: flex;
+      background: var(--bg-3);
+      border-radius: 999px;
+      padding: 4px;
+      border: 1px solid var(--border);
+    }
+    .theme-opt {
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-2);
+      transition: all 0.2s;
+    }
+    .theme-opt.active {
+      background: linear-gradient(135deg, #c9a227, #e8d48b);
+      color: #0e0d0b;
+      box-shadow: 0 2px 10px rgba(201, 162, 39, 0.3);
+    }
+
+    /* ========== COMPOSE MODAL ========== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(6px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 480px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-head h3 { font-size: 17px; font-weight: 800; }
+    .modal-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: var(--text-2);
+      transition: background 0.15s;
+    }
+    .modal-close:hover { background: var(--bg-3); }
+    .modal-body { padding: 20px; }
+    .modal-body textarea {
+      width: 100%;
+      min-height: 120px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      font-size: 15px;
+      color: var(--text);
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .modal-body textarea:focus {
+      border-color: var(--gold);
+    }
+    .modal-foot {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 12px 20px 20px;
+    }
+
+    /* ========== TOAST ========== */
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--text);
+      color: var(--bg);
+      padding: 12px 24px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s;
+      z-index: 200;
+      box-shadow: var(--shadow-lg);
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 520px) {
+      .app { padding: 0 12px 110px; }
+      .float-nav { bottom: 16px; padding: 4px; }
+      .fnav-item { width: 44px; height: 44px; }
+      .fnav-compose { width: 48px; height: 48px; }
+      .card { padding: 14px; }
+      .profile-hero { padding: 24px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <div class="brand-mark">Z</div>
+        <span class="brand-name">ZoJeNeX</span>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="notifBtn" title="通知">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
+          <span class="badge"></span>
+        </button>
+        <button class="avatar-btn" id="meBtn" title="マイページ">Z</button>
+      </div>
+    </header>
+
+    <!-- Search -->
+    <div class="search-bar">
+      <div class="search-inner">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <input type="text" id="searchInput" placeholder="アカウントや投稿を検索..." autocomplete="off" />
+      </div>
+      <div class="search-results" id="searchResults">
+        <div class="hint">アカウント</div>
+        <div class="search-hit" data-user="zojezu">
+          <div class="av g">ZJ</div>
+          <div class="meta">
+            <div class="nm">ゾジェズ/ZoJeZu【公式】
+              <svg class="verified" viewBox="0 0 22 22" fill="#c9a227"><path d="M11 2l1.5 3 3.3.5-2.4 2.3.6 3.3L11 9.5 7.9 11.1l.6-3.3-2.4-2.3 3.3-.5L11 2z"/></svg>
+            </div>
+            <div class="hd">@zojezu</div>
+          </div>
+        </div>
+        <div class="search-hit" data-user="oijiiw">
+          <div class="av w">🧙‍♀️</div>
+          <div class="meta">
+            <div class="nm">おいじぃ魔女</div>
+            <div class="hd">@oijiiw</div>
+          </div>
+        </div>
+        <div class="search-hit" data-user="zojenex">
+          <div class="av z">ZN</div>
+          <div class="meta">
+            <div class="nm">ZoJeNeX
+              <svg class="verified" viewBox="0 0 22 22" fill="#c9a227"><path d="M11 2l1.5 3 3.3.5-2.4 2.3.6 3.3L11 9.5 7.9 11.1l.6-3.3-2.4-2.3 3.3-.5L11 2z"/></svg>
+            </div>
+            <div class="hd">@zojenex</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== HOME PAGE ========== -->
+    <div class="page active" id="page-home">
+      <div class="section-label">つながっている人</div>
+      <div class="people-row">
+        <div class="person" data-user="zojezu">
+          <div class="person-ring"><div class="person-av g">ZJ</div></div>
+          <span class="person-name">ゾジェズ</span>
+        </div>
+        <div class="person" data-user="oijiiw">
+          <div class="person-ring"><div class="person-av w">🧙‍♀️</div></div>
+          <span class="person-name">おいじぃ魔女</span>
+        </div>
+        <div class="person" data-user="zojenex">
+          <div class="person-ring"><div class="person-av z">ZN</div></div>
+          <span class="person-name">ZoJeNeX</span>
+        </div>
+      </div>
+
+      <div class="section-label">タイムライン</div>
+      <div class="feed" id="feed">
+        <!-- Post 1 -->
+        <article class="card" data-id="1">
+          <div class="card-top">
+            <div class="card-av g" data-user="zojezu">ZJ</div>
+            <div class="card-who">
+              <div class="nm">ゾジェズ/ZoJeZu【公式】
+                <svg class="verified" viewBox="0 0 22 22" fill="#c9a227"><path d="M11 2l1.5 3 3.3.5-2.4 2.3.6 3.3L11 9.5 7.9 11.1l.6-3.3-2.4-2.3 3.3-.5L11 2z"/></svg>
+              </div>
+              <div class="hd">@zojezu</div>
+            </div>
+            <span class="card-time">今</span>
+          </div>
+          <div class="card-body">ZoJeNeX、スタートしました。
+
+完全オリジナルの空間で、新しいつながりを。
+ここから一緒に育てていきましょう。
+
+<span class="tag">#ZoJeNeX</span></div>
+          <div class="card-media m1"><span>ZoJeNeX</span></div>
+          <div class="card-actions">
+            <button class="act like-btn" data-count="1284">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <span class="count">1,284</span>
+            </button>
+            <button class="act">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
+              <span class="count">312</span>
+            </button>
+            <button class="act share-btn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+              シェア
+            </button>
+          </div>
+        </article>
+
+        <!-- おいじぃ魔女 動画投稿 1 -->
+        <article class="card" data-id="ow1" data-author="oijiiw">
+          <div class="card-top">
+            <div class="card-av w" data-user="oijiiw">🧙‍♀️</div>
+            <div class="card-who">
+              <div class="nm">おいじぃ魔女</div>
+              <div class="hd">@oijiiw</div>
+            </div>
+            <span class="card-time">1時間前</span>
+          </div>
+          <div class="card-body">おいじぃ魔女🧙‍♀️のデス·プレス順位決定戦
+
+<span class="tag">#デスプレス</span> <span class="tag">#おいじぃ魔女</span></div>
+          <div class="card-media video-wrap">
+            <video controls preload="metadata" playsinline>
+              <source src="oijiiwvideo1.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <div class="card-actions">
+            <button class="act like-btn" data-count="156">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <span class="count">156</span>
+            </button>
+            <button class="act">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
+              <span class="count">42</span>
+            </button>
+            <button class="act share-btn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+              シェア
+            </button>
+          </div>
+        </article>
+
+        <!-- おいじぃ魔女 動画投稿 2 -->
+        <article class="card" data-id="ow2" data-author="oijiiw">
+          <div class="card-top">
+            <div class="card-av w" data-user="oijiiw">🧙‍♀️</div>
+            <div class="card-who">
+              <div class="nm">おいじぃ魔女</div>
+              <div class="hd">@oijiiw</div>
+            </div>
+            <span class="card-time">3時間前</span>
+          </div>
+          <div class="card-body">【音楽】おいじぃ魔女音頭
+
+<span class="tag">#音楽</span> <span class="tag">#おいじぃ魔女音頭</span></div>
+          <div class="card-media video-wrap">
+            <video controls preload="metadata" playsinline>
+              <source src="oijiiwvideo2.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <div class="card-actions">
+            <button class="act like-btn" data-count="289">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <span class="count">289</span>
+            </button>
+            <button class="act">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
+              <span class="count">67</span>
+            </button>
+            <button class="act share-btn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+              シェア
+            </button>
+          </div>
+        </article>
+
+        <!-- おいじぃ魔女 動画投稿 3 -->
+        <article class="card" data-id="ow3" data-author="oijiiw">
+          <div class="card-top">
+            <div class="card-av w" data-user="oijiiw">🧙‍♀️</div>
+            <div class="card-who">
+              <div class="nm">おいじぃ魔女</div>
+              <div class="hd">@oijiiw</div>
+            </div>
+            <span class="card-time">5時間前</span>
+          </div>
+          <div class="card-body">【ゲーム】おいじい魔女大爆発:複雑なる工場
+
+<span class="tag">#ゲーム</span> <span class="tag">#大爆発</span></div>
+          <div class="card-media video-wrap">
+            <video controls preload="metadata" playsinline>
+              <source src="oijiiwvideo3.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <div class="card-actions">
+            <button class="act like-btn" data-count="421">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <span class="count">421</span>
+            </button>
+            <button class="act">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
+              <span class="count">98</span>
+            </button>
+            <button class="act share-btn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+              シェア
+            </button>
+          </div>
+        </article>
+
+        <!-- おいじぃ魔女 動画投稿 4 -->
+        <article class="card" data-id="ow4" data-author="oijiiw">
+          <div class="card-top">
+            <div class="card-av w" data-user="oijiiw">🧙‍♀️</div>
+            <div class="card-who">
+              <div class="nm">おいじぃ魔女</div>
+              <div class="hd">@oijiiw</div>
+            </div>
+            <span class="card-time">8時間前</span>
+          </div>
+          <div class="card-body">【音楽】おいじぃ魔女の歌
+
+<span class="tag">#音楽</span> <span class="tag">#おいじぃ魔女の歌</span></div>
+          <div class="card-media video-wrap">
+            <video controls preload="metadata" playsinline>
+              <source src="oijiiwvideo4.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <div class="card-actions">
+            <button class="act like-btn" data-count="512">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <span class="count">512</span>
+            </button>
+            <button class="act">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
+              <span class="count">124</span>
+            </button>
+            <button class="act share-btn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+              シェア
+            </button>
+          </div>
+        </article>
+
+        <!-- Post 3 -->
+        <article class="card" data-id="3">
+          <div class="card-top">
+            <div class="card-av z" data-user="zojenex">ZN</div>
+            <div class="card-who">
+              <div class="nm">ZoJeNeX
+                <svg class="verified" viewBox="0 0 22 22" fill="#c9a227"><path d="M11 2l1.5 3 3.3.5-2.4 2.3.6 3.3L11 9.5 7.9 11.1l.6-3.3-2.4-2.3 3.3-.5L11 2z"/></svg>
+              </div>
+              <div class="hd">@zojenex</div>
+            </div>
+            <span class="card-time">5時間前</span>
+          </div>
+          <div class="card-body">公式プラットフォームアカウントです。
+お知らせやアップデートはこちらから。
+
+<span class="tag">#お知らせ</span></div>
+          <div class="card-media m3"><span>ZN</span></div>
+          <div class="card-actions">
+            <button class="act like-btn" data-count="2103">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <span class="count">2,103</span>
+            </button>
+            <button class="act">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
+              <span class="count">89</span>
+            </button>
+            <button class="act share-btn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+              シェア
+            </button>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <!-- ========== PROFILE PAGE ========== -->
+    <div class="page" id="page-profile">
+      <div class="profile-hero" id="profileHero">
+        <!-- filled by JS -->
+      </div>
+      <div class="feed" id="profileFeed">
+        <div class="empty">
+          <h3>まだ投稿はありません</h3>
+          <p>このアカウントはまだ何も投稿していません。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== SETTINGS PAGE ========== -->
+    <div class="page" id="page-settings">
+      <div class="section-label">設定</div>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div>
+            <div class="label">テーマ</div>
+            <div class="desc">ライト / ダークを切り替え</div>
+          </div>
+          <div class="theme-toggle">
+            <button class="theme-opt active" data-theme="light">ライト</button>
+            <button class="theme-opt" data-theme="dark">ダーク</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Nav -->
+  <nav class="float-nav">
+    <button class="fnav-item active" data-page="home" title="ホーム">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    </button>
+    <button class="fnav-item" data-page="search" title="検索" id="navSearch">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+    </button>
+    <button class="fnav-compose" id="composeBtn" title="投稿する">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+    </button>
+    <button class="fnav-item" data-page="settings" title="設定">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+    </button>
+    <button class="fnav-item" data-page="profile" data-user="zojezu" title="プロフィール">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    </button>
+  </nav>
+
+  <!-- Compose Modal -->
+  <div class="modal-overlay" id="composeModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>新しい投稿</h3>
+        <button class="modal-close" id="composeClose">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <textarea id="composeText" placeholder="いま何を考えている？"></textarea>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" id="composeCancel">キャンセル</button>
+        <button class="btn btn-primary" id="composeSubmit">投稿する</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ========== DATA ==========
+    const users = {
+      zojezu: {
+        name: "ゾジェズ/ZoJeZu【公式】",
+        handle: "@zojezu",
+        bio: "ZoJeZu 公式アカウント。\nZoJeNeX を創っています。",
+        av: "g",
+        avText: "ZJ",
+        verified: true,
+        following: 128,
+        followers: 4820,
+        posts: 1
+      },
+      oijiiw: {
+        name: "おいじぃ魔女",
+        handle: "@oijiiw",
+        bio: "魔女見習い。金色が好き。",
+        av: "w",
+        avText: "🧙‍♀️",
+        verified: false,
+        following: 56,
+        followers: 892,
+        posts: 4
+      },
+      zojenex: {
+        name: "ZoJeNeX",
+        handle: "@zojenex",
+        bio: "ZoJeNeX 公式プラットフォームアカウント。\nお知らせ・アップデートはこちら。",
+        av: "z",
+        avText: "ZN",
+        verified: true,
+        following: 3,
+        followers: 12500,
+        posts: 1
+      }
+    };
+
+    let currentUser = "zojezu";
+    let currentPage = "home";
+
+    // ========== THEME ==========
+    const html = document.documentElement;
+    const savedTheme = localStorage.getItem("zojenex-theme") || "light";
+    html.setAttribute("data-theme", savedTheme);
+    document.querySelectorAll(".theme-opt").forEach(opt => {
+      opt.classList.toggle("active", opt.dataset.theme === savedTheme);
+    });
+
+    document.querySelectorAll(".theme-opt").forEach(opt => {
+      opt.addEventListener("click", () => {
+        const t = opt.dataset.theme;
+        html.setAttribute("data-theme", t);
+        localStorage.setItem("zojenex-theme", t);
+        document.querySelectorAll(".theme-opt").forEach(o => o.classList.toggle("active", o.dataset.theme === t));
+        toast(t === "light" ? "ライトモードに切り替えました" : "ダークモードに切り替えました");
+      });
+    });
+
+    // ========== NAV ==========
+    function showPage(page, userId) {
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".fnav-item").forEach(n => n.classList.remove("active"));
+
+      if (page === "search") {
+        document.getElementById("searchInput").focus();
+        document.getElementById("page-home").classList.add("active");
+        document.querySelector('.fnav-item[data-page="home"]').classList.add("active");
+        return;
+      }
+
+      const el = document.getElementById("page-" + page);
+      if (el) el.classList.add("active");
+
+      const navBtn = document.querySelector(`.fnav-item[data-page="${page}"]`);
+      if (navBtn) navBtn.classList.add("active");
+
+      currentPage = page;
+
+      if (page === "profile") {
+        currentUser = userId || currentUser || "zojezu";
+        renderProfile(currentUser);
+      }
+    }
+
+    document.querySelectorAll(".fnav-item").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const page = btn.dataset.page;
+        const user = btn.dataset.user;
+        showPage(page, user);
+      });
+    });
+
+    document.getElementById("meBtn").addEventListener("click", () => showPage("profile", "zojezu"));
+    document.getElementById("navSearch").addEventListener("click", () => {
+      document.getElementById("searchInput").focus();
+      document.getElementById("searchResults").classList.add("open");
+    });
+
+    // ========== PROFILE ==========
+    function renderProfile(id) {
+      const u = users[id];
+      if (!u) return;
+      currentUser = id;
+      const verified = u.verified
+        ? `<svg class="verified" viewBox="0 0 22 22" fill="#c9a227"><path d="M11 2l1.5 3 3.3.5-2.4 2.3.6 3.3L11 9.5 7.9 11.1l.6-3.3-2.4-2.3 3.3-.5L11 2z"/></svg>`
+        : "";
+      document.getElementById("profileHero").innerHTML = `
+        <div class="profile-av-wrap">
+          <div class="profile-av ${u.av}">${u.avText}</div>
+        </div>
+        <div class="profile-name">${u.name} ${verified}</div>
+        <div class="profile-handle">${u.handle}</div>
+        <div class="profile-bio">${u.bio.replace(/\n/g, "<br>")}</div>
+        <div class="profile-stats">
+          <div><strong>${u.following}</strong><span>フォロー中</span></div>
+          <div><strong>${u.followers.toLocaleString()}</strong><span>フォロワー</span></div>
+          <div><strong>${u.posts}</strong><span>投稿</span></div>
+        </div>
+        <div class="profile-btns">
+          <button class="btn btn-primary follow-btn" data-user="${id}">フォローする</button>
+          <button class="btn btn-ghost">メッセージ</button>
+        </div>
+      `;
+      if (id === "oijiiw") {
+        document.getElementById("profileFeed").innerHTML = `
+          <div class="feed">
+            <article class="card">
+              <div class="card-top">
+                <div class="card-av w" data-user="oijiiw">🧙‍♀️</div>
+                <div class="card-who"><div class="nm">おいじぃ魔女</div><div class="hd">@oijiiw</div></div>
+                <span class="card-time">1時間前</span>
+              </div>
+              <div class="card-body">おいじぃ魔女🧙‍♀️のデス·プレス順位決定戦<br><br><span class="tag">#デスプレス</span> <span class="tag">#おいじぃ魔女</span></div>
+              <div class="card-media video-wrap"><video controls preload="metadata" playsinline><source src="oijiiwvideo1.mp4" type="video/mp4" /></video></div>
+              <div class="card-actions">
+                <button class="act like-btn" data-count="156"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg><span class="count">156</span></button>
+                <button class="act share-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>シェア</button>
+              </div>
+            </article>
+            <article class="card">
+              <div class="card-top">
+                <div class="card-av w" data-user="oijiiw">🧙‍♀️</div>
+                <div class="card-who"><div class="nm">おいじぃ魔女</div><div class="hd">@oijiiw</div></div>
+                <span class="card-time">3時間前</span>
+              </div>
+              <div class="card-body">【音楽】おいじぃ魔女音頭<br><br><span class="tag">#音楽</span> <span class="tag">#おいじぃ魔女音頭</span></div>
+              <div class="card-media video-wrap"><video controls preload="metadata" playsinline><source src="oijiiwvideo2.mp4" type="video/mp4" /></video></div>
+              <div class="card-actions">
+                <button class="act like-btn" data-count="289"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg><span class="count">289</span></button>
+                <button class="act share-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>シェア</button>
+              </div>
+            </article>
+            <article class="card">
+              <div class="card-top">
+                <div class="card-av w" data-user="oijiiw">🧙‍♀️</div>
+                <div class="card-who"><div class="nm">おいじぃ魔女</div><div class="hd">@oijiiw</div></div>
+                <span class="card-time">5時間前</span>
+              </div>
+              <div class="card-body">【ゲーム】おいじい魔女大爆発:複雑なる工場<br><br><span class="tag">#ゲーム</span> <span class="tag">#大爆発</span></div>
+              <div class="card-media video-wrap"><video controls preload="metadata" playsinline><source src="oijiiwvideo3.mp4" type="video/mp4" /></video></div>
+              <div class="card-actions">
+                <button class="act like-btn" data-count="421"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg><span class="count">421</span></button>
+                <button class="act share-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>シェア</button>
+              </div>
+            </article>
+            <article class="card">
+              <div class="card-top">
+                <div class="card-av w" data-user="oijiiw">🧙‍♀️</div>
+                <div class="card-who"><div class="nm">おいじぃ魔女</div><div class="hd">@oijiiw</div></div>
+                <span class="card-time">8時間前</span>
+              </div>
+              <div class="card-body">【音楽】おいじぃ魔女の歌<br><br><span class="tag">#音楽</span> <span class="tag">#おいじぃ魔女の歌</span></div>
+              <div class="card-media video-wrap"><video controls preload="metadata" playsinline><source src="oijiiwvideo4.mp4" type="video/mp4" /></video></div>
+              <div class="card-actions">
+                <button class="act like-btn" data-count="512"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg><span class="count">512</span></button>
+                <button class="act share-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>シェア</button>
+              </div>
+            </article>
+          </div>
+        `;
+        // rebind likes on profile
+        document.querySelectorAll("#profileFeed .like-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const countEl = btn.querySelector(".count");
+            let n = parseInt(btn.dataset.count, 10);
+            if (btn.classList.contains("liked")) { btn.classList.remove("liked"); n--; }
+            else { btn.classList.add("liked"); n++; }
+            btn.dataset.count = n;
+            countEl.textContent = n.toLocaleString();
+          });
+        });
+        document.querySelectorAll("#profileFeed .share-btn").forEach(btn => {
+          btn.addEventListener("click", () => toast("リンクをコピーしました"));
+        });
+      } else {
+        document.getElementById("profileFeed").innerHTML = `
+          <div class="empty">
+            <h3>まだ投稿はありません</h3>
+            <p>このアカウントはまだ何も投稿していません。</p>
+          </div>
+        `;
+      }
+      bindFollowBtns();
+    }
+
+    // Click avatars / people → in-page profile
+    document.addEventListener("click", (e) => {
+      const t = e.target.closest("[data-user]");
+      if (t && (t.classList.contains("person") || t.classList.contains("card-av") || t.classList.contains("search-hit"))) {
+        e.preventDefault();
+        showPage("profile", t.dataset.user);
+        document.getElementById("searchResults").classList.remove("open");
+      }
+    });
+
+    // ========== FOLLOW ==========
+    function bindFollowBtns() {
+      document.querySelectorAll(".follow-btn").forEach(btn => {
+        btn.onclick = () => {
+          if (btn.classList.contains("following")) {
+            btn.classList.remove("following");
+            btn.textContent = "フォローする";
+            toast("フォローを解除しました");
+          } else {
+            btn.classList.add("following");
+            btn.textContent = "フォロー中";
+            toast("フォローしました");
+          }
+        };
+      });
+    }
+    bindFollowBtns();
+
+    // ========== LIKE ==========
+    document.querySelectorAll(".like-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const countEl = btn.querySelector(".count");
+        let n = parseInt(btn.dataset.count, 10);
+        if (btn.classList.contains("liked")) {
+          btn.classList.remove("liked");
+          n--;
+        } else {
+          btn.classList.add("liked");
+          n++;
+        }
+        btn.dataset.count = n;
+        countEl.textContent = n.toLocaleString();
+      });
+    });
+
+    // ========== SHARE ==========
+    document.querySelectorAll(".share-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        toast("リンクをコピーしました");
+      });
+    });
+
+    // ========== SEARCH ==========
+    const searchInput = document.getElementById("searchInput");
+    const searchResults = document.getElementById("searchResults");
+
+    searchInput.addEventListener("focus", () => searchResults.classList.add("open"));
+    searchInput.addEventListener("input", () => {
+      searchResults.classList.add("open");
+      const q = searchInput.value.trim().toLowerCase();
+      document.querySelectorAll(".search-hit").forEach(hit => {
+        const text = hit.textContent.toLowerCase();
+        hit.style.display = !q || text.includes(q) ? "flex" : "none";
+      });
+    });
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".search-bar")) searchResults.classList.remove("open");
+    });
+
+    // ========== COMPOSE ==========
+    const modal = document.getElementById("composeModal");
+    const composeText = document.getElementById("composeText");
+
+    document.getElementById("composeBtn").addEventListener("click", () => {
+      modal.classList.add("open");
+      composeText.focus();
+    });
+    document.getElementById("composeClose").addEventListener("click", () => modal.classList.remove("open"));
+    document.getElementById("composeCancel").addEventListener("click", () => modal.classList.remove("open"));
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.classList.remove("open");
+    });
+
+    document.getElementById("composeSubmit").addEventListener("click", () => {
+      const text = composeText.value.trim();
+      if (!text) {
+        toast("投稿内容を入力してください");
+        return;
+      }
+      // Add to feed
+      const feed = document.getElementById("feed");
+      const card = document.createElement("article");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="card-top">
+          <div class="card-av g" data-user="zojezu">ZJ</div>
+          <div class="card-who">
+            <div class="nm">ゾジェズ/ZoJeZu【公式】
+              <svg class="verified" viewBox="0 0 22 22" fill="#c9a227"><path d="M11 2l1.5 3 3.3.5-2.4 2.3.6 3.3L11 9.5 7.9 11.1l.6-3.3-2.4-2.3 3.3-.5L11 2z"/></svg>
+            </div>
+            <div class="hd">@zojezu</div>
+          </div>
+          <span class="card-time">今</span>
+        </div>
+        <div class="card-body">${text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>")}</div>
+        <div class="card-actions">
+          <button class="act like-btn" data-count="0">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            <span class="count">0</span>
+          </button>
+          <button class="act">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
+            <span class="count">0</span>
+          </button>
+          <button class="act share-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+            シェア
+          </button>
+        </div>
+      `;
+      feed.prepend(card);
+      // Rebind like on new card
+      const newLike = card.querySelector(".like-btn");
+      newLike.addEventListener("click", () => {
+        const countEl = newLike.querySelector(".count");
+        let n = parseInt(newLike.dataset.count, 10);
+        if (newLike.classList.contains("liked")) {
+          newLike.classList.remove("liked");
+          n--;
+        } else {
+          newLike.classList.add("liked");
+          n++;
+        }
+        newLike.dataset.count = n;
+        countEl.textContent = n.toLocaleString();
+      });
+      card.querySelector(".share-btn").addEventListener("click", () => toast("リンクをコピーしました"));
+
+      composeText.value = "";
+      modal.classList.remove("open");
+      showPage("home");
+      toast("投稿しました");
+    });
+
+    // ========== TOAST ==========
+    function toast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 2200);
+    }
+
+    // ========== NOTIF ==========
+    document.getElementById("notifBtn").addEventListener("click", () => {
+      toast("新しい通知はありません");
+    });
+  </script>
+</body>
+</html>
