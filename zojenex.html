@@ -516,16 +516,91 @@
     .card-media.video-wrap {
       height: auto;
       aspect-ratio: 16 / 9;
-      background: #000;
+      background: #0a0a0c;
       padding: 0;
     }
-    .card-media.video-wrap video {
+    .av-img, .person-av img, .card-av img, .profile-av img, .search-hit .av img {
+      width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block;
+    }
+    .person-av.has-img, .card-av.has-img, .profile-av.has-img, .search-hit .av.has-img {
+      background: none !important; padding: 0; overflow: hidden;
+    }
+
+    /* Custom video player */
+    .vplayer {
       width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
+      margin-bottom: 14px;
+      user-select: none;
       border-radius: var(--radius-sm);
-      background: #000;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg-2);
+    }
+    .vplayer-stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #0a0a0c;
+    }
+    .vplayer video {
+      width: 100%; height: 100%; object-fit: contain; display: block; background: #0a0a0c;
+    }
+    .vplayer-ui {
+      position: absolute; inset: 0;
+      pointer-events: none;
+    }
+    .vplayer-center {
+      position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none;
+    }
+    .vplayer-center .play-big {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: linear-gradient(135deg, #c9a227, #e8d48b); color: #0e0d0b;
+      display: grid; place-items: center; box-shadow: 0 4px 24px rgba(201,162,39,0.45);
+      pointer-events: auto; cursor: pointer; transition: transform 0.15s, opacity 0.25s;
+    }
+    .vplayer-center .play-big:hover { transform: scale(1.08); }
+    .vplayer-center .play-big svg { width: 28px; height: 28px; margin-left: 3px; }
+    .vplayer:not(.paused) .vplayer-center .play-big { opacity: 0; pointer-events: none; }
+    /* 操作バーは動画の外（下） */
+    .vplayer-bar {
+      padding: 10px 12px 12px;
+      display: flex; flex-direction: column; gap: 8px;
+      background: var(--bg-3);
+      border-top: 1px solid var(--border);
+    }
+    .vplayer-progress {
+      position: relative; height: 6px; background: var(--border-2);
+      border-radius: 999px; cursor: pointer;
+    }
+    .vplayer-progress .buffered {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      background: var(--text-3); opacity: 0.35; border-radius: 999px; width: 0%;
+    }
+    .vplayer-progress .played {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      background: linear-gradient(90deg, #c9a227, #e8d48b); border-radius: 999px; width: 0%;
+    }
+    .vplayer-progress .knob {
+      position: absolute; top: 50%; width: 14px; height: 14px;
+      background: var(--gold); border: 2px solid #fff; border-radius: 50%;
+      transform: translate(-50%, -50%); box-shadow: 0 1px 6px rgba(0,0,0,0.25);
+      left: 0%;
+    }
+    .vplayer-controls { display: flex; align-items: center; gap: 8px; }
+    .vplayer-controls button {
+      width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
+      color: var(--text); transition: background 0.15s;
+    }
+    .vplayer-controls button:hover { background: var(--border); }
+    .vplayer-controls button svg { width: 20px; height: 20px; }
+    .vplayer-time {
+      font-size: 12px; font-weight: 600; color: var(--text-2);
+      font-variant-numeric: tabular-nums;
+    }
+    .vplayer-spacer { flex: 1; }
+    .vplayer-title {
+      font-size: 12px; font-weight: 600; color: var(--text-2);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 45%;
     }
 
     .card-actions {
@@ -848,7 +923,7 @@
           </div>
         </div>
         <div class="search-hit" data-user="oijiiw">
-          <div class="av w">🧙‍♀️</div>
+          <div class="av w has-img"><img src="おいじぃ魔女.png" alt="おいじぃ魔女" /></div>
           <div class="meta">
             <div class="nm">おいじぃ魔女</div>
             <div class="hd">@oijiiw</div>
@@ -875,7 +950,7 @@
           <span class="person-name">ゾジェズ</span>
         </div>
         <div class="person" data-user="oijiiw">
-          <div class="person-ring"><div class="person-av w">🧙‍♀️</div></div>
+          <div class="person-ring"><div class="person-av w has-img"><img src="おいじぃ魔女.png" alt="おいじぃ魔女" /></div></div>
           <span class="person-name">おいじぃ魔女</span>
         </div>
         <div class="person" data-user="zojenex">
@@ -924,7 +999,7 @@
         <!-- おいじぃ魔女 動画投稿 1 -->
         <article class="card" data-id="ow1" data-author="oijiiw">
           <div class="card-top">
-            <div class="card-av w" data-user="oijiiw">🧙‍♀️</div>
+            <div class="card-av w has-img" data-user="oijiiw"><img src="おいじぃ魔女.png" alt="おいじぃ魔女" /></div>
             <div class="card-who">
               <div class="nm">おいじぃ魔女</div>
               <div class="hd">@oijiiw</div>
@@ -934,10 +1009,23 @@
           <div class="card-body">おいじぃ魔女🧙‍♀️のデス·プレス順位決定戦
 
 <span class="tag">#デスプレス</span> <span class="tag">#おいじぃ魔女</span></div>
-          <div class="card-media video-wrap">
-            <video controls preload="metadata" playsinline>
-              <source src="oijiiwvideo1.mp4" type="video/mp4" />
-            </video>
+          <div class="vplayer paused" data-title="おいじぃ魔女🧙‍♀️のデス·プレス順位決定戦">
+            <div class="vplayer-stage">
+            <video preload="metadata" playsinline><source src="oijiiwvideo1.mp4" type="video/mp4" /></video>
+            <div class="vplayer-ui">
+              <div class="vplayer-center"><button class="play-big" type="button" aria-label="再生"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button></div>
+            </div>
+            </div>
+            <div class="vplayer-bar">
+                <div class="vplayer-progress"><div class="buffered"></div><div class="played"></div><div class="knob"></div></div>
+                <div class="vplayer-controls">
+                  <button class="vp-play" type="button" aria-label="再生/一時停止"><svg class="ic-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
+                  <span class="vplayer-time">0:00 / 0:00</span>
+                  <div class="vplayer-spacer"></div>
+                  <span class="vplayer-title">おいじぃ魔女🧙‍♀️のデス·プレス順位決定戦</span>
+                  <button class="vp-fs" type="button" aria-label="全画面"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
+                </div>
+              </div>
           </div>
           <div class="card-actions">
             <button class="act like-btn" data-count="156">
@@ -958,7 +1046,7 @@
         <!-- おいじぃ魔女 動画投稿 2 -->
         <article class="card" data-id="ow2" data-author="oijiiw">
           <div class="card-top">
-            <div class="card-av w" data-user="oijiiw">🧙‍♀️</div>
+            <div class="card-av w has-img" data-user="oijiiw"><img src="おいじぃ魔女.png" alt="おいじぃ魔女" /></div>
             <div class="card-who">
               <div class="nm">おいじぃ魔女</div>
               <div class="hd">@oijiiw</div>
@@ -968,10 +1056,23 @@
           <div class="card-body">【音楽】おいじぃ魔女音頭
 
 <span class="tag">#音楽</span> <span class="tag">#おいじぃ魔女音頭</span></div>
-          <div class="card-media video-wrap">
-            <video controls preload="metadata" playsinline>
-              <source src="oijiiwvideo2.mp4" type="video/mp4" />
-            </video>
+          <div class="vplayer paused" data-title="【音楽】おいじぃ魔女音頭">
+            <div class="vplayer-stage">
+            <video preload="metadata" playsinline><source src="oijiiwvideo2.mp4" type="video/mp4" /></video>
+            <div class="vplayer-ui">
+              <div class="vplayer-center"><button class="play-big" type="button" aria-label="再生"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button></div>
+            </div>
+            </div>
+            <div class="vplayer-bar">
+                <div class="vplayer-progress"><div class="buffered"></div><div class="played"></div><div class="knob"></div>
+                <div class="vplayer-controls">
+                  <button class="vp-play" type="button" aria-label="再生/一時停止"><svg class="ic-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
+                  <span class="vplayer-time">0:00 / 0:00</span>
+                  <div class="vplayer-spacer"></div>
+                  <span class="vplayer-title">【音楽】おいじぃ魔女音頭</span>
+                  <button class="vp-fs" type="button" aria-label="全画面"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
+                </div>
+              </div>
           </div>
           <div class="card-actions">
             <button class="act like-btn" data-count="289">
@@ -992,7 +1093,7 @@
         <!-- おいじぃ魔女 動画投稿 3 -->
         <article class="card" data-id="ow3" data-author="oijiiw">
           <div class="card-top">
-            <div class="card-av w" data-user="oijiiw">🧙‍♀️</div>
+            <div class="card-av w has-img" data-user="oijiiw"><img src="おいじぃ魔女.png" alt="おいじぃ魔女" /></div>
             <div class="card-who">
               <div class="nm">おいじぃ魔女</div>
               <div class="hd">@oijiiw</div>
@@ -1002,10 +1103,23 @@
           <div class="card-body">【ゲーム】おいじい魔女大爆発:複雑なる工場
 
 <span class="tag">#ゲーム</span> <span class="tag">#大爆発</span></div>
-          <div class="card-media video-wrap">
-            <video controls preload="metadata" playsinline>
-              <source src="oijiiwvideo3.mp4" type="video/mp4" />
-            </video>
+          <div class="vplayer paused" data-title="【ゲーム】おいじい魔女大爆発:複雑なる工場">
+            <div class="vplayer-stage">
+            <video preload="metadata" playsinline><source src="oijiiwvideo3.mp4" type="video/mp4" /></video>
+            <div class="vplayer-ui">
+              <div class="vplayer-center"><button class="play-big" type="button" aria-label="再生"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button></div>
+            </div>
+            </div>
+            <div class="vplayer-bar">
+                <div class="vplayer-progress"><div class="buffered"></div><div class="played"></div><div class="knob"></div>
+                <div class="vplayer-controls">
+                  <button class="vp-play" type="button" aria-label="再生/一時停止"><svg class="ic-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
+                  <span class="vplayer-time">0:00 / 0:00</span>
+                  <div class="vplayer-spacer"></div>
+                  <span class="vplayer-title">【ゲーム】おいじい魔女大爆発:複雑なる工場</span>
+                  <button class="vp-fs" type="button" aria-label="全画面"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
+                </div>
+              </div>
           </div>
           <div class="card-actions">
             <button class="act like-btn" data-count="421">
@@ -1026,7 +1140,7 @@
         <!-- おいじぃ魔女 動画投稿 4 -->
         <article class="card" data-id="ow4" data-author="oijiiw">
           <div class="card-top">
-            <div class="card-av w" data-user="oijiiw">🧙‍♀️</div>
+            <div class="card-av w has-img" data-user="oijiiw"><img src="おいじぃ魔女.png" alt="おいじぃ魔女" /></div>
             <div class="card-who">
               <div class="nm">おいじぃ魔女</div>
               <div class="hd">@oijiiw</div>
@@ -1036,10 +1150,23 @@
           <div class="card-body">【音楽】おいじぃ魔女の歌
 
 <span class="tag">#音楽</span> <span class="tag">#おいじぃ魔女の歌</span></div>
-          <div class="card-media video-wrap">
-            <video controls preload="metadata" playsinline>
-              <source src="oijiiwvideo4.mp4" type="video/mp4" />
-            </video>
+          <div class="vplayer paused" data-title="【音楽】おいじぃ魔女の歌">
+            <div class="vplayer-stage">
+            <video preload="metadata" playsinline><source src="oijiiwvideo4.mp4" type="video/mp4" /></video>
+            <div class="vplayer-ui">
+              <div class="vplayer-center"><button class="play-big" type="button" aria-label="再生"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button></div>
+            </div>
+            </div>
+            <div class="vplayer-bar">
+                <div class="vplayer-progress"><div class="buffered"></div><div class="played"></div><div class="knob"></div>
+                <div class="vplayer-controls">
+                  <button class="vp-play" type="button" aria-label="再生/一時停止"><svg class="ic-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
+                  <span class="vplayer-time">0:00 / 0:00</span>
+                  <div class="vplayer-spacer"></div>
+                  <span class="vplayer-title">【音楽】おいじぃ魔女の歌</span>
+                  <button class="vp-fs" type="button" aria-label="全画面"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
+                </div>
+              </div>
           </div>
           <div class="card-actions">
             <button class="act like-btn" data-count="512">
@@ -1180,9 +1307,10 @@
       oijiiw: {
         name: "おいじぃ魔女",
         handle: "@oijiiw",
-        bio: "魔女見習い。金色が好き。",
+        bio: "🧙‍♀️フォッフォッフォ！おいじぃ魔女公式アカウントじゃぞい！🧙‍♀️",
         av: "w",
         avText: "🧙‍♀️",
+        avImg: "おいじぃ魔女.png",
         verified: false,
         following: 56,
         followers: 892,
@@ -1270,9 +1398,13 @@
       const verified = u.verified
         ? `<svg class="verified" viewBox="0 0 22 22" fill="#c9a227"><path d="M11 2l1.5 3 3.3.5-2.4 2.3.6 3.3L11 9.5 7.9 11.1l.6-3.3-2.4-2.3 3.3-.5L11 2z"/></svg>`
         : "";
+      const avContent = u.avImg
+        ? `<img src="${u.avImg}" alt="${u.name}" />`
+        : u.avText;
+      const avClass = u.avImg ? `profile-av ${u.av} has-img` : `profile-av ${u.av}`;
       document.getElementById("profileHero").innerHTML = `
         <div class="profile-av-wrap">
-          <div class="profile-av ${u.av}">${u.avText}</div>
+          <div class="${avClass}">${avContent}</div>
         </div>
         <div class="profile-name">${u.name} ${verified}</div>
         <div class="profile-handle">${u.handle}</div>
@@ -1288,63 +1420,12 @@
         </div>
       `;
       if (id === "oijiiw") {
-        document.getElementById("profileFeed").innerHTML = `
-          <div class="feed">
-            <article class="card">
-              <div class="card-top">
-                <div class="card-av w" data-user="oijiiw">🧙‍♀️</div>
-                <div class="card-who"><div class="nm">おいじぃ魔女</div><div class="hd">@oijiiw</div></div>
-                <span class="card-time">1時間前</span>
-              </div>
-              <div class="card-body">おいじぃ魔女🧙‍♀️のデス·プレス順位決定戦<br><br><span class="tag">#デスプレス</span> <span class="tag">#おいじぃ魔女</span></div>
-              <div class="card-media video-wrap"><video controls preload="metadata" playsinline><source src="oijiiwvideo1.mp4" type="video/mp4" /></video></div>
-              <div class="card-actions">
-                <button class="act like-btn" data-count="156"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg><span class="count">156</span></button>
-                <button class="act share-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>シェア</button>
-              </div>
-            </article>
-            <article class="card">
-              <div class="card-top">
-                <div class="card-av w" data-user="oijiiw">🧙‍♀️</div>
-                <div class="card-who"><div class="nm">おいじぃ魔女</div><div class="hd">@oijiiw</div></div>
-                <span class="card-time">3時間前</span>
-              </div>
-              <div class="card-body">【音楽】おいじぃ魔女音頭<br><br><span class="tag">#音楽</span> <span class="tag">#おいじぃ魔女音頭</span></div>
-              <div class="card-media video-wrap"><video controls preload="metadata" playsinline><source src="oijiiwvideo2.mp4" type="video/mp4" /></video></div>
-              <div class="card-actions">
-                <button class="act like-btn" data-count="289"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg><span class="count">289</span></button>
-                <button class="act share-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>シェア</button>
-              </div>
-            </article>
-            <article class="card">
-              <div class="card-top">
-                <div class="card-av w" data-user="oijiiw">🧙‍♀️</div>
-                <div class="card-who"><div class="nm">おいじぃ魔女</div><div class="hd">@oijiiw</div></div>
-                <span class="card-time">5時間前</span>
-              </div>
-              <div class="card-body">【ゲーム】おいじい魔女大爆発:複雑なる工場<br><br><span class="tag">#ゲーム</span> <span class="tag">#大爆発</span></div>
-              <div class="card-media video-wrap"><video controls preload="metadata" playsinline><source src="oijiiwvideo3.mp4" type="video/mp4" /></video></div>
-              <div class="card-actions">
-                <button class="act like-btn" data-count="421"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg><span class="count">421</span></button>
-                <button class="act share-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>シェア</button>
-              </div>
-            </article>
-            <article class="card">
-              <div class="card-top">
-                <div class="card-av w" data-user="oijiiw">🧙‍♀️</div>
-                <div class="card-who"><div class="nm">おいじぃ魔女</div><div class="hd">@oijiiw</div></div>
-                <span class="card-time">8時間前</span>
-              </div>
-              <div class="card-body">【音楽】おいじぃ魔女の歌<br><br><span class="tag">#音楽</span> <span class="tag">#おいじぃ魔女の歌</span></div>
-              <div class="card-media video-wrap"><video controls preload="metadata" playsinline><source src="oijiiwvideo4.mp4" type="video/mp4" /></video></div>
-              <div class="card-actions">
-                <button class="act like-btn" data-count="512"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg><span class="count">512</span></button>
-                <button class="act share-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>シェア</button>
-              </div>
-            </article>
-          </div>
-        `;
-        // rebind likes on profile
+        const homeCards = document.querySelectorAll('#feed .card[data-author="oijiiw"]');
+        const wrap = document.createElement("div");
+        wrap.className = "feed";
+        homeCards.forEach(c => wrap.appendChild(c.cloneNode(true)));
+        document.getElementById("profileFeed").innerHTML = "";
+        document.getElementById("profileFeed").appendChild(wrap);
         document.querySelectorAll("#profileFeed .like-btn").forEach(btn => {
           btn.addEventListener("click", () => {
             const countEl = btn.querySelector(".count");
@@ -1358,6 +1439,7 @@
         document.querySelectorAll("#profileFeed .share-btn").forEach(btn => {
           btn.addEventListener("click", () => toast("リンクをコピーしました"));
         });
+        initPlayers(document.getElementById("profileFeed"));
       } else {
         document.getElementById("profileFeed").innerHTML = `
           <div class="empty">
@@ -1512,6 +1594,90 @@
       showPage("home");
       toast("投稿しました");
     });
+
+    // ========== CUSTOM VIDEO PLAYER ==========
+    function fmtTime(s) {
+      if (!isFinite(s) || s < 0) return "0:00";
+      const m = Math.floor(s / 60);
+      const sec = Math.floor(s % 60);
+      return m + ":" + String(sec).padStart(2, "0");
+    }
+
+    function initPlayers(root) {
+      const scope = root || document;
+      scope.querySelectorAll(".vplayer").forEach(player => {
+        if (player.dataset.ready) return;
+        player.dataset.ready = "1";
+        const video = player.querySelector("video");
+        const playBig = player.querySelector(".play-big");
+        const playBtn = player.querySelector(".vp-play");
+        const icPlay = playBtn.querySelector(".ic-play");
+        const icPause = playBtn.querySelector(".ic-pause");
+        const progress = player.querySelector(".vplayer-progress");
+        const played = player.querySelector(".played");
+        const buffered = player.querySelector(".buffered");
+        const knob = player.querySelector(".knob");
+        const timeEl = player.querySelector(".vplayer-time");
+        const fsBtn = player.querySelector(".vp-fs");
+
+        function setPlaying(on) {
+          player.classList.toggle("paused", !on);
+          icPlay.style.display = on ? "none" : "block";
+          icPause.style.display = on ? "block" : "none";
+        }
+        function toggle() {
+          if (video.paused) { video.play(); setPlaying(true); }
+          else { video.pause(); setPlaying(false); }
+        }
+
+        playBig.addEventListener("click", e => { e.stopPropagation(); toggle(); });
+        playBtn.addEventListener("click", e => { e.stopPropagation(); toggle(); });
+        video.addEventListener("click", toggle);
+        video.addEventListener("play", () => setPlaying(true));
+        video.addEventListener("pause", () => setPlaying(false));
+        video.addEventListener("ended", () => setPlaying(false));
+        video.addEventListener("timeupdate", () => {
+          const p = video.duration ? (video.currentTime / video.duration) * 100 : 0;
+          played.style.width = p + "%";
+          knob.style.left = p + "%";
+          timeEl.textContent = fmtTime(video.currentTime) + " / " + fmtTime(video.duration);
+        });
+        video.addEventListener("progress", () => {
+          if (video.buffered.length && video.duration) {
+            buffered.style.width = (video.buffered.end(video.buffered.length - 1) / video.duration) * 100 + "%";
+          }
+        });
+        video.addEventListener("loadedmetadata", () => {
+          timeEl.textContent = "0:00 / " + fmtTime(video.duration);
+        });
+
+        let seeking = false;
+        function seek(e) {
+          const rect = progress.getBoundingClientRect();
+          const ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+          if (video.duration) video.currentTime = ratio * video.duration;
+        }
+        progress.addEventListener("mousedown", e => { seeking = true; seek(e); });
+        document.addEventListener("mousemove", e => { if (seeking) seek(e); });
+        document.addEventListener("mouseup", () => { seeking = false; });
+        progress.addEventListener("click", seek);
+
+        fsBtn.addEventListener("click", e => {
+          e.stopPropagation();
+          if (document.fullscreenElement) document.exitFullscreen();
+          else if (player.requestFullscreen) player.requestFullscreen();
+          else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
+        });
+
+        let hideTimer;
+        player.addEventListener("mousemove", () => {
+          player.classList.add("show-ui");
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(() => player.classList.remove("show-ui"), 2500);
+        });
+      });
+    }
+    initPlayers();
 
     // ========== TOAST ==========
     function toast(msg) {
