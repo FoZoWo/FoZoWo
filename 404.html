@@ -757,8 +757,6 @@ html.is-oijiiw body {
   // 1. ZOJEZU 用スクリプト実行
   // ---------------------------------------------------------
   if (!isOijiiw) {
-    const API_SERVER_URL = "https://oijii-majo-api.oisasioisasi.workers.dev";
-
     const byId = (id) => document.getElementById(id);
     const url = new URL(window.location.href);
     const referrer = document.referrer || "直接アクセス / 不明";
@@ -778,16 +776,11 @@ html.is-oijiiw body {
 
 
     const modal = byId("causeModal");
-    const answer = byId("causeAnswer");
 
     function openCauseModal() {
       if (!modal) return;
       modal.classList.add("open");
       modal.setAttribute("aria-hidden", "false");
-      byId("aiUrl").textContent = url.href;
-      byId("aiReferrer").textContent = referrer;
-      byId("aiPath").textContent = url.pathname + url.search + url.hash;
-      byId("aiBrowser").textContent = browser;
     }
 
     function closeCauseModal() {
@@ -804,24 +797,6 @@ html.is-oijiiw body {
     byId("askCauseBtn")?.addEventListener("click", () => {
       openCauseModal();
     });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
-
-        const reply = data?.choices?.[0]?.message?.content;
-        if (!reply) throw new Error("AIから回答を取得できませんでした。");
-
-        answer.textContent = reply;
-        byId("copyCauseBtn").dataset.copyText = reply;
-      } catch (error) {
-        answer.textContent =
-          (document.documentElement.dataset.lang === "en"
-            ? "Cause explanation is currently unavailable.\n\nCommon possibilities:\n• Incorrect URL\n• Moved or removed page\n• Outdated link or bookmark\n• Publishing or deployment issue\n\nDiagnostic error: "
-            : "原因説明を利用できませんでした。\n\n考えられる代表的な原因：\n・URLの入力ミス\n・ページの移動または削除\n・古いリンクやブックマーク\n・公開設定や反映状態の問題\n\n診断通信エラー: ") +
-          error.message;
-        byId("copyCauseBtn").dataset.copyText = answer.textContent;
-      }
-    });
-
     byId("causeClose")?.addEventListener("click", closeCauseModal);
     byId("causeClose2")?.addEventListener("click", closeCauseModal);
     modal?.addEventListener("click", (e) => {
@@ -831,18 +806,7 @@ html.is-oijiiw body {
       if (e.key === "Escape") closeCauseModal();
     });
 
-    byId("copyCauseBtn")?.addEventListener("click", async () => {
-      const value = byId("copyCauseBtn").dataset.copyText || answer?.innerText || "";
-      try {
-        await navigator.clipboard.writeText(value);
-        const btn = byId("copyCauseBtn");
-        const old = btn.textContent;
-        btn.textContent = "✓ コピーしました";
-        setTimeout(() => btn.textContent = old, 1600);
-      } catch {
-        window.prompt("結果をコピーしてください", value);
-      }
-    });
+
 
   }
 
