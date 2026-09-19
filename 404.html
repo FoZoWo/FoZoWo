@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" data-theme="auto">
+<html lang="ja" data-theme="auto" data-lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -462,6 +462,41 @@ html.is-oijiiw body {
   z-index: 1000;
 }
 
+
+/* 404 bilingual UI */
+.lang-switch-404{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:4px;
+  border:1px solid var(--border);
+  border-radius:999px;
+  background:var(--surface);
+  margin-top:14px;
+}
+.lang-switch-404 button{
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  font:700 11px/1 inherit;
+  padding:7px 11px;
+  border-radius:999px;
+  cursor:pointer;
+  transition:.2s;
+}
+.lang-switch-404 button.active{
+  color:#fff;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+}
+[data-lang="en"] .lang-ja{display:none!important}
+[data-lang="ja"] .lang-en{display:none!important}
+[data-lang="en"] .reason-ja,
+[data-lang="en"] .diag-ja,
+[data-lang="en"] .action-ja{display:none!important}
+[data-lang="ja"] .reason-en,
+[data-lang="ja"] .diag-en,
+[data-lang="ja"] .action-en{display:none!important}
+
 </style>
 </head>
 <body>
@@ -849,6 +884,38 @@ html.is-oijiiw body {
     });
   }
 })();
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const buttons = document.querySelectorAll('[data-set-lang]');
+  const storageKey = 'zojezu-404-language';
+
+  function applyLang(lang) {
+    const value = lang === 'en' ? 'en' : 'ja';
+    root.dataset.lang = value;
+    root.lang = value;
+    buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.setLang === value));
+
+    // Update the page title and accessible labels.
+    document.title = value === 'en'
+      ? '404 Not Found | ZOJEZU Creative'
+      : '404 ページが見つかりません | ZOJEZU';
+  }
+
+  const saved = localStorage.getItem(storageKey) || 'ja';
+  applyLang(saved);
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const value = btn.dataset.setLang === 'en' ? 'en' : 'ja';
+      localStorage.setItem(storageKey, value);
+      applyLang(value);
+    });
+  });
+})();
+</script>
+
 </script>
 </body>
 </html>
