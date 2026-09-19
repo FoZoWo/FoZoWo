@@ -1,6 +1,11 @@
 /b    /blog    301
 /bl   /blog    301
 /blo  /blog    301
+/blog.    /blog    301
+/blog.h    /blog    301
+/blog.ht    /blog    301
+/blog.htm    /blog    301
+/ブログ.    /blog    301
 /ブログ /blog    301
 /zojezublog /blog    301
 /zojezblog /blog    301
@@ -60,10 +65,18 @@
 /まじょ /oijiiw   301
 /oijii /oijiiw   301
 /oijiw /oijiiw   301
+/oijiw. /oijiiw   301
+/oijiiw.h/oijiiw   301
+/oijiiw.ht/oijiiw   301
+/oijiiw.htm/oijiiw   301
 /OIJIIW /oijiiw   301
+/OIJIIW. /oijiiw   301
 /OIJII /oijiiw   301
+/OIJII. /oijiiw   301
 /OIJI /oijiiw   301
+/OIJI. /oijiiw   301
 /oiji /oijiiw   301
+/oiji. /oijiiw   301
 /Witch /oijiiw   301
 /oijiiWitch /oijiiw   301
 /oijiWitch /oijiiw   301
