@@ -455,9 +455,21 @@ html.is-oijiiw body {
 @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 @keyframes twinkle { 0%,100%{opacity:.35} 50%{opacity:1} }
 @media(max-width:780px){ html.is-oijiiw body{overflow:auto} #view-oijiiw .wrap{grid-template-columns:1fr;padding:92px 0 74px} }
+
+/* 外部 header.html の配置 */
+#headerRoot {
+  position: relative;
+  z-index: 1000;
+}
+
 </style>
 </head>
 <body>
+
+<div id="headerRoot" aria-label="外部ヘッダー"></div>
+
+
+
 
 <!-- =========================================================
      VIEW 1: ZOJEZU 公式ホームページ 404 (標準)
@@ -467,14 +479,6 @@ html.is-oijiiw body {
   <div class="creator-noise" aria-hidden="true"></div>
 
   <main class="creator-shell">
-    <header class="creator-top">
-      <a class="creator-logo" href="https://zojezu.f5.si/">
-        <span class="creator-logo-mark">Z</span>
-        <span>ZOJEZU <small style="display:block;font-size:9px;color:var(--creator-muted);letter-spacing:.16em;">CREATOR SITE</small></span>
-      </a>
-      <div class="creator-meta"><span class="creator-live"></span> Creative Error Page / 404</div>
-    </header>
-
     <section class="creator-hero">
       <div class="creator-copy">
         <div class="creator-kicker">Oops — wrong canvas</div>
@@ -596,6 +600,86 @@ html.is-oijiiw body {
 
 <script>
 (() => {
+
+  /* External ZOJEZU header */
+  const headerRoot = document.getElementById('headerRoot');
+
+  fetch('header.html', { cache: 'no-cache' })
+    .then(res => {
+      if (!res.ok) throw new Error(`header.html: ${res.status}`);
+      return res.text();
+    })
+    .then(markup => {
+      if (headerRoot) headerRoot.innerHTML = markup;
+
+      // 外部ヘッダー挿入後の共通操作を有効化
+      const header = document.getElementById('header');
+      const hamburger = document.getElementById('hamburger');
+      const navMobile = document.getElementById('navMobile');
+      const settingsBtn = document.getElementById('settingsBtn');
+      const settingsPanel = document.getElementById('settingsPanel');
+      const settingsClose = document.getElementById('settingsClose');
+      const rootHtml = document.documentElement;
+
+      const closeMenu = () => {
+        hamburger?.classList.remove('active');
+        hamburger?.setAttribute('aria-expanded', 'false');
+        navMobile?.classList.remove('open');
+      };
+      const closeSettings = () => settingsPanel?.classList.remove('open');
+
+      window.closeAll = () => { closeMenu(); closeSettings(); };
+      window.closeMenu = closeMenu;
+
+      hamburger?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = navMobile?.classList.toggle('open');
+        hamburger.classList.toggle('active', !!open);
+        hamburger.setAttribute('aria-expanded', !!open);
+        closeSettings();
+      });
+
+      settingsBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        settingsPanel?.classList.toggle('open');
+        closeMenu();
+      });
+
+      settingsClose?.addEventListener('click', closeSettings);
+
+      document.addEventListener('click', (e) => {
+        if (settingsPanel?.classList.contains('open') &&
+            !settingsPanel.contains(e.target) && !settingsBtn?.contains(e.target)) {
+          closeSettings();
+        }
+      });
+
+      window.addEventListener('scroll', () => {
+        header?.classList.toggle('scrolled', window.scrollY > 8);
+      }, { passive: true });
+
+      const savedTheme = localStorage.getItem('zojezu-theme') || 'auto';
+      rootHtml.dataset.theme = savedTheme;
+      document.querySelectorAll('#themeOptions button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.value === savedTheme);
+      });
+
+      document.getElementById('themeOptions')?.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-value]');
+        if (!btn) return;
+        rootHtml.dataset.theme = btn.dataset.value;
+        localStorage.setItem('zojezu-theme', btn.dataset.value);
+        document.querySelectorAll('#themeOptions button').forEach(b => {
+          b.classList.toggle('active', b.dataset.value === btn.dataset.value);
+        });
+      });
+    })
+    .catch(() => {
+      if (headerRoot) {
+        headerRoot.innerHTML = '<div style="padding:14px 20px;color:var(--muted);font-size:12px;">ヘッダーを読み込めませんでした。</div>';
+      }
+    });
+
   // ---------------------------------------------------------
   // 1. ZOJEZU 用スクリプト実行
   // ---------------------------------------------------------
@@ -724,13 +808,6 @@ html.is-oijiiw body {
       }
     });
 
-    // Keep compatibility with an existing shared header.html, if present.
-    fetch("header.html")
-      .then(res => res.text())
-      .then(markup => {
-        const root = byId("headerRoot");
-        if (root) root.innerHTML = markup;
-      }).catch(() => {});
   }
 
   // ---------------------------------------------------------
