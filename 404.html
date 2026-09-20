@@ -13,10 +13,169 @@
   // URL判定をしてタイトル・テーマ・ファビコンを動的セット
   const path = window.location.pathname;
   const isOijiiw = path.startsWith('/oijiiw');
+
+  // ============================================================
+  // 共通: テーマ / 言語（header.html の設定と同じ localStorage キーを使用）
+  //  - 'auto' は OS / ブラウザ設定を見て light / dark に解決する
+  // ============================================================
+  const FZW = window.FZW = {
+    THEME_KEY: 'FoZoWo-theme',
+    LANG_KEY: 'FoZoWo-lang',
+    lang: 'ja',
+    headerRoot: null,
+    _ja: new WeakMap(),
+
+    TITLES: {
+      fozowo: { ja: '404 ページが見つかりません | FoZoWo', en: '404 Not Found | FoZoWo' },
+      oijiiw: { ja: '404 | 魔法でページを探しています… | おいじぃ魔女', en: '404 | Searching for your page with magic… | Oijii Witch' }
+    },
+
+    // ヘッダー（header.html）の日本語 → 英語
+    HDR_EN: {
+      'おいじぃ魔女のホームページ': 'Oijii Witch Homepage',
+      'フォゾウォのロゴページ': 'FoZoWo Logo Page',
+      'キャラクター': 'Characters',
+      'ブログ': 'Blog',
+      'フォゾウォAI': 'FoZoWo AI',
+      'フォゾウォAIページ': 'FoZoWo AI Page',
+      'キャラクターページ': 'Characters Page',
+      'FAQページ': 'FAQ Page',
+      '設定': 'Settings',
+      'テーマ': 'Theme',
+      '自動': 'Auto',
+      'ダーク': 'Dark',
+      'ライト': 'Light',
+      '言語': 'Language',
+      '検索': 'Search',
+      'メニューを開く': 'Open menu',
+      '閉じる': 'Close',
+      'クリア': 'Clear',
+      'メインナビゲーション': 'Main navigation',
+      'モバイルメニュー': 'Mobile menu',
+      'ページを検索…': 'Search pages…',
+      'キーワードを入力してください': 'Enter a keyword',
+      '見つかりませんでした': 'No results found',
+      'オフラインです': 'You are offline',
+      'オンラインに戻りました': 'Back online',
+      'FoZoWo（読み方：フォゾウォ）': 'FoZoWo (pronounced “Fo-Zo-Wo”)'
+    },
+
+    read(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    write(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+
+    themePref() { const v = this.read(this.THEME_KEY); return (v === 'dark' || v === 'light') ? v : 'auto'; },
+    langPref()  { const v = this.read(this.LANG_KEY);  return (v === 'ja' || v === 'en') ? v : 'auto'; },
+
+    resolveTheme(p) {
+      if (p === 'dark' || p === 'light') return p;
+      if (!window.matchMedia) return 'dark';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    },
+    resolveLang(p) {
+      if (p === 'ja' || p === 'en') return p;
+      const l = String((navigator.languages && navigator.languages[0]) || navigator.language || 'ja').toLowerCase();
+      return l.startsWith('ja') ? 'ja' : 'en';
+    },
+
+    applyTheme(p) {
+      document.documentElement.dataset.theme = this.resolveTheme(p);
+    },
+    applyLang(p) {
+      const v = this.resolveLang(p);
+      this.lang = v;
+      const root = document.documentElement;
+      root.dataset.lang = v;
+      root.lang = v;
+      document.title = this.TITLES[isOijiiw ? 'oijiiw' : 'fozowo'][v];
+      document.querySelectorAll('[data-aria-ja]').forEach(el => {
+        el.setAttribute('aria-label', el.getAttribute('data-aria-' + v));
+      });
+      this.translateHeader();
+      document.dispatchEvent(new CustomEvent('fzw:lang', { detail: v }));
+    },
+
+    setThemePref(p) { this.write(this.THEME_KEY, p); this.applyTheme(p); this.syncButtons(); },
+    setLangPref(p)  { this.write(this.LANG_KEY, p);  this.applyLang(p);  this.syncButtons(); },
+
+    syncButtons() {
+      if (!this.headerRoot) return;
+      const tp = this.themePref(), lp = this.langPref();
+      this.headerRoot.querySelectorAll('#themeOptions button').forEach(b => b.classList.toggle('active', b.dataset.value === tp));
+      this.headerRoot.querySelectorAll('#langOptions button').forEach(b => b.classList.toggle('active', b.dataset.value === lp));
+    },
+
+    // 外部ヘッダーの文言を現在の言語へ
+    translateHeader() {
+      const root = this.headerRoot;
+      if (!root) return;
+      const en = this.lang === 'en';
+      const dict = this.HDR_EN;
+
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode: n => /^(STYLE|SCRIPT)$/.test(n.parentNode.nodeName) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
+      });
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach(n => {
+        let ja = this._ja.get(n);
+        if (ja === undefined) {
+          if (!en) return;
+          const t = n.nodeValue.trim();
+          if (!Object.prototype.hasOwnProperty.call(dict, t)) return;
+          ja = t;
+          this._ja.set(n, t);
+        }
+        const next = en ? dict[ja] : ja;
+        if (n.nodeValue !== next) n.nodeValue = next;
+      });
+
+      root.querySelectorAll('[aria-label],[title],[placeholder],[alt]').forEach(el => {
+        ['aria-label', 'title', 'placeholder', 'alt'].forEach(a => {
+          if (!el.hasAttribute(a)) return;
+          const k = 'data-ja-' + a;
+          let ja = el.getAttribute(k);
+          if (ja === null) {
+            if (!en) return;
+            const v = el.getAttribute(a);
+            if (!Object.prototype.hasOwnProperty.call(dict, v)) return;
+            ja = v;
+            el.setAttribute(k, v);
+          }
+          const next = en ? dict[ja] : ja;
+          if (el.getAttribute(a) !== next) el.setAttribute(a, next);
+        });
+      });
+    },
+
+    // header.html 挿入後に呼ぶ
+    bindHeader(root) {
+      this.headerRoot = root;
+      root.querySelector('#langOptions')?.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-value]');
+        if (btn) this.setLangPref(btn.dataset.value);
+      });
+      new MutationObserver(() => this.translateHeader())
+        .observe(root, { childList: true, subtree: true, characterData: true });
+      this.syncButtons();
+      this.translateHeader();
+    }
+  };
+
+  // 初期適用（描画前）
+  FZW.applyTheme(FZW.themePref());
+  FZW.applyLang(FZW.langPref());
+  document.addEventListener('DOMContentLoaded', () => FZW.applyLang(FZW.langPref()));
+
+  // OS のライト/ダーク切替・ブラウザ言語変更に追従（「自動」のとき）
+  if (window.matchMedia) {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const onChange = () => { if (FZW.themePref() === 'auto') FZW.applyTheme('auto'); };
+    if (mq.addEventListener) mq.addEventListener('change', onChange); else if (mq.addListener) mq.addListener(onChange);
+  }
+  window.addEventListener('languagechange', () => { if (FZW.langPref() === 'auto') FZW.applyLang('auto'); });
   
   if (isOijiiw) {
     document.documentElement.classList.add('is-oijiiw');
-    document.title = "404 | 魔法でページを探しています… | おいじぃ魔女";
     
     // おいじぃ魔女用ファビコン
     const link = document.createElement('link');
@@ -25,7 +184,6 @@
     document.head.appendChild(link);
   } else {
     document.documentElement.classList.add('is-fozowo');
-    document.title = "404 Not Found | FoZoWo Official";
     
     // FoZoWo用ファビコン（全指定）
     const icons = [
@@ -529,7 +687,7 @@ html.is-oijiiw body {
 </head>
 <body>
 
-<div id="headerRoot" aria-label="外部ヘッダー"></div>
+<div id="headerRoot" aria-label="外部ヘッダー" data-aria-ja="外部ヘッダー" data-aria-en="Site header"></div>
 
 
 
@@ -545,7 +703,7 @@ html.is-oijiiw body {
     <section class="creator-hero">
       <div class="creator-copy">
         <div class="creator-kicker" style="display:flex;align-items:center;gap:8px;">
-          <img src="おいさしロゴ.png" alt="おいさしロゴ" style="width:24px;height:24px;object-fit:contain;border-radius:7px;">
+          <img src="おいさしロゴ.png" alt="FoZoWo" style="width:24px;height:24px;object-fit:contain;border-radius:7px;">
           <span class="lang-ja">FoZoWo / 404</span><span class="lang-en">FoZoWo / 404</span>
         </div>
         <div class="creator-404">404</div>
@@ -578,10 +736,10 @@ html.is-oijiiw body {
         <div class="shape s3"></div>
         <div class="art-card">
           <div class="art-note">
-            <img class="creator-logo-image" src="おいさしロゴ.png" alt="おいさしロゴ">
+            <img class="creator-logo-image" src="おいさしロゴ.png" alt="FoZoWo">
             <div class="mono">ERROR / RESOURCE NOT FOUND</div>
-            <h2>迷子になった<br>ページを再設計。</h2>
-            <p>404も作品の一部。次の入口を、もっと分かりやすく。</p>
+            <h2><span class="lang-ja">迷子になった<br>ページを再設計。</span><span class="lang-en">Redesigning<br>the lost page.</span></h2>
+            <p><span class="lang-ja">404も作品の一部。次の入口を、もっと分かりやすく。</span><span class="lang-en">Even a 404 is part of the work. A clearer way to your next destination.</span></p>
           </div>
         </div>
       </div>
@@ -604,7 +762,7 @@ html.is-oijiiw body {
             <span class="lang-en">Common reasons include the following.</span>
           </p>
         </div>
-        <button class="cause-close" id="causeClose" type="button" aria-label="閉じる">×</button>
+        <button class="cause-close" id="causeClose" type="button" aria-label="閉じる" data-aria-ja="閉じる" data-aria-en="Close">×</button>
       </div>
 
       <section class="cause-detail-card">
@@ -635,7 +793,7 @@ html.is-oijiiw body {
 <div id="view-oijiiw">
   <div class="scene" aria-hidden="true"><div class="grid"></div></div>
   <header class="topbar">
-    <a class="brand" href="/oijiiw"><span class="brand-mark">🧙‍♀️</span><b>おいじぃ魔女</b></a>
+    <a class="brand" href="/oijiiw"><span class="brand-mark">🧙‍♀️</span><b id="brandName">おいじぃ魔女</b></a>
     <div class="top-actions">
       <button class="mini-btn" id="themeBtn" title="テーマ切替">◐</button>
       <button class="mini-btn" id="langBtn" title="言語切替">文</button>
@@ -685,71 +843,21 @@ html.is-oijiiw body {
     .then(markup => {
       if (headerRoot) headerRoot.innerHTML = markup;
 
-      // 外部ヘッダー挿入後の共通操作を有効化
-      const header = document.getElementById('header');
-      const hamburger = document.getElementById('hamburger');
-      const navMobile = document.getElementById('navMobile');
-      const settingsBtn = document.getElementById('settingsBtn');
-      const settingsPanel = document.getElementById('settingsPanel');
-      const settingsClose = document.getElementById('settingsClose');
-      const rootHtml = document.documentElement;
-
-      const closeMenu = () => {
-        hamburger?.classList.remove('active');
-        hamburger?.setAttribute('aria-expanded', 'false');
-        navMobile?.classList.remove('open');
-      };
-      const closeSettings = () => settingsPanel?.classList.remove('open');
-
-      window.closeAll = () => { closeMenu(); closeSettings(); };
-      window.closeMenu = closeMenu;
-
-      hamburger?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const open = navMobile?.classList.toggle('open');
-        hamburger.classList.toggle('active', !!open);
-        hamburger.setAttribute('aria-expanded', !!open);
-        closeSettings();
+      // innerHTML で挿入した <script> は実行されないため、作り直して実行する
+      // （ハンバーガー・設定パネル・検索・テーマ切替は header.html 自身のスクリプトが担当）
+      headerRoot.querySelectorAll('script').forEach(old => {
+        const s = document.createElement('script');
+        Array.from(old.attributes).forEach(at => s.setAttribute(at.name, at.value));
+        s.textContent = old.textContent;
+        old.replaceWith(s);
       });
 
-      settingsBtn?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        settingsPanel?.classList.toggle('open');
-        closeMenu();
-      });
-
-      settingsClose?.addEventListener('click', closeSettings);
-
-      document.addEventListener('click', (e) => {
-        if (settingsPanel?.classList.contains('open') &&
-            !settingsPanel.contains(e.target) && !settingsBtn?.contains(e.target)) {
-          closeSettings();
-        }
-      });
-
-      window.addEventListener('scroll', () => {
-        header?.classList.toggle('scrolled', window.scrollY > 8);
-      }, { passive: true });
-
-      const savedTheme = localStorage.getItem('fozowo-theme') || 'auto';
-      rootHtml.dataset.theme = savedTheme;
-      document.querySelectorAll('#themeOptions button').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.value === savedTheme);
-      });
-
-      document.getElementById('themeOptions')?.addEventListener('click', (e) => {
-        const btn = e.target.closest('button[data-value]');
-        if (!btn) return;
-        rootHtml.dataset.theme = btn.dataset.value;
-        localStorage.setItem('fozowo-theme', btn.dataset.value);
-        document.querySelectorAll('#themeOptions button').forEach(b => {
-          b.classList.toggle('active', b.dataset.value === btn.dataset.value);
-        });
-      });
+      // 言語切替の連動・ヘッダー文言の英語化
+      FZW.bindHeader(headerRoot);
     })
     .catch(() => {
       if (headerRoot) {
-        headerRoot.innerHTML = '<div style="padding:14px 20px;color:var(--muted);font-size:12px;">ヘッダーを読み込めませんでした。</div>';
+        headerRoot.innerHTML = '<div style="padding:14px 20px;color:var(--muted);font-size:12px;"><span class="lang-ja">ヘッダーを読み込めませんでした。</span><span class="lang-en">Couldn\'t load the header.</span></div>';
       }
     });
 
@@ -814,18 +922,92 @@ html.is-oijiiw body {
   // 2. おいじぃ魔女 用スクリプト実行
   // ---------------------------------------------------------
   if (isOijiiw) {
-    const html = document.documentElement;
-    const themeBtn = document.getElementById('themeBtn');
-    const langBtn = document.getElementById('langBtn');
-    const backBtn = document.getElementById('backBtn');
-    const randomBtn = document.getElementById('randomBtn');
-    const toast = document.getElementById('toast');
-    const orb = document.getElementById('orb');
-    const bubble = document.getElementById('bubble');
+    const $ = (id) => document.getElementById(id);
+    const themeBtn = $('themeBtn');
+    const langBtn = $('langBtn');
+    const backBtn = $('backBtn');
+    const randomBtn = $('randomBtn');
+    const toast = $('toast');
+    const orb = $('orb');
+    const bubble = $('bubble');
+
+    const T = {
+      ja: {
+        brand: 'おいじぃ魔女',
+        title: 'そのページ、魔法で迷子になったのぞぃ。',
+        lead: '<strong>おいじぃ魔女</strong>がページを探しています。<br>URLが変わったか、まだ魔法が届いていないのかもしれません。',
+        home: '🏠 おいじぃ魔女TOPへ',
+        back: '↩ ひとつ前へ戻る',
+        random: '🔮 魔法で探す',
+        panel: '<strong>魔法陣ステータス：</strong>404を検知。ページ探索モードを起動中。',
+        bubble: { idle: '「ちょっと待つのぞぃ。<b>404の魔法</b>なら、きっと見つかるのぞぃ！」',
+                  searching: '「魔法、最大出力……！<b>探してるのぞぃ！</b>」',
+                  after: '「ちょっと待つのぞぃ。<b>やっぱり404なのぞぃ。</b>」' },
+        toastSearch: '魔法検索を実行！',
+        themeTitle: 'テーマ切替', langTitle: '言語切替',
+        themeLabel: 'テーマ', langLabel: '言語',
+        names: { auto: '自動', dark: 'ダーク', light: 'ライト', ja: '日本語', en: 'English' }
+      },
+      en: {
+        brand: 'Oijii Witch',
+        title: 'That page got lost in the magic.',
+        lead: '<strong>Oijii Witch</strong> is searching for your page.<br>The URL may have changed, or the magic may not have reached it yet.',
+        home: '🏠 Back to Oijii Witch home',
+        back: '↩ Go back',
+        random: '🔮 Search with magic',
+        panel: '<strong>Magic circle status:</strong> 404 detected. Starting page search mode.',
+        bubble: { idle: '“Hold on a moment. A <b>404 spell</b> will surely find it!”',
+                  searching: '“Magic at full power…! <b>Searching!</b>”',
+                  after: '“Hold on… <b>it really is a 404.</b>”' },
+        toastSearch: 'Running magic search!',
+        themeTitle: 'Change theme', langTitle: 'Change language',
+        themeLabel: 'Theme', langLabel: 'Language',
+        names: { auto: 'Auto', dark: 'Dark', light: 'Light', ja: '日本語', en: 'English' }
+      }
+    };
+    const tr = () => T[FZW.lang] || T.ja;
+
+    let bubbleKey = 'idle';
+    const setBubble = (key) => { bubbleKey = key; if (bubble) bubble.innerHTML = tr().bubble[key]; };
+
+    let toastTimer;
+    const showToast = (msg, ms = 1300) => {
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), ms);
+    };
+
+    const render = () => {
+      const s = tr();
+      const set = (id, html) => { const el = $(id); if (el) el.innerHTML = html; };
+      set('brandName', s.brand);
+      set('title', s.title);
+      set('lead', s.lead);
+      set('homeBtn', s.home);
+      set('backBtn', s.back);
+      set('randomBtn', s.random);
+      set('panelCopy', s.panel);
+      if (themeBtn) themeBtn.title = s.themeTitle;
+      if (langBtn) langBtn.title = s.langTitle;
+      setBubble(bubbleKey);
+    };
+    document.addEventListener('fzw:lang', render);
+    render();
+
+    const cycle = (list, cur) => list[(list.indexOf(cur) + 1) % list.length];
 
     themeBtn?.addEventListener('click', () => {
-      const now = html.dataset.theme;
-      html.dataset.theme = now === 'dark' ? 'light' : now === 'light' ? 'auto' : 'dark';
+      const next = cycle(['auto', 'dark', 'light'], FZW.themePref());
+      FZW.setThemePref(next);
+      showToast(tr().themeLabel + ': ' + tr().names[next]);
+    });
+
+    langBtn?.addEventListener('click', () => {
+      const next = cycle(['auto', 'ja', 'en'], FZW.langPref());
+      FZW.setLangPref(next);
+      showToast(tr().langLabel + ': ' + tr().names[next]);
     });
 
     backBtn?.addEventListener('click', () => {
@@ -836,15 +1018,11 @@ html.is-oijiiw body {
     randomBtn?.addEventListener('click', () => {
       if (!orb || !bubble) return;
       orb.style.transform = 'scale(1.35) rotate(25deg)';
-      bubble.innerHTML = '「魔法、最大出力……！<b>探してるのぞぃ！</b>」';
-      if (toast) {
-        toast.textContent = '魔法検索を実行！';
-        toast.classList.add('show');
-      }
+      setBubble('searching');
+      showToast(tr().toastSearch, 1300);
       setTimeout(() => {
         orb.style.transform = '';
-        bubble.innerHTML = '「ちょっと待つのぞぃ。<b>やっぱり404なのぞぃ。</b>」';
-        if (toast) toast.classList.remove('show');
+        setBubble('after');
       }, 1300);
     });
   }
@@ -852,36 +1030,6 @@ html.is-oijiiw body {
 
 ;
 
-</script>
-<script>
-(() => {
-  const root = document.documentElement;
-  const buttons = document.querySelectorAll('[data-set-lang]');
-  const storageKey = 'fozowo-404-language';
-
-  function applyLang(lang) {
-    const value = lang === 'en' ? 'en' : 'ja';
-    root.dataset.lang = value;
-    root.lang = value;
-    buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.setLang === value));
-
-    // Update the page title and accessible labels.
-    document.title = value === 'en'
-      ? '404 Not Found | FoZoWo Creative'
-      : '404 ページが見つかりません | FoZoWo';
-  }
-
-  const saved = localStorage.getItem(storageKey) || 'ja';
-  applyLang(saved);
-
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const value = btn.dataset.setLang === 'en' ? 'en' : 'ja';
-      localStorage.setItem(storageKey, value);
-      applyLang(value);
-    });
-  });
-})()
 </script>
 </body>
 </html>
