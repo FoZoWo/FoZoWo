@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ZoJeZuブログ — 毎日届けるトレンドノート</title>
+<title>FoZoWoブログ — 毎日届けるトレンドノート</title>
 <script>
-/* header.html の applyTheme() と同じロジック・同じ localStorage キー（zojezu-theme）を
+/* header.html の applyTheme() と同じロジック・同じ localStorage キー（fozowo-theme）を
    ここで先に実行し、ヘッダー読み込み完了を待たずに data-theme を確定させる。
    これによりページ遷移のたびに一瞬ライト配色が見えるチラつき（FOUC）を防ぐ。 */
 (function () {
   try {
-    var t = localStorage.getItem('zojezu-theme') || 'auto';
+    var t = localStorage.getItem('fozowo-theme') || 'auto';
     var isDark = t === 'dark' || (t === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
   } catch (e) {}
@@ -657,7 +657,7 @@ article.post-full {
 
 <div class="blog-hero">
   <span class="mark" aria-hidden="true"></span>
-  <h1><a href="https://www.zojezu.f5.si/blog">ZoJeZuブログ</a></h1>
+  <h1><a href="https://www.fozowo.f5.si/blog">FoZoWoブログ</a></h1>
   <p>毎日届けるトレンドノート</p>
   <button type="button" id="notif-toggle" class="notif-toggle" data-state="default">
     <span id="notif-toggle-label">通知を有効にする</span>
@@ -670,7 +670,7 @@ article.post-full {
 </div>
 
 <footer class="blog-footer">
-  <p>© ZoJeZu — <a href="https://www.zojezu.f5.si/blog">ブログトップ</a></p>
+  <p>© FoZoWo — <a href="https://www.fozowo.f5.si/blog">ブログトップ</a></p>
 </footer>
 
 <script>
@@ -745,7 +745,7 @@ article.post-full {
 /* ========== Blog logic ========== */
 (function () {
   const API_URL = 'https://blog-api.oisasioisasi.workers.dev';
-  const BLOG_HOME = 'https://www.zojezu.f5.si/blog';
+  const BLOG_HOME = 'https://www.fozowo.f5.si/blog';
   const PAGE_SIZE = 10;
 
   let allPosts = [];
@@ -753,7 +753,7 @@ article.post-full {
   let currentQuery = '';
   let currentArchiveKey = '';
 
-  const READ_IDS_KEY = 'zojezu_blog_read_ids';
+  const READ_IDS_KEY = 'fozowo_blog_read_ids';
 
   function loadReadIds() {
     try {
@@ -779,8 +779,8 @@ article.post-full {
   }
 
   /* ---------- 通知（ブラウザ Notification API） ---------- */
-  const NOTIFIED_IDS_KEY = 'zojezu_notified_ids';
-  const NOTIF_ENABLED_KEY = 'zojezu_notif_enabled';
+  const NOTIFIED_IDS_KEY = 'fozowo_notified_ids';
+  const NOTIF_ENABLED_KEY = 'fozowo_notif_enabled';
   const POLL_MINUTES = 5; // 新着記事を確認する間隔
 
   function loadNotifEnabled() {
@@ -804,9 +804,9 @@ article.post-full {
   function fireNotification(post) {
     if (!('Notification' in window) || Notification.permission !== 'granted') return;
     try {
-      const n = new Notification('ZoJeZuブログ — 新着記事', {
+      const n = new Notification('FoZoWoブログ — 新着記事', {
         body: post.title,
-        tag: 'zojezu-post-' + post.id,
+        tag: 'fozowo-post-' + post.id,
       });
       n.onclick = function () {
         window.focus();
@@ -961,7 +961,7 @@ article.post-full {
   }
 
   function renderListPage(container) {
-    document.title = 'ZoJeZuブログ — 毎日届けるトレンドノート';
+    document.title = 'FoZoWoブログ — 毎日届けるトレンドノート';
     container.innerHTML = `
       <div class="blog-layout">
         <div class="main-col">
@@ -1138,7 +1138,7 @@ article.post-full {
         <div class="state-block"><h2>指定された記事が見つかりませんでした</h2><p>URLをご確認ください。</p></div>`;
       return;
     }
-    document.title = `${post.title} | ZoJeZu`;
+    document.title = `${post.title} | FoZoWo`;
     markPostAsRead(post.id);
     const minutes = Math.max(1, Math.round(post.content.length / 500));
     const older = idx < allPosts.length - 1 ? allPosts[idx + 1] : null;
