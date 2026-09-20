@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="ja" data-theme="dark">
+<html lang="ja" data-theme="auto">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <title>FoZoWo（フォゾウォ）公式ホームページ | FoZoWo Official</title>
-  <meta name="theme-color" content="#070817">
+  <meta name="theme-color" content="#070817" id="themeColorMeta">
   <meta name="description" content="FoZoWo（フォゾウォ）公式ホームページ。音楽、AI、ゲーム、ブログ、キャラクター、おいじぃ魔女など、FoZoWoの世界をまとめて楽しめる公式ポータルです。">
   <meta name="author" content="FoZoWo">
   <meta property="og:type" content="website">
@@ -70,6 +70,9 @@
       --shadow:0 30px 90px rgba(0,0,0,.42);--r:28px;--header-h:74px;--max:1280px;
     }
     [data-theme="light"]{--bg:#eef2ff;--bg2:#e8e9ff;--panel:rgba(255,255,255,.76);--panel2:rgba(255,255,255,.66);--line:rgba(63,67,130,.14);--line2:rgba(63,67,130,.28);--text:#14162d;--muted:#5d6381;--cyan:#0086a7;--violet:#6849d9;--pink:#d83691;--gold:#ad7000;--green:#078d62;--shadow:0 28px 70px rgba(45,38,110,.13)}
+    :root,[data-theme="dark"],[data-theme="auto"]{--header-bg:rgba(7,8,23,.62);--header-bg-scrolled:rgba(7,8,23,.92);--menu-bg:rgba(7,8,23,.96);--header-text:var(--text)}
+    [data-theme="light"]{--header-bg:rgba(255,255,255,.72);--header-bg-scrolled:rgba(255,255,255,.94);--menu-bg:rgba(255,255,255,.97);--header-text:var(--text)}
+    @media (prefers-color-scheme:light){[data-theme="auto"]{--bg:#eef2ff;--bg2:#e8e9ff;--panel:rgba(255,255,255,.76);--panel2:rgba(255,255,255,.66);--line:rgba(63,67,130,.14);--line2:rgba(63,67,130,.28);--text:#14162d;--muted:#5d6381;--cyan:#0086a7;--violet:#6849d9;--pink:#d83691;--gold:#ad7000;--green:#078d62;--shadow:0 28px 70px rgba(45,38,110,.13);--header-bg:rgba(255,255,255,.72);--header-bg-scrolled:rgba(255,255,255,.94);--menu-bg:rgba(255,255,255,.97)}}
     *,*::before,*::after{box-sizing:border-box}
     html{scroll-behavior:smooth;scroll-padding-top:100px;-webkit-text-size-adjust:100%}
     body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Zen Maru Gothic',system-ui,sans-serif;line-height:1.72;overflow-x:hidden}
@@ -81,10 +84,20 @@
     .fx{position:fixed;inset:0;z-index:-4;pointer-events:none;overflow:hidden}.fx i{position:absolute;border-radius:50%;filter:blur(36px);opacity:.28}.fx i:nth-child(1){width:340px;height:340px;left:-100px;top:18%;background:#69e9ff;animation:float1 14s ease-in-out infinite}.fx i:nth-child(2){width:300px;height:300px;right:-70px;top:42%;background:#ff70ca;animation:float2 17s ease-in-out infinite}.fx i:nth-child(3){width:250px;height:250px;left:38%;bottom:-80px;background:#9777ff;animation:float3 20s ease-in-out infinite}@keyframes float1{50%{transform:translate(80px,-45px)}}@keyframes float2{50%{transform:translate(-60px,65px)}}@keyframes float3{50%{transform:translate(40px,-50px)}}
 
     /* External header.html is kept and restyled here. */
-    #headerRoot{position:relative;z-index:100}.header{position:fixed!important;top:0;left:0;right:0;height:var(--header-h)!important;background:rgba(7,8,23,.62)!important;border-bottom:1px solid var(--line)!important;backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);z-index:500!important}.header.scrolled{background:rgba(7,8,23,.92)!important;border-bottom-color:var(--line2)!important}.header-inner{height:100%;max-width:var(--max);margin:auto;padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:18px}.logo{display:flex;align-items:center;gap:10px}.logo-img{width:42px;height:42px;border-radius:13px;border:1px solid var(--line2);object-fit:cover;box-shadow:0 0 25px rgba(151,119,255,.24)}.logo-text{font-family:Cinzel,serif;font-weight:900;letter-spacing:3px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}.nav-desktop{display:flex;gap:6px}.nav-desktop a{padding:9px 13px;border-radius:12px;font-size:13px;font-weight:700;color:var(--muted);transition:.25s}.nav-desktop a:hover{background:rgba(255,255,255,.07);color:var(--text);transform:translateY(-2px)}.nav-desktop a.accent{background:var(--grad);color:#fff;box-shadow:0 10px 26px rgba(151,119,255,.28)}.header-actions{display:flex;gap:7px}.icon-btn,.hamburger{width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line);display:grid;place-items:center}.icon-btn:hover,.hamburger:hover{background:rgba(255,255,255,.1);border-color:var(--line2)}.settings-panel{background:rgba(10,12,32,.94)!important;border:1px solid var(--line2)!important;box-shadow:var(--shadow)!important;border-radius:22px!important}.nav-mobile{background:rgba(7,8,23,.96)!important;border-bottom:1px solid var(--line)!important}.nav-mobile a{border:1px solid var(--line)!important;background:rgba(255,255,255,.04)!important}
+    #headerRoot{position:relative;z-index:100}.header{position:fixed!important;top:0;left:0;right:0;height:var(--header-h)!important;background:var(--header-bg)!important;border-bottom:1px solid var(--line)!important;backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);z-index:500!important}.header.scrolled{background:var(--header-bg-scrolled)!important;border-bottom-color:var(--line2)!important}.header-inner{height:100%;max-width:var(--max);margin:auto;padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:18px}.logo{display:flex;align-items:center;gap:10px}.logo-img{width:42px;height:42px;border-radius:13px;border:1px solid var(--line2);object-fit:cover;box-shadow:0 0 25px rgba(151,119,255,.24)}.logo-text{font-family:Cinzel,serif;font-weight:900;letter-spacing:3px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}.nav-desktop{display:flex;gap:6px}.nav-desktop a{padding:9px 13px;border-radius:12px;font-size:13px;font-weight:700;color:var(--muted);transition:.25s}.nav-desktop a:hover{background:rgba(255,255,255,.07);color:var(--text);transform:translateY(-2px)}.nav-desktop a.accent{background:var(--grad);color:#fff;box-shadow:0 10px 26px rgba(151,119,255,.28)}.header-actions{display:flex;gap:7px}.icon-btn,.hamburger{width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line);display:grid;place-items:center}.icon-btn:hover,.hamburger:hover{background:rgba(255,255,255,.1);border-color:var(--line2)}.settings-panel{background:var(--menu-bg)!important;border:1px solid var(--line2)!important;box-shadow:var(--shadow)!important;border-radius:22px!important}.nav-mobile{background:var(--menu-bg)!important;border-bottom:1px solid var(--line)!important}.nav-mobile a{border:1px solid var(--line)!important;background:rgba(255,255,255,.04)!important}
     @media(max-width:959px){.nav-desktop{display:none!important}.hamburger{display:block!important}}
+    [data-theme="light"] .header,[data-theme="light"] .header.scrolled{color:var(--text)}
+    [data-theme="light"] .icon-btn,[data-theme="light"] .hamburger{background:rgba(80,70,160,.05)}
+    [data-theme="light"] .nav-mobile a{background:rgba(80,70,160,.05)!important}
+    @media(max-width:959px){.language-switch{right:12px;top:calc(var(--header-h) + 8px)}}
 
+
+    .language-switch{position:fixed;right:18px;top:calc(var(--header-h) + 12px);z-index:520;display:flex;align-items:center;gap:6px;padding:5px 7px;border:1px solid var(--line2);border-radius:999px;background:var(--menu-bg);backdrop-filter:blur(16px);box-shadow:0 12px 28px rgba(0,0,0,.16)}
+    .language-switch button{border:0;background:transparent;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:900;letter-spacing:.03em;color:var(--muted);cursor:pointer}
+    .language-switch button.active{background:var(--grad);color:#fff;box-shadow:0 6px 16px rgba(105,233,255,.16)}
+    .language-switch span{color:var(--muted);opacity:.55;font-size:11px}
     main{padding-top:var(--header-h)}.wrap{width:min(var(--max),calc(100% - 34px));margin:auto}
+
 
     .hero{min-height:calc(100svh - 20px);display:grid;align-items:center;position:relative;padding:80px 0 65px;isolation:isolate}.hero-grid{display:grid;grid-template-columns:1.04fr .96fr;gap:40px;align-items:center}.eyebrow{display:inline-flex;align-items:center;gap:10px;padding:8px 13px;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.045);font-size:12px;letter-spacing:2.4px;font-weight:900;color:var(--gold)}.eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 18px var(--green)}h1{margin:20px 0 18px;font-size:clamp(55px,9.5vw,126px);line-height:.94;letter-spacing:-.035em;font-weight:900}h1 .word{display:block;background:linear-gradient(180deg,#fff 0%,#dfe6ff 48%,#9b83ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}h1 .brand{display:inline-block;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 38px rgba(151,119,255,.18)}.hero-lead{max-width:690px;color:var(--muted);font-size:clamp(16px,2vw,20px);margin:0 0 28px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;gap:9px;border-radius:16px;padding:13px 18px;font-weight:900;border:1px solid var(--line2);transition:.3s}.btn:hover{transform:translateY(-4px)}.btn.primary{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 18px 45px rgba(105,233,255,.15)}.btn.secondary{background:rgba(255,255,255,.045)}
 
@@ -98,11 +111,11 @@
 
     .witch{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.witch-main,.witch-sub{border-radius:28px;overflow:hidden;border:1px solid var(--line);background:linear-gradient(140deg,rgba(255,112,202,.1),rgba(151,119,255,.06));position:relative}.witch-main img{width:100%;height:100%;min-height:340px;object-fit:cover;opacity:.8}.witch-main::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,rgba(7,8,23,.85) 100%)}.witch-caption{position:absolute;left:26px;right:26px;bottom:24px;z-index:2}.witch-caption h3{margin:0;font-size:30px}.witch-caption p{margin:4px 0 0;color:#d6d8ec}.witch-sub{padding:28px;display:flex;flex-direction:column;justify-content:space-between}.witch-sub .tag{display:inline-flex;align-self:flex-start;padding:7px 11px;border-radius:999px;border:1px solid rgba(255,210,124,.35);color:var(--gold);font-size:11px;font-weight:900}.witch-sub h3{font-size:27px;margin:12px 0 6px}.witch-sub p{color:var(--muted);font-size:14px}.witch-links{display:grid;gap:9px;margin-top:16px}.witch-links a{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--line);font-size:13px;font-weight:800}.witch-links a:hover{border-color:var(--line2);transform:translateX(4px)}
 
-    .socials{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}.social{padding:20px 10px;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid var(--line);text-align:center;font-weight:900;font-size:12px;transition:.3s}.social:hover{transform:translateY(-6px);border-color:var(--line2);background:rgba(255,255,255,.075)}.social .sicon{display:grid;place-items:center;width:42px;height:42px;margin:0 auto 10px;border-radius:13px;background:rgba(255,255,255,.06);font-size:18px}.social small{display:block;color:var(--muted);font-size:9px;margin-top:4px}
+    .socials{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}.social{padding:20px 10px;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid var(--line);text-align:center;font-weight:900;font-size:12px;transition:.3s}.social:hover{transform:translateY(-6px);border-color:var(--line2);background:rgba(255,255,255,.075)}.social .sicon{display:grid;place-items:center;width:42px;height:42px;margin:0 auto 10px;border-radius:13px;background:rgba(255,255,255,.06);font-size:18px}.social .sicon img{width:27px;height:27px;object-fit:contain;display:block}.social .threads-sicon{background:#fff;color:#000}.social .threads-sicon svg{width:24px;height:28px;display:block}.footer-threads .threads-logo{width:21px;height:24px;display:block}.social small{display:block;color:var(--muted);font-size:9px;margin-top:4px}.brand-social{border-color:rgba(143,115,255,.55);background:linear-gradient(145deg,rgba(143,115,255,.12),rgba(255,255,255,.035));}.brand-social:hover{box-shadow:0 14px 34px rgba(143,115,255,.22)}.brand-sicon{background:linear-gradient(135deg,#8f73ff,#5ee7ff)!important;color:#fff;box-shadow:0 0 24px rgba(143,115,255,.35);padding:0!important;overflow:hidden}.brand-sicon img{width:100%;height:100%;object-fit:cover;display:block}
 
     .seo-copy{display:grid;grid-template-columns:1fr 1fr;gap:18px}.seo-panel{padding:27px;border-radius:26px;background:var(--panel);border:1px solid var(--line)}.seo-panel h3{margin-top:0;font-size:22px}.seo-panel p,.seo-panel li{color:var(--muted);font-size:14px}.seo-panel ul{padding-left:20px}.brand-words{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}.brand-word{padding:8px 12px;border-radius:999px;background:rgba(105,233,255,.07);border:1px solid rgba(105,233,255,.22);font-size:12px;color:var(--text)}
 
-    .footer{padding:50px 0 45px;margin-top:55px;border-top:1px solid var(--line)}.footer-grid{display:flex;justify-content:space-between;gap:20px;align-items:end}.footer-brand{font-family:Cinzel,serif;letter-spacing:3px;font-weight:900;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:28px}.footer-meta{color:var(--muted);font-size:11px;text-align:right}.top{position:fixed;right:19px;bottom:19px;width:48px;height:48px;border-radius:15px;border:1px solid var(--line2);background:rgba(9,11,30,.82);backdrop-filter:blur(14px);color:#fff;opacity:0;pointer-events:none;transform:translateY(10px);transition:.3s;z-index:300}.top.show{opacity:1;pointer-events:auto;transform:none}
+    .footer{padding:50px 0 34px;margin-top:55px;border-top:1px solid var(--line)}.footer-grid{display:flex;justify-content:space-between;gap:20px;align-items:end}.footer-brand{font-family:Cinzel,serif;letter-spacing:3px;font-weight:900;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:28px}.footer-meta{color:var(--muted);font-size:11px;text-align:right}.footer-socials{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:11px;margin:30px auto 0;padding-top:24px;border-top:1px solid var(--line);max-width:760px}.footer-social{display:grid;place-items:center;width:46px;height:46px;border-radius:15px;border:1px solid var(--line);background:rgba(255,255,255,.045);color:var(--text);transition:.3s;position:relative;overflow:hidden}.footer-social::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0,rgba(105,233,255,.16),transparent 62%);opacity:0;transition:.3s}.footer-social:hover{transform:translateY(-5px) scale(1.06);border-color:var(--line2);box-shadow:0 12px 30px rgba(0,0,0,.25)}.footer-social:hover::before{opacity:1}.footer-social svg{width:21px;height:21px;position:relative;z-index:1}.footer-social img{width:23px;height:23px;object-fit:contain;position:relative;z-index:1}.footer-threads{background:#fff;color:#000}.footer-social-label{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}.top{position:fixed;right:19px;bottom:19px;width:48px;height:48px;border-radius:15px;border:1px solid var(--line2);background:rgba(9,11,30,.82);backdrop-filter:blur(14px);color:#fff;opacity:0;pointer-events:none;transform:translateY(10px);transition:.3s;z-index:300}.top.show{opacity:1;pointer-events:auto;transform:none}
 
     .reveal{opacity:0;transform:translateY(28px)}.no-motion .reveal{opacity:1!important;transform:none!important}
     @media(max-width:1000px){.hero-grid{grid-template-columns:1fr}.hero{padding-top:55px}.hero-orbit{min-height:480px}.launch{grid-template-columns:1fr 1fr}.tile.big{grid-row:span 1;grid-column:span 2}.identity,.witch,.seo-copy{grid-template-columns:1fr}.socials{grid-template-columns:repeat(3,1fr)}}
@@ -116,16 +129,21 @@
 
   <!-- header.html は外部ファイルとして維持。読み込み後に既存ヘッダーをそのまま利用します。 -->
   <div id="headerRoot"></div>
+  <div class="language-switch" id="languageSwitch" aria-label="Language">
+    <button type="button" data-lang="ja" class="active">日本語</button>
+    <span aria-hidden="true">/</span>
+    <button type="button" data-lang="en">English</button>
+  </div>
 
   <main id="main-content">
     <section class="hero">
       <div class="wrap hero-grid">
         <div class="hero-copy reveal">
           <div class="eyebrow">FOZOWO · OFFICIAL PORTAL</div>
-          <h1><span class="word">ようこそ、</span><span class="brand">FoZoWo</span><span class="word">へ。</span></h1>
-          <p class="hero-lead">FoZoWo（フォゾウォ）の世界を、ひとつのホームページから。音楽、AI、ゲーム、ブログ、キャラクター、おいじぃ魔女まで、公式コンテンツへすぐにアクセスできます。</p>
+          <h1><span class="word" data-i18n="welcomePrefix">ようこそ、</span><span class="brand">FoZoWo</span><span class="word" data-i18n="welcomeSuffix">へ。</span></h1>
+          <p class="hero-lead" data-i18n="heroLead">FoZoWo（フォゾウォ）の世界を、ひとつのホームページから。音楽、AI、ゲーム、ブログ、キャラクター、おいじぃ魔女まで、公式コンテンツへすぐにアクセスできます。</p>
           <div class="hero-actions">
-            <a class="btn primary" href="#launch">コンテンツを開く <span>→</span></a>
+            <a class="btn primary" href="#launch" data-i18n="heroPrimary">コンテンツを開く <span>→</span></a>
             <a class="btn secondary" href="https://fozowo.f5.si/ai">FoZoWo AI <span>↗</span></a>
           </div>
         </div>
@@ -138,7 +156,7 @@
             <a class="sat two" href="https://fozowo.f5.si/ai" aria-label="FoZoWo AI"><img src="oisasi-logoAI.png" alt="FoZoWo AI" loading="lazy"><span class="sat-label">AI</span></a>
             <a class="sat three" href="https://fozowo.f5.si/character" aria-label="キャラクター"><img src="おいさし写真.png" alt="FoZoWo キャラクター" loading="lazy"><span class="sat-label">CHARACTER</span></a>
             <a class="sat four" href="oijiiw.html" aria-label="おいじぃ魔女"><img src="おいじぃ魔女.png" alt="おいじぃ魔女" loading="lazy"><span class="sat-label">WITCH</span></a>
-            <div class="status"><span>BRAND <b>FoZoWo</b></span><span>READ AS <b>フォゾウォ</b></span></div>
+            <div class="status"><span>BRAND <b>FoZoWo</b></span><span>READ AS <b data-i18n="readAs">フォゾウォ</b></span></div>
           </div>
         </div>
       </div>
@@ -146,25 +164,25 @@
 
     <section class="section" id="launch">
       <div class="wrap">
-        <div class="section-head reveal"><div><div class="section-kicker">01 · LAUNCHPAD</div><div class="section-title">公式コンテンツへ、最短で。</div></div><div class="section-note">よく使う入口を大きくまとめました。カードはPCでもスマホでも操作しやすい設計です。</div></div>
+        <div class="section-head reveal"><div><div class="section-kicker">01 · LAUNCHPAD</div><div class="section-title" data-i18n="sectionLaunchTitle">公式コンテンツへ、最短で。</div></div><div class="section-note" data-i18n="sectionLaunchNote">よく使う入口を大きくまとめました。カードはPCでもスマホでも操作しやすい設計です。</div></div>
         <div class="launch">
-          <a class="tile big reveal" href="https://fozowo.f5.si/music"><span class="mini">SOUND / OFFICIAL</span><div class="tile-icon"><img src="oisasi music.jpg" alt="FoZoWo Music" loading="lazy"></div><h3>FoZoWo Music</h3><p>フォゾウォの音楽コンテンツ。公式音楽ページへ。</p><div class="tile-arrow">→</div></a>
-          <a class="tile reveal" href="https://fozowo.f5.si/ai"><span class="mini">CONVERSATION</span><div class="tile-icon"><img src="oisasi-logoAI.png" alt="FoZoWo AI" loading="lazy"></div><h3>FoZoWo AI</h3><p>AIと話して遊ぶ。</p><div class="tile-arrow">↗</div></a>
-          <a class="tile reveal" href="https://fozowo.f5.si/character"><span class="mini">CHARACTERS</span><div class="tile-icon"><img src="おいさし写真.png" alt="キャラクター紹介" loading="lazy"></div><h3>キャラクター</h3><p>おいさし達の世界。</p><div class="tile-arrow">→</div></a>
-          <a class="tile reveal" href="https://fozowo.f5.si/logo"><span class="mini">BRAND ASSETS</span><div class="tile-icon"><img src="おいさしロゴ.png" alt="FoZoWo ロゴ" loading="lazy"></div><h3>ロゴ</h3><p>公式ビジュアル。</p><div class="tile-arrow">→</div></a>
-          <a class="tile reveal" href="faq.html"><span class="mini">HELP CENTER</span><h3>FAQ</h3><p>よくある質問。</p><div class="tile-arrow">→</div></a>
-          <a class="tile reveal" href="https://ojg.netlify.app"><span class="mini">PLAY</span><h3>ゲーム</h3><p>ブラウザで遊ぶ。</p><div class="tile-arrow">↗</div></a>
+          <a class="tile big reveal" href="https://fozowo.f5.si/music"><span class="mini">SOUND / OFFICIAL</span><div class="tile-icon"><img src="oisasi music.jpg" alt="FoZoWo Music" loading="lazy"></div><h3>FoZoWo Music</h3><p data-i18n="musicDesc">フォゾウォの音楽コンテンツ。公式音楽ページへ。</p><div class="tile-arrow">→</div></a>
+          <a class="tile reveal" href="https://fozowo.f5.si/ai"><span class="mini">CONVERSATION</span><div class="tile-icon"><img src="oisasi-logoAI.png" alt="FoZoWo AI" loading="lazy"></div><h3>FoZoWo AI</h3><p data-i18n="aiDesc">AIと話して遊ぶ。</p><div class="tile-arrow">↗</div></a>
+          <a class="tile reveal" href="https://fozowo.f5.si/character"><span class="mini">CHARACTERS</span><div class="tile-icon"><img src="おいさし写真.png" alt="キャラクター紹介" loading="lazy"></div><h3 data-i18n="characterTitle">キャラクター</h3><p data-i18n="characterDesc">おいさし達の世界。</p><div class="tile-arrow">→</div></a>
+          <a class="tile reveal" href="https://fozowo.f5.si/logo"><span class="mini">BRAND ASSETS</span><div class="tile-icon"><img src="おいさしロゴ.png" alt="FoZoWo ロゴ" loading="lazy"></div><h3 data-i18n="logoTitle">ロゴ</h3><p data-i18n="logoDesc">公式ビジュアル。</p><div class="tile-arrow">→</div></a>
+          <a class="tile reveal" href="faq.html"><span class="mini">HELP CENTER</span><h3>FAQ</h3><p data-i18n="faqDesc">よくある質問。</p><div class="tile-arrow">→</div></a>
+          <a class="tile reveal" href="https://ojg.netlify.app"><span class="mini">PLAY</span><h3 data-i18n="gameTitle">ゲーム</h3><p data-i18n="gameDesc">ブラウザで遊ぶ。</p><div class="tile-arrow">↗</div></a>
         </div>
       </div>
     </section>
 
     <section class="section" id="about">
       <div class="wrap">
-        <div class="section-head reveal"><div><div class="section-kicker">02 · IDENTITY</div><div class="section-title">「FoZoWo」と「フォゾウォ」を一本化。</div></div><div class="section-note">英字と日本語読みを、ホームページ全体で同じ形に揃えています。</div></div>
+        <div class="section-head reveal"><div><div class="section-kicker">02 · IDENTITY</div><div class="section-title" data-i18n="identityTitle">「FoZoWo」と「フォゾウォ」を一本化。</div></div><div class="section-note" data-i18n="identityNote">英字と日本語読みを、ホームページ全体で同じ形に揃えています。</div></div>
         <div class="identity">
           <article class="identity-card reveal">
-            <div class="brand-lockup"><img src="おいさしロゴ.png" alt="FoZoWo ロゴ"><div><h3>FoZoWo</h3><p>読み方：フォゾウォ / 公式サイト</p></div></div>
-            <div class="identity-copy">このホームページでは、ブランド名を<strong>FoZoWo</strong>、日本語表記を<strong>フォゾウォ</strong>として一貫して掲載。検索エンジンにもページの主題が伝わりやすいよう、タイトル、見出し、説明文、構造化データを同じ方針で整えています。</div>
+            <div class="brand-lockup"><img src="おいさしロゴ.png" alt="FoZoWo ロゴ"><div><h3>FoZoWo</h3><p data-i18n="brandReading">読み方：フォゾウォ / 公式サイト</p></div></div>
+            <div class="identity-copy" data-i18n-html="identityCopy">このホームページでは、ブランド名を<strong>FoZoWo</strong>、日本語表記を<strong>フォゾウォ</strong>として一貫して掲載。検索エンジンにもページの主題が伝わりやすいよう、タイトル、見出し、説明文、構造化データを同じ方針で整えています。</div>
           </article>
           <article class="identity-card reveal">
             <div class="section-kicker">BRAND SIGNALS</div>
@@ -181,53 +199,84 @@
 
     <section class="section" id="witch">
       <div class="wrap">
-        <div class="section-head reveal"><div><div class="section-kicker">03 · OIJII WITCH</div><div class="section-title">おいじぃ魔女の世界。</div></div><div class="section-note">FoZoWoの物語・雑学コンテンツへつながる専用エリア。</div></div>
+        <div class="section-head reveal"><div><div class="section-kicker">03 · OIJII WITCH</div><div class="section-title" data-i18n="witchTitle">おいじぃ魔女の世界。</div></div><div class="section-note" data-i18n="witchNote">FoZoWoの物語・雑学コンテンツへつながる専用エリア。</div></div>
         <div class="witch">
-          <a class="witch-main reveal" href="oijiiw.html"><img src="おいじぃ魔女.png" alt="おいじぃ魔女のホームページ" loading="lazy"><div class="witch-caption"><h3>おいじぃ魔女</h3><p>魔女のホームページへ →</p></div></a>
-          <div class="witch-sub reveal"><div><span class="tag">WITCH / TRIVIA</span><h3>魔女の館を探索</h3><p>世界観を楽しむページと、雑学を楽しむページを分けて、目的ごとに迷いにくくしました。</p></div><div class="witch-links"><a href="oijiiw.html"><span>おいじぃ魔女ホームページ</span><span>→</span></a><a href="oijiizatu.html"><span>おいじぃ魔女のヤバい雑学</span><span>→</span></a></div></div>
+          <a class="witch-main reveal" href="oijiiw.html"><img src="おいじぃ魔女.png" alt="おいじぃ魔女のホームページ" loading="lazy"><div class="witch-caption"><h3 data-i18n="witchName">おいじぃ魔女</h3><p data-i18n="witchLink">魔女のホームページへ →</p></div></a>
+          <div class="witch-sub reveal"><div><span class="tag">WITCH / TRIVIA</span><h3 data-i18n="witchExplore">魔女の館を探索</h3><p data-i18n="witchExploreDesc">世界観を楽しむページと、雑学を楽しむページを分けて、目的ごとに迷いにくくしました。</p></div><div class="witch-links"><a href="oijiiw.html"><span data-i18n="witchHome">おいじぃ魔女ホームページ</span><span>→</span></a><a href="oijiizatu.html"><span data-i18n="witchTrivia">おいじぃ魔女のヤバい雑学</span><span>→</span></a></div></div>
         </div>
       </div>
     </section>
 
     <section class="section" id="contents">
       <div class="wrap">
-        <div class="section-head reveal"><div><div class="section-kicker">04 · MORE PORTALS</div><div class="section-title">もっと広がるFoZoWo。</div></div><div class="section-note">公式サイト以外のコンテンツもまとめておきます。</div></div>
+        <div class="section-head reveal"><div><div class="section-kicker">04 · MORE PORTALS</div><div class="section-title" data-i18n="moreTitle">もっと広がるFoZoWo。</div></div><div class="section-note" data-i18n="moreNote">公式サイト以外のコンテンツもまとめておきます。</div></div>
         <div class="launch" style="grid-template-columns:repeat(4,1fr);grid-auto-rows:minmax(170px,auto)">
-          <a class="tile reveal" href="https://fozowo.f5.si/music"><span class="mini">AUDIO</span><h3>音楽</h3><p>Music portal</p><div class="tile-arrow">→</div></a>
+          <a class="tile reveal" href="https://fozowo.f5.si/music"><span class="mini">AUDIO</span><h3 data-i18n="moreMusic">音楽</h3><p>Music portal</p><div class="tile-arrow">→</div></a>
           <a class="tile reveal" href="https://fozowo.f5.si/ai"><span class="mini">AI</span><h3>AI</h3><p>Conversation portal</p><div class="tile-arrow">↗</div></a>
-          <a class="tile reveal" href="https://ojg.netlify.app"><span class="mini">GAME</span><h3>ゲーム</h3><p>Browser games</p><div class="tile-arrow">↗</div></a>
-          <a class="tile reveal" href="https://oisasi.hatenablog.com"><span class="mini">BLOG</span><h3>ブログ</h3><p>Updates & stories</p><div class="tile-arrow">↗</div></a>
+          <a class="tile reveal" href="https://ojg.netlify.app"><span class="mini">GAME</span><h3 data-i18n="moreGame">ゲーム</h3><p>Browser games</p><div class="tile-arrow">↗</div></a>
+          <a class="tile reveal" href="https://oisasi.hatenablog.com"><span class="mini">BLOG</span><h3 data-i18n="moreBlog">ブログ</h3><p>Updates & stories</p><div class="tile-arrow">↗</div></a>
         </div>
       </div>
     </section>
 
     <section class="section" id="sns">
       <div class="wrap">
-        <div class="section-head reveal"><div><div class="section-kicker">05 · SOCIAL CONSTELLATION</div><div class="section-title">FoZoWoを見つける。</div></div><div class="section-note">公式アカウントをホームページに集約。ブランド名の統一にも役立つ構成です。</div></div>
-        <div class="socials">
-          <a class="social reveal" href="https://www.youtube.com/@FoZoWo"><span class="sicon">▶</span>YouTube<small>@FoZoWo</small></a>
-          <a class="social reveal" href="https://www.instagram.com/FoZoWo/"><span class="sicon">◎</span>Instagram<small>@FoZoWo</small></a>
-          <a class="social reveal" href="https://www.facebook.com/fozowo"><span class="sicon">f</span>Facebook<small>fozowo</small></a>
-          <a class="social reveal" href="https://x.com/FoZoWo"><span class="sicon">𝕏</span>X<small>@FoZoWo</small></a>
-          <a class="social reveal" href="https://www.tiktok.com/@FoZoWo"><span class="sicon">♪</span>TikTok<small>@FoZoWo</small></a>
-          <a class="social reveal" href="https://lit.link/fozowo"><span class="sicon">↗</span>lit.link<small>/fozowo</small></a>
+        <div class="section-head reveal"><div><div class="section-kicker">05 · SOCIAL CONSTELLATION</div><div class="section-title" data-i18n="socialHeading">SNS</div></div><div class="section-note" data-i18n="socialNote">公式アカウントをホームページに集約。ブランド名の統一にも役立つ構成です。</div></div>
+        <div class="socials" aria-label="Official social media">
+          <a class="social reveal" href="https://www.youtube.com/@FoZoWo" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+            <span class="sicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.7V8.3L15.8 12l-6.2 3.7Z"/></svg></span>
+            <strong>YouTube</strong><small>@FoZoWo</small>
+          </a>
+          <a class="social reveal" href="https://www.instagram.com/FoZoWo/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <span class="sicon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.7" r="1.1" fill="currentColor"/></svg></span>
+            <strong>Instagram</strong><small>@FoZoWo</small>
+          </a>
+          <a class="social reveal" href="https://www.facebook.com/fozowo" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <span class="sicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M14 8h3V4h-3c-3.3 0-5 1.7-5 5v3H6v4h3v4h4v-4h3.2l.6-4H13V9c0-.7.3-1 1-1Z"/></svg></span>
+            <strong>Facebook</strong><small>fozowo</small>
+          </a>
+          <a class="social reveal" href="https://x.com/FoZoWo" target="_blank" rel="noopener noreferrer" aria-label="X">
+            <span class="sicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M4.1 3h4.4l4.2 5.8L17.5 3H20l-6.1 7 6.5 11h-4.4l-4.6-6.3L6.1 21H3.7l6.2-7.2L4.1 3Zm3.5 2 8.9 14h1.4L9 5H7.6Z"/></svg></span>
+            <strong>X</strong><small>@FoZoWo</small>
+          </a>
+          <a class="social reveal" href="https://www.tiktok.com/@FoZoWo" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+            <span class="sicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M14 3h3c.2 1.7 1.2 3.1 3 3.8V10c-1.7-.1-3-.6-4.2-1.5v6.1A6.4 6.4 0 1 1 10 8.4v3.3a3.1 3.1 0 1 0 2.9 3V3H14Z"/></svg></span>
+            <strong>TikTok</strong><small>@FoZoWo</small>
+          </a>
+          <a class="social reveal" href="https://www.threads.net/@FoZoWo" target="_blank" rel="noopener noreferrer" aria-label="Threads">
+            <span class="sicon threads-sicon" aria-hidden="true"><!-- Threads logo: Font Awesome Free --><svg class="threads-logo" viewBox="0 0 448 512"><path fill="currentColor" d="M331.5 235.7c2.2 .9 4.2 1.9 6.3 2.8c29.2 14.1 50.6 35.2 61.8 61.4c15.7 36.5 17.2 95.8-30.3 143.2c-36.2 36.2-80.3 52.5-142.6 53h-.3c-70.2-.5-124.1-24.1-160.4-70.2c-32.3-41-48.9-98.1-49.5-169.6V256v-.2C17 184.3 33.6 127.2 65.9 86.2C102.2 40.1 156.2 16.5 226.4 16h.3c70.3 .5 124.9 24 162.3 69.9c18.4 22.7 32 50 40.6 81.7l-40.4 10.8c-7.1-25.8-17.8-47.8-32.2-65.4c-29.2-35.8-73-54.2-130.5-54.6c-57 .5-100.1 18.8-128.2 54.4C72.1 146.1 58.5 194.3 58 256c.5 61.7 14.1 109.9 40.3 143.3c28 35.6 71.2 53.9 128.2 54.4c51.4-.4 85.4-12.6 113.7-40.9c32.3-32.2 31.7-71.8 21.4-95.9c-6.1-14.2-17.1-26-31.9-34.9c-3.7 26.9-11.8 48.3-24.7 64.8c-17.1 21.8-41.4 33.6-72.7 35.3c-23.6 1.3-46.3-4.4-63.9-16c-20.8-13.8-33-34.8-34.3-59.3c-2.5-48.3 35.7-83 95.2-86.4c21.1-1.2 40.9-.3 59.2 2.8c-2.4-14.8-7.3-26.6-14.6-35.2c-10-11.7-25.6-17.7-46.2-17.8H227c-16.6 0-39 4.6-53.3 26.3l-34.4-23.6c19.2-29.1 50.3-45.1 87.8-45.1h.8c62.6 .4 99.9 39.5 103.7 107.7l-.2 .2zm-156 68.8c1.3 25.1 28.4 36.8 54.6 35.3c25.6-1.4 54.6-11.4 59.5-73.2c-13.2-2.9-27.8-4.4-43.4-4.4c-4.8 0-9.6 .1-14.4 .4c-42.9 2.4-57.2 23.2-56.2 41.8l-.1 .1z"/></svg></span>
+            <strong>Threads</strong><small>@FoZoWo</small>
+          </a>
+          <a class="social reveal" href="https://lit.link/fozowo" target="_blank" rel="noopener noreferrer" aria-label="lit.link">
+            <span class="sicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M9 7h8v8"/></svg></span>
+            <strong>lit.link</strong><small>/fozowo</small>
+          </a>
         </div>
       </div>
     </section>
 
     <section class="section" id="seo-info">
       <div class="wrap">
-        <div class="section-head reveal"><div><div class="section-kicker">06 · ABOUT FOZOWO</div><div class="section-title">FoZoWo（フォゾウォ）公式サイト</div></div><div class="section-note">検索した人が「何のサイトか」をすぐ理解できるよう、本文でも自然に説明しています。</div></div>
+        <div class="section-head reveal"><div><div class="section-kicker">06 · ABOUT FOZOWO</div><div class="section-title" data-i18n="aboutTitle">FoZoWo（フォゾウォ）公式サイト</div></div><div class="section-note" data-i18n="aboutNote">検索した人が「何のサイトか」をすぐ理解できるよう、本文でも自然に説明しています。</div></div>
         <div class="seo-copy">
-          <article class="seo-panel reveal"><h3>FoZoWoとは</h3><p>FoZoWo（フォゾウォ）は、音楽、AI、ゲーム、ブログ、キャラクター、おいじぃ魔女などのコンテンツをまとめる公式ブランドサイトです。このページは<strong>FoZoWo公式ホームページ</strong>として各コンテンツへの入口を提供します。</p><div class="brand-words"><span class="brand-word">FoZoWo</span><span class="brand-word">フォゾウォ</span><span class="brand-word">FoZoWo公式</span><span class="brand-word">FoZoWo Official</span></div></article>
-          <article class="seo-panel reveal"><h3>検索で見つけてもらうために</h3><ul><li>サイト名を「FoZoWo」に統一</li><li>日本語読み「フォゾウォ」も明記</li><li>トップページにWebSite構造化データを配置</li><li>Organization情報と公式SNSを関連付け</li><li>canonical・OGP・descriptionを設定</li></ul></article>
+          <article class="seo-panel reveal"><h3>About FoZoWo</h3><p data-i18n-html="aboutCopy">FoZoWo（フォゾウォ）は、音楽、AI、ゲーム、ブログ、キャラクター、おいじぃ魔女などのコンテンツをまとめる公式ブランドサイトです。このページは<strong>FoZoWo公式ホームページ</strong>として各コンテンツへの入口を提供します。</p><div class="brand-words"><span class="brand-word">FoZoWo</span><span class="brand-word">フォゾウォ</span><span class="brand-word">FoZoWo公式</span><span class="brand-word">FoZoWo Official</span></div></article>
+          <article class="seo-panel reveal"><h3 data-i18n="seoTitle">検索で見つけてもらうために</h3><ul data-i18n-html="seoList"><li>サイト名を「FoZoWo」に統一</li><li>日本語読み「フォゾウォ」も明記</li><li>トップページにWebSite構造化データを配置</li><li>Organization情報と公式SNSを関連付け</li><li>canonical・OGP・descriptionを設定</li></ul></article>
         </div>
       </div>
     </section>
   </main>
 
   <footer class="footer">
-    <div class="wrap footer-grid"><div><div class="footer-brand">FoZoWo</div><div style="color:var(--muted);font-size:12px;margin-top:5px">フォゾウォ · Official Portal</div></div><div class="footer-meta">© FoZoWo OFFICIAL<br>https://fozowo.f5.si/</div></div>
+    <div class="wrap footer-grid"><div><div class="footer-brand">FoZoWo</div><div data-i18n="footerSub" style="color:var(--muted);font-size:12px;margin-top:5px">フォゾウォ · Official Portal</div></div><div class="footer-meta">https://fozowo.f5.si/</div></div>
+    <nav class="footer-socials" aria-label="Official social links">
+      <a class="footer-social" href="https://www.youtube.com/@FoZoWo" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><span class="footer-social-label">YouTube</span><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.7V8.3L15.8 12l-6.2 3.7Z"/></svg></a>
+      <a class="footer-social" href="https://www.instagram.com/FoZoWo/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><span class="footer-social-label">Instagram</span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.7" r="1.1" fill="currentColor"/></svg></a>
+      <a class="footer-social" href="https://www.facebook.com/fozowo" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><span class="footer-social-label">Facebook</span><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 8h3V4h-3c-3.3 0-5 1.7-5 5v3H6v4h3v4h4v-4h3.2l.6-4H13V9c0-.7.3-1 1-1Z"/></svg></a>
+      <a class="footer-social" href="https://x.com/FoZoWo" target="_blank" rel="noopener noreferrer" aria-label="X"><span class="footer-social-label">X</span><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.1 3h4.4l4.2 5.8L17.5 3H20l-6.1 7 6.5 11h-4.4l-4.6-6.3L6.1 21H3.7l6.2-7.2L4.1 3Zm3.5 2 8.9 14h1.4L9 5H7.6Z"/></svg></a>
+      <a class="footer-social" href="https://www.tiktok.com/@FoZoWo" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><span class="footer-social-label">TikTok</span><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 3h3c.2 1.7 1.2 3.1 3 3.8V10c-1.7-.1-3-.6-4.2-1.5v6.1A6.4 6.4 0 1 1 10 8.4v3.3a3.1 3.1 0 1 0 2.9 3V3H14Z"/></svg></a>
+      <a class="footer-social footer-threads" href="https://www.threads.net/@FoZoWo" target="_blank" rel="noopener noreferrer" aria-label="Threads"><span class="footer-social-label">Threads</span><!-- Threads logo: Font Awesome Free --><svg class="threads-logo" viewBox="0 0 448 512" aria-hidden="true"><path fill="currentColor" d="M331.5 235.7c2.2 .9 4.2 1.9 6.3 2.8c29.2 14.1 50.6 35.2 61.8 61.4c15.7 36.5 17.2 95.8-30.3 143.2c-36.2 36.2-80.3 52.5-142.6 53h-.3c-70.2-.5-124.1-24.1-160.4-70.2c-32.3-41-48.9-98.1-49.5-169.6V256v-.2C17 184.3 33.6 127.2 65.9 86.2C102.2 40.1 156.2 16.5 226.4 16h.3c70.3 .5 124.9 24 162.3 69.9c18.4 22.7 32 50 40.6 81.7l-40.4 10.8c-7.1-25.8-17.8-47.8-32.2-65.4c-29.2-35.8-73-54.2-130.5-54.6c-57 .5-100.1 18.8-128.2 54.4C72.1 146.1 58.5 194.3 58 256c.5 61.7 14.1 109.9 40.3 143.3c28 35.6 71.2 53.9 128.2 54.4c51.4-.4 85.4-12.6 113.7-40.9c32.3-32.2 31.7-71.8 21.4-95.9c-6.1-14.2-17.1-26-31.9-34.9c-3.7 26.9-11.8 48.3-24.7 64.8c-17.1 21.8-41.4 33.6-72.7 35.3c-23.6 1.3-46.3-4.4-63.9-16c-20.8-13.8-33-34.8-34.3-59.3c-2.5-48.3 35.7-83 95.2-86.4c21.1-1.2 40.9-.3 59.2 2.8c-2.4-14.8-7.3-26.6-14.6-35.2c-10-11.7-25.6-17.7-46.2-17.8H227c-16.6 0-39 4.6-53.3 26.3l-34.4-23.6c19.2-29.1 50.3-45.1 87.8-45.1h.8c62.6 .4 99.9 39.5 103.7 107.7l-.2 .2zm-156 68.8c1.3 25.1 28.4 36.8 54.6 35.3c25.6-1.4 54.6-11.4 59.5-73.2c-13.2-2.9-27.8-4.4-43.4-4.4c-4.8 0-9.6 .1-14.4 .4c-42.9 2.4-57.2 23.2-56.2 41.8l-.1 .1z"/></svg></a>
+      <a class="footer-social" href="https://lit.link/fozowo" target="_blank" rel="noopener noreferrer" aria-label="lit.link"><span class="footer-social-label">lit.link</span><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M9 7h8v8"/></svg></a>
+    </nav>
   </footer>
 
   <button id="backToTop" class="top" aria-label="ページ上部へ">↑</button>
@@ -236,38 +285,132 @@
   (async function(){
     const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
     const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const themeKey='FoZoWo-theme';
+    const langKey='FoZoWo-language';
+    const root=document.documentElement;
 
     /* header.html を維持。失敗時も最低限のナビゲーションを表示。 */
     try{
       const res=await fetch('header.html',{cache:'no-store'});
       if(!res.ok) throw new Error('header '+res.status);
-      const root=$('#headerRoot'); root.innerHTML=await res.text();
-      root.querySelectorAll('script').forEach(old=>{const s=document.createElement('script');[...old.attributes].forEach(a=>s.setAttribute(a.name,a.value));s.textContent=old.textContent;old.replaceWith(s)});
+      const headerRoot=$('#headerRoot'); headerRoot.innerHTML=await res.text();
+      headerRoot.querySelectorAll('script').forEach(old=>{const x=document.createElement('script');[...old.attributes].forEach(a=>x.setAttribute(a.name,a.value));x.textContent=old.textContent;old.replaceWith(x)});
     }catch(err){
       console.warn('header.html の読み込みに失敗しました。',err);
-      $('#headerRoot').innerHTML=`<header class="header" id="header"><div class="header-inner"><a class="logo" href="#top" aria-label="FoZoWo ホーム"><img class="logo-img" src="おいさしロゴ.png" alt="FoZoWo"><span class="logo-text">FoZoWo</span></a><nav class="nav-desktop"><a href="#launch">コンテンツ</a><a href="#about">ブランド</a><a href="#witch">魔女</a><a href="#sns">SNS</a><a class="accent" href="https://fozowo.f5.si/ai">AI</a></nav></div></header>`;
+      $('#headerRoot').innerHTML=`<header class="header" id="header"><div class="header-inner"><a class="logo" href="#top" aria-label="FoZoWo ホーム"><img class="logo-img" src="おいさしロゴ.png" alt="FoZoWo"><span class="logo-text">FoZoWo</span></a><nav class="nav-desktop"><a href="#launch" data-i18n="navContents">コンテンツ</a><a href="#about" data-i18n="navBrand">ブランド</a><a href="#witch" data-i18n="navWitch">魔女</a><a href="#sns">SNS</a><a class="accent" href="https://fozowo.f5.si/ai">AI</a></nav></div></header>`;
     }
 
     const header=$('#header');
     addEventListener('scroll',()=>{header&&header.classList.toggle('scrolled',scrollY>20);$('#backToTop')?.classList.toggle('show',scrollY>520)},{passive:true});
     $('#backToTop')?.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
 
-    /* 既存 header.html のテーマ設定を邪魔しない。外部ヘッダーに設定UIがあればここから初期テーマだけ同期。 */
-    const saved=localStorage.getItem('FoZoWo-theme'); if(saved) document.documentElement.setAttribute('data-theme',saved);
+    /* ===== Device-aware theme ===== */
+    function systemMode(){return matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'}
+    function applyTheme(mode,save=true){
+      const resolved=mode==='auto'?systemMode():mode;
+      root.setAttribute('data-theme',resolved);
+      root.dataset.themeMode=mode;
+      if(save) localStorage.setItem(themeKey,mode);
+      const meta=$('#themeColorMeta');
+      if(meta) meta.setAttribute('content',resolved==='light'?'#eef2ff':'#070817');
+      window.dispatchEvent(new CustomEvent('fozowo-theme-change',{detail:{mode,resolved}}));
+    }
+    const savedTheme=localStorage.getItem(themeKey);
+    applyTheme(savedTheme==='light'||savedTheme==='dark'||savedTheme==='auto'?savedTheme:'auto',false);
+    const media=matchMedia('(prefers-color-scheme: light)');
+    media.addEventListener?.('change',()=>{if(root.dataset.themeMode==='auto') applyTheme('auto',false)});
+
+    /* 外部 header 側の設定UIが data-theme を変更しても、自動モードならOS設定を優先。 */
+    const themeObserver=new MutationObserver(()=>{
+      const current=root.getAttribute('data-theme');
+      if(current!=='light'&&current!=='dark'&&current!=='auto') applyTheme('auto',false);
+      if(root.dataset.themeMode==='auto' && current!==systemMode()) root.setAttribute('data-theme',systemMode());
+      const meta=$('#themeColorMeta');
+      if(meta) meta.setAttribute('content',systemMode()==='light'?'#eef2ff':'#070817');
+    });
+    themeObserver.observe(root,{attributes:true,attributeFilter:['data-theme']});
+
+    /* ===== Japanese / English ===== */
+    const translations={
+      ja:{
+        welcomePrefix:'ようこそ、',welcomeSuffix:'へ。',
+        heroLead:'FoZoWo（フォゾウォ）の世界を、ひとつのホームページから。音楽、AI、ゲーム、ブログ、キャラクター、おいじぃ魔女まで、公式コンテンツへすぐにアクセスできます。',
+        heroPrimary:'コンテンツを開く <span>→</span>',readAs:'フォゾウォ',
+        sectionLaunchTitle:'公式コンテンツへ、最短で。',sectionLaunchNote:'よく使う入口を大きくまとめました。カードはPCでもスマホでも操作しやすい設計です。',
+        musicDesc:'フォゾウォの音楽コンテンツ。公式音楽ページへ。',aiDesc:'AIと話して遊ぶ。',characterTitle:'キャラクター',characterDesc:'おいさし達の世界。',logoTitle:'ロゴ',logoDesc:'公式ビジュアル。',faqDesc:'よくある質問。',gameTitle:'ゲーム',gameDesc:'ブラウザで遊ぶ。',
+        identityTitle:'「FoZoWo」と「フォゾウォ」を一本化。',identityNote:'英字と日本語読みを、ホームページ全体で同じ形に揃えています。',brandReading:'読み方：フォゾウォ / 公式サイト',
+        witchTitle:'おいじぃ魔女の世界。',witchNote:'FoZoWoの物語・雑学コンテンツへつながる専用エリア。',witchName:'おいじぃ魔女',witchLink:'魔女のホームページへ →',witchExplore:'魔女の館を探索',witchExploreDesc:'世界観を楽しむページと、雑学を楽しむページを分けて、目的ごとに迷いにくくしました。',witchHome:'おいじぃ魔女ホームページ',witchTrivia:'おいじぃ魔女のヤバい雑学',
+        moreTitle:'もっと広がるFoZoWo。',moreNote:'公式サイト以外のコンテンツもまとめておきます。',moreMusic:'音楽',moreGame:'ゲーム',moreBlog:'ブログ',
+        socialHeading:'SNS',socialNote:'公式アカウントをホームページに集約。ブランド名の統一にも役立つ構成です。',
+        aboutTitle:'FoZoWo（フォゾウォ）公式サイト',aboutNote:'検索した人が「何のサイトか」をすぐ理解できるよう、本文でも自然に説明しています。',seoTitle:'検索で見つけてもらうために',footerSub:'フォゾウォ · Official Portal',
+        navContents:'コンテンツ',navBrand:'ブランド',navWitch:'魔女',
+        seoList:'<li>サイト名を「FoZoWo」に統一</li><li>日本語読み「フォゾウォ」も明記</li><li>トップページにWebSite構造化データを配置</li><li>Organization情報と公式SNSを関連付け</li><li>canonical・OGP・descriptionを設定</li>',
+        metaDescription:'FoZoWo（フォゾウォ）公式ホームページ。音楽、AI、ゲーム、ブログ、キャラクター、おいじぃ魔女など、FoZoWoの世界をまとめて楽しめる公式ポータルです。'
+      },
+      en:{
+        welcomePrefix:'Welcome to',welcomeSuffix:'',
+        heroLead:'Explore the FoZoWo world from one official homepage — music, AI, games, blog, characters, and the Oijii Witch universe.',
+        heroPrimary:'Explore content <span>→</span>',readAs:'フォゾウォ',
+        sectionLaunchTitle:'Everything official, one step away.',sectionLaunchNote:'Your main destinations are gathered into large, easy-to-use cards for desktop and mobile.',
+        musicDesc:'Official FoZoWo music and audio content.',aiDesc:'Talk and play with AI.',characterTitle:'Characters',characterDesc:'Meet the characters of FoZoWo.',logoTitle:'Logo',logoDesc:'Official visual assets.',faqDesc:'Frequently asked questions.',gameTitle:'Games',gameDesc:'Play in your browser.',
+        identityTitle:'One brand: “FoZoWo” / “フォゾウォ”.',identityNote:'The English brand name and Japanese reading stay consistent across the homepage.',brandReading:'Pronounced in Japanese: フォゾウォ / Official site',
+        witchTitle:'The Oijii Witch universe.',witchNote:'A dedicated area for FoZoWo stories and trivia.',witchName:'Oijii Witch',witchLink:'Open the witch homepage →',witchExplore:'Explore the Witch House',witchExploreDesc:'World-building and trivia are separated so visitors can find what they want quickly.',witchHome:'Oijii Witch Homepage',witchTrivia:'Oijii Witch: Crazy Trivia',
+        moreTitle:'More from FoZoWo.',moreNote:'A central hub for other official content and portals.',moreMusic:'Music',moreGame:'Games',moreBlog:'Blog',
+        socialHeading:'SNS',socialNote:'Official social accounts are gathered here for easy access and consistent branding.',
+        aboutTitle:'FoZoWo Official Website',aboutNote:'The page clearly explains what FoZoWo is so visitors can understand the site at a glance.',seoTitle:'Make FoZoWo easy to find',footerSub:'FoZoWo · Official Portal',
+        navContents:'Content',navBrand:'Brand',navWitch:'Witch',
+        seoList:'<li>Keep the brand name consistent as “FoZoWo”</li><li>Show the Japanese reading “フォゾウォ”</li><li>Add WebSite structured data to the homepage</li><li>Connect Organization data with official social profiles</li><li>Set canonical, OGP, and description metadata</li>',
+        metaDescription:'FoZoWo official homepage — explore music, AI, games, blog, characters, and the Oijii Witch universe in one official portal.'
+      }
+    };
+    translations.ja.identityCopy='このホームページでは、ブランド名を<strong>FoZoWo</strong>、日本語表記を<strong>フォゾウォ</strong>として一貫して掲載。検索エンジンにもページの主題が伝わりやすいよう、タイトル、見出し、説明文、構造化データを同じ方針で整えています。';
+    translations.en.identityCopy='This homepage consistently presents the brand as <strong>FoZoWo</strong> with the Japanese reading <strong>フォゾウォ</strong>, keeping the title, headings, description, and structured data aligned around the same brand identity.';
+    translations.ja.aboutCopy='FoZoWo（フォゾウォ）は、音楽、AI、ゲーム、ブログ、キャラクター、おいじぃ魔女などのコンテンツをまとめる公式ブランドサイトです。このページは<strong>FoZoWo公式ホームページ</strong>として各コンテンツへの入口を提供します。';
+    translations.en.aboutCopy='FoZoWo is the official brand site bringing together music, AI, games, blogs, characters, and the Oijii Witch universe. This page serves as the <strong>FoZoWo Official Homepage</strong> and a central entry point to its content.';
+
+    function translateExternalHeader(lang){
+      const map={
+        ja:{'Home':'ホーム','Content':'コンテンツ','Brand':'ブランド','Witch':'魔女','Settings':'設定','Theme':'テーマ','Auto':'自動','Light':'ライト','Dark':'ダーク','Close':'閉じる','Menu':'メニュー','Language':'言語'},
+        en:{'ホーム':'Home','コンテンツ':'Content','ブランド':'Brand','魔女':'Witch','設定':'Settings','テーマ':'Theme','自動':'Auto','ライト':'Light','ダーク':'Dark','閉じる':'Close','メニュー':'Menu','言語':'Language'}
+      }[lang];
+      const rootEl=$('#headerRoot');
+      if(!rootEl||!map) return;
+      const walker=document.createTreeWalker(rootEl,NodeFilter.SHOW_TEXT);
+      const nodes=[]; while(walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach(node=>{const t=node.nodeValue.trim(); if(map[t]) node.nodeValue=node.nodeValue.replace(t,map[t])});
+    }
+    function updateMeta(lang){
+      const en=lang==='en';
+      const title=en?'FoZoWo Official Website | FoZoWo':'FoZoWo（フォゾウォ）公式ホームページ | FoZoWo Official';
+      const desc=en?'FoZoWo official homepage — explore music, AI, games, blog, characters, and the Oijii Witch universe in one official portal.':'FoZoWo（フォゾウォ）公式ホームページ。音楽、AI、ゲーム、ブログ、キャラクター、おいじぃ魔女など、FoZoWoの世界をまとめて楽しめる公式ポータルです。';
+      document.title=title;
+      document.querySelector('meta[name="description"]')?.setAttribute('content',desc);
+      document.querySelector('meta[property="og:title"]')?.setAttribute('content',title);
+      document.querySelector('meta[property="og:description"]')?.setAttribute('content',desc);
+      document.querySelector('meta[name="twitter:title"]')?.setAttribute('content',title);
+      document.querySelector('meta[name="twitter:description"]')?.setAttribute('content',desc);
+    }
+    function setLanguage(lang,save=true){
+      const dict=translations[lang]||translations.ja;
+      $$('[data-i18n]').forEach(el=>{const key=el.dataset.i18n;if(dict[key]!=null) el.innerHTML=dict[key]});
+      $$('[data-i18n-html]').forEach(el=>{const key=el.dataset.i18nHtml;if(dict[key]!=null) el.innerHTML=dict[key]});
+      document.documentElement.lang=lang==='en'?'en':'ja';
+      const buttons=$$('#languageSwitch button');buttons.forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
+      if(save) localStorage.setItem(langKey,lang);
+      translateExternalHeader(lang);
+      updateMeta(lang);
+    }
+    const storedLang=localStorage.getItem(langKey); setLanguage(storedLang==='en'?'en':'ja',false);
+    $$('#languageSwitch button').forEach(b=>b.addEventListener('click',()=>setLanguage(b.dataset.lang)));
 
     if(window.gsap && window.ScrollTrigger && !reduce){
       gsap.registerPlugin(ScrollTrigger);
       gsap.utils.toArray('.reveal').forEach(el=>gsap.to(el,{opacity:1,y:0,duration:.8,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 88%',toggleActions:'play none none none'}}));
       gsap.from('.hero-copy > *',{opacity:0,y:20,duration:.8,stagger:.08,ease:'power3.out'});
       gsap.from('.orbit-shell',{opacity:0,scale:.92,rotate:-3,duration:1.15,ease:'power3.out',delay:.12});
-    }else{
-      document.body.classList.add('no-motion');
-    }
+    }else document.body.classList.add('no-motion');
 
-    /* キーボード操作時のフォーカス表示を邪魔しない。 */
-    document.addEventListener('keydown',e=>{
-      if(e.key==='Escape') $('.nav-mobile.open')?.classList.remove('open');
-    });
+    document.addEventListener('keydown',e=>{if(e.key==='Escape') $('.nav-mobile.open')?.classList.remove('open')});
   })();
   </script>
 </body>
