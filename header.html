@@ -109,6 +109,14 @@
 .share-actions button { padding:10px 9px; border-radius:11px; border:1px solid var(--border, var(--line, rgba(178,150,255,.16))); background:var(--surface, var(--glass, rgba(255,255,255,.04))); color:var(--text,#f3f0ff); font:inherit; font-weight:700; cursor:pointer; }
 .share-actions button.primary { background:linear-gradient(120deg,var(--pink,#ff5fa8),var(--violet,#8b6cff),var(--cyan,#57e8ff)); border-color:transparent; color:#fff; }
 .share-actions button:hover { transform:translateY(-1px); background:var(--surface-hover, var(--glass-2, rgba(255,255,255,.09))); }
+.share-download {
+  display:flex; align-items:center; justify-content:center; padding:10px 9px; border-radius:11px;
+  border:1px solid var(--border, var(--line, rgba(178,150,255,.16)));
+  background:var(--surface, var(--glass, rgba(255,255,255,.04)));
+  color:var(--text,#f3f0ff); text-decoration:none; font:inherit; font-weight:700;
+  transition:transform .2s, background .2s, border-color .2s;
+}
+.share-download:hover { transform:translateY(-1px); background:var(--surface-hover, var(--glass-2, rgba(255,255,255,.09))); border-color:var(--border-strong, rgba(178,150,255,.4)); }
 .share-status { min-height:1.4em; margin-top:9px; text-align:center; color:var(--muted,#9d97c6); font-size:12px; }
 @media (max-width:560px){ .share-grid { grid-template-columns:1fr; } .share-qr { width:150px; height:150px; justify-self:center; } .share-actions { grid-template-columns:1fr; } }
 .header-language {
@@ -374,6 +382,7 @@
     <button class="primary" id="nativeShareBtn" type="button" data-i18n="nativeShare">共有する</button>
     <button id="copyShortBtn" type="button" data-i18n="copyShort">短縮URLをコピー</button>
     <button id="copyFullBtn" type="button" data-i18n="copyFull">公式URLをコピー</button>
+    <a class="share-download" id="downloadQrBtn" href="nijigen.png" download="FoZoWo-nijigen.png" data-i18n="downloadQr">二次元コードをダウンロード</a>
   </div>
   <div class="share-status" id="shareStatus" role="status" aria-live="polite"></div>
 </div>
