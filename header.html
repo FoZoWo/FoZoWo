@@ -86,6 +86,24 @@
 .nav-desktop a.accent:hover { transform: translateY(-1px); }
 
 .header-actions { display: flex; align-items: center; gap: 6px; }
+.header-language {
+  display:flex; align-items:center; gap:2px; padding:3px;
+  border:1px solid var(--border, var(--line, rgba(178,150,255,0.16)));
+  border-radius:999px; background:var(--surface, var(--glass, rgba(255,255,255,0.04)));
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  box-shadow:0 6px 18px rgba(0,0,0,.12);
+}
+.header-language button {
+  min-width:36px; height:30px; padding:0 8px; border:0; border-radius:999px;
+  background:transparent; color:var(--muted, #9d97c6); font:800 10px/1 inherit;
+  letter-spacing:.04em; cursor:pointer; transition:background .2s, color .2s, transform .2s;
+}
+.header-language button:hover { background:var(--surface-hover, var(--glass-2, rgba(255,255,255,.09))); color:var(--text, #f3f0ff); }
+.header-language button.active {
+  background:linear-gradient(120deg, var(--pink,#ff5fa8), var(--violet,var(--purple,#8b6cff)));
+  color:#fff; box-shadow:0 4px 12px rgba(139,108,255,.35);
+}
+@media (max-width:560px){ .header-language button{min-width:32px;height:29px;padding:0 7px} }
 .icon-btn, .hamburger {
   width: 42px; height: 42px; border-radius: 12px;
   background: var(--surface, var(--glass, rgba(255,255,255,0.04)));
@@ -285,27 +303,31 @@
       <div class="logo-text"><span>FoZoWo</span></div>
     </a>
     <nav class="nav-desktop" aria-label="メインナビゲーション">
-      <a href="https://www.fozowo.f5.si/oijiiw">おいじぃ魔女のホームページ</a>
-      <a href="https://www.fozowo.f5.si/logo">フォゾウォのロゴページ</a>
-      <a href="https://www.fozowo.f5.si/faq">FAQ</a>
-      <a href="https://www.fozowo.f5.si/character">キャラクター</a>
-      <a href="https://www.fozowo.f5.si/blog">ブログ</a>
-      <a class="accent" href="https://www.fozowo.f5.si/ai">フォゾウォAI</a>
+      <a href="https://www.fozowo.f5.si/oijiiw" data-i18n="navWitchHome">おいじぃ魔女のホームページ</a>
+      <a href="https://www.fozowo.f5.si/logo" data-i18n="navLogo">フォゾウォのロゴページ</a>
+      <a href="https://www.fozowo.f5.si/faq" data-i18n="navFaq">FAQ</a>
+      <a href="https://www.fozowo.f5.si/character" data-i18n="navCharacter">キャラクター</a>
+      <a href="https://www.fozowo.f5.si/blog" data-i18n="navBlog">ブログ</a>
+      <a class="accent" href="https://www.fozowo.f5.si/ai" data-i18n="navAI">フォゾウォAI</a>
     </nav>
     <div class="header-actions">
-      <button class="icon-btn" id="searchBtn" aria-label="検索" title="検索" aria-expanded="false">
+      <div class="header-language" id="headerLanguage" role="group" aria-label="Language">
+        <button type="button" data-lang="ja" aria-label="日本語">JA</button>
+        <button type="button" data-lang="en" aria-label="English">EN</button>
+      </div>
+      <button class="icon-btn" id="searchBtn" aria-label="検索" title="検索" data-i18n-label="search" data-i18n-title="search" aria-expanded="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="7"/>
           <line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
       </button>
-      <button class="icon-btn" id="settingsBtn" aria-label="設定" title="設定">
+      <button class="icon-btn" id="settingsBtn" aria-label="設定" title="設定" data-i18n-label="settings" data-i18n-title="settings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"/>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
         </svg>
       </button>
-      <button class="hamburger" id="hamburger" aria-label="メニューを開く" aria-expanded="false">
+      <button class="hamburger" id="hamburger" aria-label="メニューを開く" aria-expanded="false" data-i18n-label="menuOpen">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -314,49 +336,41 @@
 
 <div class="settings-panel" id="settingsPanel" role="dialog" aria-label="設定">
   <div class="settings-title">
-    <span>設定</span>
-    <button class="settings-close" id="settingsClose" aria-label="閉じる">×</button>
+    <span data-i18n="settings">設定</span>
+    <button class="settings-close" id="settingsClose" aria-label="閉じる" data-i18n-label="close">×</button>
   </div>
   <div class="settings-group">
-    <span class="settings-label">テーマ</span>
+    <span class="settings-label" data-i18n="theme">テーマ</span>
     <div class="settings-options" id="themeOptions">
-      <button data-value="auto" class="active">自動</button>
-      <button data-value="dark">ダーク</button>
-      <button data-value="light">ライト</button>
-    </div>
-  </div>
-  <div class="settings-group">
-    <span class="settings-label">言語</span>
-    <div class="settings-options" id="langOptions">
-      <button data-value="auto" class="active">自動</button>
-      <button data-value="ja">日本語</button>
-      <button data-value="en">English</button>
+      <button data-value="auto" class="active" data-i18n="auto">自動</button>
+      <button data-value="dark" data-i18n="dark">ダーク</button>
+      <button data-value="light" data-i18n="light">ライト</button>
     </div>
   </div>
 </div>
 
-<div class="search-panel" id="searchPanel" role="dialog" aria-label="検索">
+<div class="search-panel" id="searchPanel" role="dialog" aria-label="検索" data-i18n-label="search">
   <div class="search-input-wrap">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="11" cy="11" r="7"/>
       <line x1="21" y1="21" x2="16.65" y2="16.65"/>
     </svg>
-    <input type="text" id="searchInput" autocomplete="off" placeholder="ページを検索…">
-    <button class="search-clear" id="searchClear" aria-label="クリア" hidden>×</button>
+    <input type="text" id="searchInput" autocomplete="off" placeholder="ページを検索…" data-i18n-placeholder="searchPlaceholder">
+    <button class="search-clear" id="searchClear" aria-label="クリア" data-i18n-label="clear" hidden>×</button>
   </div>
   <div class="search-results" id="searchResults">
-    <div class="search-empty">キーワードを入力してください</div>
+    <div class="search-empty" data-i18n="searchHint">キーワードを入力してください</div>
   </div>
 </div>
 
 <nav class="nav-mobile" id="navMobile" aria-label="モバイルメニュー">
-  <a href="https://www.fozowo.f5.si/oijiiw" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🔮</span> <span>おいじぃ魔女のホームページ</span></a>
-  <a href="https://www.fozowo.f5.si/logo" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🎀</span> <span>フォゾウォのロゴページ</span></a>
-  <a href="https://www.fozowo.f5.si/ai" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🤖</span> <span>フォゾウォAIページ</span></a>
-  <a href="https://www.fozowo.f5.si/character" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">👤</span> <span>キャラクターページ</span></a>
-  <a href="https://www.fozowo.f5.si/faq" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">💬</span> <span>FAQページ</span></a>
-  <a href="https://www.fozowo.f5.si/blog" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">📝</span> <span>ブログ</span></a>
-  <div class="nav-mobile-footer">FoZoWo · OFFICIAL</div>
+  <a href="https://www.fozowo.f5.si/oijiiw" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🔮</span> <span data-i18n="navWitchHome">おいじぃ魔女のホームページ</span></a>
+  <a href="https://www.fozowo.f5.si/logo" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🎀</span> <span data-i18n="navLogo">フォゾウォのロゴページ</span></a>
+  <a href="https://www.fozowo.f5.si/ai" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🤖</span> <span data-i18n="navAIPage">フォゾウォAIページ</span></a>
+  <a href="https://www.fozowo.f5.si/character" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">👤</span> <span data-i18n="navCharacterPage">キャラクターページ</span></a>
+  <a href="https://www.fozowo.f5.si/faq" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">💬</span> <span data-i18n="navFaqPage">FAQページ</span></a>
+  <a href="https://www.fozowo.f5.si/blog" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">📝</span> <span data-i18n="navBlog">ブログ</span></a>
+  <div class="nav-mobile-footer" data-i18n="mobileFooter">FoZoWo · OFFICIAL</div>
 </nav>
 
 <script>
@@ -383,7 +397,6 @@
     var searchResults = document.getElementById('searchResults');
     var searchClear = document.getElementById('searchClear');
     var themeOptions = document.getElementById('themeOptions');
-    var langOptions = document.getElementById('langOptions');
     var networkToast = document.getElementById('networkToast');
     var networkToastText = document.getElementById('networkToastText');
 
@@ -431,6 +444,31 @@
       });
     }
 
+    // ===== ヘッダーの言語切替 =====
+    var headerLanguage = document.getElementById('headerLanguage');
+    function setHeaderLanguage(lang) {
+      lang = lang === 'en' ? 'en' : 'ja';
+      if (headerLanguage) {
+        headerLanguage.querySelectorAll('button[data-lang]').forEach(function(btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+        });
+      }
+      try { localStorage.setItem('FoZoWo-language', lang); } catch (e) {}
+      document.documentElement.lang = lang;
+      window.dispatchEvent(new CustomEvent('fozowo-language-change', { detail: { lang: lang } }));
+    }
+    if (headerLanguage) {
+      var initialLang = 'ja';
+      try { initialLang = localStorage.getItem('FoZoWo-language') === 'en' ? 'en' : 'ja'; } catch (e) {}
+      setHeaderLanguage(initialLang);
+      headerLanguage.addEventListener('click', function(e) {
+        var btn = e.target.closest('button[data-lang]');
+        if (!btn) return;
+        e.stopPropagation();
+        setHeaderLanguage(btn.getAttribute('data-lang'));
+      });
+    }
+
     // ===== テーマ =====
     function applyTheme(value) {
       var root = document.documentElement;
@@ -467,23 +505,6 @@
       if (current === 'auto') applyTheme('auto');
     });
 
-    // ===== 言語 =====
-    if (langOptions) {
-      var savedLang = 'auto';
-      try { savedLang = localStorage.getItem('FoZoWo-lang') || 'auto'; } catch (e) {}
-      langOptions.querySelectorAll('button').forEach(function (btn) {
-        btn.classList.toggle('active', btn.getAttribute('data-value') === savedLang);
-      });
-      langOptions.addEventListener('click', function (e) {
-        var btn = e.target.closest('button[data-value]');
-        if (!btn) return;
-        var val = btn.getAttribute('data-value');
-        langOptions.querySelectorAll('button').forEach(function (b) {
-          b.classList.toggle('active', b.getAttribute('data-value') === val);
-        });
-        try { localStorage.setItem('FoZoWo-lang', val); } catch (err) {}
-      });
-    }
 
     // ===== 検索 =====
     function openSearch() {
