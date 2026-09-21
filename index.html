@@ -290,7 +290,7 @@
       headerRoot.querySelectorAll('script').forEach(old=>{const x=document.createElement('script');[...old.attributes].forEach(a=>x.setAttribute(a.name,a.value));x.textContent=old.textContent;old.replaceWith(x)});
     }catch(err){
       console.warn('header.html の読み込みに失敗しました。',err);
-      $('#headerRoot').innerHTML=`<header class="header" id="header"><div class="header-inner"><a class="logo" href="#top" aria-label="FoZoWo ホーム"><img class="logo-img" src="おいさしロゴ.png" alt="FoZoWo"><span class="logo-text">FoZoWo</span></a><nav class="nav-desktop"><a href="#launch" data-i18n="navContents">コンテンツ</a><a href="#about" data-i18n="navBrand">ブランド</a><a href="#witch" data-i18n="navWitch">魔女</a><a href="#sns">SNS</a><a class="accent" href="https://fozowo.f5.si/ai">AI</a></nav><div class="header-actions"><div class="header-language" id="headerLanguage" role="group" aria-label="Language"><button type="button" data-lang="ja">JA</button><button type="button" data-lang="en">EN</button></div></div></div></header>`;
+      $('#headerRoot').innerHTML=`<header class="header" id="header"><div class="header-inner"><a class="logo" href="#top" aria-label="FoZoWo ホーム"><img class="logo-img" src="おいさしロゴ.png" alt="FoZoWo"><span class="logo-text">FoZoWo</span></a><nav class="nav-desktop"><a href="#launch" data-i18n="navContents">コンテンツ</a><a href="#about" data-i18n="navBrand">ブランド</a><a href="#witch" data-i18n="navWitch">魔女</a><a href="#sns">SNS</a><a class="accent" href="https://fozowo.f5.si/ai">AI</a></nav><div class="header-actions"><button class="icon-btn" id="settingsBtn" type="button" aria-label="設定" title="設定"><span aria-hidden="true">⚙</span></button></div></div></header>`;
     }
 
     const header=$('#header');
@@ -336,7 +336,7 @@
         moreTitle:'もっと広がるFoZoWo。',moreNote:'公式サイト以外のコンテンツもまとめておきます。',moreMusic:'音楽',moreGame:'ゲーム',moreBlog:'ブログ',
         socialHeading:'SNS',socialNote:'公式アカウントをホームページに集約。ブランド名の統一にも役立つ構成です。',
         aboutTitle:'FoZoWo（フォゾウォ）公式サイト',aboutNote:'検索した人が「何のサイトか」をすぐ理解できるよう、本文でも自然に説明しています。',seoTitle:'検索で見つけてもらうために',footerSub:'フォゾウォ · Official Portal',
-        navContents:'コンテンツ',navBrand:'ブランド',navWitch:'魔女',navWitchHome:'おいじぃ魔女のホームページ',navLogo:'フォゾウォのロゴページ',navFaq:'FAQ',navCharacter:'キャラクター',navBlog:'ブログ',navAI:'フォゾウォAI',navAIPage:'フォゾウォAIページ',navCharacterPage:'キャラクターページ',navFaqPage:'FAQページ',mobileFooter:'FoZoWo · OFFICIAL',settings:'設定',theme:'テーマ',auto:'自動',dark:'ダーク',light:'ライト',close:'閉じる',menuOpen:'メニューを開く',search:'検索',clear:'クリア',searchPlaceholder:'ページを検索…',searchHint:'キーワードを入力してください',
+        navContents:'コンテンツ',navBrand:'ブランド',navWitch:'魔女',navWitchHome:'おいじぃ魔女のホームページ',navLogo:'フォゾウォのロゴページ',navFaq:'FAQ',navCharacter:'キャラクター',navBlog:'ブログ',navAI:'フォゾウォAI',navAIPage:'フォゾウォAIページ',navCharacterPage:'キャラクターページ',navFaqPage:'FAQページ',mobileFooter:'FoZoWo · OFFICIAL',settings:'設定',language:'言語',theme:'テーマ',auto:'自動',dark:'ダーク',light:'ライト',close:'閉じる',menuOpen:'メニューを開く',search:'検索',clear:'クリア',searchPlaceholder:'ページを検索…',searchHint:'キーワードを入力してください',
         seoList:'<li>サイト名を「FoZoWo」に統一</li><li>日本語読み「フォゾウォ」も明記</li><li>トップページにWebSite構造化データを配置</li><li>Organization情報と公式SNSを関連付け</li><li>canonical・OGP・descriptionを設定</li>',
         metaDescription:'FoZoWo（フォゾウォ）公式ホームページ。音楽、AI、ゲーム、ブログ、キャラクター、おいじぃ魔女など、FoZoWoの世界をまとめて楽しめる公式ポータルです。'
       },
@@ -351,7 +351,7 @@
         moreTitle:'More from FoZoWo.',moreNote:'A central hub for other official content and portals.',moreMusic:'Music',moreGame:'Games',moreBlog:'Blog',
         socialHeading:'SNS',socialNote:'Official social accounts are gathered here for easy access and consistent branding.',
         aboutTitle:'FoZoWo Official Website',aboutNote:'The page clearly explains what FoZoWo is so visitors can understand the site at a glance.',seoTitle:'Make FoZoWo easy to find',footerSub:'FoZoWo · Official Portal',
-        navContents:'Content',navBrand:'Brand',navWitch:'Witch',navWitchHome:'Oijii Witch Homepage',navLogo:'FoZoWo Logo',navFaq:'FAQ',navCharacter:'Characters',navBlog:'Blog',navAI:'FoZoWo AI',navAIPage:'FoZoWo AI page',navCharacterPage:'Characters page',navFaqPage:'FAQ page',mobileFooter:'FoZoWo · OFFICIAL',settings:'Settings',theme:'Theme',auto:'Auto',dark:'Dark',light:'Light',close:'Close',menuOpen:'Open menu',search:'Search',clear:'Clear',searchPlaceholder:'Search pages…',searchHint:'Enter a keyword',
+        navContents:'Content',navBrand:'Brand',navWitch:'Witch',navWitchHome:'Oijii Witch Homepage',navLogo:'FoZoWo Logo',navFaq:'FAQ',navCharacter:'Characters',navBlog:'Blog',navAI:'FoZoWo AI',navAIPage:'FoZoWo AI page',navCharacterPage:'Characters page',navFaqPage:'FAQ page',mobileFooter:'FoZoWo · OFFICIAL',settings:'Settings',language:'Language',theme:'Theme',auto:'Auto',dark:'Dark',light:'Light',close:'Close',menuOpen:'Open menu',search:'Search',clear:'Clear',searchPlaceholder:'Search pages…',searchHint:'Enter a keyword',
         seoList:'<li>Keep the brand name consistent as “FoZoWo”</li><li>Show the Japanese reading “フォゾウォ”</li><li>Add WebSite structured data to the homepage</li><li>Connect Organization data with official social profiles</li><li>Set canonical, OGP, and description metadata</li>',
         metaDescription:'FoZoWo official homepage — explore music, AI, games, blog, characters, and the Oijii Witch universe in one official portal.'
       }
@@ -378,44 +378,26 @@
       document.querySelector('meta[name="twitter:title"]')?.setAttribute('content',title);
       document.querySelector('meta[name="twitter:description"]')?.setAttribute('content',desc);
     }
-    function ensureHeaderLanguage(){
+    function syncHeaderLanguage(lang){
       const rootEl=$('#headerRoot');
       if(!rootEl) return;
-      let host=rootEl.querySelector('.header-actions');
-      if(!host){
-        const headerInner=rootEl.querySelector('.header-inner');
-        if(!headerInner) return;
-        host=document.createElement('div');
-        host.className='header-actions';
-        headerInner.appendChild(host);
+      const control=rootEl.querySelector('#langOptions');
+      if(control){
+        control.querySelectorAll('button[data-value]').forEach(b=>b.classList.toggle('active',b.dataset.value===lang));
       }
-      let control=host.querySelector('#headerLanguage');
-      if(!control){
-        control=document.createElement('div');
-        control.className='header-language';
-        control.id='headerLanguage';
-        control.setAttribute('role','group');
-        control.setAttribute('aria-label','Language');
-        control.innerHTML='<button type="button" data-lang="ja" aria-label="日本語">JA</button><button type="button" data-lang="en" aria-label="English">EN</button>';
-        host.appendChild(control);
-      }
-      return control;
     }
-    ensureHeaderLanguage();
     function setLanguage(lang,save=true){
       const dict=translations[lang]||translations.ja;
       $$('[data-i18n]').forEach(el=>{const key=el.dataset.i18n;if(dict[key]!=null) el.innerHTML=dict[key]});
       $$('[data-i18n-html]').forEach(el=>{const key=el.dataset.i18nHtml;if(dict[key]!=null) el.innerHTML=dict[key]});
       document.documentElement.lang=lang==='en'?'en':'ja';
-      ensureHeaderLanguage();
-      $$('#headerLanguage button').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
+      syncHeaderLanguage(lang);
       if(save) localStorage.setItem(langKey,lang);
       translateHeaderAttributes(lang);
       updateMeta(lang);
     }
     const storedLang=localStorage.getItem(langKey); setLanguage(storedLang==='en'?'en':'ja',false);
     window.addEventListener('fozowo-language-change',e=>{setLanguage(e.detail?.lang==='en'?'en':'ja')});
-    document.addEventListener('click',e=>{const b=e.target.closest('#headerLanguage button');if(b && !e.defaultPrevented) setLanguage(b.dataset.lang)});
 
     if(window.gsap && window.ScrollTrigger && !reduce){
       gsap.registerPlugin(ScrollTrigger);
