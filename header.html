@@ -311,10 +311,6 @@
       <a class="accent" href="https://www.fozowo.f5.si/ai" data-i18n="navAI">フォゾウォAI</a>
     </nav>
     <div class="header-actions">
-      <div class="header-language" id="headerLanguage" role="group" aria-label="Language">
-        <button type="button" data-lang="ja" aria-label="日本語">JA</button>
-        <button type="button" data-lang="en" aria-label="English">EN</button>
-      </div>
       <button class="icon-btn" id="searchBtn" aria-label="検索" title="検索" data-i18n-label="search" data-i18n-title="search" aria-expanded="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="7"/>
@@ -345,6 +341,13 @@
       <button data-value="auto" class="active" data-i18n="auto">自動</button>
       <button data-value="dark" data-i18n="dark">ダーク</button>
       <button data-value="light" data-i18n="light">ライト</button>
+    </div>
+  </div>
+  <div class="settings-group">
+    <span class="settings-label" data-i18n="language">言語</span>
+    <div class="settings-options" id="langOptions">
+      <button data-value="ja" class="active">日本語</button>
+      <button data-value="en">English</button>
     </div>
   </div>
 </div>
@@ -444,28 +447,28 @@
       });
     }
 
-    // ===== ヘッダーの言語切替 =====
-    var headerLanguage = document.getElementById('headerLanguage');
+    // ===== 歯車の「言語」設定 =====
+    var langOptions = document.getElementById('langOptions');
     function setHeaderLanguage(lang) {
       lang = lang === 'en' ? 'en' : 'ja';
-      if (headerLanguage) {
-        headerLanguage.querySelectorAll('button[data-lang]').forEach(function(btn) {
-          btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+      if (langOptions) {
+        langOptions.querySelectorAll('button[data-value]').forEach(function(btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-value') === lang);
         });
       }
       try { localStorage.setItem('FoZoWo-language', lang); } catch (e) {}
       document.documentElement.lang = lang;
       window.dispatchEvent(new CustomEvent('fozowo-language-change', { detail: { lang: lang } }));
     }
-    if (headerLanguage) {
+    if (langOptions) {
       var initialLang = 'ja';
       try { initialLang = localStorage.getItem('FoZoWo-language') === 'en' ? 'en' : 'ja'; } catch (e) {}
       setHeaderLanguage(initialLang);
-      headerLanguage.addEventListener('click', function(e) {
-        var btn = e.target.closest('button[data-lang]');
+      langOptions.addEventListener('click', function(e) {
+        var btn = e.target.closest('button[data-value]');
         if (!btn) return;
         e.stopPropagation();
-        setHeaderLanguage(btn.getAttribute('data-lang'));
+        setHeaderLanguage(btn.getAttribute('data-value'));
       });
     }
 
