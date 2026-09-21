@@ -86,6 +86,31 @@
 .nav-desktop a.accent:hover { transform: translateY(-1px); }
 
 .header-actions { display: flex; align-items: center; gap: 6px; }
+.share-panel {
+  position: fixed; top: calc(var(--header-h) + 10px); right: clamp(10px, 3vw, 22px);
+  width: min(420px, calc(100vw - 20px)); padding: 18px;
+  background: var(--menu-bg, var(--panel, rgba(6,5,15,.97)));
+  backdrop-filter: blur(22px) saturate(1.4); -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  border: 1px solid var(--border-strong, var(--line-strong, rgba(178,150,255,.4)));
+  border-radius: var(--radius, 20px); box-shadow: var(--shadow, 0 22px 60px rgba(0,0,0,.6)), 0 0 40px rgba(139,108,255,.25);
+  transform: translateY(-8px) scale(.98); opacity: 0; pointer-events: none;
+  transition: transform .28s, opacity .28s; z-index: 95;
+}
+.share-panel.open { transform: translateY(0) scale(1); opacity: 1; pointer-events: auto; }
+.share-title { display:flex; align-items:center; justify-content:space-between; gap:10px; font-weight:800; margin-bottom:14px; }
+.share-close { width:30px; height:30px; border-radius:8px; border:1px solid var(--border, var(--line, rgba(178,150,255,.16))); background:var(--surface, var(--glass, rgba(255,255,255,.04))); color:var(--text,#f3f0ff); cursor:pointer; }
+.share-grid { display:grid; grid-template-columns: 120px 1fr; gap:16px; align-items:center; }
+.share-qr { width:120px; height:120px; object-fit:contain; border-radius:14px; background:#fff; padding:8px; border:1px solid var(--border-strong, rgba(178,150,255,.4)); }
+.share-links { display:grid; gap:8px; }
+.share-url { padding:10px 12px; border:1px solid var(--border, var(--line, rgba(178,150,255,.16))); border-radius:12px; background:var(--surface, var(--glass, rgba(255,255,255,.04))); }
+.share-url small { display:block; color:var(--muted,#9d97c6); font-size:11px; margin-bottom:3px; }
+.share-url strong { display:block; font-size:13px; overflow-wrap:anywhere; }
+.share-actions { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:12px; }
+.share-actions button { padding:10px 9px; border-radius:11px; border:1px solid var(--border, var(--line, rgba(178,150,255,.16))); background:var(--surface, var(--glass, rgba(255,255,255,.04))); color:var(--text,#f3f0ff); font:inherit; font-weight:700; cursor:pointer; }
+.share-actions button.primary { background:linear-gradient(120deg,var(--pink,#ff5fa8),var(--violet,#8b6cff),var(--cyan,#57e8ff)); border-color:transparent; color:#fff; }
+.share-actions button:hover { transform:translateY(-1px); background:var(--surface-hover, var(--glass-2, rgba(255,255,255,.09))); }
+.share-status { min-height:1.4em; margin-top:9px; text-align:center; color:var(--muted,#9d97c6); font-size:12px; }
+@media (max-width:560px){ .share-grid { grid-template-columns:1fr; } .share-qr { width:150px; height:150px; justify-self:center; } .share-actions { grid-template-columns:1fr; } }
 .header-language {
   display:flex; align-items:center; gap:2px; padding:3px;
   border:1px solid var(--border, var(--line, rgba(178,150,255,0.16)));
@@ -323,12 +348,35 @@
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
         </svg>
       </button>
+      <button class="icon-btn" id="shareBtn" aria-label="サイトをシェア" title="サイトをシェア" data-i18n-label="share" data-i18n-title="share" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+          <path d="m8.7 13.5 6.6 3.9M15.3 6.6 8.7 10.5"/>
+        </svg>
+      </button>
       <button class="hamburger" id="hamburger" aria-label="メニューを開く" aria-expanded="false" data-i18n-label="menuOpen">
         <span></span><span></span><span></span>
       </button>
     </div>
   </div>
 </header>
+
+<div class="share-panel" id="sharePanel" role="dialog" aria-label="サイトをシェア" data-i18n-label="share">
+  <div class="share-title"><span data-i18n="shareTitle">FoZoWoをシェア</span><button class="share-close" id="shareClose" type="button" aria-label="閉じる" data-i18n-label="close">×</button></div>
+  <div class="share-grid">
+    <img class="share-qr" src="nijigen.png" alt="FoZoWoの二次元コード" data-i18n-alt="shareQrAlt" width="120" height="120" loading="lazy">
+    <div class="share-links">
+      <div class="share-url"><small data-i18n="officialUrlLabel">公式URL</small><strong>https://www.fozowo.f5.si</strong></div>
+      <div class="share-url"><small data-i18n="shortUrlLabel">短縮URL</small><strong>https://fzw.f5.si</strong></div>
+    </div>
+  </div>
+  <div class="share-actions">
+    <button class="primary" id="nativeShareBtn" type="button" data-i18n="nativeShare">共有する</button>
+    <button id="copyShortBtn" type="button" data-i18n="copyShort">短縮URLをコピー</button>
+    <button id="copyFullBtn" type="button" data-i18n="copyFull">公式URLをコピー</button>
+  </div>
+  <div class="share-status" id="shareStatus" role="status" aria-live="polite"></div>
+</div>
 
 <div class="settings-panel" id="settingsPanel" role="dialog" aria-label="設定">
   <div class="settings-title">
@@ -394,6 +442,13 @@
     var settingsBtn = document.getElementById('settingsBtn');
     var settingsPanel = document.getElementById('settingsPanel');
     var settingsClose = document.getElementById('settingsClose');
+    var shareBtn = document.getElementById('shareBtn');
+    var sharePanel = document.getElementById('sharePanel');
+    var shareClose = document.getElementById('shareClose');
+    var nativeShareBtn = document.getElementById('nativeShareBtn');
+    var copyShortBtn = document.getElementById('copyShortBtn');
+    var copyFullBtn = document.getElementById('copyFullBtn');
+    var shareStatus = document.getElementById('shareStatus');
     var searchBtn = document.getElementById('searchBtn');
     var searchPanel = document.getElementById('searchPanel');
     var searchInput = document.getElementById('searchInput');
@@ -410,7 +465,9 @@
         hamburger.setAttribute('aria-expanded', 'false');
       }
       if (settingsPanel) settingsPanel.classList.remove('open');
+      if (sharePanel) sharePanel.classList.remove('open');
       if (searchPanel) searchPanel.classList.remove('open');
+      if (shareBtn) shareBtn.setAttribute('aria-expanded', 'false');
       if (searchBtn) searchBtn.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
     }
@@ -426,6 +483,8 @@
         document.body.style.overflow = open ? 'hidden' : '';
         if (open) {
           if (settingsPanel) settingsPanel.classList.remove('open');
+          if (sharePanel) sharePanel.classList.remove('open');
+          if (shareBtn) shareBtn.setAttribute('aria-expanded', 'false');
           if (searchPanel) searchPanel.classList.remove('open');
           if (searchBtn) searchBtn.setAttribute('aria-expanded', 'false');
         }
@@ -509,6 +568,37 @@
     });
 
 
+
+    // ===== シェア =====
+    var SHARE_FULL_URL = 'https://www.fozowo.f5.si';
+    var SHARE_SHORT_URL = 'https://fzw.f5.si';
+    function shareLang(ja,en){ return document.documentElement.lang === 'en' ? en : ja; }
+    function shareMessage(msg){ if(shareStatus) shareStatus.textContent=msg||''; }
+    async function copyText(text, successKey){
+      try {
+        if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); }
+        else { var ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+        shareMessage(successKey);
+      } catch(e){ shareMessage(shareLang('コピーできませんでした','Copy failed')); }
+    }
+    if (shareBtn && sharePanel) {
+      shareBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        var open=!sharePanel.classList.contains('open');
+        closeAll();
+        if(open){ sharePanel.classList.add('open'); shareBtn.setAttribute('aria-expanded','true'); shareMessage(''); }
+      });
+    }
+    if (shareClose) shareClose.addEventListener('click', function(){ sharePanel.classList.remove('open'); if(shareBtn) shareBtn.setAttribute('aria-expanded','false'); });
+    if (nativeShareBtn) nativeShareBtn.addEventListener('click', async function(){
+      if (navigator.share) {
+        try { await navigator.share({title:'FoZoWo', text:'FoZoWo（フォゾウォ）公式ホームページ', url:SHARE_SHORT_URL}); shareMessage(''); }
+        catch(e){ if(e && e.name!=='AbortError') shareMessage(shareLang('共有を開始できませんでした','Could not start sharing')); }
+      } else { await copyText(SHARE_SHORT_URL,'短縮URLをコピーしました'); }
+    });
+    if (copyShortBtn) copyShortBtn.addEventListener('click', function(){ copyText(SHARE_SHORT_URL,'短縮URLをコピーしました'); });
+    if (copyFullBtn) copyFullBtn.addEventListener('click', function(){ copyText(SHARE_FULL_URL,'公式URLをコピーしました'); });
+
     // ===== 検索 =====
     function openSearch() {
       if (!searchPanel) return;
@@ -584,6 +674,11 @@
 
     // ===== 外側クリックで閉じる =====
     document.addEventListener('click', function (e) {
+      if (sharePanel && sharePanel.classList.contains('open') &&
+          !sharePanel.contains(e.target) && e.target !== shareBtn && !(shareBtn && shareBtn.contains(e.target))) {
+        sharePanel.classList.remove('open');
+        if (shareBtn) shareBtn.setAttribute('aria-expanded', 'false');
+      }
       if (settingsPanel && settingsPanel.classList.contains('open') &&
           !settingsPanel.contains(e.target) && e.target !== settingsBtn && !(settingsBtn && settingsBtn.contains(e.target))) {
         settingsPanel.classList.remove('open');
