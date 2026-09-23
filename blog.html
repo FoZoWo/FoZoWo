@@ -739,6 +739,21 @@ article.post-full {
 .pc-app-cancel { border: 1px solid var(--line); background: var(--paper); color: var(--ink); }
 .pc-app-start { border: 0; background: #1769aa; color: #fff; }
 
+
+/* PCアプリ確認画面：ページ本文より必ず手前に表示 */
+.pc-app-download-wrap,
+.pc-app-help { position: relative; z-index: 2; }
+.pc-app-modal-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483647 !important;
+  isolation: isolate;
+}
+.pc-app-modal {
+  position: relative;
+  z-index: 2147483648;
+}
+
 </style>
 </head>
 <body>
@@ -754,29 +769,14 @@ article.post-full {
     <span id="notif-toggle-label">通知を有効にする</span>
   </button>
   <div class="pc-app-download-wrap">
-    <button type="button" id="pc-app-download" class="pc-app-download">
+    <button type="button" id="pc-app-download" class="pc-app-download" onclick="document.getElementById('pc-app-modal').classList.add('is-open')">
       <span class="pc-icon">💻</span>
       <span>PC版ブログアプリをダウンロード</span>
     </button>
   </div>
   <p class="pc-app-help">Windowsで使えるブログアプリです。クリックするとダウンロードできます。</p>
 
-  <div id="pc-app-modal" class="pc-app-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="pc-app-modal-title">
-    <div class="pc-app-modal">
-      <h2 id="pc-app-modal-title">💻 PC版ブログアプリをダウンロードしますか？</h2>
-      <p style="margin:.2rem 0 1rem;font-weight:700;">このボタンを押すと <strong>blog.app.zip</strong> のダウンロードが始まります。</p>
-      <ol class="pc-app-steps">
-        <li>「ダウンロードする」を押してファイルを保存します。</li>
-        <li>ダウンロードした <strong>blog.app.zip</strong> を右クリックして「すべて展開」を選びます。</li>
-        <li>展開したフォルダーの <strong>START_FoZoWo_Blog_App</strong> を実行します。</li>
-        <li>ブログアプリが起動します。</li>
-      </ol>
-      <div class="pc-app-note">⚠️ ダウンロード後は、ZIPをそのまま実行せず、先に「すべて展開」してください。</div>
-      <div class="pc-app-modal-actions">
-        <button type="button" id="pc-app-cancel" class="pc-app-cancel">いいえ・キャンセル</button>
-        <button type="button" id="pc-app-start" class="pc-app-start">はい・ダウンロードする</button>
-      </div>
-    </div>
+  
   </div>
 </div>
 
@@ -1362,5 +1362,69 @@ article.post-full {
   document.addEventListener('DOMContentLoaded', initBlog);
 })();
 </script>
+
+<script>
+(function () {
+  const APP_ZIP_URL = 'blog.app.zip';
+
+  function setupPcAppDownload() {
+    const modal = document.getElementById('pc-app-modal');
+    const cancelBtn = document.getElementById('pc-app-cancel');
+    const startBtn = document.getElementById('pc-app-start');
+
+    if (!modal || !cancelBtn || !startBtn) return;
+
+    const closeModal = () => modal.classList.remove('is-open');
+
+    cancelBtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    startBtn.addEventListener('click', function () {
+      if (!window.confirm(
+        'PC版ブログアプリをダウンロードしますか？\n\n' +
+        '「OK」を押すと blog.app.zip のダウンロードを開始します。'
+      )) return;
+
+      const a = document.createElement('a');
+      a.href = APP_ZIP_URL;
+      a.download = 'blog.app.zip';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      closeModal();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupPcAppDownload);
+  } else {
+    setupPcAppDownload();
+  }
+})();
+</script>
+
+<div id="pc-app-modal" class="pc-app-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="pc-app-modal-title">
+    <div class="pc-app-modal">
+      <h2 id="pc-app-modal-title">💻 PC版ブログアプリをダウンロードしますか？</h2>
+      <p style="margin:.2rem 0 1rem;font-weight:700;">このボタンを押すと <strong>blog.app.zip</strong> のダウンロードが始まります。</p>
+      <ol class="pc-app-steps">
+        <li>「ダウンロードする」を押してファイルを保存します。</li>
+        <li>ダウンロードした <strong>blog.app.zip</strong> を右クリックして「すべて展開」を選びます。</li>
+        <li>展開したフォルダーの <strong>START_FoZoWo_Blog_App</strong> を実行します。</li>
+        <li>ブログアプリが起動します。</li>
+      </ol>
+      <div class="pc-app-note">⚠️ ダウンロード後は、ZIPをそのまま実行せず、先に「すべて展開」してください。</div>
+      <div class="pc-app-modal-actions">
+        <button type="button" id="pc-app-cancel" class="pc-app-cancel">いいえ・キャンセル</button>
+        <button type="button" id="pc-app-start" class="pc-app-start">はい・ダウンロードする</button>
+      </div>
+    </div>
 </body>
 </html>
