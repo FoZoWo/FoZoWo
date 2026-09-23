@@ -325,7 +325,7 @@ html[data-theme="dark"] .new-badge {
   margin: 1.75rem 0 0.5rem;
   font-size: 0.86rem;
 }
-.pagination button {
+.pagination button, .pagination a {
   font: inherit;
   background: none;
   border: none;
@@ -334,9 +334,12 @@ html[data-theme="dark"] .new-badge {
   cursor: pointer;
   color: var(--ink);
   min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
   transition: border-color 0.15s ease, color 0.15s ease;
 }
-.pagination button:hover:not(:disabled) {
+.pagination button:hover:not(:disabled), .pagination a:hover {
   color: var(--accent-ink);
   border-bottom-color: var(--accent);
 }
@@ -929,6 +932,8 @@ article.post-full {
     const loading = document.getElementById('loading');
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get('id');
+    const pageParam = parseInt(urlParams.get('page'), 10);
+    if (!postId && Number.isInteger(pageParam) && pageParam > 0) currentPage = pageParam;
 
     try {
       const response = await fetch(API_URL);
@@ -1067,17 +1072,46 @@ article.post-full {
             </div>
           </a>
         </li>`).join('')}</ul>
-      ${totalPages > 1 ? `
-        <div class="pagination">
-          <button type="button" id="prev-page" ${currentPage === 1 ? 'disabled' : ''}>← 前へ</button>
-          <span class="page-info">${currentPage} / ${totalPages}</span>
-          <button type="button" id="next-page" ${currentPage === totalPages ? 'disabled' : ''}>次へ →</button>
-        </div>` : ''}`;
+      ${totalPages > 1 ? renderPagination(currentPage, totalPages, !currentArchiveKey && !currentQuery) : ''}`;
 
-    const prevBtn = document.getElementById('prev-page');
-    const nextBtn = document.getElementById('next-page');
-    if (prevBtn) prevBtn.addEventListener('click', () => { currentPage--; renderListBody(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
-    if (nextBtn) nextBtn.addEventListener('click', () => { currentPage++; renderListBody(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    if (currentArchiveKey || currentQuery) {
+      // 絞り込み中はURL遷移させず、その場で軽く切り替える
+      const prevBtn = document.getElementById('prev-page');
+      const nextBtn = document.getElementById('next-page');
+      if (prevBtn) prevBtn.addEventListener('click', () => { currentPage--; renderListBody(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      if (nextBtn) nextBtn.addEventListener('click', () => { currentPage++; renderListBody(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    }
+    // 絞り込みなしのときは前へ/次へが ?page=N への本物のリンクなので、
+    // 通常のページ遷移として扱われブラウザの戻る/進む・共有・ブックマークがそのまま効く
+  }
+
+  // 絞り込みなし: ?page=N の実リンク（ブラウザ遷移、軽量で戻る/共有が効く）
+  // 絞り込みあり: その場で切り替えるボタン（ページ遷移させたくないため）
+  function renderPagination(page, totalPages, asLinks) {
+    if (asLinks) {
+      const prevHref = page > 1 ? pageUrl(page - 1) : null;
+      const nextHref = page < totalPages ? pageUrl(page + 1) : null;
+      return `
+        <div class="pagination">
+          ${prevHref ? `<a href="${prevHref}">← 前へ</a>` : `<button type="button" disabled>← 前へ</button>`}
+          <span class="page-info">${page} / ${totalPages}</span>
+          ${nextHref ? `<a href="${nextHref}">次へ →</a>` : `<button type="button" disabled>次へ →</button>`}
+        </div>`;
+    }
+    return `
+      <div class="pagination">
+        <button type="button" id="prev-page" ${page === 1 ? 'disabled' : ''}>← 前へ</button>
+        <span class="page-info">${page} / ${totalPages}</span>
+        <button type="button" id="next-page" ${page === totalPages ? 'disabled' : ''}>次へ →</button>
+      </div>`;
+  }
+
+  // 現在のクエリ文字列を保ったまま page だけ差し替えたURLを作る（1ページ目はURLを綺麗にするため省略）
+  function pageUrl(n) {
+    const params = new URLSearchParams(window.location.search);
+    if (n > 1) params.set('page', String(n)); else params.delete('page');
+    const qs = params.toString();
+    return qs ? `?${qs}` : window.location.pathname;
   }
 
   function buildArchiveData() {
