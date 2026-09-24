@@ -1,0 +1,1665 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#202b28">
+  <meta name="description" content="FoZoWoのキャラクター「おいさし」公式ホームページ。" id="metaDescription">
+  <title>おいさし｜FoZoWo 公式ホーム</title>
+  <link rel="icon" href="oisasi.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#e8e3d8;
+      --bg-deep:#242d2a;
+      --surface:rgba(249,246,239,.82);
+      --surface-2:rgba(242,237,227,.73);
+      --ink:#202725;
+      --muted:#6d756f;
+      --line:rgba(35,45,42,.14);
+      --blue:#244b83;
+      --blue-soft:#526f99;
+      --red:#8b2c35;
+      --red-soft:#b56f72;
+      --sage:#70816f;
+      --brass:#9b7e4d;
+      --cream:#f6f0e5;
+      --shadow:0 24px 65px rgba(35,41,37,.15);
+      --shadow-deep:0 34px 90px rgba(17,22,20,.25);
+      --radius:28px;
+      --max:1220px;
+      --ease:cubic-bezier(.2,.78,.2,1);
+    }
+
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#1c2421;
+        --bg-deep:#17201d;
+        --surface:rgba(38,48,44,.82);
+        --surface-2:rgba(40,50,46,.74);
+        --ink:#eef2ed;
+        --muted:#adb8b0;
+        --line:rgba(255,255,255,.10);
+        --shadow:0 24px 65px rgba(0,0,0,.30);
+        --shadow-deep:0 34px 90px rgba(0,0,0,.38);
+      }
+      body{
+        background:
+          radial-gradient(circle at 12% 13%,rgba(111,137,126,.12),transparent 20%),
+          radial-gradient(circle at 84% 10%,rgba(36,75,131,.12),transparent 23%),
+          radial-gradient(circle at 70% 76%,rgba(139,44,53,.08),transparent 24%),
+          linear-gradient(180deg,#1d2522 0%,#202a26 52%,#1a231f 100%);
+      }
+      .topbar{
+        background:rgba(29,38,35,.75);
+        border-color:rgba(255,255,255,.08);
+      }
+      .topbar.scrolled{background:rgba(27,36,33,.92)}
+      .brand-name,h1,h2,.portrait-name,.quote blockquote,.feature h3,.food-name,.footer-brand{
+        color:#eef2ed;
+      }
+      h1 span{color:#c0cbc3}
+      .eyebrow,.status,.icon-btn,.cta.secondary,.info-chip,.mobile-nav,.lang-btn{
+        background:rgba(37,48,44,.74);
+        color:#d1dad3;
+        border-color:rgba(255,255,255,.08);
+      }
+      .lang-btn:hover{background:rgba(49,61,56,.95)}
+      .searchbox input{background:rgba(37,48,44,.78);color:#eef2ed}
+      .modal-card{background:#29332f;color:#eef2ed}
+      .portrait-window{
+        background:linear-gradient(145deg,#394640,#2f3935,#252f2b);
+        border-color:rgba(255,255,255,.08);
+      }
+      .stage{
+        background:
+          radial-gradient(circle at 35% 30%,rgba(255,255,255,.12),transparent 25%),
+          linear-gradient(145deg,#3b4741,#2d3733);
+      }
+      .signature-panel{
+        background:
+          radial-gradient(circle at 25% 30%,rgba(255,255,255,.10),transparent 25%),
+          linear-gradient(145deg,#303c37,#26312d);
+        border-color:rgba(255,255,255,.10);
+      }
+      .sns-gallery{
+        background:linear-gradient(145deg,rgba(38,48,44,.86),rgba(31,40,37,.92));
+        border-color:rgba(255,255,255,.08);
+      }
+      .stat-mini,.signature-tags span{
+        background:rgba(255,255,255,.04);
+        border-color:rgba(255,255,255,.08);
+      }
+      .mobile-nav a.active{background:rgba(255,255,255,.08);color:#e6eee8}
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:var(--ink);
+      font-family:"Zen Kaku Gothic New",system-ui,-apple-system,"Segoe UI",Meiryo,sans-serif;
+      background:
+        radial-gradient(circle at 12% 13%,rgba(112,129,111,.12),transparent 20%),
+        radial-gradient(circle at 84% 10%,rgba(36,75,131,.10),transparent 23%),
+        radial-gradient(circle at 70% 76%,rgba(139,44,53,.08),transparent 24%),
+        linear-gradient(180deg,#eeeadf 0%,#ddd8cb 50%,#e8e2d5 100%);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    body.intro-lock{overflow:hidden}
+    a{color:inherit}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    ::selection{background:rgba(36,75,131,.18)}
+    svg{display:block}
+    .grain,.paper-lines,.ambient,.cursor-light{position:fixed;inset:0;pointer-events:none}
+    .grain{
+      z-index:1;opacity:.24;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.74' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+    }
+    .paper-lines{
+      z-index:1;opacity:.08;
+      background:repeating-linear-gradient(0deg,rgba(40,45,40,.16) 0,rgba(40,45,40,.16) 1px,transparent 1px,transparent 5px);
+      mix-blend-mode:multiply;
+    }
+    .ambient{z-index:0}
+    .cursor-light{
+      width:360px;height:360px;inset:auto;z-index:2;
+      border-radius:50%;transform:translate(-50%,-50%);
+      background:radial-gradient(circle,rgba(255,255,255,.23),transparent 68%);
+      filter:blur(24px);opacity:.55;
+    }
+
+    /* Opening */
+    .intro{
+      position:fixed;inset:0;z-index:200;display:grid;place-items:center;
+      background:
+        radial-gradient(circle at 50% 46%,rgba(111,137,126,.18),transparent 24%),
+        #18211f;
+      transition:opacity .24s ease,visibility .24s ease;
+    }
+    .intro.done{opacity:0;visibility:hidden;pointer-events:none}
+    .intro-inner{text-align:center;animation:introIn .5s var(--ease) both}
+    .intro-logo{
+      width:96px;height:96px;margin:0 auto 15px;border-radius:30px;overflow:hidden;
+      background:#20302c;
+      border:1px solid rgba(255,255,255,.16);
+      box-shadow:0 22px 72px rgba(0,0,0,.34);
+      padding:4px;
+    }
+    .intro-logo img{width:100%;height:100%;object-fit:contain;display:block}
+    .intro-title{
+      color:#f2eee3;font-family:"Shippori Mincho",serif;font-size:18px;font-weight:700;
+      letter-spacing:.18em
+    }
+    .intro-sub{
+      color:#abb7ad;font-family:"Zen Kaku Gothic New",sans-serif;font-size:9px;
+      letter-spacing:.32em;margin-top:6px
+    }
+    .intro-line{
+      width:190px;height:1px;background:rgba(255,255,255,.14);margin:16px auto 0;overflow:hidden
+    }
+    .intro-line i{display:block;width:100%;height:100%;transform-origin:left;background:#cbbd9c;animation:introLoad 1s linear both}
+    @keyframes introIn{from{opacity:0;transform:scale(.975) translateY(8px)}to{opacity:1;transform:none}}
+    @keyframes introLoad{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+    /* Header */
+    .topbar{
+      position:fixed;top:0;left:0;right:0;height:76px;z-index:80;
+      display:flex;align-items:center;gap:17px;padding:0 24px;
+      background:rgba(239,235,226,.67);
+      backdrop-filter:blur(16px) saturate(115%);
+      border-bottom:1px solid rgba(35,45,42,.11);
+      transition:background .3s ease,box-shadow .3s ease,height .3s ease;
+    }
+    .topbar.scrolled{
+      background:rgba(236,232,222,.88);
+      box-shadow:0 10px 32px rgba(30,36,32,.08);
+      height:68px;
+    }
+    .brand{display:flex;align-items:center;gap:11px;text-decoration:none;font-weight:900;white-space:nowrap}
+    .brand-mark{
+      width:40px;height:40px;border-radius:12px;display:grid;place-items:center;overflow:hidden;
+      background:linear-gradient(145deg,#34568b,#7a313c);
+      border:1px solid rgba(255,255,255,.4);
+      box-shadow:0 8px 24px rgba(31,44,42,.12);
+      padding:2px;
+    }
+    .brand-mark img{width:100%;height:100%;object-fit:contain;display:block;border-radius:10px}
+    .brand-name{
+      font-family:"Shippori Mincho",serif;font-size:13px;letter-spacing:.06em;
+      color:#27312d;font-weight:800
+    }
+    .nav{display:flex;gap:3px;align-items:center;overflow:auto;scrollbar-width:none}
+    .nav::-webkit-scrollbar{display:none}
+    .nav a{
+      position:relative;padding:10px 12px;border-radius:12px;text-decoration:none;color:#6f7771;font-size:11px;font-weight:800;
+      letter-spacing:.03em
+    }
+    .nav a:after{
+      content:"";position:absolute;left:12px;right:12px;bottom:4px;height:1px;
+      background:var(--red);transform:scaleX(0);transform-origin:center;transition:transform .24s var(--ease)
+    }
+    .nav a:hover{color:var(--ink)}
+    .nav a:hover:after,.nav a.active:after{transform:scaleX(1)}
+    .icon-btn{
+      min-width:39px;height:39px;border-radius:12px;border:1px solid rgba(35,45,42,.13);
+      background:rgba(255,255,255,.46);color:#38413e;display:grid;place-items:center;transition:.25s var(--ease)
+    }
+    .icon-btn:hover{transform:translateY(-1px);background:#fff;box-shadow:0 10px 26px rgba(35,42,39,.12)}
+    .icon-btn svg{width:17px;height:17px}
+    .scroll-progress{
+      position:fixed;top:76px;left:0;right:0;height:2px;z-index:81;background:transparent;transition:top .3s ease
+    }
+    .topbar.scrolled + .scroll-progress{top:68px}
+    .scroll-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--red));box-shadow:0 0 10px rgba(36,75,131,.18)}
+
+    main,footer{position:relative;z-index:3}
+    .wrap{width:min(var(--max),calc(100% - 40px));margin:auto}
+    .hero{
+      min-height:calc(100vh - 76px);display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:54px;
+      padding:88px 0 62px
+    }
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;padding:8px 11px;
+      background:rgba(255,255,255,.54);border:1px solid rgba(35,45,42,.11);border-radius:999px;
+      color:#55605a;font-size:9px;font-weight:800;letter-spacing:.13em
+    }
+    .eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--sage);box-shadow:0 0 12px rgba(112,129,111,.46)}
+    .hero-over{
+      font-family:"Shippori Mincho",serif;color:#5d6761;font-size:12px;letter-spacing:.12em;margin-top:24px
+    }
+    h1{
+      margin:10px 0 20px;
+      font-family:"Shippori Mincho",serif;
+      font-size:clamp(52px,7.4vw,95px);
+      line-height:.95;letter-spacing:-.055em;font-weight:800;color:#1f2724
+    }
+    h1 span{display:block;color:#495e56}
+    .lead{max-width:690px;color:#606a64;font-size:15px;line-height:2}
+    .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+    .cta{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:12px 15px;border-radius:14px;text-decoration:none;
+      border:1px solid rgba(35,45,42,.13);font-size:12px;font-weight:900;
+      transition:transform .25s var(--ease),box-shadow .25s ease,background .25s ease
+    }
+    .cta svg{width:15px;height:15px}
+    .cta.primary{
+      color:#f9f6ee;background:linear-gradient(145deg,#31547f,#213f6d);
+      border-color:rgba(255,255,255,.12);box-shadow:0 14px 34px rgba(36,63,92,.20)
+    }
+    .cta.secondary{color:#36403b;background:rgba(255,255,255,.62)}
+    .cta:hover{transform:translateY(-2px);box-shadow:0 15px 30px rgba(40,45,42,.10)}
+    .status-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:18px}
+    .status{
+      padding:7px 9px;border-radius:999px;border:1px solid rgba(35,45,42,.11);background:rgba(255,255,255,.35);
+      color:#737b75;font-size:9px;letter-spacing:.06em
+    }
+
+    /* Realistic portrait stage */
+    .hero-visual{
+      position:relative;min-height:650px;display:grid;place-items:center;perspective:1400px
+    }
+    .stage{
+      position:absolute;width:min(39vw,500px);aspect-ratio:1;border-radius:50%;
+      background:
+        radial-gradient(circle at 35% 31%,rgba(255,255,255,.82),transparent 24%),
+        radial-gradient(circle at 55% 50%,rgba(82,104,97,.15),transparent 58%),
+        linear-gradient(145deg,#dae0d8,#c5cbc3);
+      box-shadow:inset 0 0 75px rgba(53,65,58,.13),0 36px 95px rgba(45,52,47,.14);
+      animation:stageBreathe 6.4s ease-in-out infinite;
+    }
+    .stage:before{
+      content:"";position:absolute;inset:11%;border:1px solid rgba(54,65,59,.10);border-radius:50%;
+      transform:rotate(13deg)
+    }
+    .stage:after{
+      content:"";position:absolute;left:14%;right:14%;bottom:13%;height:12%;border-radius:50%;
+      background:radial-gradient(ellipse,rgba(40,44,40,.22),transparent 70%);
+      filter:blur(14px)
+    }
+    @keyframes stageBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.012)}}
+    .spotlight{
+      position:absolute;top:2%;left:50%;width:62%;height:62%;
+      transform:translateX(-50%);border-radius:50%;
+      background:radial-gradient(circle,rgba(255,255,255,.55),transparent 68%);
+      filter:blur(9px);opacity:.82;animation:spotlight 5.4s ease-in-out infinite alternate
+    }
+    @keyframes spotlight{from{transform:translateX(-50%) translateY(-2%);opacity:.66}to{transform:translateX(-50%) translateY(2%);opacity:.9}}
+    .character-card{
+      position:relative;width:min(525px,95%);padding:19px;border-radius:32px;
+      background:linear-gradient(145deg,rgba(248,245,238,.75),rgba(231,226,215,.60));
+      border:1px solid rgba(255,255,255,.82);
+      box-shadow:var(--shadow-deep),inset 0 1px 0 rgba(255,255,255,.85);
+      transform-style:preserve-3d;transition:transform .18s var(--ease);
+      animation:portraitRise 1.1s var(--ease) both;
+    }
+    @keyframes portraitRise{from{opacity:0;transform:translateY(24px) scale(.985)}to{opacity:1;transform:none}}
+    .portrait-window{
+      position:relative;aspect-ratio:1/1.04;border-radius:25px;overflow:hidden;
+      background:
+        radial-gradient(circle at 48% 26%,rgba(255,255,255,.92),transparent 22%),
+        linear-gradient(145deg,#dbe1d9 0%,#c9d0ca 55%,#b8c0b7 100%);
+      border:1px solid rgba(44,52,47,.10);
+      box-shadow:inset 0 0 50px rgba(29,38,34,.12),inset 0 -24px 45px rgba(29,38,34,.09);
+    }
+    .portrait-window:before{
+      content:"";position:absolute;left:8%;right:8%;top:9%;bottom:8%;
+      border-radius:20px;border:1px solid rgba(255,255,255,.65);pointer-events:none
+    }
+    .portrait-window:after{
+      content:"";position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(125deg,rgba(255,255,255,.20),transparent 28%,transparent 70%,rgba(22,35,31,.08));
+      mix-blend-mode:screen
+    }
+    .character-card img{
+      width:100%;height:100%;object-fit:contain;display:block;
+      filter:drop-shadow(0 34px 30px rgba(32,40,36,.24));
+      transform:translateZ(25px) scale(1.01);
+    }
+    .portrait-sheen{
+      position:absolute;inset:-20% 0 auto -55%;width:48%;height:150%;
+      transform:rotate(20deg);
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);
+      filter:blur(9px);animation:sheen 6.5s ease-in-out infinite
+    }
+    @keyframes sheen{0%,54%{left:-55%;opacity:0}62%{opacity:.55}78%,100%{left:135%;opacity:0}}
+    .portrait-meta{display:flex;align-items:end;justify-content:space-between;gap:15px;padding:14px 5px 1px}
+    .portrait-name{font-family:"Shippori Mincho",serif;font-size:29px;font-weight:800}
+    .portrait-sub{font-size:10px;color:#747c76;margin-top:4px}
+    .official-tag{
+      padding:7px 10px;border-radius:999px;color:#fff;background:#7b3040;
+      font-family:"Zen Kaku Gothic New",sans-serif;font-size:8px;font-weight:900;letter-spacing:.12em
+    }
+    .info-chip{
+      position:absolute;padding:10px 12px;border-radius:14px;background:rgba(248,245,238,.80);
+      border:1px solid rgba(35,45,42,.11);box-shadow:0 14px 36px rgba(36,43,39,.12);
+      backdrop-filter:blur(10px);font-size:10px;font-weight:900;color:#48524c;
+    }
+    .chip1{left:2%;top:17%;animation:chipFloat1 4.8s ease-in-out infinite}
+    .chip2{right:0;bottom:20%;animation:chipFloat2 5.8s ease-in-out infinite}
+    .chip3{left:7%;bottom:7%;animation:chipFloat3 6.2s ease-in-out infinite}
+    @keyframes chipFloat1{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    @keyframes chipFloat2{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+    @keyframes chipFloat3{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+    /* Sections */
+    section{padding:108px 0;scroll-margin-top:84px}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:28px}
+    .section-kicker{
+      color:#7a6050;font-size:9px;font-weight:900;letter-spacing:.18em;text-transform:uppercase
+    }
+    h2{
+      margin:6px 0 0;font-family:"Shippori Mincho",serif;
+      font-size:clamp(33px,5vw,55px);line-height:1.08;letter-spacing:-.04em;font-weight:800;color:#28312d
+    }
+    .section-desc{max-width:630px;color:#707872;font-size:12px;line-height:1.85}
+    .grid{display:grid;gap:17px}
+    .grid-3{grid-template-columns:repeat(3,1fr)}
+    .grid-2{grid-template-columns:repeat(2,1fr)}
+    .panel{
+      background:var(--surface);border:1px solid rgba(35,45,42,.10);border-radius:var(--radius);
+      box-shadow:var(--shadow);backdrop-filter:blur(15px);
+      transition:transform .35s var(--ease),box-shadow .35s ease,border-color .35s ease
+    }
+    .panel.reveal{opacity:0;transform:translateY(22px)}
+    .panel.reveal.visible{opacity:1;transform:none}
+    .panel:hover{transform:translateY(-5px);box-shadow:0 30px 70px rgba(30,37,33,.14);border-color:rgba(36,75,131,.18)}
+    .stat{padding:22px;position:relative;overflow:hidden;min-height:128px}
+    .stat .small{
+      font-size:8px;letter-spacing:.16em;color:#7b837d;font-weight:900
+    }
+    .stat .big{font-family:"Shippori Mincho",serif;font-size:31px;font-weight:800;margin-top:8px}
+    .stat:before{
+      content:"";position:absolute;width:86px;height:86px;right:-24px;bottom:-30px;border-radius:50%;
+      border:1px solid rgba(36,75,131,.10)
+    }
+    .profile{padding:28px}
+    .profile dl{display:grid;grid-template-columns:170px 1fr;margin:0}
+    .profile dt,.profile dd{padding:15px 0;border-bottom:1px solid var(--line)}
+    .profile dt{color:#737b75;font-size:11px}
+    .profile dd{margin:0;font-size:13px;font-weight:800}
+    .profile a{color:#365b83;text-decoration:none}.profile a:hover{text-decoration:underline}
+    .quote{padding:29px}
+    .quote blockquote{
+      margin:0;font-family:"Shippori Mincho",serif;font-size:clamp(22px,3.2vw,31px);
+      line-height:1.65;font-weight:800;color:#28312d
+    }
+    .quote p{margin:17px 0 0;color:#717a74;font-size:13px;line-height:1.85}
+    .feature{padding:24px}
+    .feature .num{font-family:"Zen Kaku Gothic New",sans-serif;font-size:8px;letter-spacing:.17em;color:#8b6660;font-weight:900}
+    .feature h3{font-family:"Shippori Mincho",serif;font-size:21px;margin:9px 0 8px}
+    .feature p{margin:0;color:#747c76;font-size:12px;line-height:1.9}
+    .food-card{padding:27px;min-height:306px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+    .dish{
+      width:108px;height:108px;border-radius:31px;display:grid;place-items:center;
+      background:linear-gradient(145deg,#eff0e8,#cfd7ce);border:1px solid rgba(35,45,42,.09);
+      box-shadow:inset 0 0 35px rgba(36,53,48,.10),0 16px 30px rgba(35,44,40,.10);
+      color:#7f4d49
+    }
+    .dish svg{width:53px;height:53px}
+    .food-label{margin-top:19px;color:#818883;font-size:8px;letter-spacing:.17em;font-weight:900}
+    .food-name{margin-top:3px;font-family:"Shippori Mincho",serif;font-size:42px;font-weight:800}
+    .food-card:after{
+      content:"";position:absolute;width:250px;height:250px;right:-85px;bottom:-90px;
+      border-radius:50%;background:radial-gradient(circle,rgba(139,44,53,.10),transparent 68%);
+    }
+    .link-card{
+      padding:20px;display:flex;align-items:center;gap:15px;text-decoration:none
+    }
+    .link-icon{
+      width:53px;height:53px;border-radius:16px;display:grid;place-items:center;
+      background:linear-gradient(145deg,#edf0ea,#d8ddd5);border:1px solid rgba(35,45,42,.09);
+      color:#3c5b63;flex:0 0 auto
+    }
+    .link-icon svg{width:23px;height:23px}
+    .link-title{font-size:13px;font-weight:900}
+    .link-url{display:block;margin-top:5px;color:#838983;font-family:ui-monospace,Consolas,monospace;font-size:8px}
+    .link-arrow{margin-left:auto;width:17px;height:17px;color:#7a807a}
+    .command{
+      padding:20px;display:flex;align-items:center;gap:9px;flex-wrap:wrap
+    }
+    .searchbox{flex:1;min-width:240px}
+    .searchbox input{
+      width:100%;padding:12px 14px;border-radius:13px;border:1px solid rgba(35,45,42,.13);
+      background:rgba(255,255,255,.62);color:var(--ink);outline:none
+    }
+    .searchbox input:focus{border-color:rgba(36,75,131,.40);box-shadow:0 0 0 4px rgba(36,75,131,.08)}
+    .mini-btn{
+      height:35px;padding:0 11px;border:1px solid rgba(35,45,42,.13);border-radius:11px;background:#fff;color:#434b47;font-size:11px;font-weight:900
+    }
+    .result{display:none;padding:0 20px 20px}
+    .result-item{padding:11px 0;border-bottom:1px solid var(--line)}
+    .result-item a{text-decoration:none;font-weight:800}.result-item a:hover{text-decoration:underline}
+
+
+    /* Premium social gallery */
+    .sns-gallery{
+      padding:23px;
+      border:1px solid rgba(35,45,42,.10);
+      border-radius:31px;
+      background:linear-gradient(145deg,rgba(255,255,255,.46),rgba(238,233,222,.60));
+      box-shadow:var(--shadow-deep);
+      overflow:hidden;
+      position:relative;
+    }
+    .sns-gallery:before{
+      content:"";
+      position:absolute;
+      width:380px;height:380px;
+      right:-180px;top:-190px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(36,75,131,.10),transparent 68%);
+      pointer-events:none;
+    }
+    .sns-gallery-top{
+      display:flex;align-items:center;gap:18px;
+      margin-bottom:17px;
+      position:relative;z-index:2;
+    }
+    .sns-gallery-top span{
+      display:block;
+      font-family:"Shippori Mincho",serif;
+      font-size:16px;font-weight:800;letter-spacing:.05em;
+    }
+    .sns-gallery-top small{
+      display:block;color:#828a83;font-size:8px;letter-spacing:.14em;margin-top:4px;
+    }
+    .sns-gallery-rule{
+      height:1px;flex:1;
+      background:linear-gradient(90deg,rgba(86,99,90,.22),transparent);
+    }
+    .sns-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:13px;
+      position:relative;
+      z-index:2;
+    }
+    .sns-card{
+      min-height:205px;
+      position:relative;
+      overflow:hidden;
+      border-radius:23px;
+      padding:21px;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+      text-decoration:none;
+      isolation:isolate;
+      border:1px solid rgba(255,255,255,.38);
+      box-shadow:0 18px 42px rgba(28,35,31,.12);
+      transition:transform .35s var(--ease),box-shadow .35s ease;
+    }
+    .sns-card:hover{
+      transform:translateY(-5px);
+      box-shadow:0 28px 58px rgba(28,35,31,.18);
+    }
+    .sns-card-bg{
+      position:absolute;inset:0;z-index:-3;
+    }
+    .sns-facebook .sns-card-bg{background:linear-gradient(145deg,#315b99,#213f6d)}
+    .sns-instagram .sns-card-bg{background:linear-gradient(145deg,#654170,#92536f 48%,#b97050)}
+    .sns-x .sns-card-bg{background:linear-gradient(145deg,#323835,#101412)}
+    .sns-card-bg:after{
+      content:"";
+      position:absolute;
+      width:75%;height:130%;
+      top:-20%;left:-85%;
+      transform:rotate(21deg);
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);
+      filter:blur(7px);
+      animation:snsSweep 8.5s ease-in-out infinite;
+    }
+    @keyframes snsSweep{
+      0%,57%{left:-90%;opacity:0}
+      66%{opacity:.42}
+      82%,100%{left:125%;opacity:0}
+    }
+    .sns-brandmark{
+      position:absolute;
+      top:18px;left:18px;
+      width:61px;height:61px;
+      border-radius:19px;
+      display:grid;place-items:center;
+      background:rgba(255,255,255,.13);
+      border:1px solid rgba(255,255,255,.30);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 12px 28px rgba(0,0,0,.13);
+      backdrop-filter:blur(6px);
+      color:#fff;
+      transform:translateZ(0);
+      transition:transform .35s var(--ease);
+    }
+    .sns-card:hover .sns-brandmark{transform:translateY(-3px) scale(1.03)}
+    .sns-brandmark svg{width:31px;height:31px;display:block}
+    .sns-card-info{color:#fff;position:relative;z-index:3}
+    .sns-card-info span{
+      display:block;font-size:7px;letter-spacing:.17em;font-weight:900;opacity:.68;
+    }
+    .sns-card-info strong{
+      display:block;font-family:"Shippori Mincho",serif;font-size:25px;line-height:1.08;margin-top:5px;
+    }
+    .sns-card-info small{
+      display:block;font-size:8px;opacity:.78;margin-top:6px;
+    }
+    .sns-go{
+      position:absolute;top:20px;right:20px;color:#fff;font-size:20px;opacity:.72;
+      transition:.28s var(--ease);
+    }
+    .sns-card:hover .sns-go{transform:translate(3px,-3px);opacity:1}
+    .sns-glint{
+      position:absolute;left:12%;right:12%;bottom:11px;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);
+      transform:scaleX(.28);transition:transform .36s var(--ease);opacity:.48;
+    }
+    .sns-card:hover .sns-glint{transform:scaleX(1)}
+
+    /* Special portrait gallery */
+    .signature-section{padding-top:35px}
+    .signature-panel{
+      min-height:430px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      align-items:center;
+      gap:34px;
+      padding:37px;
+      border-radius:34px;
+      overflow:hidden;
+      position:relative;
+      background:
+        radial-gradient(circle at 25% 30%,rgba(255,255,255,.62),transparent 25%),
+        linear-gradient(145deg,#dbe1d9,#e8e2d7);
+      border:1px solid rgba(255,255,255,.80);
+      box-shadow:var(--shadow-deep);
+    }
+    .signature-panel:after{
+      content:"";
+      position:absolute;inset:auto -12% -42% auto;
+      width:380px;height:380px;border-radius:50%;
+      background:radial-gradient(circle,rgba(139,44,53,.08),transparent 68%);
+      pointer-events:none;
+    }
+    .signature-art{
+      min-height:350px;
+      display:grid;
+      place-items:center;
+      position:relative;
+      isolation:isolate;
+    }
+    .signature-art img{
+      width:min(86%,430px);
+      max-height:370px;
+      object-fit:contain;
+      filter:drop-shadow(0 35px 35px rgba(27,37,32,.20));
+      animation:signatureFloat 6.5s ease-in-out infinite;
+      position:relative;z-index:4;
+    }
+    .signature-glow{
+      position:absolute;width:72%;aspect-ratio:1;border-radius:50%;
+      background:radial-gradient(circle,rgba(255,255,255,.90),rgba(160,173,161,.20) 55%,transparent 70%);
+      filter:blur(5px);z-index:-2;
+    }
+    .signature-orbit{
+      position:absolute;aspect-ratio:1;border-radius:50%;
+      border:1px solid rgba(54,73,64,.14);
+      z-index:1;
+    }
+    .orbit-1{width:86%;transform:rotate(13deg)}
+    .orbit-2{width:67%;transform:rotate(-25deg);border-color:rgba(139,44,53,.12)}
+    .orbit-3{width:51%;transform:rotate(41deg);border-color:rgba(36,75,131,.12)}
+    .signature-caption{
+      position:absolute;bottom:7px;left:50%;transform:translateX(-50%);
+      font-family:"Shippori Mincho",serif;font-size:9px;letter-spacing:.30em;color:#68736b;
+      z-index:5;
+    }
+    .signature-copy{position:relative;z-index:3}
+    .signature-copy h2{margin-top:8px}
+    .signature-copy p{
+      max-width:535px;margin:18px 0 0;color:#6f7871;font-size:13px;line-height:1.95
+    }
+    .signature-tags{
+      display:flex;gap:7px;flex-wrap:wrap;margin-top:20px;
+    }
+    .signature-tags span{
+      padding:7px 9px;border-radius:999px;border:1px solid rgba(35,45,42,.11);
+      background:rgba(255,255,255,.45);font-size:8px;letter-spacing:.10em;font-weight:900;color:#69736c
+    }
+    @keyframes signatureFloat{
+      0%,100%{transform:translateY(0) rotate(-1deg)}
+      50%{transform:translateY(-9px) rotate(1deg)}
+    }
+
+
+    .header-tools{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-left:auto;
+    }
+    .lang-btn{
+      min-width:42px;
+      height:38px;
+      padding:0 10px;
+      border:1px solid rgba(35,45,42,.14);
+      border-radius:12px;
+      background:rgba(255,255,255,.52);
+      color:#34413b;
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.08em;
+      box-shadow:0 8px 22px rgba(35,42,39,.06);
+      transition:.22s var(--ease);
+    }
+    .lang-btn:hover{
+      transform:translateY(-1px);
+      background:#fff;
+      box-shadow:0 12px 28px rgba(35,42,39,.10);
+    }
+
+    .mobile-head-label{display:none}
+    .mobile-nav{display:none}
+
+    .stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:17px}
+    .stat-mini{padding:16px;border:1px solid rgba(35,45,42,.10);border-radius:18px;background:rgba(255,255,255,.46)}
+    .stat-mini small{color:#7b837d;font-size:8px;letter-spacing:.12em}
+    .stat-mini strong{display:block;margin-top:7px;font-family:"Shippori Mincho",serif;font-size:22px}
+    .footer{
+      padding:48px 0 94px
+    }
+    .footer-box{
+      padding:26px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap
+    }
+    .footer-brand{font-family:"Shippori Mincho",serif;font-size:15px;font-weight:800}
+    .footer-sub{margin-top:5px;color:#7c837e;font-size:10px}
+    .footer-copy{color:#858b86;font-size:10px}
+
+    .back-top{
+      position:fixed;
+      right:22px;
+      bottom:22px;
+      z-index:110;
+      width:54px;
+      height:54px;
+      border:1px solid rgba(35,45,42,.14);
+      border-radius:17px;
+      background:rgba(246,242,233,.92);
+      color:#3c5149;
+      box-shadow:0 16px 38px rgba(35,42,39,.16);
+      backdrop-filter:blur(12px);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:1px;
+      opacity:0;
+      transform:translateY(14px);
+      pointer-events:none;
+      transition:opacity .25s ease,transform .25s var(--ease),box-shadow .25s ease,background .25s ease;
+    }
+    .back-top.visible{
+      opacity:1;
+      transform:none;
+      pointer-events:auto;
+    }
+    .back-top:hover{
+      transform:translateY(-3px);
+      box-shadow:0 21px 45px rgba(35,42,39,.20);
+      background:#fff;
+    }
+    .back-top svg{
+      width:19px;
+      height:19px;
+      fill:none;
+      stroke:currentColor;
+      stroke-width:1.8;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+    .back-top span{
+      font-size:7px;
+      line-height:1;
+      font-weight:900;
+      letter-spacing:.04em;
+    }
+
+    .toast{
+      position:fixed;right:18px;bottom:82px;z-index:100;max-width:360px;
+      padding:12px 14px;border-radius:13px;background:rgba(246,243,234,.94);
+      border:1px solid rgba(35,45,42,.12);box-shadow:0 20px 60px rgba(35,41,37,.16);
+      color:#48504b;font-size:11px;opacity:0;transform:translateY(10px);pointer-events:none;transition:.25s
+    }
+    .toast.show{opacity:1;transform:none}
+    .modal{
+      position:fixed;inset:0;z-index:150;display:none;place-items:center;padding:18px;
+      background:rgba(24,31,28,.56);backdrop-filter:blur(9px)
+    }
+    .modal.open{display:grid}
+    .modal-card{
+      width:min(820px,100%);padding:26px;border-radius:28px;background:#f3efe6;
+      border:1px solid rgba(255,255,255,.70);box-shadow:0 40px 110px rgba(16,22,19,.28)
+    }
+    .modal-head{display:flex;justify-content:space-between;align-items:center;gap:15px}
+    .modal-head h3{margin:0;font-family:"Shippori Mincho",serif;font-size:28px}
+    .close{
+      width:39px;height:39px;border-radius:11px;border:1px solid rgba(35,45,42,.13);background:#fff;color:#46504a;display:grid;place-items:center
+    }
+    .close svg{width:16px;height:16px}
+    .modal-body{display:grid;grid-template-columns:190px 1fr;gap:23px;margin-top:20px}
+    .modal-image{
+      min-height:215px;border-radius:20px;overflow:hidden;border:1px solid rgba(35,45,42,.09);
+      background:linear-gradient(145deg,#dce2db,#bcc6bd);display:grid;place-items:center
+    }
+    .modal-image img{width:100%;height:100%;object-fit:contain}
+    .reveal{will-change:transform,opacity}
+    @media (max-width:1000px){
+      .hero{grid-template-columns:1fr;padding-top:55px}
+      .hero-visual{min-height:570px}
+      .stage{width:min(74vw,500px)}
+      .grid-3{grid-template-columns:1fr}
+      .grid-2{grid-template-columns:1fr}
+      .nav{display:none}
+    }
+    @media (max-width:620px){
+      .topbar{padding:0 13px}
+      .wrap{width:min(var(--max),calc(100% - 24px))}
+      section{padding:78px 0}
+      h1{font-size:59px}
+      .hero{min-height:auto}
+      .hero-visual{min-height:460px;margin-top:12px}
+      .stage{width:83vw}
+      .character-card{width:97%}
+      .profile dl{grid-template-columns:1fr}
+      .profile dt{border-bottom:none;padding-bottom:2px}
+      .profile dd{padding-top:5px}
+      .brand-name{display:none}
+      .bottom-nav a{width:39px;height:39px}
+      .stats-bar{grid-template-columns:1fr}
+      .modal-body{grid-template-columns:1fr}
+    }
+
+    @media (max-width:620px){
+      body{padding-bottom:82px}
+      .topbar{
+        height:60px;
+        padding:0 14px;
+        justify-content:space-between;
+        background:rgba(239,235,226,.92);
+        border-bottom:1px solid rgba(35,45,42,.08);
+      }
+      .topbar.scrolled{height:60px}
+      .desktop-nav{display:none}
+      .brand{gap:8px}
+      .brand-mark{width:34px;height:34px;border-radius:10px}
+      .brand-name{display:none}
+      .mobile-head-label{
+        display:block;
+        margin-left:auto;
+        color:#727b74;
+        font-size:9px;
+        letter-spacing:.10em;
+        white-space:nowrap;
+      }
+      .scroll-progress,.cursor-light{display:none}
+      .back-top{
+        right:15px;
+        bottom:84px;
+        width:50px;
+        height:50px;
+        border-radius:15px;
+      }
+
+      .mobile-nav{
+        position:fixed;
+        left:10px;
+        right:10px;
+        bottom:10px;
+        z-index:90;
+        display:grid;
+        grid-template-columns:repeat(5,1fr);
+        gap:4px;
+        padding:6px;
+        border:1px solid rgba(35,45,42,.13);
+        background:rgba(244,240,231,.95);
+        backdrop-filter:blur(14px);
+        border-radius:19px;
+        box-shadow:0 18px 50px rgba(35,42,39,.16);
+      }
+      .mobile-nav a{
+        min-height:53px;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        gap:3px;
+        color:#6c766f;
+        text-decoration:none;
+        border-radius:14px;
+        font-size:8px;
+        font-weight:900;
+      }
+      .mobile-nav a.active{background:#fff;color:#314c45}
+      .mobile-nav svg{width:16px;height:16px}
+      .wrap{width:calc(100% - 22px)}
+      .hero{
+        display:flex;
+        flex-direction:column;
+        gap:20px;
+        padding:79px 0 38px;
+        min-height:auto;
+      }
+      /* Mobile: character first, copy second */
+      .hero-visual{
+        order:1;
+        width:100%;
+        min-height:auto;
+        padding:0 0 8px;
+      }
+      .hero > div:first-child{
+        order:2;
+        width:100%;
+        padding:0 5px;
+      }
+      .stage{width:88vw;max-width:470px}
+      .character-card{width:100%;max-width:430px;padding:11px;border-radius:23px}
+      .portrait-window{aspect-ratio:1/1;border-radius:17px}
+      .portrait-meta{padding:11px 4px 0}
+      .portrait-name{font-size:24px}
+      .portrait-sub{font-size:9px}
+      .official-tag{font-size:7px;padding:6px 8px}
+      .info-chip{font-size:8px;padding:8px 10px}
+      .chip1{left:1%;top:10%}
+      .chip2{right:0;bottom:21%}
+      .chip3{left:5%;bottom:2%}
+      .eyebrow{font-size:8px}
+      .hero-over{margin-top:18px;font-size:10px}
+      h1{font-size:52px;margin:8px 0 16px;line-height:.98}
+      .lead{font-size:13px;line-height:1.9}
+      .cta-row{display:grid;grid-template-columns:1fr;gap:8px;margin-top:20px}
+      .cta{min-height:45px}
+      .status-row{margin-top:13px}
+      .status{font-size:8px}
+      section{padding:68px 0;scroll-margin-top:66px}
+      .section-head{display:block;margin-bottom:20px}
+      h2{font-size:34px}
+      .section-desc{margin-top:11px;font-size:11px;line-height:1.85}
+      .grid-3{display:flex;flex-direction:column;gap:10px}
+      .grid-2{display:flex;flex-direction:column;gap:10px}
+      .stat{
+        min-height:0;
+        padding:18px;
+        display:flex;
+        align-items:baseline;
+        justify-content:space-between;
+      }
+      .stat .big{font-size:24px;margin-top:0}
+      .profile{padding:20px}
+      .profile dl{display:block}
+      .profile dt{padding:11px 0 3px;border-bottom:0}
+      .profile dd{padding:0 0 11px;border-bottom:1px solid var(--line)}
+      .stats-bar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+      .stat-mini{padding:11px;border-radius:13px}
+      .stat-mini strong{font-size:16px}
+      .quote{padding:22px}
+      .quote blockquote{font-size:24px}
+      .feature{padding:20px}
+      .food-card{min-height:250px;padding:22px}
+      .food-name{font-size:37px}
+      /* Mobile SNS becomes a large vertical stack */
+      .sns-gallery{
+        margin:0 -1px;
+        padding:13px;
+        border-radius:26px;
+      }
+      .sns-gallery-top{display:block;margin:2px 4px 13px}
+      .sns-gallery-top span{font-size:15px}
+      .sns-gallery-top small{margin-top:4px}
+      .sns-gallery-rule{margin-top:11px}
+      .sns-grid{display:flex;flex-direction:column;gap:9px}
+      .sns-card{
+        min-height:128px;
+        border-radius:20px;
+        padding:18px;
+      }
+      .sns-brandmark{
+        width:55px;height:55px;border-radius:17px;
+        top:17px;left:17px;
+      }
+      .sns-brandmark svg{width:29px;height:29px}
+      .sns-card-info span{font-size:7px}
+      .sns-card-info strong{font-size:22px}
+      .sns-card-info small{font-size:8px}
+      .sns-go{right:17px;top:17px}
+      .signature-section{padding-top:6px}
+      .signature-panel{
+        min-height:0;
+        display:flex;
+        flex-direction:column;
+        gap:14px;
+        padding:18px;
+        border-radius:26px;
+      }
+      .signature-art{min-height:305px;width:100%}
+      .signature-art img{width:min(89%,360px);max-height:315px}
+      .signature-copy h2{font-size:34px}
+      .signature-copy p{font-size:12px}
+    
+      .link-card{padding:17px}
+      .link-title{font-size:12px}
+      .link-url{font-size:7px}
+      .footer{padding:38px 0 20px}
+      .footer-box{padding:21px;display:block;text-align:center}
+      .footer-copy{margin-top:9px}
+      .modal{padding:10px}
+      .modal-card{padding:20px;border-radius:24px}
+      .modal-body{display:flex;flex-direction:column;gap:15px}
+      .modal-image{min-height:220px}
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *,*::before,*::after{animation:none!important;transition:none!important}
+      .panel.reveal{opacity:1;transform:none}
+    }
+  </style>
+</head>
+<body class="intro-lock">
+  <svg width="0" height="0" style="position:absolute;overflow:hidden">
+    <defs>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 5l7 7-7 7"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.6" cy="10.6" r="6.1"/><path d="m15.4 15.4 5 5"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 15.6A8.5 8.5 0 0 1 8.4 4 8.5 8.5 0 1 0 20 15.6Z"/></symbol>
+      <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H4V10Z"/><path d="M9 20v-6h6v6"/></symbol>
+      <symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-4 3-6 7-6s6.3 2 7 6"/></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.9 5.8 6.3.9-4.6 4.5 1.1 6.3-5.7-3-5.7 3 1.1-6.3-4.6-4.5 6.3-.9Z"/></symbol>
+      <symbol id="i-world" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.1 2.4 3.2 5.4 3.2 9s-1.1 6.6-3.2 9M12 3c-2.1 2.4-3.2 5.4-3.2 9s1.1 6.6 3.2 9"/></symbol>
+      <symbol id="i-witch" viewBox="0 0 24 24"><path d="M7 10h10l-2 9H9l-2-9Z"/><path d="m8 9 4-6 4 6M5 10h14"/></symbol>
+      <symbol id="i-dish" viewBox="0 0 24 24"><path d="M4 13h16a8 8 0 0 1-16 0Z"/><path d="M6 16c.6 2.4 2.6 4 6 4s5.4-1.6 6-4M5 10h14M8 7c0-1 1-2 2-2s2 1 2 2M13 7c0-1 1-2 2-2s2 1 2 2"/></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    
+      <symbol id="i-facebook" viewBox="0 0 24 24">
+        <path fill="currentColor" stroke="none" d="M14.25 8.05h2.02V5.02c-.36-.05-1.54-.15-2.91-.15-2.88 0-4.86 1.81-4.86 5.07v2.83H5.13v3.47h3.37V22h3.99v-5.76h3.59l.55-3.47h-4.14v-2.44c0-1.01.27-1.68 1.76-1.68Z"/>
+      </symbol>
+      <symbol id="i-instagram" viewBox="0 0 24 24">
+        <rect x="3.1" y="3.1" width="17.8" height="17.8" rx="5.1" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <circle cx="12" cy="12" r="4.05" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <circle cx="17.45" cy="6.65" r="1.15" fill="currentColor" stroke="none"/>
+      </symbol>
+      <symbol id="i-x-social" viewBox="0 0 24 24">
+        <path fill="currentColor" stroke="none" d="M4.13 3.25h4.45l3.72 5.06 4.31-5.06h3.05l-5.88 6.92 6.13 10.08h-4.45l-4.2-5.78-4.84 5.78H3.36l6.23-7.64L4.13 3.25Zm2.13 1.74 8.35 11.31h2.03L8.3 4.99H6.26Z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div class="intro" id="intro" aria-label="起動画面">
+    <div class="intro-inner">
+      <div class="intro-logo"><img src="oisasi.png" alt="おいさし"></div>
+      <div class="intro-title">おいさし 公式ホーム</div>
+      <div class="intro-sub">FOZOWO CHARACTER</div>
+      <div class="intro-line"><i></i></div>
+    </div>
+  </div>
+
+  <canvas class="ambient" id="ambient"></canvas>
+  <div class="grain"></div>
+  <div class="paper-lines"></div>
+  <div class="cursor-light" id="cursorLight"></div>
+
+  <header class="topbar" id="topbar">
+    <a class="brand" href="#top" aria-label="おいさし公式ホーム">
+      <span class="brand-mark"><img src="oisasi.png" alt="おいさし"></span>
+      <span class="brand-name" data-i18n="brand">おいさし 公式ホーム</span>
+    </a>
+    <nav class="nav desktop-nav" aria-label="メインメニュー">
+      <a href="#profile" data-i18n="navProfile">プロフィール</a>
+      <a href="#character" data-i18n="navCharacter">キャラクター</a>
+      <a href="#favorite" data-i18n="navFavorite">好きなもの</a>
+      <a href="#links" data-i18n="navLinks">公式リンク</a>
+      <a href="#sns" data-i18n="navSns">SNS</a>
+    </nav>
+    <div class="header-tools">
+      <button class="lang-btn" id="langBtn" type="button" aria-label="English">EN</button>
+      <div class="mobile-head-label" data-i18n="mobileLabel">FoZoWo 公式キャラクター</div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero wrap">
+      <div>
+        <div class="eyebrow"><i></i> FOZOWO / OFFICIAL CHARACTER</div>
+        <div class="hero-over" data-i18n="heroOver">本物の質感を、静かな画面で。</div>
+        <h1><span data-i18n="heroName">おいさし</span><span data-i18n="heroHome">公式ホーム</span></h1>
+        <p class="lead" data-i18n="heroLead">
+          FoZoWoのキャラクター「おいさし」を主役にした公式ホームページ。
+          派手なネオンではなく、写真館や展示室のような落ち着いた質感をベースに、
+          光・奥行き・粒子・スクロール・マウス操作を細かく連動させています。
+        </p>
+        <div class="cta-row">
+          <a class="cta primary magnetic" href="#profile"><span data-i18n="profileButton">プロフィールを見る</span> <svg viewBox="0 0 24 24"><use href="#i-arrow"></use></svg></a>
+          <a class="cta secondary magnetic" href="https://fozowo.f5.si" target="_blank" rel="noopener"><span data-i18n="fozowoTop">FoZoWoトップへ</span> <svg viewBox="0 0 24 24"><use href="#i-arrow"></use></svg></a>
+        </div>
+        <div class="status-row">
+          <span class="status" data-i18n="statusOisasi">おいさし</span>
+          <span class="status" data-i18n="statusGratin">グラタン</span>
+          <span class="status" data-i18n="statusFozowo">FoZoWo</span>
+        </div>
+      </div>
+
+      <div class="hero-visual" id="heroVisual">
+        <div class="stage"></div>
+        <div class="spotlight"></div>
+        <div class="character-card" id="characterCard">
+          <div class="portrait-window">
+            <img src="oisasi.png" alt="おいさしのキャラクター画像" id="heroImg">
+            <span class="portrait-sheen"></span>
+          </div>
+          <div class="portrait-meta">
+            <div>
+              <div class="portrait-name" data-i18n="portraitName">おいさし</div>
+              <div class="portrait-sub" data-i18n="portraitSub">FoZoWo 公式キャラクター</div>
+            </div>
+            <div class="official-tag" data-i18n="official">OFFICIAL</div>
+          </div>
+        </div>
+        <div class="info-chip chip1">CHARACTER / OISASI</div>
+        <div class="info-chip chip2">好きな食べ物 / グラタン</div>
+        <div class="info-chip chip3">FOZOWO</div>
+      </div>
+    </section>
+
+    <section id="profile">
+      <div class="wrap">
+        <div class="section-head">
+          <div><div class="section-kicker">PROFILE / 01</div><h2 data-i18n="profileTitle">おいさしプロフィール</h2></div>
+          <div class="section-desc" data-i18n="profileDesc">必要な情報を大きく、余白を生かして見やすくまとめています。</div>
+        </div>
+        <div class="grid grid-3">
+          <div class="panel stat reveal"><div class="small">CHARACTER</div><div class="big">おいさし</div></div>
+          <div class="panel stat reveal"><div class="small">PROJECT</div><div class="big">FoZoWo</div></div>
+          <div class="panel stat reveal"><div class="small">FAVORITE FOOD</div><div class="big">グラタン</div></div>
+        </div>
+        <div class="panel profile reveal" style="margin-top:17px">
+          <dl>
+            <dt>名前</dt><dd>おいさし</dd>
+            <dt>所属・プロジェクト</dt><dd>FoZoWo</dd>
+            <dt>キャラクター画像</dt><dd>oisasi.png</dd>
+            <dt>好きな食べ物</dt><dd>グラタン</dd>
+            <dt>関連公式サイト</dt><dd><a href="https://www.oijiiw.f5.si" target="_blank" rel="noopener">おいじぃ魔女のホームページ</a></dd>
+          </dl>
+          <div class="stats-bar">
+            <div class="stat-mini"><small>STYLE</small><strong>REAL</strong></div>
+            <div class="stat-mini"><small>ATMOSPHERE</small><strong>CALM</strong></div>
+            <div class="stat-mini"><small>CHARACTER</small><strong>OISASI</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="character">
+      <div class="wrap">
+        <div class="section-head">
+          <div><div class="section-kicker">CHARACTER / 02</div><h2 data-i18n="characterTitle">キャラクター展示</h2></div>
+          <div class="section-desc" data-i18n="characterDesc">写真を見るような感覚で、おいさしの画像を主役として楽しめる構成です。</div>
+        </div>
+        <div class="grid grid-2">
+          <div class="panel quote reveal">
+            <blockquote data-i18n="characterQuote">「おいさし」の存在感を、画面の中で。</blockquote>
+            <p data-i18n="characterLead">光の変化、画像の微妙な浮き上がり、カーソルに合わせた奥行き、ゆっくり動く背景を組み合わせています。</p>
+            <div class="cta-row">
+              <button class="cta primary magnetic" id="openProfile"><span data-i18n="expandProfile">プロフィールを拡大</span> <svg viewBox="0 0 24 24"><use href="#i-arrow"></use></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="favorite">
+      <div class="wrap">
+        <div class="section-head">
+          <div><div class="section-kicker">FAVORITE / 03</div><h2 data-i18n="favoriteTitle">好きな食べ物</h2></div>
+          <div class="section-desc" data-i18n="favoriteDesc">おいさしの好きな食べ物は「グラタン」です。</div>
+        </div>
+        <div class="grid grid-2">
+          <div class="panel food-card reveal">
+            <div>
+              <div class="dish"><svg viewBox="0 0 24 24"><use href="#i-dish"></use></svg></div>
+              <div class="food-label">FAVORITE FOOD</div>
+              <div class="food-name" data-i18n="gratin">グラタン</div>
+            </div>
+            <div style="color:#747c76;font-size:12px;line-height:1.9">おいさし公式プロフィールに掲載されている好きな食べ物です。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="links">
+      <div class="wrap">
+        <div class="section-head">
+          <div><div class="section-kicker">OFFICIAL LINKS / 04</div><h2 data-i18n="linksTitle">公式リンク</h2></div>
+          <div class="section-desc">おいさしとFoZoWoの公式ページへすぐ移動できます。</div>
+        </div>
+        <div class="grid grid-2">
+          <a class="panel link-card magnetic reveal" href="https://fozowo.f5.si" target="_blank" rel="noopener">
+            <span class="link-icon"><svg viewBox="0 0 24 24"><use href="#i-world"></use></svg></span>
+            <span style="flex:1"><span class="link-title" data-i18n="fozowoTopTitle">FoZoWo トップページ</span><span class="link-url">https://fozowo.f5.si</span></span>
+            <svg class="link-arrow" viewBox="0 0 24 24"><use href="#i-arrow"></use></svg>
+          </a>
+          <a class="panel link-card magnetic reveal" href="https://www.oijiiw.f5.si" target="_blank" rel="noopener">
+            <span class="link-icon"><svg viewBox="0 0 24 24"><use href="#i-witch"></use></svg></span>
+            <span style="flex:1"><span class="link-title" data-i18n="witchTitle">おいじぃ魔女のホームページ</span><span class="link-url">https://www.oijiiw.f5.si</span></span>
+            <svg class="link-arrow" viewBox="0 0 24 24"><use href="#i-arrow"></use></svg>
+          </a>
+        </div>
+        <div class="cta-row" style="margin-top:17px">
+          <a class="cta primary magnetic" href="https://fozowo.f5.si" target="_blank" rel="noopener"><span data-i18n="fozowoBack">FoZoWoトップページに戻る</span> <svg viewBox="0 0 24 24"><use href="#i-arrow"></use></svg></a>
+        </div>
+      </div>
+    </section>
+
+
+    
+
+<section class="signature-section">
+  <div class="wrap">
+    <div class="signature-panel reveal">
+      <div class="signature-art">
+        <div class="signature-orbit orbit-1"></div>
+        <div class="signature-orbit orbit-2"></div>
+        <div class="signature-orbit orbit-3"></div>
+        <div class="signature-glow"></div>
+        <img src="oisasi.png" alt="おいさし">
+        <span class="signature-caption">OISASI</span>
+      </div>
+      <div class="signature-copy">
+        <div class="section-kicker">SPECIAL PORTRAIT</div>
+        <h2><span data-i18n="signatureTitle1">おいさしを、</span><br><span data-i18n="signatureTitle2">公式らしく展示する。</span></h2>
+        <p data-i18n="signatureLead">
+          大きなキャラクター画像を中心に、静かな照明、細いリング、
+          わずかな浮遊アニメーションを組み合わせた特別展示。
+          情報を詰め込むのではなく、キャラクターそのものが主役になる設計です。
+        </p>
+        <div class="signature-tags">
+          <span>OISASI</span><span>FOZOWO</span><span>OFFICIAL</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="sns">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">SNS / 05</div>
+        <h2 data-i18n="snsTitle">おいさし・FoZoWo SNS</h2>
+      </div>
+      <div class="section-desc">
+        公式SNSを、それぞれのブランドらしいロゴと配色で表示。
+        デスクトップとスマートフォンでは、カードの構成そのものが変わります。
+      </div>
+    </div>
+
+    <div class="sns-gallery reveal">
+      <div class="sns-gallery-top">
+        <div>
+          <span data-i18n="socialPortal">OFFICIAL SOCIAL</span>
+          <small data-i18n="socialSub">FOZOWO / OISASI</small>
+        </div>
+        <div class="sns-gallery-rule"></div>
+      </div>
+
+      <div class="sns-grid">
+        <a class="sns-card sns-facebook" href="https://www.facebook.com/fzwoi" target="_blank" rel="noopener">
+          <div class="sns-card-bg"></div>
+          <div class="sns-brandmark">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-facebook"></use></svg>
+          </div>
+          <div class="sns-card-info">
+            <span>FACEBOOK</span>
+            <strong data-i18n="facebook">Facebook</strong>
+            <small>facebook.com/fzwoi</small>
+          </div>
+          <div class="sns-go">↗</div>
+          <i class="sns-glint"></i>
+        </a>
+
+        <a class="sns-card sns-instagram" href="https://www.instagram.com/fzwoi/" target="_blank" rel="noopener">
+          <div class="sns-card-bg"></div>
+          <div class="sns-brandmark">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-instagram"></use></svg>
+          </div>
+          <div class="sns-card-info">
+            <span>INSTAGRAM</span>
+            <strong data-i18n="instagram">Instagram</strong>
+            <small>instagram.com/fzwoi</small>
+          </div>
+          <div class="sns-go">↗</div>
+          <i class="sns-glint"></i>
+        </a>
+
+        <a class="sns-card sns-x" href="https://x.com/fzwoi" target="_blank" rel="noopener">
+          <div class="sns-card-bg"></div>
+          <div class="sns-brandmark">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x-social"></use></svg>
+          </div>
+          <div class="sns-card-info">
+            <span>X / SOCIAL</span>
+            <strong data-i18n="xSocial">X</strong>
+            <small>x.com/fzwoi</small>
+          </div>
+          <div class="sns-go">↗</div>
+          <i class="sns-glint"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <section>
+      <div class="wrap">
+        <div class="panel quote reveal">
+          <div class="section-kicker">OFFICIAL HOME</div>
+          <blockquote style="margin-top:8px"><span data-i18n="finalQuote1">派手さより、</span><br><span data-i18n="finalQuote2">おいさしそのものを。</span></blockquote>
+          <p>画像を主役にして、静かだけれどずっと動いている。そんな公式ホームを目指したデザインです。</p>
+          <div class="cta-row">
+            <a class="cta primary magnetic" href="#top">ページ上部へ <svg viewBox="0 0 24 24"><use href="#i-home"></use></svg></a>
+            <button class="cta secondary magnetic" id="copyUrl">このページのURLをコピー</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="panel footer-box">
+        <div>
+          <div class="footer-brand" data-i18n="footerBrand">おいさし 公式ホーム</div>
+          <div class="footer-sub" data-i18n="footerSub">FoZoWo 公式キャラクター</div>
+        </div>
+        <div class="footer-copy"><span id="year"></span></div>
+      </div>
+    </div>
+  </footer>
+
+  <nav class="mobile-nav" aria-label="スマホ用クイックナビ">
+    <a href="#top" title="トップ"><svg viewBox="0 0 24 24"><use href="#i-home"></use></svg><span data-i18n="mobileホーム">ホーム</span></a>
+    <a href="#profile" title="プロフィール"><svg viewBox="0 0 24 24"><use href="#i-person"></use></svg><span data-i18n="mobileプロフィール">プロフィール</span></a>
+    <a href="#favorite" title="好きなもの"><svg viewBox="0 0 24 24"><use href="#i-star"></use></svg><span data-i18n="mobile好きなもの">好きなもの</span></a>
+    <a href="#sns" title="SNS"><svg viewBox="0 0 24 24"><use href="#i-world"></use></svg><span data-i18n="mobileSNS">SNS</span></a>
+    <a href="#links" title="公式リンク"><svg viewBox="0 0 24 24"><use href="#i-arrow"></use></svg><span data-i18n="mobile公式">公式</span></a>
+  </nav>
+
+  <button class="back-top" id="backTop" aria-label="ページ上部へ戻る" title="上部へ戻る">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14l6-6 6 6"></path><path d="M12 8v10"></path></svg>
+    <span>上部へ</span>
+  </button>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 id="modalTitle">おいさしプロフィール</h3>
+        <button class="close" id="closeModal" aria-label="閉じる"><svg viewBox="0 0 24 24"><use href="#i-x"></use></svg></button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-image"><img src="oisasi.png" alt="おいさし"></div>
+        <div>
+          <div style="font-family:'Shippori Mincho',serif;font-size:36px;font-weight:800">おいさし</div>
+          <p style="color:#707872;line-height:1.95;font-size:13px">FoZoWoのキャラクター。好きな食べ物はグラタン。おいさしの画像を主役にした公式ホームから、関連ページへ直接移動できます。</p>
+          <div class="status-row"><span class="status">おいさし</span><span class="status">グラタン</span><span class="status">FoZoWo</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const intro = document.getElementById('intro');
+  const topbar = document.getElementById('topbar');
+  const cursorLight = document.getElementById('cursorLight');
+  const card = document.getElementById('characterCard');
+  const heroVisual = document.getElementById('heroVisual');
+  const modal = document.getElementById('modal');
+  const toast = document.getElementById('toast');
+
+  /* 0.5秒オープニング */
+  setTimeout(()=>{
+    intro.classList.add('done');
+    document.body.classList.remove('intro-lock');
+  },1000);
+
+  /* スクロール時のヘッダー変化 */
+  function onScroll(){
+    topbar.classList.toggle('scrolled',scrollY>15);
+    updateActiveNav();
+  }
+  addEventListener('scroll',onScroll,{passive:true});
+
+  /* カーソル連動の柔らかな光 */
+  addEventListener('pointermove',e=>{
+    cursorLight.style.left=e.clientX+'px';
+    cursorLight.style.top=e.clientY+'px';
+  },{passive:true});
+
+  /* キャラクターの軽い3Dパララックス */
+  if(heroVisual && card && matchMedia('(pointer:fine)').matches){
+    heroVisual.addEventListener('pointermove',e=>{
+      const r=heroVisual.getBoundingClientRect();
+      const x=(e.clientX-r.left)/r.width-.5;
+      const y=(e.clientY-r.top)/r.height-.5;
+      card.style.transform=`rotateY(${x*6}deg) rotateX(${y*-5}deg) translateY(-2px)`;
+    });
+    heroVisual.addEventListener('pointerleave',()=>card.style.transform='');
+  }
+
+  /* スクロール出現 */
+  const revealObserver=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const el=entry.target;
+        setTimeout(()=>el.classList.add('visible'),Number(el.dataset.delay||0));
+        revealObserver.unobserve(el);
+      }
+    });
+  },{threshold:.14});
+
+  document.querySelectorAll('.reveal').forEach((el,i)=>{
+    el.dataset.delay=(i%3)*80;
+    revealObserver.observe(el);
+  });
+
+  /* 現在位置ナビ */
+  const sections=[...document.querySelectorAll('main section[id]')];
+  const navLinks=[...document.querySelectorAll('.desktop-nav a,.mobile-nav a')];
+  function updateActiveNav(){
+    let id='top';
+    const y=scrollY+140;
+    sections.forEach(s=>{if(s.offsetTop<=y) id=s.id;});
+    navLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+id));
+  }
+
+  /* 静かな背景粒子 */
+  const canvas=document.getElementById('ambient');
+  const ctx=canvas.getContext('2d');
+  let W=0,H=0,dpr=1,particles=[];
+  let pointer={x:-9999,y:-9999};
+
+  function resize(){
+    W=innerWidth;
+    H=innerHeight;
+    dpr=Math.min(devicePixelRatio||1,2);
+    canvas.width=Math.floor(W*dpr);
+    canvas.height=Math.floor(H*dpr);
+    canvas.style.width=W+'px';
+    canvas.style.height=H+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+
+    const count=W<700?26:48;
+    particles=Array.from({length:count},()=>({
+      x:Math.random()*W,
+      y:Math.random()*H,
+      vx:(Math.random()-.5)*.12,
+      vy:(Math.random()-.5)*.12,
+      r:Math.random()*1.15+.3,
+      phase:Math.random()*Math.PI*2
+    }));
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const base='#738176';
+
+    particles.forEach(p=>{
+      p.phase+=.004;
+
+      const dx=pointer.x-p.x;
+      const dy=pointer.y-p.y;
+      const d=Math.hypot(dx,dy);
+
+      if(d<150 && d>1){
+        p.vx+=dx/d*.00032;
+        p.vy+=dy/d*.00032;
+      }
+
+      p.x+=p.vx+Math.sin(p.phase)*.009;
+      p.y+=p.vy+Math.cos(p.phase)*.009;
+
+      if(p.x<-15)p.x=W+15;
+      if(p.x>W+15)p.x=-15;
+      if(p.y<-15)p.y=H+15;
+      if(p.y>H+15)p.y=-15;
+
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=base;
+      ctx.globalAlpha=.15;
+      ctx.fill();
+    });
+
+    ctx.globalAlpha=.06;
+
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const a=particles[i],b=particles[j];
+        const d=Math.hypot(a.x-b.x,a.y-b.y);
+
+        if(d<128){
+          ctx.beginPath();
+          ctx.moveTo(a.x,a.y);
+          ctx.lineTo(b.x,b.y);
+          ctx.strokeStyle=base;
+          ctx.lineWidth=.45*(1-d/128);
+          ctx.stroke();
+        }
+      }
+    }
+
+    ctx.globalAlpha=1;
+    requestAnimationFrame(draw);
+  }
+
+  addEventListener('resize',resize);
+  addEventListener('pointermove',e=>{
+    pointer.x=e.clientX;
+    pointer.y=e.clientY;
+  },{passive:true});
+  resize();
+  requestAnimationFrame(draw);
+  /* プロフィール拡大 */
+  document.getElementById('openProfile').addEventListener('click',()=>modal.classList.add('open'));
+  document.getElementById('closeModal').addEventListener('click',()=>modal.classList.remove('open'));
+  modal.addEventListener('click',e=>{
+    if(e.target===modal) modal.classList.remove('open');
+  });
+  addEventListener('keydown',e=>{
+    if(e.key==='Escape') modal.classList.remove('open');
+  });
+
+  /* 上部へ戻るボタン */
+  const backTop = document.getElementById('backTop');
+  function updateBackTop(){
+    backTop.classList.toggle('visible', scrollY > 420);
+  }
+  addEventListener('scroll', updateBackTop, {passive:true});
+  backTop.addEventListener('click',()=>{
+    scrollTo({top:0,behavior:'smooth'});
+  });
+
+  /* URLコピー */
+  document.getElementById('copyUrl').addEventListener('click',async()=>{
+    try{
+      await navigator.clipboard.writeText(location.href);
+      toast.textContent='このページのURLをコピーしました。';
+      clearTimeout(toast.timer);
+      toast.classList.add('show');
+      toast.timer=setTimeout(()=>toast.classList.remove('show'),2200);
+    }catch{
+      toast.textContent='URLのコピーに失敗しました。';
+      clearTimeout(toast.timer);
+      toast.classList.add('show');
+      toast.timer=setTimeout(()=>toast.classList.remove('show'),2200);
+    }
+  });
+
+
+  /* Language switch: Japanese / English */
+  const langBtn = document.getElementById('langBtn');
+  const translations = {
+    ja: {
+      brand:'おいさし 公式ホーム',
+      navProfile:'プロフィール', navCharacter:'キャラクター', navFavorite:'好きなもの', navLinks:'公式リンク', navSns:'SNS',
+      mobileLabel:'FoZoWo 公式キャラクター',
+      heroOver:'本物の質感を、静かな画面で。',
+      heroName:'おいさし', heroHome:'公式ホーム',
+      heroLead:'FoZoWoのキャラクター「おいさし」を主役にした公式ホームページ。派手なネオンではなく、写真館や展示室のような落ち着いた質感をベースに、光・奥行き・粒子・スクロール・マウス操作を細かく連動させています。',
+      profileButton:'プロフィールを見る', fozowoTop:'FoZoWoトップへ',
+      statusOisasi:'おいさし', statusGratin:'グラタン', statusFozowo:'FoZoWo',
+      portraitName:'おいさし', portraitSub:'FoZoWo 公式キャラクター', official:'OFFICIAL',
+      profileTitle:'おいさしプロフィール', profileDesc:'必要な情報を大きく、余白を生かして見やすくまとめています。',
+      characterTitle:'キャラクター展示', characterDesc:'写真を見るような感覚で、おいさしの画像を主役として楽しめる構成です。',
+      characterQuote:'「おいさし」の存在感を、画面の中で。',
+      characterLead:'光の変化、画像の微妙な浮き上がり、カーソルに合わせた奥行き、ゆっくり動く背景を組み合わせています。',
+      expandProfile:'プロフィールを拡大',
+      textureTitle:'派手さではなく、質感で見せる',
+      favoriteTitle:'好きな食べ物', favoriteDesc:'おいさしの好きな食べ物は「グラタン」です。', gratin:'グラタン',
+      linksTitle:'公式リンク', fozowoTopTitle:'FoZoWo トップページ', witchTitle:'おいじぃ魔女のホームページ', fozowoBack:'FoZoWoトップページに戻る',
+      snsTitle:'おいさし・FoZoWo SNS',
+      snsDesc:'公式SNSを、それぞれのブランドらしいロゴと配色で表示。デスクトップとスマートフォンでは、カードの構成そのものが変わります。',
+      socialPortal:'OFFICIAL SOCIAL', socialSub:'FOZOWO / OISASI',
+      facebook:'Facebook', instagram:'Instagram', xSocial:'X',
+      signatureTitle1:'おいさしを、', signatureTitle2:'公式らしく展示する。',
+      signatureLead:'大きなキャラクター画像を中心に、静かな照明、細いリング、わずかな浮遊アニメーションを組み合わせた特別展示。情報を詰め込むのではなく、キャラクターそのものが主役になる設計です。',
+      finalQuote1:'派手さより、', finalQuote2:'おいさしそのものを。',
+      mobileホーム:'ホーム', mobileプロフィール:'プロフィール', mobile好きなもの:'好きなもの', mobileSNS:'SNS', mobile公式:'公式',
+      footerBrand:'おいさし 公式ホーム', footerSub:'FoZoWo 公式キャラクター'
+    },
+    en: {
+      brand:'OISASI Official Home',
+      navProfile:'Profile', navCharacter:'Character', navFavorite:'Favorite', navLinks:'Official Links', navSns:'Social',
+      mobileLabel:'FoZoWo Official Character',
+      heroOver:'Real texture, presented with quiet elegance.',
+      heroName:'OISASI', heroHome:'OFFICIAL HOME',
+      heroLead:'The official home of OISASI, the FoZoWo character. Instead of loud neon effects, the site uses a calm gallery-like atmosphere with light, depth, particles, scroll motion and subtle pointer interaction.',
+      profileButton:'View Profile', fozowoTop:'FoZoWo Home',
+      statusOisasi:'OISASI', statusGratin:'GRATIN', statusFozowo:'FoZoWo',
+      portraitName:'OISASI', portraitSub:'FoZoWo Official Character', official:'OFFICIAL',
+      profileTitle:'OISASI PROFILE', profileDesc:'The essential character information is presented clearly with generous space.',
+      characterTitle:'CHARACTER EXHIBITION', characterDesc:'A gallery-like layout where the OISASI portrait stays at the center.',
+      characterQuote:'Let OISASI have a presence on the screen.',
+      characterLead:'Changing light, gentle depth, subtle portrait lift and a slowly moving background work together to create a living presentation.',
+      expandProfile:'Expand Profile',
+      textureTitle:'Show texture, not excess.',
+      favoriteTitle:'FAVORITE FOOD', favoriteDesc:'OISASI’s favorite food is gratin.', gratin:'GRATIN',
+      linksTitle:'OFFICIAL LINKS', fozowoTopTitle:'FoZoWo Home', witchTitle:'Oijii Witch Homepage', fozowoBack:'Back to FoZoWo',
+      snsTitle:'OISASI / FoZoWo SOCIAL',
+      snsDesc:'Official social accounts with distinct platform styling. Desktop and mobile use different card compositions.',
+      socialPortal:'OFFICIAL SOCIAL', socialSub:'FOZOWO / OISASI',
+      facebook:'Facebook', instagram:'Instagram', xSocial:'X',
+      signatureTitle1:'Present OISASI', signatureTitle2:'as an official portrait.',
+      signatureLead:'A special exhibition centered on the character image, with quiet lighting, fine rings and subtle floating motion. The character remains the focus rather than overwhelming the screen with information.',
+      finalQuote1:'Less spectacle,', finalQuote2:'more OISASI.',
+      mobileホーム:'Home', mobileプロフィール:'Profile', mobile好きなもの:'Favorite', mobileSNS:'Social', mobile公式:'Official',
+      footerBrand:'OISASI Official Home', footerSub:'FoZoWo Official Character'
+    }
+  };
+  let currentLang = localStorage.getItem('oisasi-lang') || (navigator.language && navigator.language.toLowerCase().startsWith('en') ? 'en' : 'ja');
+
+  function applyLanguage(){
+    const dict = translations[currentLang];
+
+    const jaEn = {
+      '名前':'Name',
+      '所属・プロジェクト':'Project',
+      'キャラクター画像':'Character Image',
+      '好きな食べ物':'Favorite Food',
+      '関連公式サイト':'Related Official Site',
+      'おいじぃ魔女のホームページ':'Oijii Witch Homepage',
+      'プロフィールを見る':'View Profile',
+      'FoZoWoトップへ':'FoZoWo Home',
+      'ページ上部へ':'Back to Top',
+      'このページのURLをコピー':'Copy Page URL',
+      'グラタン・シグナル':'Gratin Signal',
+      'おいさし公式プロフィールに掲載されている好きな食べ物です。':'This is the favorite food listed in the official OISASI profile.',
+      '公式SNSを、それぞれのブランドらしいロゴと配色で表示。 デスクトップとスマートフォンでは、カードの構成そのものが変わります。':'Official social accounts with platform-specific logos and styling. The card layout changes for desktop and mobile.',
+      '大きなキャラクター画像を中心に、静かな照明、細いリング、 わずかな浮遊アニメーションを組み合わせた特別展示。 情報を詰め込むのではなく、キャラクターそのものが主役になる設計です。':'A special portrait exhibition built around the character image, quiet lighting, fine rings and subtle floating motion. The character remains the focus.',
+      '画像を主役にして、静かだけれどずっと動いている。そんな公式ホームを目指したデザインです。':'The image stays at the center while the page moves quietly around it.',
+      'FoZoWoのキャラクター。好きな食べ物はグラタン。おいさしの画像を主役にした公式ホームから、関連ページへ直接移動できます。':'OISASI is a FoZoWo character. The favorite food is gratin, and related pages are available directly from this official home.',
+      'おいさし 公式ホーム':'OISASI Official Home',
+      'FoZoWo 公式キャラクター':'FoZoWo Official Character',
+      '本物の質感を、静かな画面で。':'Real texture, presented with quiet elegance.',
+      'おいさし':'OISASI',
+      '公式ホーム':'OFFICIAL HOME',
+      'FoZoWoのキャラクター「おいさし」を主役にした公式ホームページ。 派手なネオンではなく、写真館や展示室のような落ち着いた質感をベースに、 光・奥行き・粒子・スクロール・マウス操作を細かく連動させています。':'The official home of OISASI, a FoZoWo character. Instead of loud neon effects, the site uses a calm gallery-like atmosphere with light, depth, particles, scrolling and subtle pointer interaction.',
+      'おいさしプロフィール':'OISASI PROFILE',
+      '必要な情報を大きく、余白を生かして見やすくまとめています。':'The essential character information is presented clearly with generous space.',
+      'キャラクター展示':'CHARACTER EXHIBITION',
+      '写真を見るような感覚で、おいさしの画像を主役として楽しめる構成です。':'A gallery-like layout where the OISASI portrait stays at the center.',
+      '「おいさし」の存在感を、画面の中で。':'Let OISASI have a presence on the screen.',
+      '光の変化、画像の微妙な浮き上がり、カーソルに合わせた奥行き、ゆっくり動く背景を組み合わせています。':'Changing light, gentle depth, subtle portrait lift and a slowly moving background work together to create a living presentation.',
+      'プロフィールを拡大':'Expand Profile',
+      '好きな食べ物':'FAVORITE FOOD',
+      'おいさしの好きな食べ物は「グラタン」です。':'OISASI’s favorite food is gratin.',
+      'グラタン':'GRATIN',
+      'おいさしとFoZoWoの公式ページへすぐ移動できます。':'Go directly to the official OISASI and FoZoWo pages.',
+      'FoZoWo トップページ':'FoZoWo Home',
+      'FoZoWoトップページに戻る':'Back to FoZoWo',
+      'おいさし・FoZoWo SNS':'OISASI / FoZoWo SOCIAL',
+      '派手さより、':'Less spectacle,',
+      'おいさしそのものを。':'more OISASI.',
+      'ホーム':'Home',
+      'プロフィール':'Profile',
+      '好きなもの':'Favorite',
+      'SNS':'Social',
+      '公式':'Official',
+    }
+    const enJa = Object.fromEntries(Object.entries(jaEn).map(([k,v])=>[v,k]));
+
+    document.documentElement.lang = currentLang;
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.getAttribute('data-i18n');
+      if(dict[key] !== undefined) el.textContent = dict[key];
+    });
+
+    /* Translate any remaining visible text nodes, including table labels and footer controls. */
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while(walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(node=>{
+      if(node.parentElement && ['SCRIPT','STYLE','SVG','PATH','USE'].includes(node.parentElement.tagName)) return;
+      const raw = node.nodeValue || '';
+      const normalized = raw.replace(/\s+/g,' ').trim();
+      if(!normalized) return;
+      const map = currentLang === 'ja' ? enJa : jaEn;
+      if(map[normalized] !== undefined){
+        const lead = raw.match(/^\s*/)?.[0] || '';
+        const trail = raw.match(/\s*$/)?.[0] || '';
+        node.nodeValue = lead + map[normalized] + trail;
+      }
+    });
+
+    langBtn.textContent = currentLang === 'ja' ? 'EN' : 'JP';
+    langBtn.setAttribute('aria-label', currentLang === 'ja' ? 'Switch to English' : '日本語に切り替え');
+    document.title = currentLang === 'ja' ? 'おいさし｜FoZoWo 公式ホーム' : 'OISASI | FoZoWo Official Home';
+    const metaDescription = document.getElementById('metaDescription');
+    if(metaDescription) metaDescription.content = currentLang === 'ja' ? 'FoZoWoのキャラクター「おいさし」公式ホームページ。' : 'Official home of OISASI, a FoZoWo character.';
+  }
+
+  langBtn.addEventListener('click',()=>{
+    currentLang = currentLang === 'ja' ? 'en' : 'ja';
+    localStorage.setItem('oisasi-lang', currentLang);
+    applyLanguage();
+  });
+  applyLanguage();
+
+  document.getElementById('year').textContent=new Date().getFullYear();
+  onScroll();
+})();
+</script>
+</body>
+</html>
