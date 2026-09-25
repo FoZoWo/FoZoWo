@@ -528,6 +528,56 @@
         line-height: 1.6;
     }
 
+    /* ===== 終了ボタン（初期設定・設定） ===== */
+    
+    #onboarding-overlay .setup-exit-btn {
+        position:fixed;
+        left:18px;
+        bottom:18px;
+        width:auto;
+        min-width:150px;
+        margin:0;
+        z-index:2147483000;
+        box-shadow:0 8px 24px rgba(0,0,0,.35);
+    }
+
+.setup-exit-btn, .settings-exit-btn {
+        width:100%;
+        margin-top:10px;
+        padding:11px 14px;
+        border:1px solid rgba(255,120,120,.38);
+        border-radius:12px;
+        background:linear-gradient(135deg, rgba(180,35,35,.34), rgba(120,20,50,.28));
+        color:#fff;
+        font-weight:800;
+        cursor:pointer;
+        transition:filter .15s ease, transform .15s ease, background .15s ease;
+    }
+    .setup-exit-btn:hover, .settings-exit-btn:hover {
+        filter:brightness(1.12);
+        background:linear-gradient(135deg, rgba(200,45,45,.45), rgba(140,25,60,.36));
+    }
+    .setup-exit-btn:active, .settings-exit-btn:active {
+        transform:translateY(1px);
+    }
+
+    /* ===== ゲーム終了案内 ===== */
+    #app-exit-overlay {
+        position: fixed; inset: 0; z-index: 12000;
+        align-items: center; justify-content: center; padding:22px; box-sizing:border-box;
+        background: rgba(8,4,16,.84); backdrop-filter: blur(8px);
+    }
+    #app-exit-overlay.show { display:flex !important; }
+    .app-exit-card {
+        width:min(440px,92vw); border-radius:22px; padding:28px 24px 22px; text-align:center;
+        background:linear-gradient(145deg,rgba(50,24,76,.98),rgba(22,10,42,.98));
+        border:1px solid rgba(199,125,255,.38); box-shadow:0 20px 60px rgba(0,0,0,.45);
+    }
+    .app-exit-icon { font-size:2.6rem; margin-bottom:8px; }
+    .app-exit-card h2 { margin:0 0 10px; color:#fff; }
+    .app-exit-card p { margin:0 0 18px; color:#ddd0f0; line-height:1.7; }
+    #app-exit-close { min-width:120px; padding:10px 18px; border-radius:12px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.1); color:#fff; font-weight:800; cursor:pointer; }
+
     /* ===== ゲーム画面（iframe） ===== */
     #game-screen {
         width: 100%; height: 100%; position: absolute; top: 0; left: 0;
@@ -948,6 +998,12 @@
         font-size: 1.2rem;
         cursor: pointer;
     }
+    .app-exit-btn {
+        border-color: rgba(231,76,60,0.36);
+        background: rgba(120,20,20,0.28);
+    }
+    .app-exit-btn:hover { background: rgba(180,35,35,0.48); }
+    .app-exit-btn:active { transform: translateY(1px) scale(.97); }
 
 
     /* ---- ヒーロー内：ポイント＋ショップ（設定ボタン隣） ---- */
@@ -4933,6 +4989,8 @@ body.lang-en #settings-overlay .modal-box > h2::after {
 
 /* 初期設定ウィザード */
 #onboarding-overlay {
+  position: fixed !important;
+  z-index: 1000000 !important;
   background: radial-gradient(ellipse at 50% 0%, rgba(120,40,180,0.5), transparent 55%),
               radial-gradient(ellipse at 80% 100%, rgba(40,20,90,0.4), transparent 40%),
               rgba(0,0,0,0.94) !important;
@@ -4974,26 +5032,40 @@ body.lang-en #settings-overlay .modal-box > h2::after {
 
     
 /* ===== カスタムマウスカーソル（設定でON/OFF・デザイン選択） ===== */
-html.cursor-custom, html.cursor-custom body {
+/* カスタムカーソルは明示的にONにした時だけ使用。初期状態は通常のOSカーソル。 */
+html:not(.cursor-custom), html:not(.cursor-custom) body {
+  cursor: auto;
+}
+/* カスタムカーソルは、実際のマウス位置を最初に取得するまではOSカーソルを残す。
+   これで起動直後・初期設定中に「カーソルが消える」ことを防ぐ。 */
+html.cursor-custom:not(.cursor-custom-ready),
+html.cursor-custom:not(.cursor-custom-ready) body {
+  cursor: auto !important;
+}
+html.cursor-custom.cursor-custom-ready,
+html.cursor-custom.cursor-custom-ready body {
   cursor: none !important;
 }
-html.cursor-custom a,
-html.cursor-custom button,
-html.cursor-custom .settings-item,
-html.cursor-custom .game-card,
-html.cursor-custom .challenge-btn,
-html.cursor-custom .online-home-btn,
-html.cursor-custom .sd-nav-btn,
-html.cursor-custom .switch,
-html.cursor-custom input[type="range"],
-html.cursor-custom .reset-menu-item,
-html.cursor-custom .hero-settings,
-html.cursor-custom .settings-btn,
-html.cursor-custom [onclick],
-html.cursor-custom .shop-tab,
-html.cursor-custom label {
+html.cursor-custom.cursor-custom-ready a,
+html.cursor-custom.cursor-custom-ready button,
+html.cursor-custom.cursor-custom-ready .settings-item,
+html.cursor-custom.cursor-custom-ready .game-card,
+html.cursor-custom.cursor-custom-ready .challenge-btn,
+html.cursor-custom.cursor-custom-ready .online-home-btn,
+html.cursor-custom.cursor-custom-ready .sd-nav-btn,
+html.cursor-custom.cursor-custom-ready .switch,
+html.cursor-custom.cursor-custom-ready input[type="range"],
+html.cursor-custom.cursor-custom-ready .reset-menu-item,
+html.cursor-custom.cursor-custom-ready .hero-settings,
+html.cursor-custom.cursor-custom-ready .settings-btn,
+html.cursor-custom.cursor-custom-ready [onclick],
+html.cursor-custom.cursor-custom-ready .shop-tab,
+html.cursor-custom.cursor-custom-ready label {
   cursor: none !important;
 }
+/* 初期設定や各種オーバーレイよりも常に上にカスタムカーソルを表示する。
+   pointer-events:none のため、ボタン操作は遮らない。 */
+#magic-cursor { z-index: 2147483646 !important; }
 html.cursor-custom input[type="text"],
 html.cursor-custom input[type="password"],
 html.cursor-custom input[type="number"],
@@ -5005,7 +5077,7 @@ html.cursor-custom select {
 
 #magic-cursor {
   position: fixed; width: 28px; height: 28px;
-  pointer-events: none; z-index: 999999;
+  pointer-events: none !important; z-index: 2147483646;
   transform: translate(-50%, -50%);
   opacity: 0;
   transition: opacity 0.12s, width 0.1s, height 0.1s;
@@ -5247,7 +5319,7 @@ html.cursor-custom select {
 <style>
     .oij-popup-overlay {
         position: fixed; inset: 0; background: rgba(0,0,0,0.88);
-        display: none; z-index: 100000;
+        display: none; z-index: 2147483646;
         align-items: center; justify-content: center;
         padding: 20px; box-sizing: border-box;
     }
@@ -5406,6 +5478,30 @@ html.cursor-custom select {
 </div>
 <script>
 /* ===== 起動アニメーション制御（約4秒・音声ナレーション付き） ===== */
+/* 起動時は全画面化を試行し、ブラウザがユーザー操作を要求した場合は最初の操作で再試行。 */
+(function(){
+    function enterOijiiFullscreen(){
+        try {
+            if (document.fullscreenElement || document.webkitFullscreenElement) return Promise.resolve(true);
+            var el=document.documentElement;
+            var fn=el.requestFullscreen || el.webkitRequestFullscreen;
+            if(!fn) return Promise.resolve(false);
+            var r=fn.call(el,{navigationUI:'hide'});
+            return (r&&typeof r.then==='function') ? r.then(function(){return true;}).catch(function(){return false;}) : Promise.resolve(true);
+        } catch(e) { return Promise.resolve(false); }
+    }
+    window.oijiiEnterFullscreen=enterOijiiFullscreen;
+    setTimeout(function(){ enterOijiiFullscreen(); },30);
+    function firstGesture(){
+        enterOijiiFullscreen();
+        window.removeEventListener('pointerdown',firstGesture,true);
+        window.removeEventListener('keydown',firstGesture,true);
+        window.removeEventListener('touchstart',firstGesture,true);
+    }
+    window.addEventListener('pointerdown',firstGesture,true);
+    window.addEventListener('keydown',firstGesture,true);
+    window.addEventListener('touchstart',firstGesture,true);
+})();
 /* 起動アニメ終了を他スクリプトへ知らせる仕組み（既定は「未完了」） */
 window.__splashDone = false;
 function __notifySplashDone(){
@@ -5745,6 +5841,7 @@ function __notifySplashDone(){
                         </button>
                     </div>
                     <button type="button" class="settings-btn hero-settings" onclick="openSettingsMenu()" title="設定" data-i18n-title="settings.menu">⚙️</button>
+                    <button type="button" class="settings-btn hero-settings app-exit-btn" onclick="requestExitGameApp()" title="ゲーム終了" data-i18n-title="home.exitApp" aria-label="ゲーム終了">🚪</button>
                 </div>
             </header>
             <!-- 互換用（既存JSが top-bar / home-header を参照しても落ちない） -->
@@ -5871,6 +5968,16 @@ function __notifySplashDone(){
             <div class="footer-note home-footer-collapsed" data-i18n-html="home.footer" style="display:none;">
                 ヒッヒッヒ…おいじぃの試練、すべて受けてみるかのぅ？
             </div>
+        </div>
+    </div>
+
+    <!-- ===== ゲーム終了案内 ===== -->
+    <div id="app-exit-overlay" role="dialog" aria-modal="true" aria-labelledby="app-exit-title" style="display:none;">
+        <div class="app-exit-card">
+            <div class="app-exit-icon">🚪</div>
+            <h2 id="app-exit-title">ゲームを終了しました</h2>
+            <p id="app-exit-text">全画面表示を解除しました。<br>このタブを閉じてください。</p>
+            <button type="button" id="app-exit-close" onclick="closeExitNotice()">OK</button>
         </div>
     </div>
 
@@ -6343,6 +6450,8 @@ function __notifySplashDone(){
                 <div class="auth-msg" style="color:#cdb8e8;" id="onb-complete-msg"><span data-i18n="onb.doneMsg">これで初期設定は終わりじゃ。さあ、一緒に遊ぶとしようかのぅ！</span></div>
                 <button class="challenge-btn" onclick="onboardFinish()" data-i18n="onb.startPlay">はじめる！</button>
             </div>
+
+            <button type="button" class="setup-exit-btn" onclick="requestExitGameApp()" data-i18n="home.exitApp">🚪 ゲーム終了</button>
         </div>
     </div>
 
@@ -6580,6 +6689,7 @@ function __notifySplashDone(){
 
             <div class="sd-footer">
                 <button type="button" class="sd-footer-close" onclick="closeSettingsMenu()" data-i18n="sound.close">閉じる (Esc)</button>
+                <button type="button" class="settings-exit-btn" onclick="requestExitGameApp()" data-i18n="home.exitApp">🚪 ゲーム終了</button>
             </div>
         </div>
     </div>
@@ -14297,6 +14407,64 @@ async function launchGame(gameId, challengeMode) {
     }
 }
 
+async function requestExitGameApp() {
+    var en = (typeof getAppLang === 'function' && getAppLang() === 'en');
+    var message = en
+        ? 'Exit the game?\nFullscreen will be exited, and this browser tab should be closed.'
+        : 'ゲームを終了しますか？\n全画面表示を解除して、このブラウザのタブを閉じます。';
+    try {
+        var ok = await oijConfirm(message);
+        if (!ok) return;
+    } catch (e) {
+        return;
+    }
+    return exitGameApp();
+}
+
+async function exitGameApp() {
+    try { if (typeof stopAllAudio === 'function') stopAllAudio(); } catch(e) {}
+    try {
+        var frame=document.getElementById('game-frame');
+        if(frame) frame.src='about:blank';
+        if(currentBlobUrl){ URL.revokeObjectURL(currentBlobUrl); currentBlobUrl=null; }
+    } catch(e) {}
+    try {
+        currentGameId=null; isChallengeMode=false;
+        // 初期設定・設定画面から終了した場合も、残らないよう確実に閉じる
+        ['onboarding-overlay','settings-overlay','onb-restore-confirm-overlay','userswitch-overlay','newuser-overlay','app-exit-overlay'].forEach(function(id){
+            var el=document.getElementById(id);
+            if(el){
+                el.classList.remove('show');
+                el.style.display='none';
+            }
+        });
+        var gs=document.getElementById('game-screen'); if(gs) gs.style.display='none';
+        var hs=document.getElementById('home-screen'); if(hs) hs.style.display='flex';
+        var bb=document.getElementById('game-back-btn'); if(bb) bb.style.display='none';
+        if(typeof refreshHome==='function') refreshHome();
+    } catch(e) {}
+    try {
+        if(document.fullscreenElement && document.exitFullscreen) await document.exitFullscreen();
+        else if(document.webkitFullscreenElement && document.webkitExitFullscreen) document.webkitExitFullscreen();
+    } catch(e) {}
+    try { window.open('','_self'); window.close(); } catch(e) {}
+    setTimeout(function(){ if(!window.closed) showExitNotice(); },120);
+}
+
+function showExitNotice(){
+    var ov=document.getElementById('app-exit-overlay'); if(!ov) return;
+    var en=(typeof getAppLang==='function' && getAppLang()==='en');
+    var title=document.getElementById('app-exit-title');
+    var msg=document.getElementById('app-exit-text');
+    if(title) title.textContent=en?'Game ended':'ゲームを終了しました';
+    if(msg) msg.innerHTML=en?'Fullscreen has been exited.<br>Please close this browser tab.':'全画面表示を解除しました。<br>このタブを閉じてください。';
+    ov.classList.add('show');
+}
+
+function closeExitNotice(){
+    var ov=document.getElementById('app-exit-overlay'); if(ov) ov.classList.remove('show');
+}
+
 function goHome() {
     document.getElementById('game-screen').style.display = 'none';
     document.getElementById('home-screen').style.display = 'flex';
@@ -17534,6 +17702,15 @@ function onboardSetGreeting(v) {
     } catch (e) {}
     onboardGoto('theme');
 }
+/* 🖱️ 初期設定：マウスカーソル設定の「次へ」 */
+function onboardCursorNext() {
+    try {
+        if (typeof syncCursorSettingsUI === 'function') syncCursorSettingsUI();
+        if (typeof applyCursorSettings === 'function') applyCursorSettings();
+    } catch (e) {}
+    onboardGoto('clock');
+}
+
 function onboardSetClock(v) {
     onboardData.clock = v;
     if (v) {
@@ -18245,6 +18422,7 @@ const I18N = {
     'challenge.confirm.r4': '🎖️ 4位 +10pt',
     'home.footer': 'ヒッヒッヒ…おいじぃの試練、すべて受けてみるかのぅ？\n（右上の ⚙️ から設定・遊び方・初期化が開けるぞい）\n<span style="color:#9a8bbb;">キーボード操作対応：↑↓矢印で移動 ／ Enterで決定 ／ Escで戻る</span>',
     'home.back': '🏠 ホームへ戻る',
+    'home.exitApp': 'ゲーム終了',
     'home.kbHint': '↑↓← →: 移動 / Enter: 決定 / Esc: 戻る',
     'howto.title': '超わかりやすい遊び方',
     'howto.close': '閉じる (Esc)',
@@ -19019,6 +19197,7 @@ const I18N = {
     'challenge.confirm.r4': '🎖️ 4th +10pt',
     'home.footer': 'Hehehe… will you take on all of Ojii\'s trials?<br>(Use ⚙️ at the top right for Settings, How to Play, and Reset)<br><span style="color:#9a8bbb;">Keyboard: ↑↓ to move / Enter to select / Esc to go back</span>',
     'home.back': '🏠 Back to Home',
+    'home.exitApp': 'Exit Game',
     'home.kbHint': '↑↓←→: Move / Enter: Select / Esc: Back',
     'howto.title': 'Easy How to Play',
     'howto.close': 'Close (Esc)',
@@ -21581,6 +21760,7 @@ function _buildAnalogHTML() {
 }
 
 /* 時計ウィジェットを完全に再構築 */
+var __clockTickInterval = null;
 function refreshClockWidget() {
     const el = document.getElementById('clock-widget');
     if (!el) return;
@@ -24870,8 +25050,6 @@ async function ensureGameHtml(gameId) {
 
 
 <script>
-
-<script>
 /* ===== カスタムカーソル コントローラ ===== */
 (function(){
   var KEY = 'oijiiw_cursor_settings_v1';
@@ -24919,7 +25097,8 @@ async function ensureGameHtml(gameId) {
   }
 
   var el = null;
-  var x=0, y=0, tx=0, ty=0, raf=0, listenersOn=false;
+  var x=(window.innerWidth||0)/2, y=(window.innerHeight||0)/2;
+  var tx=x, ty=y, raf=0, listenersOn=false;
 
   function ensureEl(){
     el = document.getElementById('magic-cursor');
@@ -24942,6 +25121,7 @@ async function ensureGameHtml(gameId) {
   }
   function onMove(e){
     tx = e.clientX; ty = e.clientY;
+    document.documentElement.classList.add('cursor-custom-ready');
     if (el) {
       el.style.display = '';
       el.classList.add('active');
@@ -25008,7 +25188,9 @@ async function ensureGameHtml(gameId) {
   };
 
   function boot(){
+    document.documentElement.classList.remove('cursor-custom', 'cursor-custom-ready');
     ensureEl();
+    if (el) { el.style.display='none'; el.classList.remove('active','clicking'); }
     applyCursorSettings();
     syncCursorSettingsUI();
   }
