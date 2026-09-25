@@ -568,6 +568,20 @@
         background: rgba(8,4,16,.84); backdrop-filter: blur(8px);
     }
     #app-exit-overlay.show { display:flex !important; }
+    .app-exit-saving {
+        display:flex; flex-direction:column; align-items:center; justify-content:center;
+        gap:12px; margin:4px 0 18px;
+    }
+    .app-exit-spinner {
+        width:58px; height:58px; border-radius:50%; box-sizing:border-box;
+        border:6px solid rgba(255,255,255,.18);
+        border-top-color:rgba(220,170,255,.98);
+        border-right-color:rgba(180,120,255,.82);
+        animation:appExitSpin .8s linear infinite;
+        filter:drop-shadow(0 0 10px rgba(200,120,255,.28));
+    }
+    @keyframes appExitSpin { to { transform:rotate(360deg); } }
+    .app-exit-countdown { font-size:.82rem; color:#cdb8e8; opacity:.95; }
     .app-exit-card {
         width:min(440px,92vw); border-radius:22px; padding:28px 24px 22px; text-align:center;
         background:linear-gradient(145deg,rgba(50,24,76,.98),rgba(22,10,42,.98));
@@ -5708,6 +5722,7 @@ function __notifySplashDone(){
     function allPressed(){ return REQUIRED.every(function(k){ return held.has(k); }); }
 
     function stopAllAudio(){
+        try { if(typeof stopExitSavingSound === 'function') stopExitSavingSound(); }catch(e){}
         try { if('speechSynthesis' in window) window.speechSynthesis.cancel(); }catch(e){}
         try { var a = document.getElementById('main-bgm'); if(a){ a.pause(); } }catch(e){}
         try { document.querySelectorAll('audio,video').forEach(function(m){ try{ m.pause(); }catch(e){} }); }catch(e){}
@@ -6000,10 +6015,17 @@ function __notifySplashDone(){
     <!-- ===== ゲーム終了案内 ===== -->
     <div id="app-exit-overlay" role="dialog" aria-modal="true" aria-labelledby="app-exit-title" style="display:none;">
         <div class="app-exit-card">
-            <div class="app-exit-icon">🚪</div>
+            <div class="app-exit-icon" id="app-exit-icon">🚪</div>
             <h2 id="app-exit-title">ゲームを終了しました</h2>
+            <div id="app-exit-saving" class="app-exit-saving" style="display:none;">
+                <div class="spinner-win10" aria-hidden="true">
+                    <div class="circle"></div><div class="circle"></div><div class="circle"></div><div class="circle"></div><div class="circle"></div>
+                </div>
+                <div id="app-exit-saving-text"><b>保存しています…</b></div>
+                <div id="app-exit-countdown" class="app-exit-countdown">3秒</div>
+            </div>
             <p id="app-exit-text">全画面表示を解除しました。<br>このタブを閉じてください。</p>
-            <button type="button" id="app-exit-close" onclick="closeExitNotice(); forceCloseCurrentTab();">タブを閉じる</button>
+            <button type="button" id="app-exit-close" onclick="showExitNotice(true);">タブを閉じる</button>
         </div>
     </div>
 
@@ -10976,6 +10998,53 @@ function testAlarmSound() {
 }
 
 /* =========================================================
+   終了時の保存スピナー効果音
+   ・3秒間だけ、やさしい進行音を一定間隔で再生
+   ・通常の「効果音 OFF」設定では鳴らさない
+========================================================= */
+let exitSavingSoundTimers = [];
+function stopExitSavingSound() {
+    try {
+        exitSavingSoundTimers.forEach(function(id){ clearTimeout(id); });
+        exitSavingSoundTimers = [];
+    } catch (e) {}
+}
+function playExitSavingSound() {
+    stopExitSavingSound();
+    try {
+        if (typeof root === 'undefined' || !root.sound || root.sound.sfx === false) return;
+        const ctx = ensureAudioCtx();
+        if (!ctx) return;
+        const baseVolume = Math.max(0, Math.min(1, (root.sound.sfxVolume != null) ? root.sound.sfxVolume : 0.45));
+        if (baseVolume <= 0) return;
+        const startAt = ctx.currentTime + 0.03;
+        const notes = [
+            { t: 0.00, f: 660, d: 0.10 },
+            { t: 0.72, f: 784, d: 0.10 },
+            { t: 1.44, f: 880, d: 0.10 },
+            { t: 2.16, f: 988, d: 0.12 },
+            { t: 2.82, f: 1175, d: 0.13 }
+        ];
+        notes.forEach(function(note){
+            try {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(note.f, startAt + note.t);
+                gain.gain.setValueAtTime(0, startAt + note.t);
+                gain.gain.linearRampToValueAtTime(0.09 * baseVolume, startAt + note.t + 0.018);
+                gain.gain.exponentialRampToValueAtTime(0.0001, startAt + note.t + note.d);
+                osc.connect(gain).connect(ctx.destination);
+                osc.start(startAt + note.t);
+                osc.stop(startAt + note.t + note.d + 0.02);
+            } catch (e) {}
+        });
+        exitSavingSoundTimers.push(setTimeout(stopExitSavingSound, 3200));
+    } catch (e) {}
+}
+
+
+/* =========================================================
    表示更新
 ========================================================= */
 
@@ -14479,21 +14548,50 @@ async function requestExitGameApp() {
 }
 
 async function forceCloseCurrentTab() {
-    var closed = false;
-    function isClosed(){ return !!window.closed; }
-    function attempt(fn){
-        if (closed || isClosed()) return;
-        try { fn(); } catch(e) {}
-        closed = isClosed();
+    /* 通常タブはJavaScriptから安全に強制閉鎖できないため、何もしない。 */
+    return false;
+}
+
+function showExitSavingScreen() {
+    var ov=document.getElementById('app-exit-overlay'); if(!ov) return;
+    var en=(typeof getAppLang === 'function' && getAppLang()==='en');
+    var icon=document.getElementById('app-exit-icon');
+    var title=document.getElementById('app-exit-title');
+    var saving=document.getElementById('app-exit-saving');
+    var savingText=document.getElementById('app-exit-saving-text');
+    var countdown=document.getElementById('app-exit-countdown');
+    var msg=document.getElementById('app-exit-text');
+    var btn=document.getElementById('app-exit-close');
+    if(icon) icon.textContent='💾';
+    if(title) title.textContent=en?'Saving before exit':'終了前に保存しています';
+    if(saving) saving.style.display='flex';
+    if(savingText) savingText.innerHTML=en?'<b>Saving your data…</b>':'<b>データを保存しています…</b>';
+    if(msg) msg.innerHTML=en?'Please wait a moment.<br>Your data and the exit backup are being saved.':'少しだけお待ちください。<br>データと終了時バックアップを保存しています。';
+    if(btn) btn.style.display='none';
+    if(countdown) countdown.textContent=en?'3 seconds':'3秒';
+    ov.style.display='flex';
+    ov.classList.add('show');
+    ov.setAttribute('aria-hidden','false');
+}
+
+function updateExitSavingCountdown(sec) {
+    var countdown=document.getElementById('app-exit-countdown');
+    if(!countdown) return;
+    var en=(typeof getAppLang === 'function' && getAppLang()==='en');
+    countdown.textContent=en?(sec + (sec===1?' second':' seconds')):(sec + '秒');
+}
+
+async function waitExitSaving3Seconds() {
+    showExitSavingScreen();
+    try { playExitSavingSound(); } catch(e) {}
+    try {
+        for(var sec=3; sec>=1; sec--){
+            updateExitSavingCountdown(sec);
+            await new Promise(function(resolve){ setTimeout(resolve,1000); });
+        }
+    } finally {
+        try { stopExitSavingSound(); } catch(e) {}
     }
-
-    /* ブラウザが許可する可能性のある経路を順番に試す */
-    attempt(function(){ window.close(); });
-    attempt(function(){ self.close(); });
-    attempt(function(){ window.open('', '_self'); window.close(); });
-    attempt(function(){ window.top.close(); });
-
-    return closed || isClosed();
 }
 
 async function exitGameApp() {
@@ -14501,7 +14599,20 @@ async function exitGameApp() {
     if (window.__oijiiExitRunning) return false;
     window.__oijiiExitRunning = true;
 
-    /* 1. 音・ゲーム・タイマーを完全停止 */
+    /* 1. まず現在データを保存し、終了時バックアップを作成 */
+    try { saveRoot(); } catch(e) {}
+    try {
+        if (typeof root !== 'undefined' && root && Array.isArray(root.users) && root.users.length > 0 && typeof makeSnapshot === 'function') {
+            makeSnapshot('exit');
+        }
+    } catch(e) {}
+    try {
+        if (typeof localStorage !== 'undefined') localStorage.setItem('oijii_last_exit_save_v1', String(Date.now()));
+    } catch(e) {}
+    /* 保存完了後、3秒間スピナーを表示 */
+    try { await waitExitSaving3Seconds(); } catch(e) {}
+
+    /* 2. 音・ゲーム・タイマーを完全停止 */
     try { if (typeof stopAllAudio === 'function') stopAllAudio(); } catch(e) {}
     try { if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel(); } catch(e) {}
     try {
@@ -14531,7 +14642,7 @@ async function exitGameApp() {
          'diff-preview-overlay','select-restore-overlay','qr-export-overlay','qr-import-overlay','reset-overlay',
          'reset-info-overlay','resetmenu-overlay','custom-reset-overlay','selective-user-delete-overlay',
          'block-user-overlay','howto-overlay','about-overlay','keyhelp-overlay','stats-overlay',
-         'parental-auth-overlay','extend-time-overlay','app-exit-overlay'].forEach(function(id){
+         'parental-auth-overlay','extend-time-overlay'].forEach(function(id){
             var el=document.getElementById(id);
             if(el){
                 el.classList.remove('show');
@@ -14573,16 +14684,27 @@ async function exitGameApp() {
 function showExitNotice(force) {
     var ov=document.getElementById('app-exit-overlay'); if(!ov) return;
     var en=(typeof getAppLang === 'function' && getAppLang()==='en');
+    var icon=document.getElementById('app-exit-icon');
     var title=document.getElementById('app-exit-title');
+    var saving=document.getElementById('app-exit-saving');
     var msg=document.getElementById('app-exit-text');
     var closeBtn=document.getElementById('app-exit-close');
+    if(icon) icon.textContent='✅';
     if(title) title.textContent=en?'Game ended':'ゲームを終了しました';
+    if(saving) saving.style.display='none';
     if(msg) msg.innerHTML=en
-        ? 'The game has been completely stopped.<br>Fullscreen has been exited.<br><b>Please close this browser tab.</b>'
-        : 'ゲームを完全に終了しました。<br>全画面表示も解除しました。<br><b>このブラウザのタブを閉じてください。</b>';
+        ? 'Your data has been saved.<br>Fullscreen has been exited.<br><b>Please close this browser tab.</b>'
+        : 'データを保存しました。<br>全画面表示も解除しました。<br><b>このブラウザのタブを閉じてください。</b>';
     if(closeBtn){
+        closeBtn.style.display='inline-flex';
         closeBtn.textContent=en?'Close tab':'タブを閉じる';
-        closeBtn.onclick=function(){ closeExitNotice(); forceCloseCurrentTab(); };
+        closeBtn.onclick=function(){
+            if(en){
+                alert("Please close this browser tab with the browser's X button or Ctrl+W.");
+            }else{
+                alert('ブラウザ右上の「×」ボタン、または Ctrl+W でこのタブを閉じてください。');
+            }
+        };
     }
     ov.style.display='flex';
     ov.classList.add('show');
@@ -14591,7 +14713,6 @@ function showExitNotice(force) {
         try { closeExitNotice._forced = true; } catch(e) {}
     }
 }
-
 function closeExitNotice(){
     var ov=document.getElementById('app-exit-overlay');
     if(ov){ ov.classList.remove('show'); ov.style.display='none'; ov.setAttribute('aria-hidden','true'); }
