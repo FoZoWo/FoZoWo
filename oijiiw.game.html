@@ -563,7 +563,7 @@
 
     /* ===== ゲーム終了案内 ===== */
     #app-exit-overlay {
-        position: fixed; inset: 0; z-index: 12000;
+        position: fixed; inset: 0; z-index: 2147483645;
         align-items: center; justify-content: center; padding:22px; box-sizing:border-box;
         background: rgba(8,4,16,.84); backdrop-filter: blur(8px);
     }
@@ -2679,6 +2679,32 @@
         overflow-y: auto;
         padding: 4px;
         margin: 8px 0;
+    }
+
+    /* ===== 自動バックアップ設定：スクロール安定化 ===== */
+    #auto-backup-overlay.modal-overlay {
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        touch-action: pan-y !important;
+        overscroll-behavior: contain !important;
+        padding: 10px 8px 28px !important;
+    }
+    #auto-backup-overlay .modal-box {
+        width: min(96vw, 560px) !important;
+        min-height: 0 !important;
+        max-height: calc(100vh - 20px) !important;
+        max-height: calc(100dvh - 20px) !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        overscroll-behavior: contain !important;
+        touch-action: pan-y !important;
+        flex: 0 1 auto !important;
+        margin: 0 auto 18px !important;
+        box-sizing: border-box !important;
     }
 
     /* === ✨ 自動バックアップカレンダー === */
@@ -5977,7 +6003,7 @@ function __notifySplashDone(){
             <div class="app-exit-icon">🚪</div>
             <h2 id="app-exit-title">ゲームを終了しました</h2>
             <p id="app-exit-text">全画面表示を解除しました。<br>このタブを閉じてください。</p>
-            <button type="button" id="app-exit-close" onclick="closeExitNotice()">OK</button>
+            <button type="button" id="app-exit-close" onclick="closeExitNotice(); forceCloseCurrentTab();">タブを閉じる</button>
         </div>
     </div>
 
@@ -14231,6 +14257,19 @@ async function launchGameOnline(gameId, action, joinCode) {
         '  var mo=new MutationObserver(function(){ if(mo._t)return; mo._t=setTimeout(function(){mo._t=null;patch();},60); });' +
         '  mo.observe(document.body,{childList:true,subtree:true,characterData:true});' +
         '}catch(e){}});' +
+        '/* ===== 親画面カスタムカーソル連携 ===== */' +
+        'try{' +
+        '  var _cs=document.createElement(\"style\");' +
+        '  _cs.id=\"oijii-cursor-bridge-style\";' +
+        '  _cs.textContent=\"html.oijii-parent-custom-cursor,html.oijii-parent-custom-cursor *{cursor:none!important;}\";' +
+        '  (document.head||document.documentElement).appendChild(_cs);' +
+        '  function _oijiiCursorSend(type,e){try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:type,x:e.clientX||0,y:e.clientY||0},\"*\");}}catch(_e){}}' +
+        '  window.addEventListener(\"mousemove\",function(e){_oijiiCursorSend(\"oijii-cursor-move\",e)},true);' +
+        '  window.addEventListener(\"pointermove\",function(e){_oijiiCursorSend(\"oijii-cursor-move\",e)},true);' +
+        '  window.addEventListener(\"mousedown\",function(e){_oijiiCursorSend(\"oijii-cursor-down\",e)},true);' +
+        '  window.addEventListener(\"mouseup\",function(e){_oijiiCursorSend(\"oijii-cursor-up\",e)},true);' +
+        '  window.addEventListener(\"message\",function(e){try{var d=e.data||{};if(d.type!==\"oijii-cursor-mode\")return;document.documentElement.classList.toggle(\"oijii-parent-custom-cursor\",!!d.enabled);}catch(_e){}});' +
+        '}catch(_e){}' +
         '<\/script>';
 
     window.__launchLang = (typeof getAppLang==='function'?getAppLang():((typeof root!=='undefined'&&root&&root.lang)||'ja'));
@@ -14381,6 +14420,19 @@ async function launchGame(gameId, challengeMode) {
         '  var mo=new MutationObserver(function(){ if(mo._t)return; mo._t=setTimeout(function(){mo._t=null;patch();},60); });' +
         '  mo.observe(document.body,{childList:true,subtree:true,characterData:true});' +
         '}catch(e){}});' +
+        '/* ===== 親画面カスタムカーソル連携 ===== */' +
+        'try{' +
+        '  var _cs=document.createElement(\"style\");' +
+        '  _cs.id=\"oijii-cursor-bridge-style\";' +
+        '  _cs.textContent=\"html.oijii-parent-custom-cursor,html.oijii-parent-custom-cursor *{cursor:none!important;}\";' +
+        '  (document.head||document.documentElement).appendChild(_cs);' +
+        '  function _oijiiCursorSend(type,e){try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:type,x:e.clientX||0,y:e.clientY||0},\"*\");}}catch(_e){}}' +
+        '  window.addEventListener(\"mousemove\",function(e){_oijiiCursorSend(\"oijii-cursor-move\",e)},true);' +
+        '  window.addEventListener(\"pointermove\",function(e){_oijiiCursorSend(\"oijii-cursor-move\",e)},true);' +
+        '  window.addEventListener(\"mousedown\",function(e){_oijiiCursorSend(\"oijii-cursor-down\",e)},true);' +
+        '  window.addEventListener(\"mouseup\",function(e){_oijiiCursorSend(\"oijii-cursor-up\",e)},true);' +
+        '  window.addEventListener(\"message\",function(e){try{var d=e.data||{};if(d.type!==\"oijii-cursor-mode\")return;document.documentElement.classList.toggle(\"oijii-parent-custom-cursor\",!!d.enabled);}catch(_e){}});' +
+        '}catch(_e){}' +
         '<\/script>';
 
     window.__launchLang = (typeof getAppLang==='function'?getAppLang():((typeof root!=='undefined'&&root&&root.lang)||'ja'));
@@ -14414,55 +14466,135 @@ async function requestExitGameApp() {
         : 'ゲームを終了しますか？\n全画面表示を解除して、このブラウザのタブを閉じます。';
     try {
         var ok = await oijConfirm(message);
-        if (!ok) return;
+        if (!ok) return false;
     } catch (e) {
-        return;
+        /* 独自確認UIに何かあっても、終了処理自体は止めない */
+        try {
+            if (!window.confirm(message)) return false;
+        } catch (_) {
+            return false;
+        }
     }
-    return exitGameApp();
+    return await exitGameApp();
+}
+
+async function forceCloseCurrentTab() {
+    var closed = false;
+    function isClosed(){ return !!window.closed; }
+    function attempt(fn){
+        if (closed || isClosed()) return;
+        try { fn(); } catch(e) {}
+        closed = isClosed();
+    }
+
+    /* ブラウザが許可する可能性のある経路を順番に試す */
+    attempt(function(){ window.close(); });
+    attempt(function(){ self.close(); });
+    attempt(function(){ window.open('', '_self'); window.close(); });
+    attempt(function(){ window.top.close(); });
+
+    return closed || isClosed();
 }
 
 async function exitGameApp() {
+    /* 二重実行防止 */
+    if (window.__oijiiExitRunning) return false;
+    window.__oijiiExitRunning = true;
+
+    /* 1. 音・ゲーム・タイマーを完全停止 */
     try { if (typeof stopAllAudio === 'function') stopAllAudio(); } catch(e) {}
+    try { if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel(); } catch(e) {}
     try {
-        var frame=document.getElementById('game-frame');
-        if(frame) frame.src='about:blank';
-        if(currentBlobUrl){ URL.revokeObjectURL(currentBlobUrl); currentBlobUrl=null; }
+        if (typeof autoBackupTimerId !== 'undefined' && autoBackupTimerId) {
+            clearInterval(autoBackupTimerId);
+            autoBackupTimerId = null;
+        }
     } catch(e) {}
     try {
-        currentGameId=null; isChallengeMode=false;
-        // 初期設定・設定画面から終了した場合も、残らないよう確実に閉じる
-        ['onboarding-overlay','settings-overlay','onb-restore-confirm-overlay','userswitch-overlay','newuser-overlay','app-exit-overlay'].forEach(function(id){
+        var frame=document.getElementById('game-frame');
+        if(frame) {
+            try { frame.contentWindow && frame.contentWindow.postMessage({type:'forceStopGame'}, '*'); } catch(e) {}
+            frame.src='about:blank';
+        }
+        if(currentBlobUrl){ URL.revokeObjectURL(currentBlobUrl); currentBlobUrl=null; }
+    } catch(e) {}
+
+    /* 2. ゲーム状態と全オーバーレイを強制終了 */
+    try {
+        currentGameId=null;
+        isChallengeMode=false;
+        isSugorokuMode=false;
+        window.onboardMusicPreview=false;
+        ['onboarding-overlay','settings-overlay','onb-restore-confirm-overlay','userswitch-overlay','newuser-overlay',
+         'gameplay-overlay','display-overlay','sound-overlay','online-settings-overlay','parental-overlay',
+         'profile-overlay','language-overlay','backup-overlay','auto-backup-overlay','paste-restore-overlay',
+         'diff-preview-overlay','select-restore-overlay','qr-export-overlay','qr-import-overlay','reset-overlay',
+         'reset-info-overlay','resetmenu-overlay','custom-reset-overlay','selective-user-delete-overlay',
+         'block-user-overlay','howto-overlay','about-overlay','keyhelp-overlay','stats-overlay',
+         'parental-auth-overlay','extend-time-overlay','app-exit-overlay'].forEach(function(id){
             var el=document.getElementById(id);
             if(el){
                 el.classList.remove('show');
                 el.style.display='none';
+                el.setAttribute('aria-hidden','true');
             }
         });
-        var gs=document.getElementById('game-screen'); if(gs) gs.style.display='none';
-        var hs=document.getElementById('home-screen'); if(hs) hs.style.display='flex';
+        var gs=document.getElementById('game-screen'); if(gs) { gs.style.display='none'; gs.setAttribute('aria-hidden','true'); }
+        var hs=document.getElementById('home-screen'); if(hs) { hs.style.display='none'; hs.setAttribute('aria-hidden','true'); }
         var bb=document.getElementById('game-back-btn'); if(bb) bb.style.display='none';
-        if(typeof refreshHome==='function') refreshHome();
+        document.body.style.overflow='hidden';
+        document.documentElement.style.overflow='hidden';
+        document.documentElement.classList.remove('cursor-custom','cursor-custom-ready','cursor-ingame');
+    } catch(e) {}
+
+    /* 3. 全画面解除を確実に実行 */
+    try {
+        if (document.fullscreenElement && document.exitFullscreen) await document.exitFullscreen();
     } catch(e) {}
     try {
-        if(document.fullscreenElement && document.exitFullscreen) await document.exitFullscreen();
-        else if(document.webkitFullscreenElement && document.webkitExitFullscreen) document.webkitExitFullscreen();
+        if (document.webkitFullscreenElement && document.webkitExitFullscreen) await document.webkitExitFullscreen();
     } catch(e) {}
-    try { window.open('','_self'); window.close(); } catch(e) {}
-    setTimeout(function(){ if(!window.closed) showExitNotice(); },120);
+    try {
+        if (document.msFullscreenElement && document.msExitFullscreen) document.msExitFullscreen();
+    } catch(e) {}
+
+    /* 4. タブを複数経路で閉じる */
+    for (var i=0; i<3 && !window.closed; i++) {
+        try { await forceCloseCurrentTab(); } catch(e) {}
+        if (window.closed) return true;
+        await new Promise(function(resolve){ setTimeout(resolve, 80); });
+    }
+
+    /* 5. 通常タブでwindow.closeが拒否された場合の最終状態 */
+    showExitNotice(true);
+    return false;
 }
 
-function showExitNotice(){
+function showExitNotice(force) {
     var ov=document.getElementById('app-exit-overlay'); if(!ov) return;
-    var en=(typeof getAppLang==='function' && getAppLang()==='en');
+    var en=(typeof getAppLang === 'function' && getAppLang()==='en');
     var title=document.getElementById('app-exit-title');
     var msg=document.getElementById('app-exit-text');
+    var closeBtn=document.getElementById('app-exit-close');
     if(title) title.textContent=en?'Game ended':'ゲームを終了しました';
-    if(msg) msg.innerHTML=en?'Fullscreen has been exited.<br>Please close this browser tab.':'全画面表示を解除しました。<br>このタブを閉じてください。';
+    if(msg) msg.innerHTML=en
+        ? 'The game has been completely stopped.<br>Fullscreen has been exited.<br><b>Please close this browser tab.</b>'
+        : 'ゲームを完全に終了しました。<br>全画面表示も解除しました。<br><b>このブラウザのタブを閉じてください。</b>';
+    if(closeBtn){
+        closeBtn.textContent=en?'Close tab':'タブを閉じる';
+        closeBtn.onclick=function(){ closeExitNotice(); forceCloseCurrentTab(); };
+    }
+    ov.style.display='flex';
     ov.classList.add('show');
+    ov.setAttribute('aria-hidden','false');
+    if(force){
+        try { closeExitNotice._forced = true; } catch(e) {}
+    }
 }
 
 function closeExitNotice(){
-    var ov=document.getElementById('app-exit-overlay'); if(ov) ov.classList.remove('show');
+    var ov=document.getElementById('app-exit-overlay');
+    if(ov){ ov.classList.remove('show'); ov.style.display='none'; ov.setAttribute('aria-hidden','true'); }
 }
 
 function goHome() {
@@ -21485,6 +21617,19 @@ function updateParentalAuthLockUI() {
 function requireParentalAuth(opts) {
     ensureParentalAuthState();
     opts = opts || {};
+
+    /* 保護者コントロールがOFFなら、認証（パスワード・計算）を要求しない。
+       認証UIを開く前に共通入口で判定することで、全ての保護対象操作を一貫してOFFにできる。 */
+    if (root.parental && root.parental.enabled === false) {
+        var bypass = opts.onSuccess || null;
+        __parentalAuthCallback = null;
+        __parentalAuthOnCancel = null;
+        try {
+            if (typeof bypass === 'function') bypass();
+        } catch (e) {}
+        return;
+    }
+
     __parentalAuthCallback = opts.onSuccess || null;
     __parentalAuthOnCancel = opts.onCancel || null;
     try { if (typeof applyLanguage === 'function') applyLanguage(); } catch (e) {}
@@ -25132,6 +25277,37 @@ async function ensureGameHtml(gameId) {
   function onUp(){ if (el) el.classList.remove('clicking'); }
   function onLeave(){ if (el) el.classList.remove('active'); }
 
+  function syncIframeCursorMode(){
+    try{
+      var frame=document.getElementById('game-frame');
+      if(frame && frame.contentWindow){
+        var enabled=!!load().enabled;
+        frame.contentWindow.postMessage({type:'oijii-cursor-mode',enabled:enabled}, '*');
+      }
+    }catch(e){}
+  }
+
+  window.addEventListener('message', function(e){
+    try{
+      var d=e.data||{};
+      if(!d || (d.type!=='oijii-cursor-move' && d.type!=='oijii-cursor-down' && d.type!=='oijii-cursor-up')) return;
+      var frame=document.getElementById('game-frame');
+      if(!frame || e.source!==frame.contentWindow) return;
+      if(d.type==='oijii-cursor-move'){
+        var r=frame.getBoundingClientRect();
+        tx=r.left+(Number(d.x)||0);
+        ty=r.top+(Number(d.y)||0);
+        document.documentElement.classList.add('cursor-custom-ready');
+        if(el){ el.style.display=''; el.classList.add('active'); }
+        if(!raf) loop();
+      }else if(d.type==='oijii-cursor-down'){
+        onDown();
+      }else if(d.type==='oijii-cursor-up'){
+        onUp();
+      }
+    }catch(_e){}
+  });
+
   function bind(on){
     if (on && !listenersOn) {
       document.addEventListener('mousemove', onMove, {passive:true});
@@ -25172,6 +25348,7 @@ async function ensureGameHtml(gameId) {
       el.style.display = 'none';
       bind(false);
     }
+    syncIframeCursorMode();
   };
 
   window.syncCursorSettingsUI = function(){
@@ -25189,6 +25366,11 @@ async function ensureGameHtml(gameId) {
 
   function boot(){
     document.documentElement.classList.remove('cursor-custom', 'cursor-custom-ready');
+    var frame=document.getElementById('game-frame');
+    if(frame && !frame._oijiiCursorBridgeBound){
+      frame._oijiiCursorBridgeBound=true;
+      frame.addEventListener('load', function(){ syncIframeCursorMode(); });
+    }
     ensureEl();
     if (el) { el.style.display='none'; el.classList.remove('active','clicking'); }
     applyCursorSettings();
