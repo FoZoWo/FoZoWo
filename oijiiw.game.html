@@ -10038,7 +10038,7 @@ function __notifySplashDone(){
                 <p id="bw-permanent-final" class="block-wizard-text"></p>
                 <div class="reset-btns">
                     <button type="button" class="reset-btn-danger" onclick="bwApply()">完全ブロックするぞい</button>
-                    <button type="button" class="reset-btn-cancel" onclick="bwShowStep(5)">やめておく</button>
+                    <button type="button" class="reset-btn-cancel" onclick="bwCancelPermanent()">やめておく</button>
                 </div>
             </div>
 
@@ -25654,6 +25654,8 @@ async function ensureGameHtml(gameId) {
     function shouldPlayBgm() {
         /* オフライン警告・通信強制終了中は、どのゲームからでもBGMを再開させない */
         if (window.__OIJII_FORCE_AUDIO_STOP || window.__OIJII_OFFLINE_ALERT) return false;
+        /* 完全ブロックの最終警告中だけBGMを止める。キャンセル後に再開する。 */
+        if (window.__OIJII_BLOCK_FINAL_MUSIC_PAUSE) return false;
         /* 🎵 初期設定ウィザードで「音楽ON」を押した直後のプレビュー再生を許可する */
         if (window.onboardMusicPreview) {
             const onb = document.getElementById('onboarding-overlay');
@@ -27163,6 +27165,8 @@ window.openMP=openMP;window.mpHandleDisconnect=mpHandleDisconnect;
     }
     else if(n===6){
       const final=$('bw-permanent-final'); if(final)final.textContent='これが最後の確認じゃ。完全ブロックを実行すると、あとから元に戻せんぞい。本当に完全ブロックしてよいかい？';
+      window.__OIJII_BLOCK_FINAL_MUSIC_PAUSE=true;
+      try{ const a=$('main-bgm'); if(a) a.pause(); }catch(e){}
       show(6);try{playAlarmSound('alert');}catch(e){};speak('これが最後の確認じゃ。完全ブロックを実行すると、あとから元に戻せんぞい。本当に完全ブロックしてよいかい？','This is the final confirmation. A permanent block cannot be undone. Do you really want to apply it?');
     }
     else show(n);
@@ -27229,9 +27233,21 @@ window.openMP=openMP;window.mpHandleDisconnect=mpHandleDisconnect;
     const d=BW.duration||duration(); const until=type==='temporary'?durationEnd(d).getTime():0;
     targets.forEach(u=>{
       u.blockType=type; u.blockUntil=until; u.isTotallyLocked=type==='permanent';
+      if(type==='permanent') u.securityLockReason='manual';
+      else if(u.securityLockReason==='manual') u.securityLockReason='';
     });
     saveRoot();
     setTimeout(function(){try{location.reload();}catch(e){location.href=location.href;}},5000);
+  };
+  window.bwCancelPermanent=function(){
+    window.__OIJII_BLOCK_FINAL_MUSIC_PAUSE=false;
+    bwShowStep(5);
+    try{
+      if(typeof root!=='undefined' && root && root.sound && root.sound.music !== false){
+        if(window.MainBGM && typeof window.MainBGM.enable==='function') window.MainBGM.enable();
+        else { const a=$('main-bgm'); if(a){ const p=a.play(); if(p&&p.catch)p.catch(()=>{}); } }
+      }
+    }catch(e){}
   };
   window.openBlockUserPicker=function(){
     const proceed=function(){
@@ -27246,6 +27262,7 @@ window.openMP=openMP;window.mpHandleDisconnect=mpHandleDisconnect;
     requireParentalAuth({title:langEn()?'Block User':'ユーザブロック',message:langEn()?'Enter the parental password to manage user blocks.':'ユーザーブロックを開くには保護者パスワードを入力するのじゃ。',onSuccess:proceed});
   };
   window.closeBlockUserPicker=function(){
+    window.__OIJII_BLOCK_FINAL_MUSIC_PAUSE=false;
     const ov=$('block-wizard-overlay');if(ov){ov.classList.remove('show');ov.classList.remove('complete-loading');ov.setAttribute('aria-hidden','true');}
     if('speechSynthesis' in window)window.speechSynthesis.cancel();
   };
@@ -27464,7 +27481,7 @@ function setCurrentSecurityLockGate(u, active){
 function recordSecurityFailure(u){
   normalizeSecurityUser(u);
   u.wrongCount=(u.wrongCount||0)+1;
-  if(u.wrongCount>=5){u.isTotallyLocked=true;u.lockUntil=0;}
+  if(u.wrongCount>=5){u.isTotallyLocked=true;u.lockUntil=0;u.securityLockReason='password5';}
   else if(u.wrongCount===3||u.wrongCount===4){u.lockUntil=Date.now()+lockDurationForWrongCount(u.wrongCount);}
   saveRoot();
   setCurrentSecurityLockGate(u,true);
@@ -27476,7 +27493,9 @@ function recordSecurityFailure(u){
 }
 function resetSecurityFailures(u){
   normalizeSecurityUser(u);
-  u.wrongCount=0;u.lockUntil=0;u.isTotallyLocked=false;saveRoot();
+  u.wrongCount=0;u.lockUntil=0;u.isTotallyLocked=false;
+  if(u.securityLockReason==='password5')u.securityLockReason='';
+  saveRoot();
 }
 
 function createPatternPad(container,mode,onDone,initial){
@@ -27565,10 +27584,58 @@ async function authenticateDeviceCredential(id){
   try{var cred=await navigator.credentials.get({publicKey:{challenge:randomBytes(32),allowCredentials:[{type:'public-key',id:new Uint8Array(unb64url(id))}],userVerification:'required',timeout:60000}});return !!cred;}catch(e){console.warn('WebAuthn auth',e);if(e&&e.name!=='NotAllowedError')await safeAlert('端末ロックの認証に失敗したぞい。','Device lock authentication failed.');return false;}finally{webauthnBusy=false;}
 }
 
+
+function renderPassword5PermanentLock(u, announce){
+  var box=byId('auth-overlay') ? byId('auth-overlay').querySelector('.auth-simple-box') : null;
+  var msg=byId('auth-msg'),title=byId('auth-title'),timer=byId('auth-lock-timer'),ui=byId('auth-method-ui'),forgot=byId('auth-forgot-btn'),unblock=byId('auth-unblock-btn');
+  if(!box||!msg||!ui)return;
+  var overlay=byId('auth-overlay');
+  var screen=byId('ojwga-password5-lock-screen');
+  if(!screen){
+    screen=document.createElement('div');screen.id='ojwga-password5-lock-screen';screen.className='ojwga-password5-lock-screen';
+    screen.innerHTML='<div class="ojwga-password5-lock-badge" aria-hidden="true">🔐</div>'+
+      '<div class="ojwga-password5-lock-title">パスワードロックが発動したぞい</div>'+
+      '<div class="ojwga-password5-lock-phrase">ヒッヒッヒ…5回も間違えおって！完全にロックされたぞい！もう二度と開かんわい！</div>'+
+      '<div class="ojwga-password5-lock-sub">このユーザーはパスワード認証に5回失敗したため、永久にログインできません。パスワード・暗証番号・パターン・端末認証から解除することはできません。</div>'+
+      '<button type="button" class="challenge-btn ojwga-password5-lock-btn" id="ojwga-password5-lock-back">← ユーザー選択に戻る</button>';
+    box.appendChild(screen);
+    var back=screen.querySelector('#ojwga-password5-lock-back');
+    if(back) back.addEventListener('click',function(){ try{ window.cancelAuth(); }catch(e){} });
+  }
+  box.classList.add('auth-password5-locked');
+  screen.classList.add('show');
+  screen.querySelector('.ojwga-password5-lock-title').textContent=langEn()?'🔐 Permanent authentication lock':'🔐 パスワードロックが発動したぞい';
+  screen.querySelector('.ojwga-password5-lock-sub').textContent=langEn()
+    ?'This user failed authentication five times and is permanently locked. Password, PIN, pattern, and device authentication cannot unlock it.'
+    :'このユーザーはパスワード認証に5回失敗したため、永久にログインできません。パスワード・暗証番号・パターン・端末認証から解除することはできません。';
+  var back=screen.querySelector('#ojwga-password5-lock-back'); if(back) back.textContent=langEn()?'← Back to user selection':'← ユーザー選択に戻る';
+  title.textContent=langEn()?'Authentication locked':'認証ロック';
+  msg.style.display='none';timer.style.display='none';ui.style.display='none';
+  forgot.style.display='none';if(unblock)unblock.style.display='none';
+  var icon=box.querySelector('.auth-simple-icon');if(icon)icon.style.display='none';
+  var links=box.querySelector('.auth-simple-links');if(links)links.style.display='none';
+  if(announce){
+    var key=(u.id||'current')+':password5';
+    if(window.__ojwgaPassword5Announced!==key){
+      window.__ojwgaPassword5Announced=key;
+      try{safeSpeak('ヒッヒッヒ…5回も間違えおって！完全にロックされたぞい！もう二度と開かんわい！','Five wrong tries. This authentication lock is permanent.');}catch(e){}
+    }
+  }
+}
+function clearPassword5PermanentLockUI(){
+  var box=byId('auth-overlay') ? byId('auth-overlay').querySelector('.auth-simple-box') : null;
+  var screen=byId('ojwga-password5-lock-screen');
+  if(screen)screen.classList.remove('show');
+  if(box)box.classList.remove('auth-password5-locked');
+  var msg=byId('auth-msg'),ui=byId('auth-method-ui'),links=box?box.querySelector('.auth-simple-links'):null,icon=box?box.querySelector('.auth-simple-icon'):null;
+  if(msg)msg.style.display=''; if(ui)ui.style.display=''; if(links)links.style.display=''; if(icon)icon.style.display='';
+}
+
 /* ===== Auth UI ===== */
 window.updateAuthUI=function(){
-  var u=getCurrentUser();var msg=byId('auth-msg'),title=byId('auth-title'),timer=byId('auth-lock-timer'),ui=byId('auth-method-ui'),forgot=byId('auth-forgot-btn'),unblock=byId('auth-unblock-btn');if(!u)return;normalizeSecurityUser(u);var en=langEn(),method=u.passwordMethod||'password';clearInterval(authTimerInterval);if(method==='none'){return;}if(msg)msg.textContent='';if(ui)ui.innerHTML='';if(timer)timer.style.display='none';if(forgot)forgot.style.display='none';if(unblock)unblock.style.display='none';title.textContent=en?'Authentication — '+(u.name||'User'):'認証 — '+(u.name||'ユーザー');
-  if(u.isTotallyLocked){if(msg)msg.textContent=en?'This user is permanently locked.':'このユーザーは延々ロック中じゃ。';safeSpeak('5回間違えて延々ロック中じゃぞい。','Five wrong tries. This user is permanently locked.');return;}
+  var u=getCurrentUser();var msg=byId('auth-msg'),title=byId('auth-title'),timer=byId('auth-lock-timer'),ui=byId('auth-method-ui'),forgot=byId('auth-forgot-btn'),unblock=byId('auth-unblock-btn');if(!u)return;normalizeSecurityUser(u);var en=langEn(),method=u.passwordMethod||'password';clearInterval(authTimerInterval);if(method==='none'){return;}clearPassword5PermanentLockUI();if(msg)msg.textContent='';if(ui)ui.innerHTML='';if(timer)timer.style.display='none';if(forgot)forgot.style.display='none';if(unblock)unblock.style.display='none';title.textContent=en?'Authentication — '+(u.name||'User'):'認証 — '+(u.name||'ユーザー');
+  if(u.securityLockReason==='password5'){renderPassword5PermanentLock(u,true);return;}
+  if(u.isTotallyLocked){if(msg)msg.textContent=en?'This user has a permanent block applied by user settings.':'このユーザーにはユーザー設定から完全ブロックが適用されています。解除することはできません。';safeSpeak(en?'This user has a permanent block applied.':'このユーザーには完全ブロックが適用されておる。');return;}
   if(u.lockUntil>Date.now()){if(msg)msg.textContent=en?'Please wait.':'しばらく待つのじゃ。';timer.style.display='block';var tick=function(){var r=Math.max(0,Math.ceil((u.lockUntil-Date.now())/1000));if(r<=0){u.lockUntil=0;saveRoot();updateAuthUI();return;}var m=Math.floor(r/60),s=r%60;timer.textContent=en?(m+'m '+s+'s remaining'):(m+'分 '+s+'秒後に再開');};tick();authTimerInterval=setInterval(tick,1000);return;}
   if(method==='device'){if(msg)msg.textContent=en?'Use the device screen lock.':'端末の画面ロックで認証するのじゃ。';var box=document.createElement('div');box.className='ojwga-device-box';box.innerHTML='<div style="font-size:34px">📱</div><div class="desc">'+(en?'Unlock with the phone/PC screen lock or biometrics.':'スマホやPCの画面ロック・生体認証を使うぞい。')+'</div>';ui.appendChild(box);var b=document.createElement('button');b.type='button';b.className='challenge-btn ojwga-auth-action';b.textContent=en?'Unlock':'解除する';b.onclick=async function(){var ok=await authenticateDeviceCredential(u.deviceCredentialId);if(ok){resetSecurityFailures(u);authSuccess(u);}else if(!window.isSecureContext){safeAlert('HTTPSまたはlocalhostで開いておくれ。','Open the app in a secure context such as HTTPS or localhost.');}};ui.appendChild(b);return;}
   if(method==='password'||method==='pin'){
@@ -27872,6 +27939,22 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
 </script>
 
 
+
+<style id="ojwga-password5-lock-screen-style">
+.ojwga-password5-lock-screen{display:none;width:100%;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:8px 2px 2px;box-sizing:border-box}
+.ojwga-password5-lock-screen.show{display:flex}
+.ojwga-password5-lock-badge{width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:48px;background:radial-gradient(circle at 35% 30%,rgba(120,80,160,.35),rgba(8,5,16,.96));border:2px solid rgba(190,120,255,.55);box-shadow:0 0 30px rgba(130,70,200,.25),inset 0 0 18px rgba(255,255,255,.05)}
+.ojwga-password5-lock-title{font-weight:900;font-size:1.3rem;line-height:1.2;margin-top:2px}
+.ojwga-password5-lock-phrase{width:100%;max-width:520px;padding:16px 14px;border-radius:14px;background:rgba(0,0,0,.28);border:1px solid rgba(190,120,255,.3);font-weight:800;line-height:1.7;box-sizing:border-box}
+.ojwga-password5-lock-sub{color:#d8c7e8;font-size:.88rem;line-height:1.55;max-width:520px}
+.ojwga-password5-lock-btn{width:100%;max-width:420px;margin-top:4px}
+.auth-simple-box.auth-password5-locked .auth-simple-icon{display:none}
+.auth-simple-box.auth-password5-locked #auth-title{margin-top:0}
+.auth-simple-box.auth-password5-locked .auth-simple-links{margin-top:4px}
+.auth-simple-box.auth-password5-locked .auth-simple-links .auth-simple-link:first-child{display:none}
+@media (max-width:600px){.ojwga-password5-lock-badge{width:76px;height:76px;font-size:40px}.ojwga-password5-lock-phrase{font-size:.95rem}}
+</style>
+
 <style id="ojwga-pin-box-ui-fix">
 .ojwga-pin-box-wrap{width:100%;display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:10px}
 .ojwga-pin-boxes{position:relative;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;width:100%;max-width:420px;cursor:text}
@@ -27974,7 +28057,8 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
         clearInterval(typeof authTimerInterval!=='undefined'?authTimerInterval:null);
         ui.innerHTML=''; if(timer)timer.style.display='none'; if(forgot)forgot.style.display='none'; if(unblock)unblock.style.display='none';
         if(title)title.textContent=(langEn()?'PIN Authentication — ':'暗証番号認証 — ')+(u.name||'ユーザー');
-        if(u.isTotallyLocked){if(msg)msg.textContent=langEn()?'This user is permanently locked.':'このユーザーは延々ロック中じゃ。';return;}
+        if(u.securityLockReason==='password5'){renderPassword5PermanentLock(u,false);return;}
+        if(u.isTotallyLocked){if(msg){msg.textContent=langEn()?'This user has been permanently blocked. It cannot be unblocked, even with parental authentication.':'このユーザーは完全ブロックされています。保護者認証でも解除できません。';msg.style.display='block';}return;}
         if(u.lockUntil>Date.now()){
           if(msg)msg.textContent=langEn()?'Please wait.':'しばらく待つのじゃ。'; if(timer)timer.style.display='block';
           var tick=function(){var r=Math.max(0,Math.ceil((u.lockUntil-Date.now())/1000));if(r<=0){u.lockUntil=0;saveRoot();window.updateAuthUI();return;}var m=Math.floor(r/60),ss=r%60;timer.textContent=langEn()?(m+'m '+ss+'s remaining'):(m+'分 '+ss+'秒後に再開');};tick();authTimerInterval=setInterval(tick,1000);return;
@@ -28000,10 +28084,16 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     var n=Number(u.wrongCount||0);
     var now=Date.now();
     var en=langIsEn();
-    if(u.isTotallyLocked || n>=5){
+    if(u.securityLockReason==='password5' || n>=5){
+      msg.textContent='ヒッヒッヒ…5回も間違えおって！完全にロックされたぞい！もう二度と開かんわい！';
+      msg.style.display='block';
+      return;
+    }
+    if(u.isTotallyLocked){
       msg.textContent=en
-        ? 'Hee hee… Wrong five times! Fully locked! It will never open again!'
-        : 'ヒッヒッヒ…5回も間違えおって！完全にロックされたぞい！もう二度と開かんわい！';
+        ? 'This user has been permanently blocked. It cannot be unblocked, even with parental authentication.'
+        : 'このユーザーは完全ブロックされています。保護者認証でも解除できません。';
+      msg.style.display='block';
       return;
     }
     if(n===3 && Number(u.lockUntil||0)>now){
