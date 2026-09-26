@@ -17632,6 +17632,18 @@ document.getElementById('total-points').addEventListener('click', () => {
 let authTimerInterval = null;
 
 function checkAuthOnLoad() {
+    /* ユーザーが1人もいない場合は、起動ゲートより先に初期設定を開く。
+       完全初期化・全ユーザー削除・初回起動後も、ここから新規ユーザーを作れるようにする。 */
+    if (!Array.isArray(root.users) || root.users.length === 0) {
+        try { window.__startupUserGate = false; } catch(e) {}
+        try { document.body.classList.remove('startup-user-gate'); } catch(e) {}
+        try { document.getElementById('auth-overlay').classList.remove('show'); } catch(e) {}
+        try { document.getElementById('userswitch-overlay').classList.remove('show'); } catch(e) {}
+        try { document.getElementById('home-screen').style.display = 'none'; } catch(e) {}
+        startOnboarding();
+        return;
+    }
+
     /* 起動時は必ず「ユーザー選択」と「ゲーム終了」だけを見せる。
        一度ユーザーを選んだ直後の再読み込みだけ通常フローへ進む。 */
     var startupResumed = false;
@@ -18158,9 +18170,16 @@ function onboardConfirmLanguage() {
 }
 
 function startOnboarding() {
-    if (window.__startupUserGate) {
+    /* ユーザーが0人なら、初期設定は起動ゲート中でも許可する。
+       ユーザーが存在する状態での起動画面からは従来どおり開けない。 */
+    var hasUsers = !!(Array.isArray(root.users) && root.users.length > 0);
+    if (window.__startupUserGate && hasUsers) {
         witchSpeak((typeof getAppLang==='function'&&getAppLang()==='en') ? 'Initial setup is not available at this screen.' : '起動画面では初期設定は開けんぞい。');
         return;
+    }
+    if (!hasUsers) {
+        try { window.__startupUserGate = false; } catch(e) {}
+        try { document.body.classList.remove('startup-user-gate'); } catch(e) {}
     }
 
     try { if (typeof applyLanguage === 'function') applyLanguage(); } catch(_e) {}
