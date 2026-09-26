@@ -17992,7 +17992,7 @@ function checkAuthPassword() {
         u.wrongCount = (u.wrongCount || 0) + 1;
         if (u.wrongCount === 3) {
             u.lockUntil = Date.now() + 60000;
-            witchSpeak("3回目じゃと！？次は1分間頭を冷やせぃ！");
+            witchSpeak("3回も間違えるとは！1分間お仕置きじゃ！");
             playAlarmSound();
         } else if (u.wrongCount === 4) {
             u.lockUntil = Date.now() + 180000;
@@ -27469,7 +27469,7 @@ function recordSecurityFailure(u){
   saveRoot();
   setCurrentSecurityLockGate(u,true);
   var n=u.wrongCount;
-  if(n===3){safeSpeak('3回目じゃと！？次は1分間頭を冷やせぃ！','Three wrong tries. The door is locked for one minute.');playAlarmSound();}
+  if(n===3){safeSpeak('3回も間違えるとは！1分間お仕置きじゃ！','Three wrong tries. The door is locked for one minute.');playAlarmSound();}
   else if(n===4){safeSpeak('4回目じゃと！？次は3分間頭を冷やせぃ！','Four wrong tries. The door is locked for three minutes.');playAlarmSound();}
   else if(n>=5){safeSpeak('ヒッヒッヒ…5回も間違えおって！完全にロックされたぞい！もう二度と開かんわい！','Five wrong tries. The account is now permanently locked.');playAlarmSound();}
   else{safeSpeak('ブッブー！違うぞい！','Nope! Wrong!');}
@@ -28009,7 +28009,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     if(n===3 && Number(u.lockUntil||0)>now){
       msg.textContent=en
         ? 'You got it wrong three times. The door is closed for 1 minute.'
-        : '3回目じゃと！？次は1分間頭を冷やせぃ！';
+        : '3回も間違えるとは！1分間お仕置きじゃ！';
       return;
     }
     if(n===4 && Number(u.lockUntil||0)>now){
