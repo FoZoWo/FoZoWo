@@ -462,7 +462,7 @@ if (location.search.includes('challenge=1')) {
       <button class="net-btn" id="net-btn-create">🏗️ 部屋を作る</button>
     </div>
     <div class="net-pane" id="net-tab-join">
-      <div class="net-field"><label>合言葉</label><input id="net-join-code" maxlength="8" placeholder="例: A3K9" style="text-transform:uppercase"></div>
+      <div class="net-field"><label>合言葉</label><input id="net-join-code" maxlength="4" placeholder="例: 1234" style="text-transform:uppercase"></div>
       <button class="net-btn" id="net-btn-join">🚪 部屋に入る</button>
     </div>
     <button class="net-btn secondary" id="net-btn-cancel">戻る</button>
@@ -1097,7 +1097,7 @@ if (location.search.includes('challenge=1')) {
 (function () {
 'use strict';
 
-var CODE_CHARS = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
+var CODE_CHARS = '0123456789';
 var NET_PALETTE = ['#ff4757', '#1e90ff', '#2ed573', '#ffa502', '#e599f7', '#63e6be', '#ffd43b', '#ff8fa3'];
 var ROOM_PREFIX = (window.OIJI_ROOM_PREFIX || 'OIJI-');
 
@@ -1115,8 +1115,8 @@ function genShortCode(len) {
 function normalizeCode(codeRaw) {
   var code = String(codeRaw || '').trim().toUpperCase();
   code = code.replace(/^OIJI-[A-Z]?-?/, '').replace(/^OIJI-/, '');
-  code = code.replace(/[^A-Z0-9]/g, '');
-  return code;
+  code = code.replace(/[^0-9]/g, '');
+  return code.slice(0, 4);
 }
 function escapeNet(s) {
   return String(s).replace(/[&<>"']/g, function (c) {
@@ -1290,6 +1290,7 @@ function mqttConnect(urls, clientId, onMsg, onReady, onFail) {
       clearTimeout(timer);
       clearInterval(ws._ping);
       if (!opened) tryNext();
+      else if (window._oijiiMultiConfig && window.parent) { try { window.parent.postMessage({type:'mp-transport-lost', message:'プレスゲームの通信が切断されました。'}, '*'); } catch(e) {} }
     };
   }
   tryNext();
@@ -1329,6 +1330,7 @@ function onMessage(topic, msg) {
       // 歓迎 + 現在のロビー一覧を返す
       sendLobbyToAll();
       pub('welcome', { to: msg.from, hostId: Net.myId });
+      if (window._oijiiMultiConfig && Net.players.size >= 2) setTimeout(function(){ if(typeof window._netHostStart === 'function') window._netHostStart(); }, 180);
     } else if (msg.t === 'choice') {
       Net.choices.set(msg.from, msg.slot | 0);
       if (typeof window._netAllChosen === 'function') window._netAllChosen();
@@ -1420,7 +1422,7 @@ function createRoom() {
   Net.players = new Map();
   Net.choices = new Map();
   Net.isHost = true;
-  Net.roomCode = genShortCode(4);
+  Net.roomCode = String((window._oijiiMultiConfig&&window._oijiiMultiConfig.roomCode)||genShortCode(4)).replace(/[^0-9]/g,'').slice(0,4);
   Net.myId = uid();
   Net.hostId = Net.myId;
   Net.online = false;
@@ -1457,7 +1459,7 @@ function createRoom() {
 function joinRoom(codeRaw) {
   var code = normalizeCode(codeRaw);
   if (!code || code.length < 3) {
-    netToast('合言葉を入れておくれ（例: A3K9）');
+    netToast('合言葉を入れておくれ（例: 1234）');
     return;
   }
 
