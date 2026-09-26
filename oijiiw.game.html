@@ -27518,6 +27518,10 @@ window.updateAuthUI=function(){
   if(method==='pattern'){if(msg)msg.textContent=en?'Connect the same pattern you saved.':'保存したパターンをつなぐのじゃ。';var pc=document.createElement('div');ui.appendChild(pc);createPatternPad(pc,'auth',function(seq){authPendingPattern=seq;var ok=samePattern(seq,u.passwordPattern);if(ok){resetSecurityFailures(u);authSuccess(u);}else{recordSecurityFailure(u);safeSpeak('パターンが違うぞい。','Wrong pattern.');updateAuthUI();}} ,[]);return;}
 };
 function authSuccess(u){try{document.getElementById('auth-overlay').classList.remove('show');document.getElementById('home-screen').style.display='flex';document.getElementById('auth-pass-input').value='';refreshHome();showHourlyGreeting(u);}catch(e){}}
+/* PIN UI patch runs in a separate IIFE, so expose these auth helpers explicitly. */
+window.recordSecurityFailure=recordSecurityFailure;
+window.resetSecurityFailures=resetSecurityFailures;
+window.authSuccess=authSuccess;
 window.checkAuthPassword=function(){var u=getCurrentUser();if(!u)return;normalizeSecurityUser(u);var el=byId('ojwga-auth-secret');if(el){var v=el.value||'';if(v===String(u.password||'')){resetSecurityFailures(u);authSuccess(u);}else{recordSecurityFailure(u);el.value='';updateAuthUI();}}else{updateAuthUI();}};
 window.cancelAuth=function(){try{document.getElementById('auth-overlay').classList.remove('show');}catch(e){}if('speechSynthesis' in window)speechSynthesis.cancel();try{openUserSwitcher(!!window.__startupUserGate);}catch(e){}};
 
