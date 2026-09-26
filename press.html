@@ -1940,5 +1940,32 @@ Object.defineProperty(Net, 'conns', {
         })();
 
     </script>
+<script id="ojwga-role-guard">
+(function(){
+'use strict';
+function cfg(){return window._oijiiMultiConfig||{};}
+function ps(){var p=cfg().participants;return Array.isArray(p)?p.slice(0,4):[];}
+function applyLocalPressRoles(){
+  try{
+    if(cfg().mode!=='local'||typeof Net==='undefined'||typeof playerInfo==='undefined')return;
+    var slots=['oisashi','cpu1','cpu2','cpu3'], list=ps(), occupied={};
+    Net.online=true; Net.isHost=true; Net.isLocal=true; Net.slotMap=Net.slotMap||{}; Net.players=Net.players||new Map();
+    list.forEach(function(pp,i){
+      var slot=(pp&&pp.slot!=null)?Number(pp.slot):i;
+      if(!Number.isInteger(slot)||slot<0||slot>=slots.length)slot=i;
+      var pid='local_'+slot; occupied[slot]=true;
+      Net.players.set(pid,{name:String(pp.name||('プレイヤー'+(slot+1))),color:['#ff4757','#1e90ff','#2ed573','#ffa502'][slot],localIndex:slot});
+      Net.slotMap[pid]=slots[slot];
+      playerInfo[slots[slot]]={name:String(pp.name||('プレイヤー'+(slot+1)))+'('+(slot+1)+'P)',color:['#ff4757','#1e90ff','#2ed573','#ffa502'][slot]};
+    });
+    for(var i=0;i<slots.length;i++) if(!occupied[i]){
+      var pid='cpu_'+i; Net.slotMap[pid]=slots[i]; playerInfo[slots[i]]={name:'CPU '+(i+1),color:['#ff4757','#1e90ff','#2ed573','#ffa502'][i]};
+    }
+    if(typeof aliveIds!=='undefined') aliveIds=slots.slice();
+  }catch(e){}
+}
+window.addEventListener('DOMContentLoaded',function(){setTimeout(applyLocalPressRoles,80);setTimeout(applyLocalPressRoles,300);});
+})();
+</script>
 </body>
 </html>
