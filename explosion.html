@@ -1948,5 +1948,39 @@ if (location.search.includes('challenge=1')) {
 })();
 </script>
 
+<script id="ojwga-role-guard">
+(function(){
+'use strict';
+function cfg(){return window._oijiiMultiConfig||{};}
+function participants(){var p=cfg().participants;return Array.isArray(p)?p.slice(0,4):[];}
+function applyLocalRoles(){
+  try{
+    if(cfg().mode!=='local'||typeof players==='undefined'||!Array.isArray(players))return;
+    var ps=participants(), used={};
+    ps.forEach(function(pp,i){
+      var slot=(pp&&pp.slot!=null)?Number(pp.slot):i;
+      if(!Number.isInteger(slot)||slot<0||slot>=players.length)slot=i;
+      used[slot]=true;
+      if(players[slot]){
+        players[slot].name=String(pp.name||('プレイヤー'+(slot+1))).slice(0,16);
+        players[slot].isCPU=false;
+        players[slot].alive=true;
+      }
+    });
+    for(var i=0;i<players.length;i++) if(!used[i]) {players[i].isCPU=true; if(!/^CPU/.test(players[i].name||''))players[i].name='CPU'+(i+1);}
+  }catch(e){}
+}
+function applyOnlineLocalRole(){
+  try{
+    if(cfg().mode!=='online'||typeof players==='undefined'||!Array.isArray(players)||typeof ONLINE==='undefined')return;
+    if(ONLINE.role==='host'&&players[0]) players[0].isCPU=false;
+    if(Number.isInteger(ONLINE.localId)&&players[ONLINE.localId]) players[ONLINE.localId].isCPU=false;
+  }catch(e){}
+}
+function guard(){applyLocalRoles();applyOnlineLocalRole();}
+window.addEventListener('DOMContentLoaded',function(){setTimeout(guard,50);setTimeout(guard,250);setTimeout(guard,600);});
+var tries=0;(function loop(){guard();if(++tries<120)setTimeout(loop,250);})();
+})();
+</script>
 </body>
 </html>
