@@ -250,8 +250,58 @@
             button { min-height: 40px; }
         }
 
-    </style>
+    
+        /* ===== オンライン対戦UI ===== */
+        #online-lobby-overlay {
+            position: fixed; inset: 0; z-index: 999999; display: none; align-items: center; justify-content: center;
+            padding: 18px; background: rgba(18, 20, 28, .72); backdrop-filter: blur(8px);
+        }
+        #online-lobby-overlay.show { display: flex; }
+        .online-lobby-card {
+            position: relative; width: min(560px, 100%); max-height: min(92vh, 760px); overflow: auto;
+            border-radius: 24px; padding: 24px; background: linear-gradient(155deg,#20133f,#111827 72%);
+            color: #fff; border: 1px solid rgba(190,150,255,.36); box-shadow: 0 30px 90px rgba(0,0,0,.55);
+        }
+        .online-lobby-x { position:absolute; top:10px; right:12px; width:38px; height:38px; border-radius:50%; border:0; background:rgba(255,255,255,.08); color:#fff; font-size:26px; cursor:pointer; }
+        .online-lobby-title { font-size:1.35rem; font-weight:900; letter-spacing:.3px; padding-right:38px; }
+        .online-lobby-sub { margin-top:7px; color:#d7c8ec; font-size:.88rem; line-height:1.5; }
+        .online-panel { margin-top:18px; }
+        .online-name-row label, .online-join-input-wrap label { display:block; font-size:.82rem; font-weight:800; color:#d9cbeb; margin-bottom:7px; }
+        .online-name-row input, .online-join-row input { width:100%; box-sizing:border-box; border:1px solid rgba(210,180,255,.25); background:rgba(0,0,0,.24); color:#fff; border-radius:12px; padding:12px 13px; font-size:1rem; outline:none; }
+        .online-name-row input:focus, .online-join-row input:focus { border-color:#8b5cf6; box-shadow:0 0 0 3px rgba(139,92,246,.18); }
+        .online-choice-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px; }
+        .online-choice { min-height:132px; border:1px solid rgba(200,170,255,.26); border-radius:18px; background:linear-gradient(180deg,rgba(124,75,200,.22),rgba(16,24,40,.5)); color:#fff; cursor:pointer; font-size:1rem; box-shadow:inset 0 1px rgba(255,255,255,.07); transition:.16s ease; }
+        .online-choice:hover { transform:translateY(-2px); border-color:rgba(220,190,255,.55); background:linear-gradient(180deg,rgba(124,75,200,.33),rgba(16,24,40,.58)); }
+        .online-choice b { display:block; font-size:1.12rem; margin-top:7px; }
+        .online-choice span { display:block; margin-top:5px; color:#cfc1e6; font-size:.77rem; }
+        .online-room-top { display:flex; align-items:flex-end; justify-content:space-between; gap:10px; background:rgba(255,255,255,.05); border-radius:16px; padding:14px; }
+        .online-mini-label { color:#baaed1; font-size:.74rem; }
+        .online-room-code { font-size:2rem; font-weight:1000; letter-spacing:6px; line-height:1.05; color:#fff; text-shadow:0 0 18px rgba(169,114,255,.4); }
+        .online-copy { border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.07); color:#fff; border-radius:10px; padding:9px 12px; cursor:pointer; }
+        .online-copy:active, .online-primary:active, .online-secondary:active, .online-choice:active { transform:scale(.98); }
+        .online-join-input-wrap { margin-top:12px; }
+        .online-join-row { display:grid; grid-template-columns:1fr auto; gap:8px; }
+        .online-join-row button { border:0; border-radius:12px; padding:0 16px; font-weight:900; background:#7c3aed; color:#fff; cursor:pointer; }
+        .online-players-head { display:flex; justify-content:space-between; margin-top:15px; font-weight:900; font-size:.84rem; color:#d9cdec; }
+        .online-player-list { display:grid; gap:8px; margin-top:8px; }
+        .online-player-row { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.07); }
+        .online-player-avatar { width:34px; height:34px; display:grid; place-items:center; border-radius:50%; background:rgba(255,255,255,.08); font-size:1.05rem; }
+        .online-player-main { min-width:0; flex:1; }
+        .online-player-name { font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .online-player-meta { font-size:.72rem; color:#b8acc9; margin-top:1px; }
+        .online-player-badge { font-size:.68rem; padding:4px 7px; border-radius:999px; background:rgba(124,58,237,.18); border:1px solid rgba(167,139,250,.25); color:#dccfff; }
+        .online-room-status { margin-top:11px; border-radius:11px; padding:9px 11px; background:rgba(124,58,237,.1); color:#cdbce3; font-size:.78rem; min-height:18px; }
+        .online-room-actions { display:flex; gap:9px; margin-top:12px; }
+        .online-secondary, .online-primary { flex:1; min-height:44px; border-radius:12px; cursor:pointer; font-weight:900; }
+        .online-secondary { color:#eee; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.06); }
+        .online-primary { color:#fff; border:0; background:linear-gradient(135deg,#ff7a00,#f20b63 70%,#7c3aed); box-shadow:0 8px 25px rgba(245,71,75,.28); }
+        .online-error { margin-top:11px; border-radius:12px; padding:10px 12px; background:rgba(239,68,68,.12); border:1px solid rgba(248,113,113,.3); color:#ffd0d0; font-size:.8rem; line-height:1.5; }
+        .online-footnote { margin-top:14px; color:#9e91b1; font-size:.68rem; line-height:1.55; }
+        @media (max-width:600px) { .online-choice-grid{grid-template-columns:1fr;} .online-choice{min-height:108px;} .online-lobby-card{padding:19px;border-radius:20px;} .online-room-code{font-size:1.65rem;letter-spacing:4px;} }
+
+</style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
 
 <script>
 if (location.search.includes('challenge=1')) {
@@ -289,7 +339,54 @@ if (location.search.includes('challenge=1')) {
         </div>
 
         <button class="btn" onclick="startGame()">サバイバルを開始する</button>
+        <button class="btn" onclick="startGame()" style="margin-top:15px; background:linear-gradient(135deg,#19a7ff,#5d35d6); box-shadow:0 8px 24px rgba(45,70,180,.35);">🌐 オンライン対戦</button>
         <button class="btn" style="margin-top:15px; background: linear-gradient(45deg, #888888, #555555);" onclick="if(window.parent) window.parent.postMessage({type:'goHome'}, '*');">🏠 ホームへ戻る</button>
+    </div>
+
+    <!-- ===== オンライン対戦ロビー ===== -->
+    <div id="online-lobby-overlay" aria-hidden="true">
+        <div class="online-lobby-card" role="dialog" aria-modal="true" aria-labelledby="online-lobby-title">
+            <button class="online-lobby-x" type="button" onclick="onlineCloseLobby()" aria-label="閉じる">×</button>
+            <div class="online-lobby-title" id="online-lobby-title">🌐 おいじぃ魔女大爆発・オンライン</div>
+            <div class="online-lobby-sub" id="online-lobby-sub">2〜4人＋CPUで同じ爆発サバイバルを遊べます。</div>
+
+            <div id="online-lobby-choice" class="online-panel">
+                <div class="online-name-row">
+                    <label for="online-player-name">プレイヤー名</label>
+                    <input id="online-player-name" maxlength="16" autocomplete="nickname" placeholder="プレイヤー" />
+                </div>
+                <div class="online-choice-grid">
+                    <button type="button" class="online-choice" onclick="onlineChooseCreate()">🏗️<b>部屋を作る</b><span>友達にコードを送る</span></button>
+                    <button type="button" class="online-choice" onclick="onlineChooseJoin()">🚪<b>部屋に参加</b><span>友達のコードを入力</span></button>
+                </div>
+            </div>
+
+            <div id="online-lobby-room" class="online-panel" style="display:none;">
+                <div class="online-room-top">
+                    <div>
+                        <div class="online-mini-label">部屋コード</div>
+                        <div id="online-room-code" class="online-room-code">------</div>
+                    </div>
+                    <button type="button" class="online-copy" onclick="onlineCopyRoomCode()">📋 コピー</button>
+                </div>
+                <div id="online-join-input-wrap" class="online-join-input-wrap" style="display:none;">
+                    <label for="online-join-code">友達からもらったコード</label>
+                    <div class="online-join-row"><input id="online-join-code" maxlength="8" autocomplete="off" inputmode="text" placeholder="例: A3K9QX" /><button type="button" onclick="onlineJoinConnect()">接続</button></div>
+                </div>
+
+                <div class="online-players-head"><span>参加者</span><span id="online-players-count">0/4</span></div>
+                <div id="online-player-list" class="online-player-list"></div>
+                <div id="online-room-status" class="online-room-status">接続準備中…</div>
+
+                <div class="online-room-actions">
+                    <button type="button" class="online-secondary" onclick="onlineBackToChoice()">← 戻る</button>
+                    <button type="button" id="online-start-btn" class="online-primary" onclick="onlineHostStartMatch()" style="display:none;">🔥 対戦開始</button>
+                </div>
+            </div>
+
+            <div id="online-lobby-error" class="online-error" style="display:none;"></div>
+            <div class="online-footnote">通信にはインターネット接続が必要です。ゲーム進行は部屋主が管理します。</div>
+        </div>
     </div>
 
     <div id="witch-dialogue"></div>
@@ -1211,6 +1308,613 @@ if (location.search.includes('challenge=1')) {
 
 
 
+
+
+<script>
+/* =========================================================
+   おいじぃ魔女大爆発 — オンライン対戦拡張
+   P2P: PeerJS/WebRTC / 権威ホスト: ルーム主ブラウザ
+========================================================= */
+(function(){
+    'use strict';
+
+    const ONLINE = {
+        peer: null,
+        role: null,                 // 'host' | 'guest'
+        roomCode: '',
+        localId: 0,
+        hostPeerId: '',
+        hostConn: null,
+        conns: new Map(),
+        playerByPeer: new Map(),
+        started: false,
+        seq: 0,
+        guestDeadline: 0,
+        guestTimer: null,
+        guestReplaying: false,
+        applying: false,
+        localGameEndSent: false,
+        autoAction: null,
+        autoJoinCode: ''
+    };
+
+    const ONLINE_CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const ONLINE_MAX_PLAYERS = 4;
+
+    function isOnlineHost(){ return ONLINE.role === 'host'; }
+    function isOnlineGuest(){ return ONLINE.role === 'guest'; }
+    function onlineNowName(){
+        const el = document.getElementById('online-player-name');
+        const raw = (el && el.value || window._playerName || '').trim();
+        return raw.slice(0,16) || 'プレイヤー';
+    }
+    function onlineRoomPeerId(code){ return 'oijiiw-blast-' + String(code).toLowerCase(); }
+    function onlineGenCode(){
+        let s='';
+        for(let i=0;i<6;i++) s += ONLINE_CODE_CHARS[Math.floor(Math.random()*ONLINE_CODE_CHARS.length)];
+        return s;
+    }
+    function onlineSetStatus(msg){ const el=document.getElementById('online-room-status'); if(el) el.textContent=msg; }
+    function onlineSetError(msg){
+        const el=document.getElementById('online-lobby-error');
+        if(!el) return;
+        el.textContent=msg||'';
+        el.style.display=msg?'block':'none';
+    }
+    function onlineShowLobby(show=true){
+        const ov=document.getElementById('online-lobby-overlay');
+        if(!ov) return;
+        ov.classList.toggle('show',!!show); ov.setAttribute('aria-hidden',show?'false':'true');
+    }
+    function onlineSetPlayerNameDefault(){
+        const el=document.getElementById('online-player-name');
+        if(el) el.value = String(window._playerName || localStorage.getItem('oijii_explosion_online_name') || 'プレイヤー').slice(0,16);
+    }
+    function onlineSavePlayerName(){
+        const n=onlineNowName();
+        try{ localStorage.setItem('oijii_explosion_online_name',n); }catch(e){}
+        return n;
+    }
+
+    function onlineDisconnectAll(){
+        try { ONLINE.conns.forEach(c=>{ try{c.close();}catch(e){} }); } catch(e){}
+        try { if(ONLINE.hostConn) ONLINE.hostConn.close(); }catch(e){}
+        try { if(ONLINE.peer && !ONLINE.peer.destroyed) ONLINE.peer.destroy(); }catch(e){}
+        clearGuestTimer();
+        ONLINE.peer=null; ONLINE.role=null; ONLINE.roomCode=''; ONLINE.localId=0; ONLINE.hostPeerId=''; ONLINE.hostConn=null;
+        ONLINE.conns.clear(); ONLINE.playerByPeer.clear(); ONLINE.started=false; ONLINE.guestReplaying=false;
+        ONLINE.autoAction=null; ONLINE.autoJoinCode='';
+    }
+
+    function onlineSend(conn, msg){
+        if(!conn || !conn.open) return false;
+        try { conn.send(Object.assign({v:1, seq:++ONLINE.seq}, msg)); return true; } catch(e){ return false; }
+    }
+    function onlineBroadcast(msg){
+        ONLINE.conns.forEach(c=>onlineSend(c,msg));
+    }
+    function onlineHostSnapshot(){
+        return players.map(p=>({
+            id:p.id, name:p.name, color:p.color, isCPU:!!p.isCPU, alive:!!p.alive, rank:p.rank||null
+        }));
+    }
+    function onlineApplyPlayers(list){
+        if(!Array.isArray(list)) return;
+        list.forEach(q=>{
+            const p=players[q.id]; if(!p) return;
+            p.name=q.name || ('P'+(q.id+1));
+            p.isCPU=!!q.isCPU;
+            if(q.rank!=null) p.rank=q.rank;
+            if(q.alive!=null) p.alive=!!q.alive;
+        });
+        if(window._playerName && players[ONLINE.localId]) players[ONLINE.localId].name=window._playerName;
+    }
+    function onlineHumanCount(){ return players.filter(p=>!p.isCPU).length; }
+    function onlineLocalStatus(){
+        const p=players[ONLINE.localId];
+        if(!p) return '';
+        return p.id===0 ? '部屋主' : 'オンライン参加者';
+    }
+    function onlineRenderPlayerList(){
+        const list=document.getElementById('online-player-list');
+        const count=document.getElementById('online-players-count');
+        if(!list) return;
+        const connected = players.filter(p=>!p.isCPU).length;
+        if(count) count.textContent=connected+'/4';
+        list.innerHTML='';
+        players.forEach(p=>{
+            const row=document.createElement('div'); row.className='online-player-row';
+            const av=document.createElement('div'); av.className='online-player-avatar';
+            av.textContent = p.id===0 ? '👑' : (p.isCPU ? '🤖' : '👤');
+            const main=document.createElement('div'); main.className='online-player-main';
+            const nm=document.createElement('div'); nm.className='online-player-name'; nm.textContent=p.name || ('P'+(p.id+1));
+            const meta=document.createElement('div'); meta.className='online-player-meta'; meta.textContent=(p.isCPU?'CPU待機':(p.id===ONLINE.localId?'あなた':'オンライン'));
+            main.append(nm,meta);
+            const badge=document.createElement('div'); badge.className='online-player-badge'; badge.textContent=p.isCPU?'CPU':(p.id===0?'HOST':'READY');
+            row.append(av,main,badge); list.appendChild(row);
+        });
+        const startBtn=document.getElementById('online-start-btn');
+        if(startBtn) startBtn.style.display=isOnlineHost()?'block':'none';
+    }
+
+    function onlineOpenChoice(){
+        onlineSetPlayerNameDefault();
+        document.getElementById('online-lobby-choice').style.display='block';
+        document.getElementById('online-lobby-room').style.display='none';
+        onlineSetError('');
+        onlineSetStatus('');
+        onlineShowLobby(true);
+    }
+    function onlineEnterRoomPanel(mode){
+        document.getElementById('online-lobby-choice').style.display='none';
+        document.getElementById('online-lobby-room').style.display='block';
+        document.getElementById('online-join-input-wrap').style.display=(mode==='join')?'block':'none';
+        const start=document.getElementById('online-start-btn'); if(start) start.style.display=(mode==='create')?'block':'none';
+        onlineRenderPlayerList();
+    }
+
+    window.onlineChooseCreate = async function(){
+        const name=onlineSavePlayerName();
+        if(!window.Peer){ onlineSetError('通信ライブラリを読み込めませんでした。インターネット接続を確認してください。'); return; }
+        onlineEnterRoomPanel('create');
+        onlineSetStatus('部屋を作成中…');
+        onlineSetError('');
+        ONLINE.role='host'; ONLINE.localId=0; ONLINE.seq=0; ONLINE.started=false;
+        players[0].name=name; players[0].isCPU=false; players[0].alive=true; players[0].rank=null; players[0].onlineRemote=false;
+        for(let i=1;i<players.length;i++){ players[i].name='CPU'+i; players[i].isCPU=true; players[i].alive=true; players[i].rank=null; players[i].onlineRemote=false; }
+        await onlineHostCreatePeer();
+    };
+
+    window.onlineChooseJoin = function(){
+        onlineSavePlayerName();
+        onlineEnterRoomPanel('join');
+        const inp=document.getElementById('online-join-code'); if(inp) setTimeout(()=>inp.focus(),40);
+        onlineSetStatus('部屋コードを入力して接続してください。');
+        onlineSetError('');
+    };
+
+    async function onlineHostCreatePeer(retry=0){
+        onlineDisconnectPeerOnly();
+        if(retry>5){ onlineSetError('部屋を作れませんでした。ページを再読み込みしてもう一度試してください。'); return; }
+        const code=onlineGenCode(); const peerId=onlineRoomPeerId(code);
+        const peer=new Peer(peerId,{debug:0});
+        ONLINE.peer=peer; ONLINE.roomCode=code;
+        peer.on('open',()=>{
+            const codeEl=document.getElementById('online-room-code'); if(codeEl) codeEl.textContent=code;
+            onlineSetStatus('部屋作成完了。友達にこのコードを送って参加してもらってください。');
+            onlineRenderPlayerList();
+        });
+        peer.on('connection',conn=>onlineHostAccept(conn));
+        peer.on('error',err=>{
+            if(err && err.type==='unavailable-id'){ onlineHostCreatePeer(retry+1); return; }
+            onlineSetError('通信エラー: '+(err && err.message ? err.message : String(err||'unknown')));
+            onlineSetStatus('接続をやり直してください。');
+        });
+        peer.on('disconnected',()=>onlineSetStatus('通信サーバーとの接続が切れました。再接続を試みています…'));
+        peer.on('close',()=>{});
+    }
+
+    function onlineDisconnectPeerOnly(){
+        try{ ONLINE.conns.forEach(c=>{try{c.close();}catch(e){}}); }catch(e){}
+        ONLINE.conns.clear(); ONLINE.playerByPeer.clear();
+        try{ if(ONLINE.peer && !ONLINE.peer.destroyed) ONLINE.peer.destroy(); }catch(e){}
+        ONLINE.peer=null;
+    }
+
+    function onlineHostAccept(conn){
+        if(!conn) return;
+        conn.on('open',()=>{
+            if(ONLINE.started){ onlineSend(conn,{type:'error',message:'この対戦はすでに開始されています。'}); try{conn.close();}catch(e){}; return; }
+            if(onlineHumanCount()>=ONLINE_MAX_PLAYERS){ onlineSend(conn,{type:'error',message:'この部屋は満員です。'}); try{conn.close();}catch(e){}; return; }
+            const slot=players.find(p=>p.id>0 && p.isCPU);
+            if(!slot){ onlineSend(conn,{type:'error',message:'参加枠がありません。'}); try{conn.close();}catch(e){}; return; }
+            const name=String((conn.metadata&&conn.metadata.name)||('ゲスト'+slot.id)).slice(0,16);
+            slot.name=name; slot.isCPU=false; slot.alive=true; slot.rank=null; slot.onlineRemote=true; slot.onlinePeerId=conn.peer;
+            ONLINE.conns.set(conn.peer,conn); ONLINE.playerByPeer.set(conn.peer,slot.id); conn.__playerId=slot.id;
+            onlineSend(conn,{type:'welcome',localId:slot.id,hostPeerId:ONLINE.peer.id,roomCode:ONLINE.roomCode,players:onlineHostSnapshot()});
+            onlineBroadcast({type:'lobby',players:onlineHostSnapshot()});
+            onlineSetStatus(name+' が参加しました。対戦開始を待機中…');
+            onlineRenderPlayerList();
+        });
+        conn.on('data',data=>onlineHostMessage(conn,data));
+        conn.on('close',()=>onlineHostDisconnect(conn));
+        conn.on('error',()=>onlineHostDisconnect(conn));
+    }
+
+    function onlineHostMessage(conn,msg){
+        if(!msg || typeof msg!=='object') return;
+        if(msg.type==='hello') return;
+        if(msg.type==='choose'){
+            const pid=ONLINE.playerByPeer.get(conn.peer);
+            if(pid==null || msg.playerId!==pid) return;
+            if(!ONLINE.started || gameState!=='player_wait' || !activePlayer || activePlayer.id!==pid) return;
+            const idx=Number(msg.switchId); if(!Number.isInteger(idx) || !switches[idx] || switches[idx].pressed) return;
+            triggerMoveToButton(switches[idx]);
+        }
+    }
+
+    function onlineHostDisconnect(conn){
+        const pid=ONLINE.playerByPeer.get(conn.peer);
+        ONLINE.playerByPeer.delete(conn.peer); ONLINE.conns.delete(conn.peer);
+        if(pid==null) return;
+        const p=players[pid]; if(!p) return;
+        p.onlineRemote=false;
+        if(!ONLINE.started){ p.isCPU=true; p.name='CPU'+pid; onlineBroadcast({type:'lobby',players:onlineHostSnapshot()}); onlineRenderPlayerList(); onlineSetStatus('参加者が退出しました。'); return; }
+        // 対戦中の切断は、その時点で脱落扱い。現在ターンなら強制爆発へ。
+        if(p.alive && activePlayer && activePlayer.id===pid && gameState==='player_wait'){
+            const available=switches.filter(s=>!s.pressed); activeSwitch=available.length?available[0]:switches[0];
+            if(activeSwitch){ activeSwitch.pressed=true; }
+            document.getElementById('turn-indicator').innerText='⚠️ 接続切断！強制爆発！ ⚠️';
+            triggerSuperExplosion();
+        } else {
+            p.alive=false; p.rank=survivors.length; survivors=survivors.filter(id=>id!==pid); aliveCount=survivors.length;
+            onlineBroadcast({type:'playerDisconnected',playerId:pid,rank:p.rank,aliveCount, survivors:[...survivors],players:onlineHostSnapshot()});
+            if(survivors.length<=1) endGame();
+        }
+    }
+
+    window.onlineJoinConnect = async function(){
+        let code=((document.getElementById('online-join-code')||{}).value||'').trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+        if(code.length<4){ onlineSetError('6文字の部屋コードを入力してください。'); return; }
+        if(!window.Peer){ onlineSetError('通信ライブラリを読み込めませんでした。'); return; }
+        const name=onlineSavePlayerName();
+        onlineSetError(''); onlineSetStatus('部屋を探しています…');
+        ONLINE.role='guest'; ONLINE.roomCode=code; ONLINE.started=false; ONLINE.seq=0;
+        players[0].name='ホスト';
+        const peer=new Peer({debug:0}); ONLINE.peer=peer;
+        peer.on('open',()=>{
+            const hostId=onlineRoomPeerId(code); ONLINE.hostPeerId=hostId;
+            const conn=peer.connect(hostId,{reliable:true,metadata:{name,client:'explosion-online-v1'}});
+            ONLINE.hostConn=conn;
+            conn.on('open',()=>{ onlineSetStatus('部屋に接続しました。参加者一覧を取得中…'); onlineSend(conn,{type:'hello',name}); });
+            conn.on('data',data=>onlineGuestMessage(data));
+            conn.on('close',()=>{ if(ONLINE.started) onlineGuestDisconnectNotice(); else onlineSetStatus('部屋主との接続が切れました。'); });
+            conn.on('error',err=>onlineSetError('接続エラー: '+(err&&err.message?err.message:String(err||'unknown'))));
+        });
+        peer.on('error',err=>{
+            onlineSetError('部屋に接続できませんでした。コードが正しいか、部屋主が接続中か確認してください。');
+            onlineSetStatus('接続失敗');
+        });
+    };
+
+    function onlineGuestMessage(msg){
+        if(!msg || typeof msg!=='object') return;
+        switch(msg.type){
+            case 'error': onlineSetError(msg.message||'部屋への参加に失敗しました。'); break;
+            case 'welcome':
+                ONLINE.localId=Number.isInteger(msg.localId)?msg.localId:1;
+                players[ONLINE.localId].name=onlineNowName(); players[ONLINE.localId].isCPU=false; window._playerName=players[ONLINE.localId].name;
+                onlineApplyPlayers(msg.players); onlineRenderPlayerList(); onlineSetStatus('参加完了。ホストが対戦を開始するのを待っています。'); break;
+            case 'lobby':
+                onlineApplyPlayers(msg.players); onlineRenderPlayerList(); onlineSetStatus('参加者一覧を更新しました。'); break;
+            case 'gameStart': onlineGuestStartMatch(msg); break;
+            case 'roundStart': onlineGuestRoundStart(msg); break;
+            case 'turn': onlineGuestTurn(msg); break;
+            case 'choose': onlineGuestChoice(msg); break;
+            case 'result': onlineGuestResult(msg); break;
+            case 'gameOver': onlineGuestGameOver(msg); break;
+            case 'playerDisconnected': onlineGuestDisconnected(msg); break;
+        }
+    }
+
+    function onlineGuestDisconnectNotice(){
+        clearGuestTimer();
+        const p=players[0];
+        if(ONLINE.started){
+            onlineSetStatus('部屋主との接続が切れました。ホームへ戻るには「オンライン」を閉じてください。');
+            document.getElementById('turn-indicator').innerText='⚠️ 部屋主との接続が切断されました';
+            gameState='menu';
+            document.getElementById('menu').style.display='flex';
+        }
+    }
+
+    function onlineGuestStartMatch(msg){
+        ONLINE.started=true; ONLINE.localGameEndSent=false;
+        onlineSetStatus('対戦開始！');
+        onlineShowLobby(false); document.getElementById('online-lobby-overlay').classList.remove('show');
+        if(players[ONLINE.localId]) players[ONLINE.localId].isCPU=false;
+        // 元の初期化処理をそのまま使い、ラウンド生成だけはネットワーク命令待ちにする。
+        try{ _onlineOrig.startGame.call(window); }catch(e){ console.error(e); }
+        document.getElementById('menu').style.display='none';
+        document.getElementById('leaderboard').innerHTML='';
+    }
+
+    function onlineGuestRoundStart(msg){
+        if(!ONLINE.started) ONLINE.started=true;
+        clearGuestTimer();
+        ONLINE.guestReplaying=false;
+        aliveCount=Number(msg.aliveCount)||players.filter(p=>p.alive).length;
+        survivors=Array.isArray(msg.survivors)?msg.survivors.map(Number):survivors;
+        currentTurnIdx=Math.max(0,survivors.indexOf(Number(msg.turnIndex??0)));
+        deadlySwitchId=Number(msg.deadlySwitchId);
+        onlineApplyPlayers(msg.players||[]);
+        players.forEach(p=>{ p.alive=survivors.includes(p.id); if(p.alive && p.mesh){ p.mesh.visible=true; p.mesh.position.set(p.homeX,0,p.homeZ); p.mesh.rotation.set(0,0,0); } });
+        cameraTargetPos.copy(cameraDefaultPos); cameraTargetLook.copy(cameraDefaultLook);
+        try{ _onlineOrig.startRound.call(window); }catch(e){
+            // 完全な視覚リセットだけは確保
+            setupSwitches(); gameState='resolve';
+            try{ witchSpeak(`おいじぃ復活じゃ！生存者${aliveCount}人だからスイッチは${switches.length}個じゃ！`); }catch(_e){}
+        }
+        deadlySwitchId=Number(msg.deadlySwitchId);
+        gameState='resolve';
+    }
+
+    function onlineGuestTurn(msg){
+        clearGuestTimer();
+        ONLINE.guestDeadline=Number(msg.deadline)||0;
+        const pid=Number(msg.playerId); activePlayer=players[pid];
+        if(pid<0 || !activePlayer) return;
+        currentTurnIdx=Math.max(0,survivors.indexOf(pid));
+        const indicator=document.getElementById('turn-indicator');
+        if(indicator){ indicator.innerText=activePlayer.name+' のターン'; indicator.style.color=activePlayer.isCPU?'#ff3333':'#0055ff'; }
+        if(pid===ONLINE.localId && activePlayer.alive){
+            gameState='player_wait'; onlineStartGuestTimer(ONLINE.guestDeadline);
+        } else {
+            gameState='remote_wait';
+        }
+    }
+
+    function onlineStartGuestTimer(deadline){
+        clearGuestTimer();
+        function tick(){
+            if(!deadline || gameState!=='player_wait'){ clearGuestTimer(); return; }
+            playerTimeLeft=Math.max(0,Math.ceil((deadline-Date.now())/1000)); updatePlayerTimerDisplay();
+            if(Date.now()>=deadline){ clearGuestTimer(); return; }
+            ONLINE.guestTimer=setTimeout(tick,80);
+        }
+        tick();
+    }
+    function clearGuestTimer(){ if(ONLINE.guestTimer){clearTimeout(ONLINE.guestTimer); ONLINE.guestTimer=null;} ONLINE.guestDeadline=0; }
+
+    function onlineGuestChoice(msg){
+        if(!ONLINE.started) return;
+        const pid=Number(msg.playerId), sid=Number(msg.switchId);
+        activePlayer=players[pid]; activeSwitch=switches[sid];
+        if(!activePlayer || !activeSwitch) return;
+        ONLINE.guestReplaying=true; gameState='remote_wait'; clearGuestTimer();
+        try{ _onlineOrig.triggerMoveToButton.call(window,activeSwitch); }catch(e){ ONLINE.guestReplaying=false; }
+    }
+
+    function onlineGuestSafeResult(msg){
+        clearGuestTimer(); ONLINE.guestReplaying=false;
+        const pid=Number(msg.playerId); activePlayer=players[pid]; activeSwitch=switches[Number(msg.switchId)];
+        if(!activePlayer) return;
+        gameState='resolve'; pressedCount=Number(msg.pressedCount)||0;
+        document.getElementById('turn-indicator').innerText='✨ セーフ！ ✨';
+        playSound('safe');
+        activePlayer.isCelebrating=true; activePlayer.celebrateTick=0;
+        setTimeout(()=>{
+            cameraTargetPos.copy(cameraDefaultPos); cameraTargetLook.copy(cameraDefaultLook);
+            const p=activePlayer; let tick=0;
+            function walkBackGuest(){
+                tick+=0.08; p.mesh.position.lerp(new THREE.Vector3(p.homeX,0,p.homeZ),0.15);
+                if(tick<1.0) requestAnimationFrame(walkBackGuest); else { p.mesh.position.set(p.homeX,0,p.homeZ); }
+            }
+            walkBackGuest();
+        },1200);
+    }
+
+    function onlineGuestResult(msg){
+        if(!ONLINE.started) return;
+        const outcome=msg.outcome;
+        if(outcome==='safe'){ onlineGuestSafeResult(msg); return; }
+        if(outcome==='explode'){
+            clearGuestTimer(); ONLINE.guestReplaying=false;
+            const pid=Number(msg.playerId); activePlayer=players[pid]; activeSwitch=switches[Number(msg.switchId)];
+            if(!activePlayer || !activeSwitch) return;
+            aliveCount=Number(msg.preAliveCount)||aliveCount;
+            survivors=Array.isArray(msg.preSurvivors)?msg.preSurvivors.map(Number):survivors;
+            deadlySwitchId=Number(msg.deadlySwitchId);
+            onlineApplyPlayers(msg.players||[]);
+            ONLINE.applying=true;
+            try{ _onlineOrig.triggerSuperExplosion.call(window); }catch(e){ console.error(e); }
+            ONLINE.applying=false;
+            aliveCount=Number(msg.postAliveCount); survivors=Array.isArray(msg.postSurvivors)?msg.postSurvivors.map(Number):survivors;
+            players.forEach(p=>p.alive=survivors.includes(p.id));
+            if(pid===ONLINE.localId && !ONLINE.localGameEndSent && window.parent){
+                ONLINE.localGameEndSent=true; try{ window.parent.postMessage({type:'gameEnd',rank:Number(msg.rank)},'*'); }catch(e){}
+            }
+        }
+    }
+
+    function onlineGuestGameOver(msg){
+        clearGuestTimer(); ONLINE.guestReplaying=false;
+        survivors=Array.isArray(msg.survivors)?msg.survivors.map(Number):survivors; aliveCount=survivors.length; onlineApplyPlayers(msg.players||[]);
+        const winnerId=Number(msg.winnerId); if(Number.isInteger(winnerId)) survivors=[winnerId];
+        if(ONLINE.localId===winnerId && !ONLINE.localGameEndSent && window.parent){
+            ONLINE.localGameEndSent=true; try{window.parent.postMessage({type:'gameEnd',rank:1},'*');}catch(e){}
+        }
+        try{ _onlineOrig.endGame.call(window); }catch(e){}
+    }
+
+    function onlineGuestDisconnected(msg){
+        const pid=Number(msg.playerId); if(players[pid]){ players[pid].alive=false; players[pid].isCPU=true; }
+        survivors=Array.isArray(msg.survivors)?msg.survivors.map(Number):survivors.filter(id=>id!==pid); aliveCount=survivors.length; onlineApplyPlayers(msg.players||[]);
+        const p=players[pid]; if(p && p.mesh) p.mesh.visible=false;
+        const lb=document.getElementById('leaderboard'); if(lb && p){ const box=document.createElement('div'); box.className='rank-box rank-'+(msg.rank||aliveCount); box.innerText='⚠️ 接続切断：'+p.name; lb.appendChild(box); }
+        if(survivors.length<=1) onlineGuestGameOver({winnerId:survivors[0],survivors,players:onlineHostSnapshot()});
+    }
+
+    window.onlineHostStartMatch = function(){
+        if(!isOnlineHost()) return;
+        if(onlineHumanCount()<2){ onlineSetError('オンライン対戦は2人以上で開始してください。'); return; }
+        onlineSetError(''); ONLINE.started=true; ONLINE.localGameEndSent=false;
+        onlineBroadcast({type:'gameStart',players:onlineHostSnapshot()});
+        onlineShowLobby(false);
+        document.getElementById('online-lobby-overlay').classList.remove('show');
+        try{ _onlineOrig.startGame.call(window); }catch(e){console.error(e);}
+    };
+
+    window.onlineCopyRoomCode = async function(){
+        const code=ONLINE.roomCode || (document.getElementById('online-room-code')||{}).textContent || '';
+        if(!code || code==='------') return;
+        try{ await navigator.clipboard.writeText(code); onlineSetStatus('部屋コードをコピーしました。'); }
+        catch(e){ onlineSetStatus('コード: '+code); }
+    };
+
+    window.onlineBackToChoice = function(){ onlineDisconnectAll(); onlineOpenChoice(); };
+    window.onlineCloseLobby = function(){ onlineDisconnectAll(); onlineShowLobby(false); };
+
+    // 元関数を保存。以下はネットワーク時だけ振る舞いを差し替え、オフライン動作はそのまま。
+    const _onlineOrig = {
+        startGame: startGame,
+        startRound: startRound,
+        nextTurn: nextTurn,
+        startPlayerTimer: startPlayerTimer,
+        triggerMoveToButton: triggerMoveToButton,
+        triggerPressButton: triggerPressButton,
+        resolveChoice: resolveChoice,
+        triggerSuperExplosion: triggerSuperExplosion,
+        endGame: endGame
+    };
+
+    // 上記オブジェクトは guestStartMatch でも使用するため window 参照にする。
+    window._onlineOrig = _onlineOrig;
+
+    startGame = function(){
+        if(isOnlineGuest()){
+            return _onlineOrig.startGame.call(window);
+        }
+        if(isOnlineHost()) return _onlineOrig.startGame.call(window);
+        return _onlineOrig.startGame.call(window);
+    };
+
+    startRound = function(){
+        if(isOnlineGuest() && !ONLINE.applying){ return; }
+        const r=_onlineOrig.startRound.call(window);
+        if(isOnlineHost() && ONLINE.started && survivors.length>1){
+            onlineBroadcast({
+                type:'roundStart', aliveCount, survivors:[...survivors], deadlySwitchId,
+                players:onlineHostSnapshot()
+            });
+        }
+        return r;
+    };
+
+    startPlayerTimer = function(){
+        const r=_onlineOrig.startPlayerTimer.call(window);
+        if(isOnlineHost() && ONLINE.started && activePlayer && !activePlayer.isCPU){
+            ONLINE.hostDeadline=Date.now()+PLAYER_TIME_LIMIT*1000;
+        }
+        return r;
+    };
+
+    nextTurn = function(){
+        if(isOnlineGuest()) return;
+        const r=_onlineOrig.nextTurn.call(window);
+        if(isOnlineHost() && ONLINE.started && activePlayer){
+            onlineBroadcast({
+                type:'turn', playerId:activePlayer.id,
+                deadline:(activePlayer.isCPU?0:(ONLINE.hostDeadline||Date.now()+PLAYER_TIME_LIMIT*1000))
+            });
+        }
+        return r;
+    };
+
+    triggerMoveToButton = function(sw){
+        if(isOnlineGuest()){
+            if(!ONLINE.guestReplaying && gameState==='player_wait' && activePlayer && activePlayer.id===ONLINE.localId && sw && !sw.pressed){
+                playSound('click'); onlineSend(ONLINE.hostConn,{type:'choose',playerId:ONLINE.localId,switchId:sw.id});
+            }
+            return;
+        }
+        const r=_onlineOrig.triggerMoveToButton.call(window,sw);
+        if(isOnlineHost() && ONLINE.started && activePlayer && sw){
+            onlineBroadcast({type:'choose',playerId:activePlayer.id,switchId:sw.id});
+        }
+        return r;
+    };
+
+    triggerPressButton = function(sw){
+        if(isOnlineGuest()){
+            if(ONLINE.guestReplaying) return _onlineOrig.triggerPressButton.call(window,sw);
+            return;
+        }
+        return _onlineOrig.triggerPressButton.call(window,sw);
+    };
+
+    function onlineHostMakeResult(outcome){
+        const preAliveCount=aliveCount;
+        const preSurvivors=[...survivors];
+        const postSurvivors=outcome==='explode' ? survivors.filter(id=>id!==activePlayer.id) : [...survivors];
+        const postAliveCount=outcome==='explode' ? preAliveCount-1 : preAliveCount;
+        const payload={
+            type:'result', outcome, playerId:activePlayer.id, switchId:activeSwitch?activeSwitch.id:-1,
+            rank: outcome==='explode'?preAliveCount:null, preAliveCount, postAliveCount,
+            preSurvivors, postSurvivors, pressedCount: outcome==='safe' ? pressedCount+1 : pressedCount,
+            deadlySwitchId, players:onlineHostSnapshot()
+        };
+        if(outcome==='safe') payload.pressedCount=pressedCount+1;
+        onlineBroadcast(payload);
+    }
+
+    resolveChoice = function(){
+        if(isOnlineGuest()) return;
+        if(isOnlineHost() && ONLINE.started){
+            const outcome=(activeSwitch && activeSwitch.id===deadlySwitchId)?'explode':'safe';
+            onlineHostMakeResult(outcome);
+            ONLINE.applying=true;
+            const r=_onlineOrig.resolveChoice.call(window);
+            ONLINE.applying=false;
+            return r;
+        }
+        return _onlineOrig.resolveChoice.call(window);
+    };
+
+    triggerSuperExplosion = function(){
+        if(isOnlineGuest()){
+            if(ONLINE.applying) return _onlineOrig.triggerSuperExplosion.call(window);
+            return;
+        }
+        if(isOnlineHost() && ONLINE.started && !ONLINE.applying){
+            // timeout / disconnect など、resolveChoice を経由しない爆発も同期する。
+            onlineHostMakeResult('explode');
+            ONLINE.applying=true;
+            const r=_onlineOrig.triggerSuperExplosion.call(window);
+            ONLINE.applying=false;
+            return r;
+        }
+        return _onlineOrig.triggerSuperExplosion.call(window);
+    };
+
+    endGame = function(){
+        if(isOnlineGuest()) return _onlineOrig.endGame.call(window);
+        if(isOnlineHost() && ONLINE.started && !ONLINE.applying){
+            onlineBroadcast({type:'gameOver',winnerId:survivors[0],survivors:[...survivors],players:onlineHostSnapshot()});
+        }
+        return _onlineOrig.endGame.call(window);
+    };
+
+    // DOM/キーボード用のオンライン起動
+    window.startOnlineExplosionBattle = function(){
+        onlineOpenChoice();
+    };
+
+    // startGame が押された時点ではオンラインロビーではなく通常ゲームなので、
+    // 専用ボタンの onclick を上書き。
+    document.addEventListener('DOMContentLoaded',function(){
+        const btns=document.querySelectorAll('#menu .btn');
+        btns.forEach(b=>{
+            if((b.textContent||'').includes('オンライン対戦')) b.onclick=function(){startOnlineExplosionBattle();};
+        });
+
+        // コレクション側から launchGameOnline で起動された場合にも自動入室。
+        if(window._startOnline){
+            setTimeout(()=>{
+                const action=window._onlineAction||'create'; const code=String(window._joinCode||'').trim().toUpperCase();
+                onlineOpenChoice();
+                if(action==='join'){
+                    onlineChooseJoin();
+                    const inp=document.getElementById('online-join-code'); if(inp) inp.value=code;
+                    setTimeout(()=>onlineJoinConnect(),120);
+                }else{
+                    onlineChooseCreate();
+                }
+            },120);
+        }
+    });
+})();
+</script>
 
 </body>
 </html>
