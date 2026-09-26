@@ -18080,6 +18080,10 @@ function openUserSwitcher(startupMode) {
 }
 function closeUserSwitcher() {
     if (window.__startupUserGate) return;
+    try {
+        var __u = (typeof getCurrentUser==='function') ? getCurrentUser() : null;
+        if (__u && typeof window.ojwgaIsSecurityLocked==='function' && window.ojwgaIsSecurityLocked(__u)) return;
+    } catch(e) {}
     if (!getCurrentUser()) return;
     document.getElementById('userswitch-overlay').classList.remove('show');
 }
@@ -18145,7 +18149,22 @@ function switchUser(id) {
         witchSpeak(bt === 'permanent' ? '完全ブロック中じゃ。解除できんぞい。' : (bt === 'normal' ? '通常ブロック中じゃ。保護者認証で解除できるぞい。' : '一時ブロック中じゃ。時間がたてば解除されるぞい。'));
         return;
     }
-    /* ブロックされていないユーザーを選んだ時点で、起動ゲートを解除する。 */
+    /* 認証失敗によるロック中のユーザーを選んだ場合も、新規ユーザー作成を禁止する。 */
+    try {
+        if (typeof window.ojwgaIsSecurityLocked === 'function' && window.ojwgaIsSecurityLocked(u)) {
+            root.currentUserId = id;
+            saveRoot();
+            window.__startupUserGate = true;
+            try { document.body.classList.add('startup-user-gate'); } catch(e) {}
+            document.getElementById('userswitch-overlay').classList.remove('show');
+            document.getElementById('home-screen').style.display = 'none';
+            document.getElementById('auth-overlay').classList.add('show');
+            updateAuthUI();
+            try { playAlarmSound(); } catch(e) {}
+            return;
+        }
+    } catch(e) {}
+    /* ブロックも認証ロックもないユーザーを選んだ時点で、起動ゲートを解除する。 */
     if (window.__startupUserGate) {
         try { sessionStorage.setItem('oijii_startup_user_selected', '1'); } catch(e) {}
         window.__startupUserGate = false;
@@ -18186,10 +18205,15 @@ function switchUser(id) {
 let tempNewAvatar = null;
 let tempNewUserTheme = null;
 function openNewUserModal() {
-    if (window.__startupUserGate) {
+    var __currentForNewUser = (typeof getCurrentUser==='function') ? getCurrentUser() : null;
+    var __securityLockedForNewUser = false;
+    try {
+        __securityLockedForNewUser = !!(__currentForNewUser && typeof window.ojwgaIsSecurityLocked==='function' && window.ojwgaIsSecurityLocked(__currentForNewUser));
+    } catch(e) {}
+    if (window.__startupUserGate || __securityLockedForNewUser) {
         witchSpeak((typeof getAppLang==='function'&&getAppLang()==='en')
-            ? 'User creation is not available here. Choose a user or exit.'
-            : 'ここではユーザー作成はできんぞい。ユーザーを選ぶか、終了するのじゃ。');
+            ? 'User creation is not available while this user is locked. Choose another user or wait.'
+            : 'このユーザーはロック中なので、新しいユーザーは作れんぞい。別のユーザーを選ぶか、ロックが解除されるまで待つのじゃ。');
         return;
     }
     tempNewAvatar = null;
@@ -18234,6 +18258,18 @@ function handleNewAvatarUpload(e) {
     reader.readAsDataURL(file);
 }
 function createNewUser() {
+    var __currentForCreate = (typeof getCurrentUser==='function') ? getCurrentUser() : null;
+    var __securityLockedForCreate = false;
+    try {
+        __securityLockedForCreate = !!(__currentForCreate && typeof window.ojwgaIsSecurityLocked==='function' && window.ojwgaIsSecurityLocked(__currentForCreate));
+    } catch(e) {}
+    if (window.__startupUserGate || __securityLockedForCreate) {
+        try { closeNewUserModal(); } catch(e) {}
+        witchSpeak((typeof getAppLang==='function'&&getAppLang()==='en')
+            ? 'User creation is unavailable while this user is locked.'
+            : 'ロック中は新しいユーザーを作れんぞい。');
+        return;
+    }
     const name = document.getElementById('newu-name-input').value.trim() || (((typeof t==='function')?t('newuser.defaultName','ユーザー'):'ユーザー') + (root.users.length + 1));
     const pass = document.getElementById('newu-pass-input').value;
     const hint = document.getElementById('newu-hint-input').value.trim();
@@ -27362,7 +27398,7 @@ window.openMP=openMP;window.mpHandleDisconnect=mpHandleDisconnect;
    ・4 password methods
    ・pattern unlock (3x3)
    ・device screen-lock via WebAuthn platform authenticator when available
-   ・3rd wrong = 3 min, 4th = 5 min, 5th+ = permanent lock
+   ・3rd wrong = 1 min, 4th = 3 min, 5th = permanent lock
    ・new user settings UI / share / delete
 ========================================================= */
 (function(){
@@ -27406,20 +27442,41 @@ function normalizeAllUsers(){try{(root.users||[]).forEach(normalizeSecurityUser)
 normalizeAllUsers();
 try{saveRoot();}catch(e){}
 
-function lockDurationForWrongCount(n){ if(n===3)return 3*60*1000; if(n===4)return 5*60*1000; return 0; }
+function lockDurationForWrongCount(n){ if(n===3)return 1*60*1000; if(n===4)return 3*60*1000; return 0; }
+function isSecurityLockedUser(u){
+  if(!u)return false;
+  normalizeSecurityUser(u);
+  return !!u.isTotallyLocked || (typeof u.lockUntil==='number' && u.lockUntil>Date.now());
+}
+function setCurrentSecurityLockGate(u, active){
+  try{
+    var cur=(typeof getCurrentUser==='function')?getCurrentUser():null;
+    if(cur && u && cur.id===u.id){
+      if(active){
+        window.__startupUserGate=true;
+        if(document.body)document.body.classList.add('startup-user-gate');
+      }
+      try{ if(typeof window.ojwgaEnforceStartupUserGate==='function') window.ojwgaEnforceStartupUserGate(); }catch(e){}
+    }
+  }catch(e){}
+}
 function recordSecurityFailure(u){
   normalizeSecurityUser(u);
   u.wrongCount=(u.wrongCount||0)+1;
   if(u.wrongCount>=5){u.isTotallyLocked=true;u.lockUntil=0;}
   else if(u.wrongCount===3||u.wrongCount===4){u.lockUntil=Date.now()+lockDurationForWrongCount(u.wrongCount);}
   saveRoot();
+  setCurrentSecurityLockGate(u,true);
   var n=u.wrongCount;
-  if(n===3){safeSpeak('3回も間違えたのぅ。3分間、扉を閉めるぞい。','Three wrong tries. The door is locked for three minutes.');playAlarmSound();}
-  else if(n===4){safeSpeak('4回目じゃ。今度は5分間、閉めておくぞい。','Four wrong tries. The door is locked for five minutes.');playAlarmSound();}
+  if(n===3){safeSpeak('3回も間違えたのぅ。1分間、扉を閉めるぞい。','Three wrong tries. The door is locked for one minute.');playAlarmSound();}
+  else if(n===4){safeSpeak('4回目じゃ。今度は3分間、閉めておくぞい。','Four wrong tries. The door is locked for three minutes.');playAlarmSound();}
   else if(n>=5){safeSpeak('5回も間違えおったな。もう延々ロックじゃぞい。','Five wrong tries. The account is now permanently locked.');playAlarmSound();}
   else{safeSpeak('ブッブー！違うぞい！','Nope! Wrong!');}
 }
-function resetSecurityFailures(u){normalizeSecurityUser(u);u.wrongCount=0;u.lockUntil=0;u.isTotallyLocked=false;saveRoot();}
+function resetSecurityFailures(u){
+  normalizeSecurityUser(u);
+  u.wrongCount=0;u.lockUntil=0;u.isTotallyLocked=false;saveRoot();
+}
 
 function createPatternPad(container,mode,onDone,initial){
   if(!container)return;
@@ -27527,6 +27584,7 @@ window.resetSecurityFailures=resetSecurityFailures;
 window.authSuccess=authSuccess;
 window.ojwgaSafeSpeak=safeSpeak;
 window.ojwgaNormalizeSecurityUser=normalizeSecurityUser;
+window.ojwgaIsSecurityLocked=function(u){try{return isSecurityLockedUser(u);}catch(e){return false;}};
 window.checkAuthPassword=function(){var u=getCurrentUser();if(!u)return;normalizeSecurityUser(u);var el=byId('ojwga-auth-secret');if(el){var v=el.value||'';if(v===String(u.password||'')){resetSecurityFailures(u);authSuccess(u);}else{recordSecurityFailure(u);el.value='';updateAuthUI();}}else{updateAuthUI();}};
 window.cancelAuth=function(){try{document.getElementById('auth-overlay').classList.remove('show');}catch(e){}if('speechSynthesis' in window)speechSynthesis.cancel();try{openUserSwitcher(!!window.__startupUserGate);}catch(e){}};
 
@@ -27609,14 +27667,25 @@ function refreshSecurityLabels(){
   try{if(byId('userswitch-create-btn')&&window.__startupUserGate)byId('userswitch-create-btn').style.display='none';if(byId('userswitch-close-btn')&&window.__startupUserGate)byId('userswitch-close-btn').style.display='none';if(byId('userswitch-startup-exit-btn'))byId('userswitch-startup-exit-btn').style.display=window.__startupUserGate?'block':'none';}catch(e){}
 }
 var origOpenUserSwitcher=window.openUserSwitcher;
-window.openUserSwitcher=function(startupMode){var startup=!!startupMode||!!window.__startupUserGate;if(startup)window.__startupUserGate=true;var r=origOpenUserSwitcher.apply(this,arguments);try{refreshSecurityLabels();var c=byId('userswitch-create-btn'),x=byId('userswitch-close-btn'),e=byId('userswitch-startup-exit-btn');if(c)c.style.display=startup?'none':'';if(x)x.style.display=startup?'none':'';if(e)e.style.display=startup?'block':'none';}catch(err){}return r;};
+window.openUserSwitcher=function(startupMode){
+  var __cur=(typeof getCurrentUser==='function')?getCurrentUser():null;
+  var startup=!!startupMode||!!window.__startupUserGate||isSecurityLockedUser(__cur);
+  if(startup)window.__startupUserGate=true;
+  var r=origOpenUserSwitcher.apply(this,[startup]);
+  try{refreshSecurityLabels();var c=byId('userswitch-create-btn'),x=byId('userswitch-close-btn'),e=byId('userswitch-startup-exit-btn');if(c)c.style.display=startup?'none':'';if(x)x.style.display=startup?'none':'';if(e)e.style.display=startup?'block':'none';}catch(err){}
+  return r;
+};
 
 /* Re-render security UI when language changes. */
 var prevApplyLanguage=window.applyLanguage;
 if(typeof prevApplyLanguage==='function')window.applyLanguage=function(){var r=prevApplyLanguage.apply(this,arguments);setTimeout(function(){try{refreshSecurityLabels();}catch(e){}} ,0);return r;};
 
 /* Fix: returning from a blocked auth screen keeps startup gate mode. */
-window.cancelAuth=function(){try{byId('auth-overlay').classList.remove('show');}catch(e){}if('speechSynthesis' in window)speechSynthesis.cancel();try{openUserSwitcher(!!window.__startupUserGate);}catch(e){}};
+window.cancelAuth=function(){
+  try{byId('auth-overlay').classList.remove('show');}catch(e){}
+  if('speechSynthesis' in window)speechSynthesis.cancel();
+  try{var __cu=getCurrentUser();var __gate=!!window.__startupUserGate||isSecurityLockedUser(__cu);openUserSwitcher(__gate);}catch(e){}
+};
 
 
 window.ojwgaEnforceStartupUserGate=function(){
@@ -27637,9 +27706,16 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
       return !!(u && typeof isUserBlocked==='function' && isUserBlocked(u));
     }catch(e){ return false; }
   }
+  function _isSecurityLockedCurrentUser(){
+    try{
+      var u=(typeof getCurrentUser==='function')?getCurrentUser():null;
+      return !!(u && typeof window.ojwgaIsSecurityLocked==='function' && window.ojwgaIsSecurityLocked(u));
+    }catch(e){ return false; }
+  }
   function _applyBlockedUserGate(){
     try{
-      var gate = !!window.__startupUserGate || _isBlockedCurrentUser();
+      var gate = !!window.__startupUserGate || _isBlockedCurrentUser() || _isSecurityLockedCurrentUser();
+      if(gate) window.__startupUserGate=true;
       if (gate) {
         window.__startupUserGate = true;
         if (document.body) document.body.classList.add('startup-user-gate');
@@ -27654,7 +27730,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   }
   var _oldOpen = window.openUserSwitcher;
   window.openUserSwitcher = function(startupMode){
-    var gate = !!startupMode || !!window.__startupUserGate || _isBlockedCurrentUser();
+    var gate = !!startupMode || !!window.__startupUserGate || _isBlockedCurrentUser() || _isSecurityLockedCurrentUser();
     if(gate){
       window.__startupUserGate = true;
       try{ document.body.classList.add('startup-user-gate'); }catch(e){}
@@ -27667,7 +27743,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   window.cancelAuth = function(){
     try{ var a=document.getElementById('auth-overlay'); if(a) a.classList.remove('show'); }catch(e){}
     try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){}
-    var gate = !!window.__startupUserGate || _isBlockedCurrentUser();
+    var gate = !!window.__startupUserGate || _isBlockedCurrentUser() || _isSecurityLockedCurrentUser();
     if(gate) window.__startupUserGate = true;
     try{ window.openUserSwitcher(gate); }catch(e){}
     try{ setTimeout(_applyBlockedUserGate, 0); }catch(e){}
