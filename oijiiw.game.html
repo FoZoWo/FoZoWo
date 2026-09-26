@@ -27393,5 +27393,62 @@ window.ojwgaEnforceStartupUserGate=function(){
 try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(e){}
 })();
 </script>
+<script>
+/* ===== Fix: blocked-user Back must keep startup-style user selection ===== */
+(function(){
+  function _isBlockedCurrentUser(){
+    try{
+      var u = (typeof getCurrentUser==='function') ? getCurrentUser() : null;
+      return !!(u && typeof isUserBlocked==='function' && isUserBlocked(u));
+    }catch(e){ return false; }
+  }
+  function _applyBlockedUserGate(){
+    try{
+      var gate = !!window.__startupUserGate || _isBlockedCurrentUser();
+      if (gate) {
+        window.__startupUserGate = true;
+        if (document.body) document.body.classList.add('startup-user-gate');
+      }
+      var c=document.getElementById('userswitch-create-btn');
+      var x=document.getElementById('userswitch-close-btn');
+      var ex=document.getElementById('userswitch-startup-exit-btn');
+      if(c) c.style.display = gate ? 'none' : '';
+      if(x) x.style.display = gate ? 'none' : '';
+      if(ex) ex.style.display = gate ? 'block' : 'none';
+    }catch(e){}
+  }
+  var _oldOpen = window.openUserSwitcher;
+  window.openUserSwitcher = function(startupMode){
+    var gate = !!startupMode || !!window.__startupUserGate || _isBlockedCurrentUser();
+    if(gate){
+      window.__startupUserGate = true;
+      try{ document.body.classList.add('startup-user-gate'); }catch(e){}
+    }
+    var r;
+    try{ r = _oldOpen ? _oldOpen.apply(this, [gate].concat([].slice.call(arguments,1))) : undefined; }catch(e){}
+    _applyBlockedUserGate();
+    return r;
+  };
+  window.cancelAuth = function(){
+    try{ var a=document.getElementById('auth-overlay'); if(a) a.classList.remove('show'); }catch(e){}
+    try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){}
+    var gate = !!window.__startupUserGate || _isBlockedCurrentUser();
+    if(gate) window.__startupUserGate = true;
+    try{ window.openUserSwitcher(gate); }catch(e){}
+    try{ setTimeout(_applyBlockedUserGate, 0); }catch(e){}
+  };
+  /* Also protect direct calls from blocked-user screens. */
+  document.addEventListener('click', function(e){
+    try{
+      var t=e.target;
+      if(!t) return;
+      var txt=(t.textContent||'').trim();
+      if ((txt==='← ユーザー選択に戻る' || txt==='← Back to user select') && _isBlockedCurrentUser()) {
+        setTimeout(function(){ window.__startupUserGate=true; _applyBlockedUserGate(); }, 0);
+      }
+    }catch(err){}
+  }, true);
+})();
+</script>
 </body>
 </html>
