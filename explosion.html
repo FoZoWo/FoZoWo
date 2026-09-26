@@ -365,13 +365,13 @@ if (location.search.includes('challenge=1')) {
                 <div class="online-room-top">
                     <div>
                         <div class="online-mini-label">部屋コード</div>
-                        <div id="online-room-code" class="online-room-code">------</div>
+                        <div id="online-room-code" class="online-room-code">----</div>
                     </div>
                     <button type="button" class="online-copy" onclick="onlineCopyRoomCode()">📋 コピー</button>
                 </div>
                 <div id="online-join-input-wrap" class="online-join-input-wrap" style="display:none;">
                     <label for="online-join-code">友達からもらったコード</label>
-                    <div class="online-join-row"><input id="online-join-code" maxlength="8" autocomplete="off" inputmode="text" placeholder="例: A3K9QX" /><button type="button" onclick="onlineJoinConnect()">接続</button></div>
+                    <div class="online-join-row"><input id="online-join-code" maxlength="4" autocomplete="off" inputmode="numeric" placeholder="例: 1234" /><button type="button" onclick="onlineJoinConnect()">接続</button></div>
                 </div>
 
                 <div class="online-players-head"><span>参加者</span><span id="online-players-count">0/4</span></div>
@@ -1338,7 +1338,7 @@ if (location.search.includes('challenge=1')) {
         autoJoinCode: ''
     };
 
-    const ONLINE_CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const ONLINE_CODE_CHARS = '0123456789';
     const ONLINE_MAX_PLAYERS = 4;
 
     function isOnlineHost(){ return ONLINE.role === 'host'; }
@@ -1351,7 +1351,7 @@ if (location.search.includes('challenge=1')) {
     function onlineRoomPeerId(code){ return 'oijiiw-blast-' + String(code).toLowerCase(); }
     function onlineGenCode(){
         let s='';
-        for(let i=0;i<6;i++) s += ONLINE_CODE_CHARS[Math.floor(Math.random()*ONLINE_CODE_CHARS.length)];
+        for(let i=0;i<4;i++) s += ONLINE_CODE_CHARS[Math.floor(Math.random()*ONLINE_CODE_CHARS.length)];
         return s;
     }
     function onlineSetStatus(msg){ const el=document.getElementById('online-room-status'); if(el) el.textContent=msg; }
@@ -1476,7 +1476,7 @@ if (location.search.includes('challenge=1')) {
     async function onlineHostCreatePeer(retry=0){
         onlineDisconnectPeerOnly();
         if(retry>5){ onlineSetError('部屋を作れませんでした。ページを再読み込みしてもう一度試してください。'); return; }
-        const code=onlineGenCode(); const peerId=onlineRoomPeerId(code);
+        const forced=String((window._oijiiMultiConfig&&window._oijiiMultiConfig.roomCode)||'').replace(/[^0-9]/g,'').slice(0,4); const code=forced||onlineGenCode(); const peerId=onlineRoomPeerId(code);
         const peer=new Peer(peerId,{debug:0});
         ONLINE.peer=peer; ONLINE.roomCode=code;
         peer.on('open',()=>{
@@ -1540,6 +1540,7 @@ if (location.search.includes('challenge=1')) {
         const p=players[pid]; if(!p) return;
         p.onlineRemote=false;
         if(!ONLINE.started){ p.isCPU=true; p.name='CPU'+pid; onlineBroadcast({type:'lobby',players:onlineHostSnapshot()}); onlineRenderPlayerList(); onlineSetStatus('参加者が退出しました。'); return; }
+        if(window._oijiiMultiConfig && window.parent){ try{ window.parent.postMessage({type:'mp-transport-lost',message:'対戦相手との通信が切断されました。'},'*'); }catch(e){} return; }
         // 対戦中の切断は、その時点で脱落扱い。現在ターンなら強制爆発へ。
         if(p.alive && activePlayer && activePlayer.id===pid && gameState==='player_wait'){
             const available=switches.filter(s=>!s.pressed); activeSwitch=available.length?available[0]:switches[0];
@@ -1554,8 +1555,8 @@ if (location.search.includes('challenge=1')) {
     }
 
     window.onlineJoinConnect = async function(){
-        let code=((document.getElementById('online-join-code')||{}).value||'').trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
-        if(code.length<4){ onlineSetError('6文字の部屋コードを入力してください。'); return; }
+        let code=((document.getElementById('online-join-code')||{}).value||'').trim().toUpperCase().replace(/[^0-9]/g,'');
+        if(code.length<4){ onlineSetError('4桁の部屋コードを入力してください。'); return; }
         if(!window.Peer){ onlineSetError('通信ライブラリを読み込めませんでした。'); return; }
         const name=onlineSavePlayerName();
         onlineSetError(''); onlineSetStatus('部屋を探しています…');
@@ -1598,6 +1599,7 @@ if (location.search.includes('challenge=1')) {
     }
 
     function onlineGuestDisconnectNotice(){
+        if(window._oijiiMultiConfig && window.parent){ try{ window.parent.postMessage({type:'mp-transport-lost',message:'対戦相手との通信が切断されました。'},'*'); }catch(e){} }
         clearGuestTimer();
         const p=players[0];
         if(ONLINE.started){
@@ -1747,7 +1749,7 @@ if (location.search.includes('challenge=1')) {
 
     window.onlineCopyRoomCode = async function(){
         const code=ONLINE.roomCode || (document.getElementById('online-room-code')||{}).textContent || '';
-        if(!code || code==='------') return;
+        if(!code || code==='----') return;
         try{ await navigator.clipboard.writeText(code); onlineSetStatus('部屋コードをコピーしました。'); }
         catch(e){ onlineSetStatus('コード: '+code); }
     };
