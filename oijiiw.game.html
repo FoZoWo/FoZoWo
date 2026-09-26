@@ -27805,40 +27805,80 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     if(msg) msg.textContent=en?'Enter your PIN.':'暗証番号を入力するのじゃ。';
     var wrap=document.createElement('div'); wrap.className='ojwga-pin-box-wrap';
     var boxes=document.createElement('div'); boxes.className='ojwga-pin-boxes';
-    var len=Math.max(4,Math.min(10,String(u.password||'').length||4));
+    var len=Math.max(4,Math.min(10,String(u.password||'').replace(/\D/g,'').length||4));
     var inp=document.createElement('input');
-    inp.type='tel'; inp.inputMode='numeric'; inp.autocomplete='one-time-code'; inp.maxLength=len; inp.pattern='[0-9]*'; inp.className='ojwga-pin-hidden-input'; inp.setAttribute('aria-label',en?'PIN input':'暗証番号入力');
+    inp.type='password';
+    inp.inputMode='numeric';
+    inp.autocomplete='off';
+    inp.maxLength=len;
+    inp.pattern='[0-9]*';
+    inp.className='ojwga-pin-hidden-input';
+    inp.setAttribute('aria-label',en?'PIN input':'暗証番号入力');
+    inp.setAttribute('enterkeyhint','done');
     var hint=document.createElement('div'); hint.className='ojwga-pin-hint'; hint.textContent=en?(len+' digits'):(len+'桁の数字');
     for(var i=0;i<len;i++){var b=document.createElement('div');b.className='ojwga-pin-box';b.textContent='□';boxes.appendChild(b);}
-    function redraw(){var v=(inp.value||'').replace(/\D/g,'').slice(0,len);if(inp.value!==v)inp.value=v;Array.prototype.forEach.call(boxes.children,function(b,i){b.classList.toggle('filled',i<v.length);b.textContent=i<v.length?'●':'□';});}
-    var lastAttemptValue='';
-    var attemptTimer=null;
-    function attempt(){
-      var v=(inp.value||'').replace(/\D/g,'').slice(0,len);
-      if(inp.value!==v)inp.value=v;
-      if(v.length!==len || v===lastAttemptValue)return;
-      lastAttemptValue=v;
-      if(v===String(u.password||'')){resetSecurityFailures(u);authSuccess(u);}
-      else{recordSecurityFailure(u);inp.value='';lastAttemptValue='';redraw();safeSpeak('暗証番号が違うぞい。','Wrong PIN.');updateAuthUI();setTimeout(function(){var x=document.getElementById('ojwga-pin-hidden-input');if(x)x.focus();},30);}
+
+    var attemptTimer=0, finished=false;
+    function redraw(){
+      var v=String(inp.value||'').replace(/\D/g,'').slice(0,len);
+      if(inp.value!==v) inp.value=v;
+      Array.prototype.forEach.call(boxes.children,function(b,i){
+        b.classList.toggle('filled',i<v.length);
+        b.textContent=i<v.length?'●':'□';
+      });
+      return v;
+    }
+    function attemptNow(){
+      if(finished)return;
+      var v=redraw();
+      if(v.length!==len)return;
+      /* 最終桁が入った瞬間に、この値をそのまま認証する。 */
+      if(v===String(u.password||'')){
+        finished=true;
+        resetSecurityFailures(u);
+        authSuccess(u);
+      }else{
+        finished=true;
+        recordSecurityFailure(u);
+        inp.value='';
+        safeSpeak('暗証番号が違うぞい。','Wrong PIN.');
+        updateAuthUI();
+      }
     }
     function scheduleAttempt(){
       redraw();
       if(attemptTimer)clearTimeout(attemptTimer);
-      attemptTimer=setTimeout(attempt,0);
+      if(String(inp.value||'').replace(/\D/g,'').length>=len){
+        attemptTimer=setTimeout(attemptNow,0);
+      }
     }
-    inp.id='ojwga-pin-hidden-input';
+    function ensureAttempt(){
+      redraw();
+      if(String(inp.value||'').replace(/\D/g,'').length>=len)attemptNow();
+    }
+
     inp.addEventListener('input',scheduleAttempt);
-    inp.addEventListener('keyup',function(e){if(/^[0-9]$/.test(e.key))scheduleAttempt()});
-    inp.addEventListener('change',scheduleAttempt);
-    inp.addEventListener('paste',function(){setTimeout(scheduleAttempt,0)});
-    inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();scheduleAttempt()}});
+    inp.addEventListener('beforeinput',function(){setTimeout(ensureAttempt,0);});
+    inp.addEventListener('keyup',function(e){
+      if(/^[0-9]$/.test(e.key))ensureAttempt();
+      else if(e.key==='Enter')attemptNow();
+    });
+    inp.addEventListener('change',ensureAttempt);
+    inp.addEventListener('paste',function(){setTimeout(ensureAttempt,0);});
+    inp.addEventListener('compositionend',function(){setTimeout(ensureAttempt,0);});
+    inp.addEventListener('keydown',function(e){
+      if(e.key==='Enter'){e.preventDefault();attemptNow();}
+    });
+
     wrap.appendChild(boxes);wrap.appendChild(hint);ui.appendChild(wrap);
-    /* Visible PIN boxes are the tap/click target; the real input sits transparently over them. */
+    /* 表示ボックス全体を入力欄として扱う。 */
     boxes.appendChild(inp);
+    boxes.addEventListener('pointerdown',function(){try{inp.focus()}catch(e){}});
     boxes.addEventListener('click',function(){try{inp.focus()}catch(e){}});
     wrap.addEventListener('click',function(){try{inp.focus()}catch(e){}});
-    setTimeout(function(){try{inp.focus();inp.select()}catch(e){}},120);redraw();
+    setTimeout(function(){try{inp.focus();}catch(e){};redraw();ensureAttempt();},80);
   }
+
   var oldUpdate=window.updateAuthUI;
   if(typeof oldUpdate!=='function')return;
   window.updateAuthUI=function(){
@@ -27851,7 +27891,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
         clearInterval(typeof authTimerInterval!=='undefined'?authTimerInterval:null);
         ui.innerHTML=''; if(timer)timer.style.display='none'; if(forgot)forgot.style.display='none'; if(unblock)unblock.style.display='none';
         if(title)title.textContent=(langEn()?'PIN Authentication — ':'暗証番号認証 — ')+(u.name||'ユーザー');
-        if(u.isTotallyLocked){if(msg)msg.textContent=langEn()?'This user is permanently locked.':'このユーザーは延々ロック中じゃ。';safeSpeak('5回間違えて延々ロック中じゃぞい。','Five wrong tries. This user is permanently locked.');return;}
+        if(u.isTotallyLocked){if(msg)msg.textContent=langEn()?'This user is permanently locked.':'このユーザーは延々ロック中じゃ。';return;}
         if(u.lockUntil>Date.now()){
           if(msg)msg.textContent=langEn()?'Please wait.':'しばらく待つのじゃ。'; if(timer)timer.style.display='block';
           var tick=function(){var r=Math.max(0,Math.ceil((u.lockUntil-Date.now())/1000));if(r<=0){u.lockUntil=0;saveRoot();window.updateAuthUI();return;}var m=Math.floor(r/60),ss=r%60;timer.textContent=langEn()?(m+'m '+ss+'s remaining'):(m+'分 '+ss+'秒後に再開');};tick();authTimerInterval=setInterval(tick,1000);return;
