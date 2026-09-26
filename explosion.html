@@ -1335,7 +1335,8 @@ if (location.search.includes('challenge=1')) {
         applying: false,
         localGameEndSent: false,
         autoAction: null,
-        autoJoinCode: ''
+        autoJoinCode: '',
+        joinRetry: 0
     };
 
     const ONLINE_CODE_CHARS = '0123456789';
@@ -1515,6 +1516,16 @@ if (location.search.includes('challenge=1')) {
             onlineBroadcast({type:'lobby',players:onlineHostSnapshot()});
             onlineSetStatus(name+' が参加しました。対戦開始を待機中…');
             onlineRenderPlayerList();
+            /* コレクションから起動したオンライン対戦は、親側でゲームを決定済み。
+               このゲーム側では参加者が2人以上そろった時点で権威ホストが自動開始する。 */
+            if(window._oijiiAutoStartOnline && !ONLINE.started){
+                setTimeout(()=>{
+                    try{
+                        const need=Math.max(2,Math.min(4,Number((window._oijiiMultiConfig||{}).selectedCount)||2));
+                        if(onlineHumanCount()>=need && typeof window.onlineHostStartMatch==='function') window.onlineHostStartMatch();
+                    }catch(e){ console.error(e); }
+                },180);
+            }
         });
         conn.on('data',data=>onlineHostMessage(conn,data));
         conn.on('close',()=>onlineHostDisconnect(conn));
@@ -1561,21 +1572,40 @@ if (location.search.includes('challenge=1')) {
         const name=onlineSavePlayerName();
         onlineSetError(''); onlineSetStatus('部屋を探しています…');
         ONLINE.role='guest'; ONLINE.roomCode=code; ONLINE.started=false; ONLINE.seq=0;
+        ONLINE.joinRetry=0;
         players[0].name='ホスト';
-        const peer=new Peer({debug:0}); ONLINE.peer=peer;
-        peer.on('open',()=>{
-            const hostId=onlineRoomPeerId(code); ONLINE.hostPeerId=hostId;
-            const conn=peer.connect(hostId,{reliable:true,metadata:{name,client:'explosion-online-v1'}});
-            ONLINE.hostConn=conn;
-            conn.on('open',()=>{ onlineSetStatus('部屋に接続しました。参加者一覧を取得中…'); onlineSend(conn,{type:'hello',name}); });
-            conn.on('data',data=>onlineGuestMessage(data));
-            conn.on('close',()=>{ if(ONLINE.started) onlineGuestDisconnectNotice(); else onlineSetStatus('部屋主との接続が切れました。'); });
-            conn.on('error',err=>onlineSetError('接続エラー: '+(err&&err.message?err.message:String(err||'unknown'))));
-        });
-        peer.on('error',err=>{
-            onlineSetError('部屋に接続できませんでした。コードが正しいか、部屋主が接続中か確認してください。');
-            onlineSetStatus('接続失敗');
-        });
+        function tryJoinPeer(){
+            ONLINE.joinRetry=(ONLINE.joinRetry||0)+1;
+            const peer=new Peer({debug:0}); ONLINE.peer=peer;
+            let opened=false;
+            peer.on('open',()=>{
+                const hostId=onlineRoomPeerId(code); ONLINE.hostPeerId=hostId;
+                const conn=peer.connect(hostId,{reliable:true,metadata:{name,client:'explosion-online-v1'}});
+                ONLINE.hostConn=conn;
+                conn.on('open',()=>{ opened=true; onlineSetStatus('部屋に接続しました。参加者一覧を取得中…'); onlineSend(conn,{type:'hello',name}); });
+                conn.on('data',data=>onlineGuestMessage(data));
+                conn.on('close',()=>{
+                    if(ONLINE.started) onlineGuestDisconnectNotice();
+                    else if((ONLINE.joinRetry||0)<10){ onlineSetStatus('部屋主を待っています…再接続します。'); setTimeout(tryJoinPeer,900); }
+                    else onlineSetStatus('接続失敗');
+                });
+                conn.on('error',err=>{
+                    if(!opened && !ONLINE.started && (ONLINE.joinRetry||0)<10){ try{conn.close();}catch(e){}; setTimeout(tryJoinPeer,900); return; }
+                    onlineSetError('接続エラー: '+(err&&err.message?err.message:String(err||'unknown')));
+                });
+            });
+            peer.on('error',err=>{
+                if(!ONLINE.started && (ONLINE.joinRetry||0)<10){
+                    onlineSetStatus('部屋主を待っています…再接続します。');
+                    try{ if(ONLINE.peer===peer && !peer.destroyed) peer.destroy(); }catch(e){}
+                    setTimeout(tryJoinPeer,900);
+                    return;
+                }
+                onlineSetError('部屋に接続できませんでした。コードが正しいか、部屋主が接続中か確認してください。');
+                onlineSetStatus('接続失敗');
+            });
+        }
+        tryJoinPeer();
     };
 
     function onlineGuestMessage(msg){
