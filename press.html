@@ -1025,6 +1025,7 @@ if (location.search.includes('challenge=1')) {
 
         // 最終リザルト表示
         function showResults() {
+            if (Net && Net.online) Net._normalEnd = true;
             updateWizard("素晴らしい強運じゃ！これにて全員の順位が完全に決定したぞい！ワシのプレスを耐え抜いた覇者を称えるが良い！フォッフォッフォ！");
 
             const floor = document.getElementById('stage-floor');
@@ -1290,7 +1291,7 @@ function mqttConnect(urls, clientId, onMsg, onReady, onFail) {
       clearTimeout(timer);
       clearInterval(ws._ping);
       if (!opened) tryNext();
-      else if (window._oijiiMultiConfig && window.parent) { try { window.parent.postMessage({type:'mp-transport-lost', message:'プレスゲームの通信が切断されました。'}, '*'); } catch(e) {} }
+      else if (window._oijiiMultiConfig && window.parent && !(Net && Net._normalEnd) && !window.__OIJII_SILENT_CLOSE__) { try { window.parent.postMessage({type:'mp-transport-lost', message:'プレスゲームの通信が切断されました。'}, '*'); } catch(e) {} }
     };
   }
   tryNext();
@@ -1429,6 +1430,7 @@ function createRoom() {
   Net.myId = uid();
   Net.hostId = Net.myId;
   Net.online = false;
+  Net._normalEnd = false;
 
   netLog('部屋を用意中…');
   netToast('マッチングサーバーに接続中じゃ…');
@@ -1474,6 +1476,7 @@ function joinRoom(codeRaw) {
   Net.myId = uid();
   Net.hostId = null;
   Net.online = false;
+  Net._normalEnd = false;
   Net._searchApis = [];
 
   var joinBtn = document.getElementById('net-btn-join');
@@ -1965,6 +1968,36 @@ function applyLocalPressRoles(){
   }catch(e){}
 }
 window.addEventListener('DOMContentLoaded',function(){setTimeout(applyLocalPressRoles,80);setTimeout(applyLocalPressRoles,300);});
+})();
+</script>
+<script id="ojwga-result-action-bridge">
+(function(){
+  if(window.__OIJII_RESULT_ACTION_BOUND__) return;
+  window.__OIJII_RESULT_ACTION_BOUND__=true;
+  window.addEventListener('message',function(e){
+    var m=e.data||{};
+    if(m.type==='mp-shutdown'){
+      window.__OIJII_SILENT_CLOSE__=true;
+      try{if(Net)Net._normalEnd=true;}catch(_e){}
+      try{if(typeof cleanup==='function')cleanup();}catch(_e){}
+      return;
+    }
+    if(m.type!=='mp-result-action'||m.action!=='replay')return;
+    try{
+      window.__OIJII_SILENT_CLOSE__=false;
+      if(typeof Net==='undefined'||!Net.online)return;
+      Net._normalEnd=false;
+      if(Net.isHost){
+        if(typeof window._netRestart==='function') window._netRestart();
+        else { aliveIds=['oisashi','cpu1','cpu2','cpu3']; rankings=[]; startRound(); }
+        try{window.parent.postMessage({type:'mp-result-action-done',action:'replay',gameId:'press'},'*')}catch(_e){}
+      }else{
+        pub('retry',{});
+      }
+    }catch(err){ try{window.parent.postMessage({type:'mp-child-error',message:'再戦の開始に失敗しました。'},'*')}catch(_e){} }
+  });
+  var oldApply=window._netApplyRound;
+  if(typeof oldApply==='function') window._netApplyRound=function(data){var r=oldApply.apply(this,arguments);try{if(Net&&Net.online&&!Net.isHost&&window.parent)window.parent.postMessage({type:'mp-result-action-done',action:'replay',gameId:'press'},'*')}catch(_e){}return r};
 })();
 </script>
 </body>
