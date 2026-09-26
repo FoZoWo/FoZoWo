@@ -5683,6 +5683,122 @@ body.startup-user-gate #userswitch-overlay #userswitch-startup-exit-btn { displa
 .ojwga-step-note{color:#cbbbdc;font-size:.78rem;line-height:1.45;margin-top:6px}.ojwga-danger-text{color:#ff8f8f;font-weight:800}.ojwga-device-warning{color:#ffb1b1;font-size:.76rem;line-height:1.45;margin-top:8px}
 @media(max-width:520px){.ojwga-method-grid{grid-template-columns:1fr 1fr;gap:8px}.ojwga-method-card{min-height:88px;padding:11px}.ojwga-method-card .method-title{font-size:.84rem}.ojwga-method-card .method-desc{font-size:.68rem}.ojwga-profile-overlay .ojwga-profile-box{padding:18px}.ojwga-pattern-board{width:min(280px,78vw)}}
 </style>
+
+<style id="ojwga-password-flow-ui">
+#profile-overlay .ojwga-password-stage{width:100% !important;min-width:0 !important;box-sizing:border-box !important;display:flex;flex-direction:column;min-height:0;}
+#profile-overlay .ojwga-password-choice-grid{display:grid;grid-template-columns:1fr;gap:10px;width:100%;margin-top:8px;}
+#profile-overlay .ojwga-password-choice{width:100%;min-height:78px;display:grid;grid-template-columns:40px minmax(0,1fr) 24px;grid-template-areas:"icon title arrow" "icon sub arrow";align-items:center;gap:2px 10px;padding:12px 14px;border-radius:14px;border:1px solid rgba(199,125,255,.35);background:linear-gradient(135deg,rgba(142,68,173,.18),rgba(25,12,45,.72));color:#fff;text-align:left;cursor:pointer;font:inherit;box-sizing:border-box;}
+#profile-overlay .ojwga-password-choice:hover,#profile-overlay .ojwga-password-choice:active{border-color:rgba(241,196,15,.65);box-shadow:0 8px 22px rgba(0,0,0,.28);}
+#profile-overlay .ojwga-password-choice .choice-icon{grid-area:icon;font-size:1.45rem;text-align:center;}
+#profile-overlay .ojwga-password-choice .choice-title{grid-area:title;font-size:.93rem;font-weight:900;line-height:1.25;}
+#profile-overlay .ojwga-password-choice .choice-sub{grid-area:sub;font-size:.72rem;color:#cdb8e8;line-height:1.3;}
+#profile-overlay .ojwga-password-choice::after{content:'›';grid-area:arrow;font-size:1.5rem;color:#cdb8e8;justify-self:end;}
+@media(max-width:360px){#profile-overlay .ojwga-password-choice{grid-template-columns:34px minmax(0,1fr) 20px;padding:10px 11px;}.ojwga-password-choice .choice-title{font-size:.86rem !important}.ojwga-password-choice .choice-sub{font-size:.68rem !important}}
+</style>
+<style id="ojwga-profile-ui-final-fix">
+/* ===== ユーザー設定UI 最終レイアウト修正 ===== */
+#profile-overlay.ojwga-profile-overlay{
+  position:fixed !important; inset:0 !important; z-index:2147483000 !important;
+  display:none !important; align-items:center !important; justify-content:center !important;
+  flex-direction:row !important; padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom)) !important;
+  overflow:hidden !important; background:rgba(5,2,12,.78) !important;
+  backdrop-filter:blur(7px); -webkit-backdrop-filter:blur(7px);
+}
+#profile-overlay.ojwga-profile-overlay.show{display:flex !important;}
+#profile-overlay .ojwga-profile-box{
+  width:min(520px,calc(100vw - 24px)) !important;
+  max-width:520px !important;
+  max-height:min(720px,calc(100dvh - 24px)) !important;
+  min-height:0 !important;
+  margin:0 auto !important;
+  padding:18px !important;
+  box-sizing:border-box !important;
+  display:flex !important;
+  flex-direction:column !important;
+  overflow:hidden !important;
+  border-radius:18px !important;
+  border:1px solid rgba(199,125,255,.55) !important;
+  background:linear-gradient(145deg,rgba(39,20,68,.985),rgba(15,8,28,.985)) !important;
+  box-shadow:0 18px 60px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.03) inset !important;
+}
+#profile-overlay .ojwga-profile-view,
+#profile-overlay .ojwga-profile-subview{
+  width:100% !important; min-width:0 !important; box-sizing:border-box !important;
+}
+#profile-overlay .ojwga-profile-view{
+  display:flex; flex-direction:column; min-height:0; overflow:auto;
+  overscroll-behavior:contain; -webkit-overflow-scrolling:touch;
+}
+#profile-overlay .ojwga-profile-subview{
+  min-height:0; overflow:auto; overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+#profile-overlay .ojwga-profile-kicker{flex:0 0 auto;font-size:.66rem !important;letter-spacing:.2em !important;margin:0 0 5px !important;}
+#profile-overlay .ojwga-profile-box h2{font-size:1.3rem !important;line-height:1.25 !important;margin:0 0 12px !important;}
+#profile-overlay .ojwga-profile-current{
+  width:100% !important; min-height:44px !important; display:flex !important; align-items:center !important; justify-content:center !important;
+  padding:10px 12px !important; margin:0 0 12px !important; box-sizing:border-box !important;
+  border:1px solid rgba(199,125,255,.22) !important; border-radius:12px !important;
+  background:rgba(255,255,255,.045) !important; color:#f3ebfb !important; font-size:.92rem !important; font-weight:800 !important;
+}
+#profile-overlay .ojwga-profile-menu{gap:8px !important; margin:0 !important; padding:0 !important;}
+#profile-overlay .ojwga-profile-item{
+  min-height:66px !important; height:auto !important; flex:0 0 auto !important;
+  padding:11px 12px !important; gap:11px !important; margin:0 !important;
+  border-radius:13px !important; box-sizing:border-box !important;
+}
+#profile-overlay .ojwga-profile-item .pi-icon{width:32px !important; flex:0 0 32px !important; font-size:1.35rem !important;}
+#profile-overlay .ojwga-profile-item .pi-text{min-width:0 !important; overflow:hidden !important;}
+#profile-overlay .ojwga-profile-item .pi-text b{font-size:.93rem !important; line-height:1.25 !important;}
+#profile-overlay .ojwga-profile-item .pi-text small{font-size:.72rem !important; line-height:1.3 !important; white-space:normal !important;}
+#profile-overlay .ojwga-profile-item .pi-arrow{font-size:1.45rem !important; flex:0 0 auto !important;}
+#profile-overlay .ojwga-profile-close{margin-top:10px !important; flex:0 0 auto !important; min-height:44px !important;}
+#profile-overlay .ojwga-sub-actions{
+  margin-top:12px !important; gap:8px !important; flex:0 0 auto !important;
+  position:sticky; bottom:0; padding-top:8px;
+  background:linear-gradient(180deg,rgba(15,8,28,0),rgba(15,8,28,.98) 28%);
+}
+#profile-overlay .ojwga-sub-actions button{min-height:44px !important; min-width:0 !important;}
+#profile-overlay .ojwga-method-grid{
+  width:100% !important; display:grid !important; grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:8px !important; margin:8px 0 10px !important;
+}
+#profile-overlay .ojwga-method-card{
+  width:100% !important; min-width:0 !important; min-height:88px !important; height:auto !important;
+  padding:11px !important; border-radius:12px !important; box-sizing:border-box !important;
+}
+#profile-overlay .ojwga-method-card .method-title{font-size:.84rem !important; line-height:1.25 !important;}
+#profile-overlay .ojwga-method-card .method-desc{font-size:.68rem !important; line-height:1.35 !important;}
+#profile-overlay .ojwga-profile-subview>input,
+#profile-overlay .ojwga-password-fields input{
+  min-height:44px !important; width:100% !important; box-sizing:border-box !important;
+  margin:0 !important;
+}
+#profile-overlay .ojwga-password-fields{width:100% !important; display:flex !important; flex-direction:column !important; gap:8px !important;}
+#profile-overlay .ojwga-password-hint,
+#profile-overlay .ojwga-step-note,
+#profile-overlay .ojwga-pattern-status{width:100% !important; box-sizing:border-box !important;}
+#profile-overlay .ojwga-pattern-wrap{width:100% !important; display:flex !important; justify-content:center !important; overflow:hidden !important;}
+#profile-overlay .ojwga-pattern-board{
+  width:min(270px,76vw) !important; max-width:270px !important; flex:0 0 auto !important;
+  margin:6px auto !important;
+}
+#profile-overlay .ojwga-device-box{width:100% !important; box-sizing:border-box !important; margin:2px 0 8px !important;}
+#profile-overlay .ojwga-auth-action{min-height:44px !important;}
+@media(max-width:520px){
+  #profile-overlay.ojwga-profile-overlay{padding:10px !important;}
+  #profile-overlay .ojwga-profile-box{width:calc(100vw - 20px) !important;max-height:calc(100dvh - 20px) !important;padding:15px !important;border-radius:16px !important;}
+  #profile-overlay .ojwga-profile-item{min-height:62px !important;padding:10px !important;}
+  #profile-overlay .ojwga-method-grid{grid-template-columns:1fr 1fr !important;gap:7px !important;}
+  #profile-overlay .ojwga-method-card{min-height:82px !important;padding:9px !important;}
+  #profile-overlay .ojwga-pattern-board{width:min(250px,74vw) !important;max-width:250px !important;}
+}
+@media(max-width:360px){
+  #profile-overlay .ojwga-method-grid{grid-template-columns:1fr !important;}
+  #profile-overlay .ojwga-method-card{min-height:74px !important;}
+}
+</style>
+
 </head>
 <body>
 
@@ -7483,9 +7599,29 @@ function __notifySplashDone(){
             <div class="ojwga-profile-subview" id="profile-password-view" style="display:none;">
                 <div class="ojwga-profile-kicker">✦ PASSWORD ✦</div>
                 <h2 id="ojwga-password-title">🔑 パスワード</h2>
-                <div class="ojwga-method-grid" id="ojwga-profile-method-grid"></div>
-                <div id="ojwga-profile-password-form"></div>
-                <div class="ojwga-sub-actions"><button class="reset-btn-cancel" type="button" onclick="ojwgaProfileBack()" id="ojwga-password-back">戻る</button><button class="challenge-btn" type="button" onclick="ojwgaSavePasswordMethod()" id="ojwga-password-save">保存</button></div>
+
+                <div id="ojwga-profile-password-choice-view" class="ojwga-password-stage">
+                    <div class="ojwga-password-choice-grid">
+                        <button class="ojwga-password-choice" type="button" onclick="ojwgaPasswordAction('off')">
+                            <span class="choice-icon">🔓</span><span class="choice-title" id="ojwga-password-off-title">パスワードロックをオフにする</span><span class="choice-sub" id="ojwga-password-off-sub">パスワードなしで入れるようにする</span>
+                        </button>
+                        <button class="ojwga-password-choice" type="button" onclick="ojwgaPasswordAction('change')">
+                            <span class="choice-icon">🔐</span><span class="choice-title" id="ojwga-password-change-title">パスワードロックを変更する</span><span class="choice-sub" id="ojwga-password-change-sub">4つの方法から選べるぞい</span>
+                        </button>
+                    </div>
+                    <div class="ojwga-sub-actions"><button class="reset-btn-cancel" type="button" onclick="ojwgaProfileBack()" id="ojwga-password-choice-back">戻る</button></div>
+                </div>
+
+                <div id="ojwga-profile-password-method-view" class="ojwga-password-stage" style="display:none;">
+                    <div class="ojwga-step-note" id="ojwga-password-method-msg">4つの方法から選ぶのじゃ。</div>
+                    <div class="ojwga-method-grid" id="ojwga-profile-method-grid"></div>
+                    <div class="ojwga-sub-actions"><button class="reset-btn-cancel" type="button" onclick="ojwgaPasswordMethodBack()" id="ojwga-password-method-back">戻る</button><button class="challenge-btn" type="button" onclick="ojwgaPasswordMethodNext()" id="ojwga-password-method-next">次へ</button></div>
+                </div>
+
+                <div id="ojwga-profile-password-form-view" class="ojwga-password-stage" style="display:none;">
+                    <div id="ojwga-profile-password-form"></div>
+                    <div class="ojwga-sub-actions"><button class="reset-btn-cancel" type="button" onclick="ojwgaPasswordFormBack()" id="ojwga-password-form-back">戻る</button><button class="challenge-btn" type="button" onclick="ojwgaSavePasswordMethod()" id="ojwga-password-save">保存</button></div>
+                </div>
             </div>
         </div>
     </div>
@@ -27258,7 +27394,7 @@ function randomBytes(n){var a=new Uint8Array(n);crypto.getRandomValues(a);return
 function normalizeSecurityUser(u){
   if(!u||typeof u!=='object')return u;
   if(!u.passwordMethod){u.passwordMethod='password';}
-  if(['password','pin','pattern','device'].indexOf(u.passwordMethod)<0)u.passwordMethod='password';
+  if(['none','password','pin','pattern','device'].indexOf(u.passwordMethod)<0)u.passwordMethod='password';
   if(!Array.isArray(u.passwordPattern))u.passwordPattern=[];
   if(typeof u.deviceCredentialId!=='string')u.deviceCredentialId='';
   if(typeof u.wrongCount!=='number')u.wrongCount=0;
@@ -27373,7 +27509,7 @@ async function authenticateDeviceCredential(id){
 
 /* ===== Auth UI ===== */
 window.updateAuthUI=function(){
-  var u=getCurrentUser();var msg=byId('auth-msg'),title=byId('auth-title'),timer=byId('auth-lock-timer'),ui=byId('auth-method-ui'),forgot=byId('auth-forgot-btn'),unblock=byId('auth-unblock-btn');if(!u)return;normalizeSecurityUser(u);var en=langEn(),method=u.passwordMethod||'password';clearInterval(authTimerInterval);if(msg)msg.textContent='';if(ui)ui.innerHTML='';if(timer)timer.style.display='none';if(forgot)forgot.style.display='none';if(unblock)unblock.style.display='none';title.textContent=en?'Authentication — '+(u.name||'User'):'認証 — '+(u.name||'ユーザー');
+  var u=getCurrentUser();var msg=byId('auth-msg'),title=byId('auth-title'),timer=byId('auth-lock-timer'),ui=byId('auth-method-ui'),forgot=byId('auth-forgot-btn'),unblock=byId('auth-unblock-btn');if(!u)return;normalizeSecurityUser(u);var en=langEn(),method=u.passwordMethod||'password';clearInterval(authTimerInterval);if(method==='none'){return;}if(msg)msg.textContent='';if(ui)ui.innerHTML='';if(timer)timer.style.display='none';if(forgot)forgot.style.display='none';if(unblock)unblock.style.display='none';title.textContent=en?'Authentication — '+(u.name||'User'):'認証 — '+(u.name||'ユーザー');
   if(u.isTotallyLocked){if(msg)msg.textContent=en?'This user is permanently locked.':'このユーザーは延々ロック中じゃ。';safeSpeak('5回間違えて延々ロック中じゃぞい。','Five wrong tries. This user is permanently locked.');return;}
   if(u.lockUntil>Date.now()){if(msg)msg.textContent=en?'Please wait.':'しばらく待つのじゃ。';timer.style.display='block';var tick=function(){var r=Math.max(0,Math.ceil((u.lockUntil-Date.now())/1000));if(r<=0){u.lockUntil=0;saveRoot();updateAuthUI();return;}var m=Math.floor(r/60),s=r%60;timer.textContent=en?(m+'m '+s+'s remaining'):(m+'分 '+s+'秒後に再開');};tick();authTimerInterval=setInterval(tick,1000);return;}
   if(method==='device'){if(msg)msg.textContent=en?'Use the device screen lock.':'端末の画面ロックで認証するのじゃ。';var box=document.createElement('div');box.className='ojwga-device-box';box.innerHTML='<div style="font-size:34px">📱</div><div class="desc">'+(en?'Unlock with the phone/PC screen lock or biometrics.':'スマホやPCの画面ロック・生体認証を使うぞい。')+'</div>';ui.appendChild(box);var b=document.createElement('button');b.type='button';b.className='challenge-btn ojwga-auth-action';b.textContent=en?'Unlock':'解除する';b.onclick=async function(){var ok=await authenticateDeviceCredential(u.deviceCredentialId);if(ok){resetSecurityFailures(u);authSuccess(u);}else if(!window.isSecureContext){safeAlert('HTTPSまたはlocalhostで開いておくれ。','Open the app in a secure context such as HTTPS or localhost.');}};ui.appendChild(b);return;}
@@ -27389,9 +27525,56 @@ window.cancelAuth=function(){try{document.getElementById('auth-overlay').classLi
 window.openProfileSettings=function(){var u=getCurrentUser();if(!u){safeAlert('ユーザーがおらんぞい。','No user is selected.');return;}normalizeSecurityUser(u);currentProfileMethod=u.passwordMethod||'password';byId('profile-main-view').style.display='flex';byId('profile-name-view').style.display='none';byId('profile-password-view').style.display='none';var en=langEn();byId('ojwga-profile-title').textContent=en?'👤 User Settings':'👤 ユーザー設定';byId('ojwga-profile-current').textContent=(u.name||'User');byId('ojwga-name-item-title').textContent=en?'Name':'名前';byId('ojwga-name-item-sub').textContent=en?'Change the user name':'名前を変更する';byId('ojwga-pass-item-title').textContent=en?'Password':'パスワード';byId('ojwga-pass-item-sub').textContent=en?'Change authentication method':'認証方式を変更する';byId('ojwga-share-item-title').textContent=en?'Share user':'ユーザーをシェア';byId('ojwga-share-item-sub').textContent=en?'Share this user’s game data':'このユーザーのデータを共有する';byId('ojwga-delete-item-title').textContent=en?'Delete user':'ユーザーの消去';byId('ojwga-delete-item-sub').textContent=en?'Delete this user':'このユーザーを消去する';byId('ojwga-profile-close').textContent=en?'Close':'閉じる';byId('profile-overlay').classList.add('show');safeSpeak('ユーザー設定じゃ。','User settings.');};
 window.ojwgaOpenNameEditor=function(){var u=getCurrentUser();if(!u)return;byId('profile-main-view').style.display='none';byId('profile-name-view').style.display='flex';byId('ojwga-name-title').textContent=langEn()?'Name':'名前';byId('ojwga-name-input').value=u.name||'';byId('ojwga-name-input').placeholder=langEn()?'Name':'名前';byId('ojwga-name-back').textContent=langEn()?'Back':'戻る';byId('ojwga-name-save').textContent=langEn()?'Save':'保存';setTimeout(function(){byId('ojwga-name-input').focus();},60);};
 window.ojwgaSaveName=function(){var u=getCurrentUser(),v=(byId('ojwga-name-input').value||'').trim();if(!u||!v){safeAlert('名前を入れるのじゃ。','Enter a name.');return;}u.name=v;saveRoot();byId('profile-main-view').style.display='flex';byId('profile-name-view').style.display='none';byId('ojwga-profile-current').textContent=v;refreshHome();safeSpeak('名前を変えたぞい。','Name updated.');};
-window.ojwgaOpenPasswordEditor=function(){var u=getCurrentUser();if(!u)return;normalizeSecurityUser(u);currentProfileMethod=u.passwordMethod||'password';byId('profile-main-view').style.display='none';byId('profile-password-view').style.display='flex';byId('ojwga-password-title').textContent=langEn()?'🔑 Password':'🔑 パスワード';renderMethodCards('ojwga-profile-method-grid',currentProfileMethod,ojwgaChooseProfileMethod);renderProfilePasswordForm();};
-function ojwgaChooseProfileMethod(k){currentProfileMethod=k;renderMethodCards('ojwga-profile-method-grid',k,ojwgaChooseProfileMethod);renderProfilePasswordForm();}
-function renderProfilePasswordForm(){var f=byId('ojwga-profile-password-form'),k=currentProfileMethod,en=langEn();if(!f)return;f.innerHTML='';if(k==='password'||k==='pin'){var a=document.createElement('input'),b=document.createElement('input');a.type=b.type='password';a.autocomplete='new-password';a.placeholder=en?'New password':'新しいパスワード';b.placeholder=en?'Re-enter':'もう一度入力';if(k==='pin'){a.inputMode=b.inputMode='numeric';a.maxLength=b.maxLength=10;}a.id='ojwga-prof-p1';b.id='ojwga-prof-p2';f.className='ojwga-password-fields';f.appendChild(a);f.appendChild(b);var n=document.createElement('div');n.className='ojwga-password-hint';n.textContent=k==='pin'?(en?'Digits only · 4–10 digits':'数字のみ · 4〜10桁'):(en?'6 or more characters.':'6文字以上。');f.appendChild(n);}else if(k==='pattern'){var a2=document.createElement('div');f.appendChild(a2);var n2=document.createElement('div');n2.className='ojwga-pattern-status';n2.textContent=en?'Set a new 4+ point pattern, then repeat it.':'新しいパターンを4点以上でつなぎ、もう一度同じようにつなぐのじゃ。';f.appendChild(n2);profilePendingPattern=[];createPatternPad(a2,'profileA',function(seq){profilePendingPattern=seq;f.innerHTML='';var t=document.createElement('div');t.className='ojwga-pattern-status';t.textContent=en?'Repeat the same pattern.':'同じパターンをもう一度じゃ。';f.appendChild(t);var b2=document.createElement('div');f.appendChild(b2);createPatternPad(b2,'profileB',function(seq2){var ok=samePattern(profilePendingPattern,seq2);profilePendingPattern._confirmed=ok;});},[]);}else{var box=document.createElement('div');box.className='ojwga-device-box';box.innerHTML='<div style="font-size:34px">📱</div><div class="desc">'+(en?'Register this device screen lock / biometrics.':'この端末の画面ロック・生体認証を登録するぞい。')+'</div><div class="ojwga-device-warning">'+(en?'Requires HTTPS or localhost.':'HTTPSまたはlocalhostで開いておくれ。')+'</div>';f.appendChild(box);var bb=document.createElement('button');bb.type='button';bb.className='challenge-btn ojwga-auth-action';bb.textContent=en?'Register device lock':'端末ロックを登録';bb.onclick=async function(){var id=await registerDeviceCredential(getCurrentUser().name);if(id){var ok=await authenticateDeviceCredential(id);if(ok){getCurrentUser().deviceCredentialId=id;getCurrentUser().password='';getCurrentUser().passwordPattern=[];profilePendingPattern=[];profilePendingPattern._deviceId=id;safeSpeak('端末ロックを確認できたぞい。','Device lock verified.');}}};f.appendChild(bb);}}
+window.ojwgaOpenPasswordEditor=function(){
+  var u=getCurrentUser();if(!u)return;normalizeSecurityUser(u);currentProfileMethod=u.passwordMethod||'password';
+  byId('profile-main-view').style.display='none';byId('profile-name-view').style.display='none';byId('profile-password-view').style.display='flex';
+  byId('ojwga-password-title').textContent=langEn()?'🔑 Password lock':'🔑 パスワードロック';
+  ojwgaShowPasswordChoice();
+};
+function ojwgaShowPasswordChoice(){
+  var choice=byId('ojwga-profile-password-choice-view'),method=byId('ojwga-profile-password-method-view'),form=byId('ojwga-profile-password-form-view');
+  if(choice)choice.style.display='flex';if(method)method.style.display='none';if(form)form.style.display='none';
+  var en=langEn();
+  if(byId('ojwga-password-off-title'))byId('ojwga-password-off-title').textContent=en?'Turn off password lock':'パスワードロックをオフにする';
+  if(byId('ojwga-password-off-sub'))byId('ojwga-password-off-sub').textContent=en?'No password required to enter':'パスワードなしで入れるようにする';
+  if(byId('ojwga-password-change-title'))byId('ojwga-password-change-title').textContent=en?'Change password lock':'パスワードロックを変更する';
+  if(byId('ojwga-password-change-sub'))byId('ojwga-password-change-sub').textContent=en?'Choose from four methods':'4つの方法から選べるぞい';
+  if(byId('ojwga-password-choice-back'))byId('ojwga-password-choice-back').textContent=en?'Back':'戻る';
+}
+window.ojwgaPasswordAction=async function(action){
+  var u=getCurrentUser();if(!u)return;normalizeSecurityUser(u);
+  if(action==='off'){
+    var ok=await safeConfirm('パスワードロックをオフにするぞい。\n本当によいかい？','Turn off password lock.\nAre you sure?');
+    if(!ok)return;
+    u.passwordMethod='none';u.password='';u.passwordPattern=[];u.deviceCredentialId='';resetSecurityFailures(u);saveRoot();
+    safeSpeak('パスワードロックをオフにしたぞい。','Password lock is now off.');
+    ojwgaProfileBack();return;
+  }
+  if(action==='change'){
+    currentProfileMethod=(u.passwordMethod&&u.passwordMethod!=='none')?u.passwordMethod:'password';
+    var choice=byId('ojwga-profile-password-choice-view'),method=byId('ojwga-profile-password-method-view'),form=byId('ojwga-profile-password-form-view');
+    if(choice)choice.style.display='none';if(method)method.style.display='flex';if(form)form.style.display='none';
+    var en=langEn();
+    if(byId('ojwga-password-method-msg'))byId('ojwga-password-method-msg').textContent=en?'Choose one of four methods, then press Next.':'4つの方法から選んで「次へ」を押すのじゃ。';
+    if(byId('ojwga-password-method-back'))byId('ojwga-password-method-back').textContent=en?'Back':'戻る';
+    if(byId('ojwga-password-method-next'))byId('ojwga-password-method-next').textContent=en?'Next':'次へ';
+    renderMethodCards('ojwga-profile-method-grid',currentProfileMethod,ojwgaChooseProfileMethod);
+  }
+};
+function ojwgaChooseProfileMethod(k){currentProfileMethod=k;renderMethodCards('ojwga-profile-method-grid',k,ojwgaChooseProfileMethod);}
+window.ojwgaPasswordMethodBack=function(){ojwgaShowPasswordChoice();};
+window.ojwgaPasswordMethodNext=function(){
+  var method=byId('ojwga-profile-password-method-view'),form=byId('ojwga-profile-password-form-view');
+  if(method)method.style.display='none';if(form)form.style.display='flex';
+  var en=langEn();if(byId('ojwga-password-form-back'))byId('ojwga-password-form-back').textContent=en?'Back':'戻る';if(byId('ojwga-password-save'))byId('ojwga-password-save').textContent=en?'Save':'保存';
+  renderProfilePasswordForm();
+};
+window.ojwgaPasswordFormBack=function(){
+  var method=byId('ojwga-profile-password-method-view'),form=byId('ojwga-profile-password-form-view');
+  if(method)method.style.display='flex';if(form)form.style.display='none';
+  renderMethodCards('ojwga-profile-method-grid',currentProfileMethod,ojwgaChooseProfileMethod);
+};
+function renderProfilePasswordForm(){var f=byId('ojwga-profile-password-form'),k=currentProfileMethod,en=langEn();if(!f)return;f.innerHTML='';if(k==='password'||k==='pin'){var a=document.createElement('input'),b=document.createElement('input');a.type=b.type='password';a.autocomplete='new-password';a.placeholder=en?'New password':'新しいパスワード';b.placeholder=en?'Re-enter':'もう一度入力';if(k==='pin'){a.inputMode=b.inputMode='numeric';a.maxLength=b.maxLength=10;a.setAttribute('pattern','[0-9]*');b.setAttribute('pattern','[0-9]*');}a.id='ojwga-prof-p1';b.id='ojwga-prof-p2';f.className='ojwga-password-fields';f.appendChild(a);f.appendChild(b);var n=document.createElement('div');n.className='ojwga-password-hint';n.textContent=k==='pin'?(en?'Digits only · 4–10 digits':'数字のみ · 4〜10桁'):(en?'6 or more characters.':'6文字以上。');f.appendChild(n);}else if(k==='pattern'){var a2=document.createElement('div');f.appendChild(a2);var n2=document.createElement('div');n2.className='ojwga-pattern-status';n2.textContent=en?'Set a new 4+ point pattern, then repeat it.':'新しいパターンを4点以上でつなぎ、もう一度同じようにつなぐのじゃ。';f.appendChild(n2);profilePendingPattern=[];createPatternPad(a2,'profileA',function(seq){profilePendingPattern=seq;f.innerHTML='';var t=document.createElement('div');t.className='ojwga-pattern-status';t.textContent=en?'Repeat the same pattern.':'同じパターンをもう一度じゃ。';f.appendChild(t);var b2=document.createElement('div');f.appendChild(b2);createPatternPad(b2,'profileB',function(seq2){var ok=samePattern(profilePendingPattern,seq2);profilePendingPattern._confirmed=ok;});},[]);}else{var box=document.createElement('div');box.className='ojwga-device-box';box.innerHTML='<div style="font-size:34px">📱</div><div class="desc">'+(en?'Register this device screen lock / biometrics.':'この端末の画面ロック・生体認証を登録するぞい。')+'</div><div class="ojwga-device-warning">'+(en?'Requires HTTPS or localhost.':'HTTPSまたはlocalhostで開いておくれ。')+'</div>';f.appendChild(box);var bb=document.createElement('button');bb.type='button';bb.className='challenge-btn ojwga-auth-action';bb.textContent=en?'Register device lock':'端末ロックを登録';bb.onclick=async function(){var id=await registerDeviceCredential(getCurrentUser().name);if(id){var ok=await authenticateDeviceCredential(id);if(ok){getCurrentUser().deviceCredentialId=id;getCurrentUser().password='';getCurrentUser().passwordPattern=[];profilePendingPattern=[];profilePendingPattern._deviceId=id;safeSpeak('端末ロックを確認できたぞい。','Device lock verified.');}}};f.appendChild(bb);}}
 window.ojwgaSavePasswordMethod=function(){var u=getCurrentUser(),k=currentProfileMethod;if(!u)return;normalizeSecurityUser(u);if(k==='password'||k==='pin'){var a=byId('ojwga-prof-p1'),b=byId('ojwga-prof-p2'),v=a?a.value:'',v2=b?b.value:'';if(k==='password'&&v.length<6){safeAlert('6文字以上にするのじゃ。','Use at least 6 characters.');return;}if(k==='pin'&&!/^\d{4,10}$/.test(v)){safeAlert('暗証番号は4〜10桁の数字じゃ。','PIN must be 4–10 digits.');return;}if(v!==v2){safeAlert('2回とも同じにするのじゃ。','The two entries do not match.');return;}u.passwordMethod=k;u.password=v;u.passwordPattern=[];u.deviceCredentialId='';resetSecurityFailures(u);saveRoot();ojwgaProfileBack();safeSpeak('パスワード方式を変えたぞい。','Authentication method updated.');return;}if(k==='pattern'){if(!profilePendingPattern||profilePendingPattern.length<4||profilePendingPattern._confirmed!==true){safeAlert('パターンを2回、同じようにつなぐのじゃ。','Draw the same pattern twice.');return;}u.passwordMethod='pattern';u.password='';u.passwordPattern=profilePendingPattern.slice();u.deviceCredentialId='';resetSecurityFailures(u);saveRoot();ojwgaProfileBack();safeSpeak('パターンを登録したぞい。','Pattern saved.');return;}if(k==='device'){if(!profilePendingPattern._deviceId){safeAlert('端末ロックの登録と確認をしておくれ。','Register and verify the device lock first.');return;}u.passwordMethod='device';u.password='';u.passwordPattern=[];u.deviceCredentialId=profilePendingPattern._deviceId;resetSecurityFailures(u);saveRoot();profilePendingPattern=[];ojwgaProfileBack();safeSpeak('端末ロックを使うぞい。','Device lock is now active.');}};
 window.ojwgaProfileBack=function(){byId('profile-name-view').style.display='none';byId('profile-password-view').style.display='none';byId('profile-main-view').style.display='flex';};
 window.ojwgaShareUser=async function(){var u=getCurrentUser();if(!u)return;var payload={type:'OJWGA_USER_SHARE',version:1,name:u.name||'',avatar:(u.avatar&&String(u.avatar).startsWith('data:image'))?'':(u.avatar||''),theme:u.theme||'purple',data:u.data||{}};var text=JSON.stringify(payload,null,2);var en=langEn();try{if(navigator.share){await navigator.share({title:'OJWGA User',text:text});safeSpeak('ユーザーをシェアしたぞい。','User shared.');return;}if(navigator.clipboard){await navigator.clipboard.writeText(text);await safeAlert('ユーザーデータをコピーしたぞい。','User data copied to the clipboard.');return;}}catch(e){}try{var blob=new Blob([text],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ojwga_user_'+String(u.name||'user').replace(/[^a-zA-Z0-9_-]/g,'_')+'.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);safeSpeak('ユーザーデータを書き出したぞい。','User data exported.');}catch(e){await safeAlert('シェアできんかったぞい。','Could not share the user data.');}};
@@ -27402,6 +27585,18 @@ window.closeProfileSettings=function(){var el=byId('profile-overlay');if(el)el.c
 function refreshSecurityLabels(){
   var en=langEn();
   try{byId('ojwga-onb-name-title').textContent=en?'👤 Choose a name':'👤 名前を決めるのじゃ';byId('ojwga-onb-name-msg').textContent=en?'Enter the user name.':'お前さんの名前を入れるのじゃ。';byId('ojwga-onb-name-next').textContent=en?'Next':'つぎへ';byId('ojwga-onb-name-back').textContent=en?'Back':'← もどる';byId('ojwga-onb-method-title').textContent=en?'Choose an authentication method':'パスワード方式を選ぶのじゃ';byId('ojwga-onb-method-msg').textContent=en?'Choose one of four methods.':'4つの方法から選ぶのじゃ。';byId('ojwga-onb-method-back').textContent=en?'Back':'← もどる';}catch(e){}
+  try{
+    if(byId('ojwga-password-off-title'))byId('ojwga-password-off-title').textContent=en?'Turn off password lock':'パスワードロックをオフにする';
+    if(byId('ojwga-password-off-sub'))byId('ojwga-password-off-sub').textContent=en?'No password required to enter':'パスワードなしで入れるようにする';
+    if(byId('ojwga-password-change-title'))byId('ojwga-password-change-title').textContent=en?'Change password lock':'パスワードロックを変更する';
+    if(byId('ojwga-password-change-sub'))byId('ojwga-password-change-sub').textContent=en?'Choose from four methods':'4つの方法から選べるぞい';
+    if(byId('ojwga-password-choice-back'))byId('ojwga-password-choice-back').textContent=en?'Back':'戻る';
+    if(byId('ojwga-password-method-msg'))byId('ojwga-password-method-msg').textContent=en?'Choose one of four methods, then press Next.':'4つの方法から選んで「次へ」を押すのじゃ。';
+    if(byId('ojwga-password-method-back'))byId('ojwga-password-method-back').textContent=en?'Back':'戻る';
+    if(byId('ojwga-password-method-next'))byId('ojwga-password-method-next').textContent=en?'Next':'次へ';
+    if(byId('ojwga-password-form-back'))byId('ojwga-password-form-back').textContent=en?'Back':'戻る';
+    if(byId('ojwga-password-save'))byId('ojwga-password-save').textContent=en?'Save':'保存';
+  }catch(e){}
   try{if(byId('userswitch-create-btn')&&window.__startupUserGate)byId('userswitch-create-btn').style.display='none';if(byId('userswitch-close-btn')&&window.__startupUserGate)byId('userswitch-close-btn').style.display='none';if(byId('userswitch-startup-exit-btn'))byId('userswitch-startup-exit-btn').style.display=window.__startupUserGate?'block':'none';}catch(e){}
 }
 var origOpenUserSwitcher=window.openUserSwitcher;
@@ -27481,5 +27676,174 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   }, true);
 })();
 </script>
+
+<script id="ojwga-profile-ui-final-js">
+(function(){
+  function byId(id){return document.getElementById(id);}
+  function resetProfileViews(){
+    var main=byId('profile-main-view'), name=byId('profile-name-view'), pass=byId('profile-password-view'), box=document.querySelector('#profile-overlay .ojwga-profile-box');
+    if(main) main.style.display='flex';
+    if(name) name.style.display='none';
+    if(pass) pass.style.display='none';
+    var pc=byId('ojwga-profile-password-choice-view'), pm=byId('ojwga-profile-password-method-view'), pf=byId('ojwga-profile-password-form-view');
+    if(pc) pc.style.display='flex';
+    if(pm) pm.style.display='none';
+    if(pf) pf.style.display='none';
+    if(box) box.scrollTop=0;
+    [main,name,pass].forEach(function(x){if(x)x.scrollTop=0;});
+  }
+  var oldOpen=window.openProfileSettings;
+  if(typeof oldOpen==='function'){
+    window.openProfileSettings=function(){
+      resetProfileViews();
+      var r=oldOpen.apply(this,arguments);
+      setTimeout(function(){resetProfileViews();},0);
+      return r;
+    };
+  }
+  var oldName=window.ojwgaOpenNameEditor;
+  if(typeof oldName==='function'){
+    window.ojwgaOpenNameEditor=function(){var r=oldName.apply(this,arguments);setTimeout(function(){var el=byId('ojwga-name-input');if(el)el.focus();},50);return r;};
+  }
+  var oldPass=window.ojwgaOpenPasswordEditor;
+  if(typeof oldPass==='function'){
+    window.ojwgaOpenPasswordEditor=function(){var r=oldPass.apply(this,arguments);setTimeout(function(){var el=byId('profile-password-view');if(el)el.scrollTop=0;},0);return r;};
+  }
+  var oldBack=window.ojwgaProfileBack;
+  if(typeof oldBack==='function'){
+    window.ojwgaProfileBack=function(){var r=oldBack.apply(this,arguments);setTimeout(function(){resetProfileViews();},0);return r;};
+  }
+})();
+</script>
+
 </body>
+
+<script>
+/* OJWGA FIX: require saved security method on reload */
+(function(){
+  'use strict';
+  function id(x){ return document.getElementById(x); }
+  function en(){ try{return typeof getAppLang==='function' && getAppLang()==='en';}catch(e){return false;} }
+  function showAuthForCurrentUser(){
+    try{
+      var u = (typeof getCurrentUser==='function') ? getCurrentUser() : null;
+      if(!u) return false;
+      if(typeof normalizeSecurityUser==='function') normalizeSecurityUser(u);
+      var method = u.passwordMethod || 'password';
+      var needs = false;
+      if(method==='pattern') needs = Array.isArray(u.passwordPattern) && u.passwordPattern.length >= 4;
+      else if(method==='device') needs = typeof u.deviceCredentialId==='string' && u.deviceCredentialId.length>0;
+      else if(method==='pin') needs = typeof u.password==='string' && /^\d{4,10}$/.test(u.password);
+      else needs = typeof u.password==='string' && u.password.length>0;
+      if(!needs) return false;
+      var home=id('home-screen'), auth=id('auth-overlay');
+      if(home) home.style.display='none';
+      if(auth) auth.classList.add('show');
+      if(typeof window.updateAuthUI==='function') window.updateAuthUI();
+      return true;
+    }catch(e){ console.warn('security auth gate',e); return false; }
+  }
+  var oldCheck = window.checkAuthOnLoad;
+  if(typeof oldCheck!=='function') return;
+  window.checkAuthOnLoad = function(){
+    try{
+      var users = (typeof root!=='undefined' && root && Array.isArray(root.users)) ? root.users : [];
+      if(users.length===0){ oldCheck(); return; }
+      var resumed=false;
+      try{
+        resumed = sessionStorage.getItem('oijii_startup_user_selected') === '1';
+      }catch(e){}
+      if(!resumed){ oldCheck(); return; }
+      try{ sessionStorage.removeItem('oijii_startup_user_selected'); }catch(e){}
+
+      var u = (typeof getCurrentUser==='function') ? getCurrentUser() : null;
+      if(!u){ oldCheck(); return; }
+
+      /* 起動時ゲートを解除するのはユーザー選択後だけ */
+      try{ window.__startupUserGate=false; document.body.classList.remove('startup-user-gate'); }catch(e){}
+
+      /* ブロック中は既存のブロック画面を優先 */
+      if(typeof isUserBlocked==='function' && isUserBlocked(u)){
+        oldCheck();
+        return;
+      }
+
+      /* ★重要：パスワード文字列が空でも、パターン/端末ロック/PINなら認証画面を出す */
+      if(showAuthForCurrentUser()) return;
+
+      /* 本当に認証設定がない旧ユーザーだけ、そのままホームへ */
+      var home=id('home-screen'), auth=id('auth-overlay');
+      if(auth) auth.classList.remove('show');
+      if(home) home.style.display='flex';
+      if(typeof refreshHome==='function') refreshHome();
+      if(typeof showHourlyGreeting==='function') showHourlyGreeting(u);
+    }catch(e){
+      console.warn('checkAuthOnLoad security wrapper failed',e);
+      try{ oldCheck(); }catch(_e){}
+    }
+  };
+})();
+</script>
+
+
+<style id="ojwga-pin-box-ui-fix">
+.ojwga-pin-box-wrap{width:100%;display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:10px}
+.ojwga-pin-boxes{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;width:100%;max-width:420px}
+.ojwga-pin-box{width:42px;height:48px;border:2px solid rgba(200,150,255,.55);border-radius:10px;background:rgba(0,0,0,.24);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.45rem;font-weight:900;box-sizing:border-box;box-shadow:inset 0 0 10px rgba(0,0,0,.22)}
+.ojwga-pin-box.filled{border-color:#f1c40f;box-shadow:0 0 10px rgba(241,196,15,.22),inset 0 0 10px rgba(255,255,255,.04)}
+.ojwga-pin-hidden-input{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important;left:-9999px!important}
+.ojwga-pin-hint{color:#cdb8e8;font-size:.82rem;text-align:center;line-height:1.45}
+@media (max-width:420px){.ojwga-pin-box{width:38px;height:44px}.ojwga-pin-boxes{gap:6px}}
+</style>
+
+<script id="ojwga-pin-ui-fix-js">
+(function(){
+  function byId(id){return document.getElementById(id)}
+  function langEn(){try{return typeof getAppLang==='function'&&getAppLang()==='en'}catch(e){return false}}
+  function renderPinAuth(u,ui,msg){
+    var en=langEn();
+    if(msg) msg.textContent=en?'Enter your PIN.':'暗証番号を入力するのじゃ。';
+    var wrap=document.createElement('div'); wrap.className='ojwga-pin-box-wrap';
+    var boxes=document.createElement('div'); boxes.className='ojwga-pin-boxes';
+    var len=Math.max(4,Math.min(10,String(u.password||'').length||4));
+    var inp=document.createElement('input');
+    inp.type='tel'; inp.inputMode='numeric'; inp.autocomplete='one-time-code'; inp.maxLength=len; inp.pattern='[0-9]*'; inp.className='ojwga-pin-hidden-input'; inp.setAttribute('aria-label',en?'PIN input':'暗証番号入力');
+    var hint=document.createElement('div'); hint.className='ojwga-pin-hint'; hint.textContent=en?(len+' digits'):(len+'桁の数字');
+    for(var i=0;i<len;i++){var b=document.createElement('div');b.className='ojwga-pin-box';b.textContent='□';boxes.appendChild(b);}
+    function redraw(){var v=(inp.value||'').replace(/\D/g,'').slice(0,len);if(inp.value!==v)inp.value=v;Array.prototype.forEach.call(boxes.children,function(b,i){b.classList.toggle('filled',i<v.length);b.textContent=i<v.length?'●':'□';});}
+    function attempt(){
+      var v=inp.value||''; if(v.length!==len)return;
+      if(v===String(u.password||'')){resetSecurityFailures(u);authSuccess(u);}
+      else{recordSecurityFailure(u);inp.value='';redraw();safeSpeak('暗証番号が違うぞい。','Wrong PIN.');updateAuthUI();setTimeout(function(){var x=document.getElementById('ojwga-pin-hidden-input');if(x)x.focus();},30);}
+    }
+    inp.id='ojwga-pin-hidden-input';
+    inp.addEventListener('input',function(){redraw();attempt()});
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();attempt()}});
+    wrap.appendChild(boxes);wrap.appendChild(hint);wrap.appendChild(inp);ui.appendChild(wrap);setTimeout(function(){try{inp.focus()}catch(e){}},60);redraw();
+  }
+  var oldUpdate=window.updateAuthUI;
+  if(typeof oldUpdate!=='function')return;
+  window.updateAuthUI=function(){
+    try{
+      var u=typeof getCurrentUser==='function'?getCurrentUser():null;
+      if(u&&typeof normalizeSecurityUser==='function')normalizeSecurityUser(u);
+      if(u&&(u.passwordMethod||'password')==='pin'){
+        var ui=byId('auth-method-ui'),msg=byId('auth-msg'),timer=byId('auth-lock-timer'),title=byId('auth-title'),forgot=byId('auth-forgot-btn'),unblock=byId('auth-unblock-btn');
+        if(!ui)return oldUpdate.apply(this,arguments);
+        clearInterval(typeof authTimerInterval!=='undefined'?authTimerInterval:null);
+        ui.innerHTML=''; if(timer)timer.style.display='none'; if(forgot)forgot.style.display='none'; if(unblock)unblock.style.display='none';
+        if(title)title.textContent=(langEn()?'PIN Authentication — ':'暗証番号認証 — ')+(u.name||'ユーザー');
+        if(u.isTotallyLocked){if(msg)msg.textContent=langEn()?'This user is permanently locked.':'このユーザーは延々ロック中じゃ。';safeSpeak('5回間違えて延々ロック中じゃぞい。','Five wrong tries. This user is permanently locked.');return;}
+        if(u.lockUntil>Date.now()){
+          if(msg)msg.textContent=langEn()?'Please wait.':'しばらく待つのじゃ。'; if(timer)timer.style.display='block';
+          var tick=function(){var r=Math.max(0,Math.ceil((u.lockUntil-Date.now())/1000));if(r<=0){u.lockUntil=0;saveRoot();window.updateAuthUI();return;}var m=Math.floor(r/60),ss=r%60;timer.textContent=langEn()?(m+'m '+ss+'s remaining'):(m+'分 '+ss+'秒後に再開');};tick();authTimerInterval=setInterval(tick,1000);return;
+        }
+        renderPinAuth(u,ui,msg);return;
+      }
+    }catch(e){console.warn('PIN UI fix failed',e)}
+    return oldUpdate.apply(this,arguments);
+  };
+})();
+</script>
+
 </html>
