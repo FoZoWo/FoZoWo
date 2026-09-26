@@ -9681,6 +9681,10 @@ function __notifySplashDone(){
                         <span class="of-gicon">🏗️</span>
                         <span class="of-gname">おいじぃのデス・プレス 順位決定戦</span>
                     </div>
+                    <div class="of-game-item" data-game="explosion" onclick="ofSelectGame('explosion')">
+                        <span class="of-gicon">🏭</span>
+                        <span class="of-gname">おいじぃ魔女大爆発 複雑なる工場</span>
+                    </div>
                 </div>
 
                 <div class="of-actions">
@@ -14181,9 +14185,9 @@ function closeOnlineFlow() {
 }
 
 async function confirmOnlineFlow() {
-    if (_ofGameId !== 'press') {
-        await oijAlert('いま遊べるのはデス・プレスのみじゃ。');
-        if (typeof witchSpeak === 'function') witchSpeak('いま遊べるのはデス・プレスのみじゃ。');
+    if (_ofGameId !== 'press' && _ofGameId !== 'explosion') {
+        await oijAlert('いま遊べるオンラインゲームを選ぶのじゃ。');
+        if (typeof witchSpeak === 'function') witchSpeak('いま遊べるオンラインゲームを選ぶのじゃ。');
         return;
     }
     let joinCode = '';
