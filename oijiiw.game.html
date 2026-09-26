@@ -27788,10 +27788,10 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
 
 <style id="ojwga-pin-box-ui-fix">
 .ojwga-pin-box-wrap{width:100%;display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:10px}
-.ojwga-pin-boxes{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;width:100%;max-width:420px}
+.ojwga-pin-boxes{position:relative;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;width:100%;max-width:420px;cursor:text}
 .ojwga-pin-box{width:42px;height:48px;border:2px solid rgba(200,150,255,.55);border-radius:10px;background:rgba(0,0,0,.24);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.45rem;font-weight:900;box-sizing:border-box;box-shadow:inset 0 0 10px rgba(0,0,0,.22)}
 .ojwga-pin-box.filled{border-color:#f1c40f;box-shadow:0 0 10px rgba(241,196,15,.22),inset 0 0 10px rgba(255,255,255,.04)}
-.ojwga-pin-hidden-input{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important;left:-9999px!important}
+.ojwga-pin-hidden-input{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;opacity:.01!important;pointer-events:auto!important;z-index:5!important;border:0!important;background:transparent!important;color:transparent!important;caret-color:transparent!important;outline:none!important;cursor:text!important}
 .ojwga-pin-hint{color:#cdb8e8;font-size:.82rem;text-align:center;line-height:1.45}
 @media (max-width:420px){.ojwga-pin-box{width:38px;height:44px}.ojwga-pin-boxes{gap:6px}}
 </style>
@@ -27819,7 +27819,12 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     inp.id='ojwga-pin-hidden-input';
     inp.addEventListener('input',function(){redraw();attempt()});
     inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();attempt()}});
-    wrap.appendChild(boxes);wrap.appendChild(hint);wrap.appendChild(inp);ui.appendChild(wrap);setTimeout(function(){try{inp.focus()}catch(e){}},60);redraw();
+    wrap.appendChild(boxes);wrap.appendChild(hint);ui.appendChild(wrap);
+    /* Visible PIN boxes are the tap/click target; the real input sits transparently over them. */
+    boxes.appendChild(inp);
+    boxes.addEventListener('click',function(){try{inp.focus()}catch(e){}});
+    wrap.addEventListener('click',function(){try{inp.focus()}catch(e){}});
+    setTimeout(function(){try{inp.focus();inp.select()}catch(e){}},120);redraw();
   }
   var oldUpdate=window.updateAuthUI;
   if(typeof oldUpdate!=='function')return;
