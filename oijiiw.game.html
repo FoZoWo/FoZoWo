@@ -5199,6 +5199,22 @@ body.lang-en #settings-overlay .modal-box > h2::after {
 #onboarding-overlay .theme-grid {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
 }
+#onboarding-overlay #onb-theme-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-height: 54px;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+#onboarding-overlay #onb-theme-grid .theme-card {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  min-height: 44px !important;
+  width: 100% !important;
+}
 
 @media (max-width: 420px) {
   #settings-overlay .settings-drawer { width: 100vw !important; }
@@ -18212,6 +18228,12 @@ function showOnboardStepKey(key) {
     document.querySelectorAll('.onboard-step').forEach(el => {
         el.style.display = (el.dataset.step === key) ? 'block' : 'none';
     });
+    /* 初期設定のテーマ画面は、画面を表示した直後にも必ず再描画する。
+       古い初期設定状態や言語切替で #onb-theme-grid が空になることを防ぐ。 */
+    if (key === 'theme') {
+        try { renderOnboardThemeGrid(); } catch (e) { console.warn('theme grid render failed', e); }
+        try { requestAnimationFrame(function(){ try { renderOnboardThemeGrid(); } catch(e){} }); } catch(e) {}
+    }
     renderOnboardDots();
 }
 function onboardGoto(stepKey, replace) {
@@ -18269,17 +18291,24 @@ function onboardCreateUser() {
 }
 function renderOnboardThemeGrid() {
     const g = document.getElementById('onb-theme-grid');
-    if (!g) return;
+    if (!g || typeof THEMES !== 'object' || !THEMES) return;
     g.innerHTML = '';
-    Object.keys(THEMES).forEach(key => {
-        const t = THEMES[key];
-        const card = document.createElement('div');
+    const keys = Object.keys(THEMES);
+    const _enTh = (typeof getAppLang === 'function' && getAppLang() === 'en');
+    keys.forEach(function(key) {
+        const th = THEMES[key];
+        if (!th) return;
+        const card = document.createElement('button');
+        card.type = 'button';
         card.className = 'theme-card' + (onboardData.theme === key ? ' active' : '');
-        card.style.background = t.bg;
+        card.style.background = th.bg || '#2c1a4d';
         card.style.color = (key === 'light') ? '#222' : '#fff';
-        var _enTh = (typeof getAppLang === 'function' && getAppLang() === 'en');
-        card.innerHTML = (_enTh && t.nameEn) ? t.nameEn : t.name;
-        card.onclick = () => {
+        card.style.display = 'block';
+        card.style.width = '100%';
+        card.style.minHeight = '42px';
+        card.textContent = (_enTh && th.nameEn) ? th.nameEn : (th.name || key);
+        card.setAttribute('aria-pressed', onboardData.theme === key ? 'true' : 'false');
+        card.onclick = function() {
             onboardData.theme = key;
             renderOnboardThemeGrid();
             onboardGoto('cursor');
