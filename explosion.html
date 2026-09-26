@@ -1378,6 +1378,7 @@ if (location.search.includes('challenge=1')) {
     }
 
     function onlineDisconnectAll(){
+        ONLINE.normalEnd=false;
         try { ONLINE.conns.forEach(c=>{ try{c.close();}catch(e){} }); } catch(e){}
         try { if(ONLINE.hostConn) ONLINE.hostConn.close(); }catch(e){}
         try { if(ONLINE.peer && !ONLINE.peer.destroyed) ONLINE.peer.destroy(); }catch(e){}
@@ -1504,6 +1505,7 @@ if (location.search.includes('challenge=1')) {
 
     function onlineHostAccept(conn){
         if(!conn) return;
+        ONLINE.normalEnd=false;
         conn.on('open',()=>{
             if(ONLINE.started){ onlineSend(conn,{type:'error',message:'この対戦はすでに開始されています。'}); try{conn.close();}catch(e){}; return; }
             if(onlineHumanCount()>=ONLINE_MAX_PLAYERS){ onlineSend(conn,{type:'error',message:'この部屋は満員です。'}); try{conn.close();}catch(e){}; return; }
@@ -1535,6 +1537,13 @@ if (location.search.includes('challenge=1')) {
     function onlineHostMessage(conn,msg){
         if(!msg || typeof msg!=='object') return;
         if(msg.type==='hello') return;
+        if(msg.type==='replay-request') {
+            if(!ONLINE.started && typeof window.onlineHostStartMatch==='function'){
+                players.forEach(p=>{p.alive=true;p.rank=null;}); survivors=[0,1,2,3]; aliveCount=4; ONLINE.normalEnd=false; ONLINE.started=false;
+                try{window.onlineHostStartMatch();}catch(e){}
+            }
+            return;
+        }
         if(msg.type==='choose'){
             const pid=ONLINE.playerByPeer.get(conn.peer);
             if(pid==null || msg.playerId!==pid) return;
@@ -1545,6 +1554,7 @@ if (location.search.includes('challenge=1')) {
     }
 
     function onlineHostDisconnect(conn){
+        if(ONLINE.normalEnd || window.__OIJII_SILENT_CLOSE__) return;
         const pid=ONLINE.playerByPeer.get(conn.peer);
         ONLINE.playerByPeer.delete(conn.peer); ONLINE.conns.delete(conn.peer);
         if(pid==null) return;
@@ -1571,7 +1581,7 @@ if (location.search.includes('challenge=1')) {
         if(!window.Peer){ onlineSetError('通信ライブラリを読み込めませんでした。'); return; }
         const name=onlineSavePlayerName();
         onlineSetError(''); onlineSetStatus('部屋を探しています…');
-        ONLINE.role='guest'; ONLINE.roomCode=code; ONLINE.started=false; ONLINE.seq=0;
+        ONLINE.role='guest'; ONLINE.roomCode=code; ONLINE.started=false; ONLINE.normalEnd=false; ONLINE.seq=0;
         ONLINE.joinRetry=0;
         players[0].name='ホスト';
         function tryJoinPeer(){
@@ -1629,6 +1639,7 @@ if (location.search.includes('challenge=1')) {
     }
 
     function onlineGuestDisconnectNotice(){
+        if(ONLINE.normalEnd || window.__OIJII_SILENT_CLOSE__) return;
         if(window._oijiiMultiConfig && window.parent){ try{ window.parent.postMessage({type:'mp-transport-lost',message:'対戦相手との通信が切断されました。'},'*'); }catch(e){} }
         clearGuestTimer();
         const p=players[0];
@@ -1641,12 +1652,14 @@ if (location.search.includes('challenge=1')) {
     }
 
     function onlineGuestStartMatch(msg){
+        ONLINE.normalEnd=false;
         ONLINE.started=true; ONLINE.localGameEndSent=false;
         onlineSetStatus('対戦開始！');
         onlineShowLobby(false); document.getElementById('online-lobby-overlay').classList.remove('show');
         if(players[ONLINE.localId]) players[ONLINE.localId].isCPU=false;
         // 元の初期化処理をそのまま使い、ラウンド生成だけはネットワーク命令待ちにする。
         try{ _onlineOrig.startGame.call(window); }catch(e){ console.error(e); }
+        if(window.__OIJII_RESULT_REPLAY_REQUESTED__){ window.__OIJII_RESULT_REPLAY_REQUESTED__=false; try{window.parent.postMessage({type:'mp-result-action-done',action:'replay',gameId:'explosion'},'*')}catch(_e){} }
         document.getElementById('menu').style.display='none';
         document.getElementById('leaderboard').innerHTML='';
     }
@@ -1750,6 +1763,7 @@ if (location.search.includes('challenge=1')) {
     }
 
     function onlineGuestGameOver(msg){
+        ONLINE.normalEnd=true;
         clearGuestTimer(); ONLINE.guestReplaying=false;
         survivors=Array.isArray(msg.survivors)?msg.survivors.map(Number):survivors; aliveCount=survivors.length; onlineApplyPlayers(msg.players||[]);
         const winnerId=Number(msg.winnerId); if(Number.isInteger(winnerId)) survivors=[winnerId];
@@ -1910,8 +1924,9 @@ if (location.search.includes('challenge=1')) {
     };
 
     endGame = function(){
-        if(isOnlineGuest()) return _onlineOrig.endGame.call(window);
+        if(isOnlineGuest()) { ONLINE.normalEnd=true; return _onlineOrig.endGame.call(window); }
         if(isOnlineHost() && ONLINE.started && !ONLINE.applying){
+            ONLINE.normalEnd=true;
             onlineBroadcast({type:'gameOver',winnerId:survivors[0],survivors:[...survivors],players:onlineHostSnapshot()});
         }
         return _onlineOrig.endGame.call(window);
@@ -1980,6 +1995,33 @@ function applyOnlineLocalRole(){
 function guard(){applyLocalRoles();applyOnlineLocalRole();}
 window.addEventListener('DOMContentLoaded',function(){setTimeout(guard,50);setTimeout(guard,250);setTimeout(guard,600);});
 var tries=0;(function loop(){guard();if(++tries<120)setTimeout(loop,250);})();
+})();
+</script>
+<script>
+(function(){
+  window.addEventListener('message',function(e){
+    var m=e.data||{};
+    if(m.type==='mp-shutdown'){
+      window.__OIJII_SILENT_CLOSE__=true;
+      try{if(typeof ONLINE!=='undefined')ONLINE.normalEnd=true;}catch(_e){}
+      try{if(typeof onlineDisconnectAll==='function')onlineDisconnectAll();}catch(_e){}
+      return;
+    }
+    if(m.type!=='mp-result-action'||m.action!=='replay')return;
+    try{
+      window.__OIJII_SILENT_CLOSE__=false;
+      if(typeof ONLINE==='undefined')return;
+      if(ONLINE.role==='host'){
+        players.forEach(function(p){p.alive=true;p.rank=null;});
+        survivors=[0,1,2,3]; aliveCount=4; ONLINE.normalEnd=false; ONLINE.started=false;
+        onlineHostStartMatch();
+        window.parent.postMessage({type:'mp-result-action-done',action:'replay',gameId:'explosion'},'*');
+      }else if(ONLINE.hostConn){
+        window.__OIJII_RESULT_REPLAY_REQUESTED__=true;
+        onlineSend(ONLINE.hostConn,{type:'replay-request'});
+      }
+    }catch(err){try{window.parent.postMessage({type:'mp-child-error',message:'再戦の開始に失敗しました。'},'*')}catch(_e){}}
+  });
 })();
 </script>
 </body>
