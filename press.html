@@ -614,7 +614,7 @@ if (location.search.includes('challenge=1')) {
         }
 
         window._netHostStart = function() {
-            if (!Net.isHost) return;
+            if (!Net.isHost || Net.online) return;
             Net.online = true;
             const list = [...Net.players.entries()].map(([id,p]) => ({id, name:p.name, color:p.color}));
             const padded = list.slice(0, 4);
@@ -1330,7 +1330,10 @@ function onMessage(topic, msg) {
       // 歓迎 + 現在のロビー一覧を返す
       sendLobbyToAll();
       pub('welcome', { to: msg.from, hostId: Net.myId });
-      if (window._oijiiMultiConfig && Net.players.size >= 2) setTimeout(function(){ if(typeof window._netHostStart === 'function') window._netHostStart(); }, 180);
+      if (window._oijiiMultiConfig && !Net.online) {
+        var need = Math.max(2, Math.min(4, Number(window._oijiiMultiConfig.selectedCount)||2));
+        if (Net.players.size >= need) setTimeout(function(){ if(!Net.online && typeof window._netHostStart === 'function') window._netHostStart(); }, 180);
+      }
     } else if (msg.t === 'choice') {
       Net.choices.set(msg.from, msg.slot | 0);
       if (typeof window._netAllChosen === 'function') window._netAllChosen();
