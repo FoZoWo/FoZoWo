@@ -27519,9 +27519,14 @@ window.updateAuthUI=function(){
 };
 function authSuccess(u){try{document.getElementById('auth-overlay').classList.remove('show');document.getElementById('home-screen').style.display='flex';document.getElementById('auth-pass-input').value='';refreshHome();showHourlyGreeting(u);}catch(e){}}
 /* PIN UI patch runs in a separate IIFE, so expose these auth helpers explicitly. */
+/* 外部の修正スクリプトからも安全に利用できるよう公開する。
+   Security v2 本体は IIFE 内なので、そのままだと外側のスクリプトから
+   safeSpeak / normalizeSecurityUser を直接参照できない。 */
 window.recordSecurityFailure=recordSecurityFailure;
 window.resetSecurityFailures=resetSecurityFailures;
 window.authSuccess=authSuccess;
+window.ojwgaSafeSpeak=safeSpeak;
+window.ojwgaNormalizeSecurityUser=normalizeSecurityUser;
 window.checkAuthPassword=function(){var u=getCurrentUser();if(!u)return;normalizeSecurityUser(u);var el=byId('ojwga-auth-secret');if(el){var v=el.value||'';if(v===String(u.password||'')){resetSecurityFailures(u);authSuccess(u);}else{recordSecurityFailure(u);el.value='';updateAuthUI();}}else{updateAuthUI();}};
 window.cancelAuth=function(){try{document.getElementById('auth-overlay').classList.remove('show');}catch(e){}if('speechSynthesis' in window)speechSynthesis.cancel();try{openUserSwitcher(!!window.__startupUserGate);}catch(e){}};
 
@@ -27845,7 +27850,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
         finished=true;
         recordSecurityFailure(u);
         inp.value='';
-        safeSpeak('暗証番号が違うぞい。','Wrong PIN.');
+        if(typeof window.ojwgaSafeSpeak==='function')window.ojwgaSafeSpeak('暗証番号が違うぞい。','Wrong PIN.');
         updateAuthUI();
       }
     }
@@ -27888,7 +27893,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   window.updateAuthUI=function(){
     try{
       var u=typeof getCurrentUser==='function'?getCurrentUser():null;
-      if(u&&typeof normalizeSecurityUser==='function')normalizeSecurityUser(u);
+      if(u&&typeof window.ojwgaNormalizeSecurityUser==='function')window.ojwgaNormalizeSecurityUser(u);
       if(u&&(u.passwordMethod||'password')==='pin'){
         var ui=byId('auth-method-ui'),msg=byId('auth-msg'),timer=byId('auth-lock-timer'),title=byId('auth-title'),forgot=byId('auth-forgot-btn'),unblock=byId('auth-unblock-btn');
         if(!ui)return oldUpdate.apply(this,arguments);
