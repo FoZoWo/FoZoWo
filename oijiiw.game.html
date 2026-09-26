@@ -7585,6 +7585,7 @@ function __notifySplashDone(){
                     <button class="ojwga-profile-item" type="button" onclick="ojwgaOpenNameEditor()"><span class="pi-icon">👤</span><span class="pi-text"><b id="ojwga-name-item-title">名前</b><small id="ojwga-name-item-sub">名前を変更する</small></span><span class="pi-arrow">›</span></button>
                     <button class="ojwga-profile-item" type="button" onclick="ojwgaOpenPasswordEditor()"><span class="pi-icon">🔑</span><span class="pi-text"><b id="ojwga-pass-item-title">パスワード</b><small id="ojwga-pass-item-sub">認証方式を変更する</small></span><span class="pi-arrow">›</span></button>
                     <button class="ojwga-profile-item" type="button" onclick="ojwgaShareUser()"><span class="pi-icon">📤</span><span class="pi-text"><b id="ojwga-share-item-title">ユーザーをシェア</b><small id="ojwga-share-item-sub">このユーザーのデータを共有する</small></span><span class="pi-arrow">›</span></button>
+                    <button class="ojwga-profile-item" type="button" onclick="ojwgaOpenRoleSettings()"><span class="pi-icon">👑</span><span class="pi-text"><b id="ojwga-role-item-title">ユーザー権限</b><small id="ojwga-role-item-sub">管理ユーザー／通常ユーザーを設定・申請</small></span><span class="pi-arrow">›</span></button>
                     <button class="ojwga-profile-item danger" type="button" onclick="ojwgaDeleteUser()"><span class="pi-icon">🗑️</span><span class="pi-text"><b id="ojwga-delete-item-title">ユーザーの消去</b><small id="ojwga-delete-item-sub">このユーザーを消去する</small></span><span class="pi-arrow">›</span></button>
                 </div>
                 <button class="reset-btn-cancel ojwga-profile-close" type="button" onclick="closeProfileSettings()" id="ojwga-profile-close">閉じる</button>
@@ -7623,6 +7624,15 @@ function __notifySplashDone(){
                     <div id="ojwga-profile-password-form"></div>
                     <div class="ojwga-sub-actions"><button class="reset-btn-cancel" type="button" onclick="ojwgaPasswordFormBack()" id="ojwga-password-form-back">戻る</button><button class="challenge-btn" type="button" onclick="ojwgaSavePasswordMethod()" id="ojwga-password-save">保存</button></div>
                 </div>
+            </div>
+        </div>
+            <div class="ojwga-profile-subview" id="profile-role-view" style="display:none;">
+                <div class="ojwga-profile-kicker">✦ ROLE ✦</div>
+                <h2 id="ojwga-role-title">👑 ユーザー権限</h2>
+                <div class="ojwga-step-note" id="ojwga-role-msg">権限を確認するぞい。</div>
+                <div id="ojwga-role-request-box" style="display:none;margin:10px 0;"></div>
+                <div id="ojwga-role-manager-box" style="display:none;margin:10px 0;"></div>
+                <div class="ojwga-sub-actions"><button class="reset-btn-cancel" type="button" onclick="ojwgaRoleBack()" id="ojwga-role-back">戻る</button></div>
             </div>
         </div>
     </div>
@@ -10290,6 +10300,11 @@ function normalizeUserRolesInRoot(r) {
         r.users[0].role = 'manager';
         hasManager = true;
     }
+    if (!Array.isArray(r.roleRequests)) r.roleRequests = [];
+    /* 不正な申請を掃除 */
+    r.roleRequests = r.roleRequests.filter(function(q){
+        return q && q.userId && (q.status === 'pending' || q.status === 'approved' || q.status === 'denied');
+    });
     r.users.forEach(function(u, i){
         if (!u || typeof u !== 'object') return;
         if (u.role !== 'manager') u.role = 'normal';
@@ -10320,7 +10335,8 @@ function defaultRoot() {
         display: defaultDisplay(),
         gameplay: defaultGameplay(),
         parental: defaultParental(),
-        users: []
+        users: [],
+        roleRequests: []
     };
 }
 
@@ -10337,6 +10353,7 @@ function loadRoot() {
             parsed.gameplay = Object.assign(defaultGameplay(), parsed.gameplay || {});
             parsed.parental = Object.assign(defaultParental(), parsed.parental || {});
             parsed.parental.playTime = Object.assign(defaultParental().playTime, (parsed.parental && parsed.parental.playTime) || {});
+            if (!Array.isArray(parsed.roleRequests)) parsed.roleRequests = [];
             /* 安全上の強制 */
             parsed.sound.alarm = true;
             parsed.sound.alarmType = 'classic';
@@ -18335,7 +18352,7 @@ function createNewUser() {
         password: pass,
         hint,
         wrongCount: 0, lockUntil: 0, isTotallyLocked: false, blockType: null, blockUntil: 0,
-        role: 'manager',
+        role: 'normal',
         data: defaultUserData()
     };
     root.users.push(u);
@@ -18681,7 +18698,8 @@ function onboardFinish() {
         password: onboardData.password,
         hint: onboardData.hint,
         wrongCount: 0, lockUntil: 0, isTotallyLocked: false, blockType: null, blockUntil: 0,
-        role: 'normal',
+        /* 初期設定を完了した最初のユーザーは管理ユーザーとして付与 */
+        role: (Array.isArray(root.users) && root.users.length === 0) ? 'manager' : 'normal',
         data: defaultUserData()
     };
     root.users.push(u);
@@ -27952,6 +27970,117 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
 })();
 </script>
 
+
+
+<style id="ojwga-role-settings-style">
+#profile-role-view .role-user-card{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;margin:8px 0;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(255,255,255,.045)}
+#profile-role-view .role-user-meta{min-width:0;flex:1}.role-user-name{font-weight:800}.role-user-sub{font-size:.74rem;color:#bfaed0;margin-top:3px}.role-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.role-actions button,.role-request-btn{border:0;border-radius:9px;padding:8px 10px;font-weight:800;cursor:pointer;color:#fff;background:linear-gradient(135deg,#7d3cb5,#4d2b75)}
+.role-actions button.danger{background:linear-gradient(135deg,#c0392b,#7b1f18)}.role-actions button:disabled{opacity:.45;cursor:not-allowed}.role-pending{color:#ffd37d;font-weight:800;font-size:.75rem}.role-ok{color:#8fe5ad;font-weight:800;font-size:.75rem}.role-denied{color:#ff9c9c;font-weight:800;font-size:.75rem}
+</style>
+<script id="ojwga-role-settings-js">
+(function(){
+  'use strict';
+  function byId(id){return document.getElementById(id);}
+  function cur(){try{return typeof getCurrentUser==='function'?getCurrentUser():null;}catch(e){return null;}}
+  function managers(){return (root.users||[]).filter(function(u){return typeof isManagerUser==='function'&&isManagerUser(u);});}
+  function ensureRequests(){if(!Array.isArray(root.roleRequests))root.roleRequests=[];return root.roleRequests;}
+  function pendingFor(uid){return ensureRequests().find(function(r){return r.userId===uid&&r.status==='pending';});}
+  function labelRole(u){return isManagerUser(u)?'👑 管理ユーザー':'👤 通常ユーザー';}
+  function esc(v){return typeof escapeHtml==='function'?escapeHtml(String(v||'')):String(v||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+  window.ojwgaOpenRoleSettings=function(){
+    var u=cur();if(!u)return;
+    byId('profile-main-view').style.display='none';
+    byId('profile-name-view').style.display='none';
+    byId('profile-password-view').style.display='none';
+    byId('profile-role-view').style.display='flex';
+    render();
+  };
+  window.ojwgaRoleBack=function(){
+    byId('profile-role-view').style.display='none';
+    byId('profile-main-view').style.display='flex';
+  };
+  function render(){
+    var u=cur(), msg=byId('ojwga-role-msg'), reqBox=byId('ojwga-role-request-box'), mgrBox=byId('ojwga-role-manager-box');
+    if(!u||!msg||!reqBox||!mgrBox)return;
+    var isMgr=isManagerUser(u), en=false;try{en=getAppLang()==='en';}catch(e){}
+    msg.textContent=isMgr?(en?'You can change user roles and approve requests.':'管理ユーザーは権限変更と申請の承認・却下ができます。'):(en?'You are a standard user. You can request management status.':'通常ユーザーは管理ユーザーへの変更を申請できます。');
+    reqBox.style.display='block';
+    mgrBox.style.display=isMgr?'block':'none';
+    if(!isMgr){
+      var q=pendingFor(u.id), approved=ensureRequests().find(function(r){return r.userId===u.id&&r.status==='approved';}), denied=ensureRequests().find(function(r){return r.userId===u.id&&r.status==='denied';});
+      var h='<div style="padding:12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">';
+      h+='<div style="font-weight:900;margin-bottom:6px;">'+esc(labelRole(u))+'</div>';
+      if(q) h+='<div class="role-pending">⏳ 管理ユーザーへの変更を申請中です。</div><button class="role-request-btn" style="margin-top:8px;background:linear-gradient(135deg,#7f8c8d,#566061);" onclick="ojwgaCancelRoleRequest()">申請を取り消す</button>';
+      else if(denied) h+='<div class="role-denied">❌ 前回の申請は却下されました。</div><button class="role-request-btn" style="margin-top:8px;" onclick="ojwgaRequestManagerRole()">もう一度申請する</button>';
+      else if(approved) h+='<div class="role-ok">✅ 申請が承認されています。</div><div style="margin-top:6px;">次回のユーザー読み込み時に権限が反映されます。</div>';
+      else h+='<div style="font-size:.82rem;color:#cbb9d9;line-height:1.5;">管理ユーザーへの変更を申請できます。管理ユーザーが承認すると、このユーザーの権限が変更されます。</div><button class="role-request-btn" style="margin-top:8px;" onclick="ojwgaRequestManagerRole()">👑 管理ユーザーへの変更を申請</button>';
+      h+='</div>'; reqBox.innerHTML=h; return;
+    }
+    ensureRequests();
+    var pending=ensureRequests().filter(function(r){return r.status==='pending';});
+    var h='<div style="font-size:.9rem;font-weight:900;margin:10px 0 6px;">👥 ユーザーの権限</div>';
+    (root.users||[]).forEach(function(x){
+      var lastManager=(isManagerUser(x)&&managers().length<=1), q=pendingFor(x.id);
+      h+='<div class="role-user-card"><div class="role-user-meta"><div class="role-user-name">'+esc(x.name||'ユーザー')+'</div><div class="role-user-sub">'+esc(labelRole(x))+(q?'　<span class="role-pending">申請中</span>':'')+'</div></div><div class="role-actions">';
+      if(isManagerUser(x)) h+='<button '+(lastManager?'disabled title="最後の管理ユーザーは変更できません"':'')+' onclick="ojwgaSetUserRole(\''+esc(x.id)+'\',\'normal\')">通常ユーザーに変更</button>';
+      else h+='<button onclick="ojwgaSetUserRole(\''+esc(x.id)+'\',\'manager\')">管理ユーザーに変更</button>';
+      h+='</div></div>';
+    });
+    h+='<div style="font-size:.9rem;font-weight:900;margin:14px 0 6px;">📨 管理ユーザー変更の申請</div>';
+    if(!pending.length) h+='<div style="font-size:.8rem;color:#bfaed0;padding:8px 0;">現在、保留中の申請はありません。</div>';
+    pending.forEach(function(q){
+      var x=(root.users||[]).find(function(z){return z.id===q.userId;}); if(!x)return;
+      h+='<div class="role-user-card"><div class="role-user-meta"><div class="role-user-name">'+esc(x.name||'ユーザー')+'</div><div class="role-user-sub">👤 通常ユーザー → 👑 管理ユーザー</div></div><div class="role-actions"><button onclick="ojwgaDecideRoleRequest(\''+esc(q.id)+'\',true)">承認</button><button class="danger" onclick="ojwgaDecideRoleRequest(\''+esc(q.id)+'\',false)">却下</button></div></div>';
+    });
+    mgrBox.innerHTML=h;
+  }
+  window.ojwgaRequestManagerRole=function(){
+    var u=cur();if(!u||isManagerUser(u))return;
+    ensureRequests();
+    var old=pendingFor(u.id); if(old){render();return;}
+    root.roleRequests=root.roleRequests.filter(function(r){return !(r.userId===u.id&&r.status==='denied');});
+    root.roleRequests.push({id:'rr_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),userId:u.id,userName:u.name||'',status:'pending',createdAt:Date.now()});
+    saveRoot();render();
+    try{witchSpeak('管理ユーザーへの変更を申請したぞい。');}catch(e){}
+  };
+  window.ojwgaCancelRoleRequest=function(){
+    var u=cur();if(!u)return;root.roleRequests=ensureRequests().filter(function(r){return !(r.userId===u.id&&r.status==='pending');});saveRoot();render();
+  };
+  window.ojwgaDecideRoleRequest=function(reqId,approve){
+    var admin=cur();if(!isManagerUser(admin))return;
+    var q=ensureRequests().find(function(r){return r.id===reqId&&r.status==='pending';});if(!q)return;
+    var target=(root.users||[]).find(function(x){return x.id===q.userId;});if(!target)return;
+    q.status=approve?'approved':'denied';q.decidedBy=admin.id;q.decidedAt=Date.now();
+    if(approve) target.role='manager';
+    saveRoot();render();
+    try{witchSpeak(approve?'申請を承認したぞい。':'申請を却下したぞい。');}catch(e){}
+  };
+  window.ojwgaSetUserRole=function(id,role){
+    var admin=cur();if(!isManagerUser(admin))return;
+    var target=(root.users||[]).find(function(x){return x.id===id;});if(!target)return;
+    if(role!=='manager'&&role!=='normal')return;
+    if(isManagerUser(target)&&role==='normal'&&managers().length<=1){try{safeAlert('最後の管理ユーザーは通常ユーザーへ変更できません。','The last management user cannot be changed to a standard user.');}catch(e){};return;}
+    target.role=role;
+    root.roleRequests=ensureRequests().filter(function(r){return !(r.userId===id&&r.status==='pending');});
+    saveRoot();render();
+    try{witchSpeak(role==='manager'?'管理ユーザーに変更したぞい。':'通常ユーザーに変更したぞい。');}catch(e){}
+    if(id===admin.id){setTimeout(function(){try{render();}catch(e){}},0);}
+  };
+  // role viewを既存のprofile reset/backに合わせる
+  var oldBack=window.ojwgaProfileBack;
+  if(typeof oldBack==='function'&&!oldBack._roleAware){
+    window.ojwgaProfileBack=function(){
+      var rv=byId('profile-role-view'); if(rv&&rv.style.display!=='none'){window.ojwgaRoleBack();return;}
+      return oldBack.apply(this,arguments);
+    };window.ojwgaProfileBack._roleAware=true;
+  }
+  var oldOpen=window.openProfileSettings;
+  if(typeof oldOpen==='function'&&!oldOpen._roleRole){
+    window.openProfileSettings=function(){var r=oldOpen.apply(this,arguments);var it=byId('ojwga-role-item-title'),sub=byId('ojwga-role-item-sub'),u=cur();if(it&&u){it.textContent='ユーザー権限';sub.textContent=isManagerUser(u)?'権限変更・申請の承認':'管理ユーザーへの変更を申請';}return r;};window.openProfileSettings._roleRole=true;
+  }
+})();
+</script>
 
 <script id="ojwga-manager-user-permissions">
 (function(){
