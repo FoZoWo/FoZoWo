@@ -6486,6 +6486,7 @@ function __notifySplashDone(){
                 <input type="file" id="newu-avatar-input" accept="image/*" style="display:none;" onchange="handleNewAvatarUpload(event)">
             </label>
             <div class="profile-avatar" id="newu-preview" style="margin: 0 auto 10px; width: 60px; height: 60px; font-size: 30px;">👤</div>
+            <div style="font-size:0.78rem;color:#cdb8e8;margin:0 0 8px;">👤 通常ユーザーとして作成されます</div>
             <input type="text" id="newu-name-input" placeholder="ユーザー名（例: たけし）" data-i18n="onb.namePh" data-i18n="newuser.namePh" maxlength="12">
             <input type="password" id="newu-pass-input" placeholder="パスワード (空なら無し)" data-i18n="onb.passPh" data-i18n="newuser.passPh">
             <input type="text" id="newu-hint-input" placeholder="パスワードのヒント（任意）" data-i18n="onb.hintPh" data-i18n="newuser.hintPh" maxlength="30">
@@ -7579,7 +7580,7 @@ function __notifySplashDone(){
             <div class="ojwga-profile-view" id="profile-main-view">
                 <div class="ojwga-profile-kicker">✦ USER SETTINGS ✦</div>
                 <h2 id="ojwga-profile-title">👤 ユーザー設定</h2>
-                <div class="ojwga-profile-current" id="ojwga-profile-current"></div>
+                <div class="ojwga-profile-current" id="ojwga-profile-current"></div><div id="ojwga-current-user-role-badge" style="display:none;align-self:center;margin:0 0 10px;padding:5px 10px;border-radius:999px;background:rgba(142,68,173,.18);border:1px solid rgba(199,125,255,.35);color:#ecdfff;font-size:.74rem;font-weight:800;"></div>
                 <div class="ojwga-profile-menu">
                     <button class="ojwga-profile-item" type="button" onclick="ojwgaOpenNameEditor()"><span class="pi-icon">👤</span><span class="pi-text"><b id="ojwga-name-item-title">名前</b><small id="ojwga-name-item-sub">名前を変更する</small></span><span class="pi-arrow">›</span></button>
                     <button class="ojwga-profile-item" type="button" onclick="ojwgaOpenPasswordEditor()"><span class="pi-icon">🔑</span><span class="pi-text"><b id="ojwga-pass-item-title">パスワード</b><small id="ojwga-pass-item-sub">認証方式を変更する</small></span><span class="pi-arrow">›</span></button>
@@ -10275,6 +10276,42 @@ function defaultParental() {
     };
 }
 
+/* ===== ユーザー権限（管理ユーザー / 通常ユーザー） ===== */
+function normalizeUserRolesInRoot(r) {
+    if (!r || !Array.isArray(r.users)) return r;
+    var hasManager = false;
+    r.users.forEach(function(u){
+        if (!u || typeof u !== 'object') return;
+        if (u.role === 'admin') u.role = 'manager';
+        if (u.role === 'manager') hasManager = true;
+    });
+    /* 既存データにはroleが無いので、最初のユーザーを管理ユーザーとして移行 */
+    if (!hasManager && r.users.length > 0) {
+        r.users[0].role = 'manager';
+        hasManager = true;
+    }
+    r.users.forEach(function(u, i){
+        if (!u || typeof u !== 'object') return;
+        if (u.role !== 'manager') u.role = 'normal';
+    });
+    return r;
+}
+function isManagerUser(u) {
+    return !!(u && (u.role === 'manager' || u.role === 'admin'));
+}
+function requireManagerUser(actionJa, actionEn) {
+    var u = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+    if (isManagerUser(u)) return true;
+    var en = (typeof getAppLang === 'function' && getAppLang() === 'en');
+    var msg = en
+        ? (actionEn || 'This action is available only to a management user.')
+        : (actionJa || 'この操作は管理ユーザーだけができます。');
+    try { if (typeof witchSpeak === 'function') witchSpeak(msg); } catch(e) {}
+    try { if (typeof showSafetyToast === 'function') showSafetyToast(msg); } catch(e) {}
+    try { if (typeof oijAlert === 'function') oijAlert(msg); } catch(e) {}
+    return false;
+}
+
 function defaultRoot() {
     return {
         currentUserId: null,
@@ -10319,6 +10356,7 @@ function loadRoot() {
                     normalizeUserBlockState(uu);
                 });
             }
+            normalizeUserRolesInRoot(parsed);
             return parsed;
         }
     } catch (e) {}
@@ -10341,6 +10379,7 @@ function loadRoot() {
                 isTotallyLocked: !!oldProf.isTotallyLocked,
                 blockType: oldProf.isTotallyLocked ? 'permanent' : null,
                 blockUntil: 0,
+                role: 'manager',
                 theme: 'purple',
                 data: Object.assign(defaultUserData(), oldData || {})
             });
@@ -16214,6 +16253,7 @@ let resetStep = 0;
 let pendingRestoreData = null; // バックアップ復元時の保留データ
 
 function askReset(scope) {
+    if (!requireManagerUser('初期化は管理ユーザーだけができます。', 'Reset is available only to a management user.')) return;
     /* 現ユーザー依存スコープのチェック */
     const needsCurrentUser = ['records', 'user', 'shopHistory', 'statsOnly', 'pointsOnly', 'allOtherUsersDelete'];
     if (needsCurrentUser.indexOf(scope) >= 0) {
@@ -16626,6 +16666,7 @@ document.getElementById('reset-confirm-btn').addEventListener('click', () => {
 });
 
 function executeReset() {
+    if (!requireManagerUser('初期化は管理ユーザーだけができます。', 'Reset is available only to a management user.')) return;
     /* 保護者設定オフ（警告画面経由） */
     if (resetScope === 'disableParental') {
         try {
@@ -16927,6 +16968,7 @@ function executeReset() {
    カスタム初期化 ピッカーUI
 ========================================================= */
 function openCustomResetPicker() {
+    if (!requireManagerUser('初期化は管理ユーザーだけができます。', 'Reset is available only to a management user.')) return;
     /* 初回はすべてオフ */
     if (Object.keys(customResetSelected).length === 0) {
         CUSTOM_RESET_ITEMS.forEach(function(it){ customResetSelected[it.id] = false; });
@@ -17027,6 +17069,7 @@ function describeCustomReset(items) {
 
 /* カスタム初期化本体の実行 */
 function executeCustomReset() {
+    if (!requireManagerUser('初期化は管理ユーザーだけができます。', 'Reset is available only to a management user.')) return;
     const sel = getSelectedCustomResetItems();
     if (sel.length === 0) return;
     const ids = {};
@@ -17194,6 +17237,7 @@ function executeCustomReset() {
 let selectiveUserDeleteSelected = {}; /* { userId: bool } */
 
 function openSelectiveUserDeletePicker() {
+    if (!requireManagerUser('初期化は管理ユーザーだけができます。', 'Reset is available only to a management user.')) return;
     /* 保護者パスワード要求（初期化メニューと同じポリシー） */
     const _p = root.parental;
     const needAuth = _p && _p.password && _p.requirePasswordForReset !== false;
@@ -17419,6 +17463,7 @@ function applyBlockUserPickerLanguage() {
     setBlockUserType(pendingBlockType);
 }
 function openBlockUserPicker() {
+    if (!requireManagerUser('ユーザーのブロックは管理ユーザーだけができます。', 'User blocking is available only to a management user.')) return;
     var proceed = function() {
         if (!Array.isArray(root.users) || root.users.length === 0) {
             witchSpeak((typeof getAppLang==='function'&&getAppLang()==='en')?'No users found.':'ユーザーがおらんぞ。');
@@ -17448,6 +17493,7 @@ function closeBlockUserPicker() {
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
 }
 function unblockUserFromPicker(id) {
+    if (!requireManagerUser('ブロック解除は管理ユーザーだけができます。', 'Unblocking is available only to a management user.')) return;
     var u = (root.users || []).find(function(x){ return x.id === id; });
     if (!u) return;
     var type = getUserBlockType(u);
@@ -17456,8 +17502,10 @@ function unblockUserFromPicker(id) {
         return;
     }
     requireParentalAuth({
+        strictPasswordOnly: true,
+        strictPasswordOnly: true,
         title: (typeof getAppLang==='function'&&getAppLang()==='en')?'Unblock user':'ユーザブロック解除',
-        message: (typeof getAppLang==='function'&&getAppLang()==='en')?'Confirm parental authentication to remove this block.':'このユーザーのブロックを解除するには保護者認証が必要じゃ。',
+        message: (typeof getAppLang==='function'&&getAppLang()==='en')?'Enter the parental password to remove this block.':'このユーザーのブロックを解除するには保護者パスワードを入力してください。',
         onSuccess: function(){
             u.blockType = null; u.blockUntil = 0; u.isTotallyLocked = false;
             u.wrongCount = u.wrongCount || 0;
@@ -17484,7 +17532,7 @@ function renderBlockUserList() {
         var status = type ? ('<span style="color:#ffcc88;font-size:0.78rem;margin-left:6px;">' + blockTypeLabel(type,en) + '</span>') : '';
         var meta = type ? ('<div class="pick-meta" style="color:#ffd0a0;font-size:0.76rem;">' + blockTypeDescription(type,en) + '</div>') : '';
         var action = '';
-        if (type === 'normal') action = '<button type="button" class="link-btn" style="font-size:.76rem;white-space:nowrap;" onclick="event.preventDefault();event.stopPropagation();unblockUserFromPicker(\''+u.id+'\')">' + (en?'🔓 Unblock':'🔓 解除') + '</button>';
+        if (type === 'normal' || type === 'temporary') action = '<button type="button" class="link-btn" style="font-size:.76rem;white-space:nowrap;" onclick="event.preventDefault();event.stopPropagation();unblockUserFromPicker(\''+u.id+'\')">' + (en?'🔓 Unblock':'🔓 解除') + '</button>';
         html += '<label class="pick-row" style="display:flex;align-items:center;gap:8px;padding:8px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;margin:4px 0;cursor:pointer;' + (type ? 'opacity:.72;' : '') + '" onclick="if(this.querySelector(\'.link-btn\') && event.target.closest(\'.link-btn\')){event.preventDefault();}">' +
                 '<input type="checkbox" data-uid="' + u.id + '" ' + (checked?'checked':'') + ' ' + (type?'disabled':'') + ' onchange="onBlockUserToggle(\'' + u.id + '\', this.checked)">' +
                 '<div style="flex:1;min-width:0;">' +
@@ -17526,6 +17574,7 @@ function updateBlockUserSummary() {
     }
 }
 function askBlockUsers() {
+    if (!requireManagerUser('ユーザーのブロックは管理ユーザーだけができます。', 'User blocking is available only to a management user.')) return;
     const sel = getSelectedUsersForBlock();
     if (sel.length === 0) {
         witchSpeak((typeof getAppLang==='function'&&getAppLang()==='en')?'Nothing selected. Check some items.':'何も選ばれておらんぞ。チェックを入れるのじゃ。');
@@ -17579,6 +17628,7 @@ function hideBlockWarnOverlay() {
     document.getElementById('block-warn-overlay').classList.remove('show'); blockWarnStep = 0; pendingBlockUserIds = []; if ('speechSynthesis' in window) window.speechSynthesis.cancel();
 }
 function executeBlockUsers() {
+    if (!requireManagerUser('ユーザーのブロックは管理ユーザーだけができます。', 'User blocking is available only to a management user.')) return;
     const warning = document.getElementById('block-warn-warning'); const spinner = document.getElementById('block-warn-spinner'); const spinnerText = document.getElementById('block-warn-spinner-text');
     if ('speechSynthesis' in window) window.speechSynthesis.cancel(); warning.style.display = 'none'; spinner.classList.add('show');
     var type = BLOCK_TYPES[pendingBlockType] ? pendingBlockType : 'temporary';
@@ -17927,7 +17977,7 @@ function updateAuthUI() {
         return;
     }
     if (blockType === 'temporary') {
-        inputEl.style.display = 'none'; btnEl.style.display = 'none'; forgotEl.style.display = 'none'; if (unblockEl) unblockEl.style.display = 'none'; timerEl.style.display = 'block';
+        inputEl.style.display = 'none'; btnEl.style.display = 'none'; forgotEl.style.display = 'none'; if (unblockEl) unblockEl.style.display = 'block'; timerEl.style.display = 'block';
         msgEl.innerText = isEn ? 'This user is temporarily blocked.' : 'このユーザーは一時ブロック中です。';
         authTimerInterval = setInterval(() => {
             const remain = Math.ceil((u.blockUntil - Date.now()) / 1000);
@@ -18022,11 +18072,14 @@ document.getElementById('auth-pass-input').addEventListener('keydown', (e) => {
 });
 
 function requestUnblockCurrentUser() {
+    if (!requireManagerUser('ブロック解除は管理ユーザーだけができます。', 'Unblocking is available only to a management user.')) return;
     var u = getCurrentUser();
-    if (!u || getUserBlockType(u) !== 'normal') return;
+    var bt = u ? getUserBlockType(u) : null;
+    if (!u || (bt !== 'normal' && bt !== 'temporary')) return;
     requireParentalAuth({
-        title: (typeof getAppLang==='function'&&getAppLang()==='en') ? 'Remove normal block' : '通常ブロックを解除',
-        message: (typeof getAppLang==='function'&&getAppLang()==='en') ? 'Parent authentication is required to remove this block.' : '通常ブロックの解除には保護者認証が必要です。',
+        strictPasswordOnly: true,
+        title: (typeof getAppLang==='function'&&getAppLang()==='en') ? (bt === 'temporary' ? 'Remove temporary block' : 'Remove normal block') : (bt === 'temporary' ? '一時ブロックを解除' : '通常ブロックを解除'),
+        message: (typeof getAppLang==='function'&&getAppLang()==='en') ? 'Enter the parental password to remove this block.' : (bt === 'temporary' ? '一時ブロックの解除には保護者パスワードが必要です。' : '通常ブロックの解除には保護者パスワードが必要です。'),
         onSuccess: function(){
             u.blockType = null; u.blockUntil = 0; u.isTotallyLocked = false;
             saveRoot();
@@ -18116,11 +18169,12 @@ function renderUserList() {
         else if (u.password) status = _t('userswitch.hasPass', '🔑 パスあり');
         else status = _t('userswitch.noPass', 'パス無し');
         const guest = _t('common.guest', 'ゲスト');
+        const roleLabel = isManagerUser(u) ? (isEn ? '👑 Manager' : '👑 管理ユーザー') : (isEn ? '👤 Standard user' : '👤 通常ユーザー');
         item.innerHTML = `
             <div class="ui-avatar">${avHtml}</div>
             <div class="ui-info">
                 <div class="ui-name">${escapeHtml(u.name || guest)}</div>
-                <div class="ui-meta">${pts.toLocaleString()} pt ／ ${status}</div>
+                <div class="ui-meta">${roleLabel} ／ ${pts.toLocaleString()} pt ／ ${status}</div>
             </div>
         `;
         item.onclick = () => switchUser(u.id);
@@ -18281,6 +18335,7 @@ function createNewUser() {
         password: pass,
         hint,
         wrongCount: 0, lockUntil: 0, isTotallyLocked: false, blockType: null, blockUntil: 0,
+        role: 'manager',
         data: defaultUserData()
     };
     root.users.push(u);
@@ -18626,6 +18681,7 @@ function onboardFinish() {
         password: onboardData.password,
         hint: onboardData.hint,
         wrongCount: 0, lockUntil: 0, isTotallyLocked: false, blockType: null, blockUntil: 0,
+        role: 'normal',
         data: defaultUserData()
     };
     root.users.push(u);
@@ -21312,6 +21368,7 @@ function submitPasteRestore() {
    初期化
 ========================================================= */
 function openResetMenu() {
+    if (!requireManagerUser('初期化は管理ユーザーだけができます。', 'Reset is available only to a management user.')) return;
     try { if (typeof applyLanguage === 'function') applyLanguage(); } catch (e) {}
     document.getElementById('resetmenu-overlay').classList.add('show');
     witchSpeak((typeof getAppLang==='function'&&getAppLang()==='en')?'How far should we wipe? Choose carefully.':'どこまで消すかい？選ぶのじゃ。');
@@ -22131,6 +22188,7 @@ function renderPlayTimeView() {
    保護者コントロール設定
 ========================================================= */
 function openParentalSettings() {
+    if (!requireManagerUser('保護者設定は管理ユーザーだけができます。', 'Parental Controls are available only to a management user.')) return;
     /* パスワード未設定でも計算必須 */
     const proceed = () => {
         closeSettingsMenu();
@@ -22229,12 +22287,14 @@ function syncParentalUI() {
     if (_ext) _ext.classList.toggle('on', !!p.restrictExternalLinks);
 }
 function setParental(key, val) {
+    if (!requireManagerUser('保護者設定は管理ユーザーだけができます。', 'Parental Controls are available only to a management user.')) return;
     if (!root.parental) root.parental = defaultParental();
     root.parental[key] = val;
     saveRoot();
     updatePlayTimeHomeDisplay();
 }
 function toggleParentalSwitch(key) {
+    if (!requireManagerUser('保護者設定は管理ユーザーだけができます。', 'Parental Controls are available only to a management user.')) return;
     if (!root.parental) root.parental = defaultParental();
     root.parental[key] = !root.parental[key];
     saveRoot();
@@ -22242,6 +22302,7 @@ function toggleParentalSwitch(key) {
     try { updatePlayTimeHomeDisplay(); } catch(e){}
 }
 function saveParentalPassword() {
+    if (!requireManagerUser('保護者設定は管理ユーザーだけができます。', 'Parental Controls are available only to a management user.')) return;
     const p1 = document.getElementById('pa-pass-input').value;
     const p2 = document.getElementById('pa-pass-input2').value;
     const hint = document.getElementById('pa-hint-input').value.trim();
@@ -22268,6 +22329,7 @@ function saveParentalPassword() {
     }
 }
 function resetTodayPlayTime() {
+    if (!requireManagerUser('プレイ時間のリセットは管理ユーザーだけができます。', 'Play-time reset is available only to a management user.')) return;
     requireParentalAuth({
         title: (typeof getAppLang==='function'&&getAppLang()==='en')?'Reset today play time':'今日のプレイ時間をリセット',
         message: (typeof getAppLang==='function'&&getAppLang()==='en')?'Reset today\'s play time to zero':'今日のプレイ時間をゼロに戻します',
@@ -22363,9 +22425,26 @@ function requireParentalAuth(opts) {
     ensureParentalAuthState();
     opts = opts || {};
 
-    /* 保護者コントロールがOFFなら、認証（パスワード・計算）を要求しない。
-       認証UIを開く前に共通入口で判定することで、全ての保護対象操作を一貫してOFFにできる。 */
-    if (root.parental && root.parental.enabled === false) {
+    /* 厳格な保護者パスワード専用認証。
+       一時/通常ブロックの解除では、計算認証・保護者設定OFFによるバイパスを許可しない。 */
+    if (opts.strictPasswordOnly) {
+        var strictHasPass = !!(root.parental && root.parental.password);
+        if (!strictHasPass) {
+            try {
+                oijAlert(
+                    (typeof getAppLang==='function'&&getAppLang()==='en')
+                        ? 'A parental password must be set before this block can be removed.'
+                        : 'このブロックを解除するには、先に保護者パスワードを設定してください。'
+                );
+            } catch(e) {}
+            return;
+        }
+        opts = Object.assign({}, opts, { forceMath: false });
+    }
+
+    /* 保護者コントロールがOFFなら、通常の保護対象操作は認証を要求しない。
+       ただし strictPasswordOnly の解除操作だけは上で必ずパスワード認証を通す。 */
+    if (!opts.strictPasswordOnly && root.parental && root.parental.enabled === false) {
         var bypass = opts.onSuccess || null;
         __parentalAuthCallback = null;
         __parentalAuthOnCancel = null;
@@ -26329,6 +26408,7 @@ function forceModalScrollable(overlayId){
   };
 
   window.resetParentalWrongCount = function(){
+    if (!requireManagerUser('保護者設定は管理ユーザーだけができます。', 'Parental Controls are available only to a management user.')) return;
     ensureParentalAuthState();
     /* 保護者認証成功後のみ想定。回数は履歴確認用なので手動リセット */
     requireParentalAuth({
@@ -26345,6 +26425,7 @@ function forceModalScrollable(overlayId){
 
   /* 保護者設定をオフにする：説明 → 認証 → 警告 → 実行 */
   window.beginDisableParental = function(){
+    if (!requireManagerUser('保護者設定は管理ユーザーだけができます。', 'Parental Controls are available only to a management user.')) return;
     var en = (typeof getAppLang === 'function' && getAppLang() === 'en');
     var msg = en
       ? 'Turning off Parental Controls will reset password, limits, and all parental settings.\nAuthentication is required so children cannot turn it off alone.'
@@ -26373,6 +26454,7 @@ function forceModalScrollable(overlayId){
   };
 
   window.enableParentalControls = function(){
+    if (!requireManagerUser('保護者設定は管理ユーザーだけができます。', 'Parental Controls are available only to a management user.')) return;
     ensureParentalAuthState();
     root.parental.enabled = true;
     saveRoot();
@@ -26384,6 +26466,7 @@ function forceModalScrollable(overlayId){
 
 <script>
 function toggleSnsRestrict(key){
+  if (!requireManagerUser('保護者設定は管理ユーザーだけができます。', 'Parental Controls are available only to a management user.')) return;
   try {
     if (!root.parental) root.parental = (typeof defaultParental==='function') ? defaultParental() : {};
     var map = (typeof ensureSnsRestrictMap === 'function') ? ensureSnsRestrictMap() : (root.parental.restrictSns = root.parental.restrictSns || {});
@@ -27657,7 +27740,7 @@ window.checkAuthPassword=function(){var u=getCurrentUser();if(!u)return;normaliz
 window.cancelAuth=function(){try{document.getElementById('auth-overlay').classList.remove('show');}catch(e){}if('speechSynthesis' in window)speechSynthesis.cancel();try{openUserSwitcher(!!window.__startupUserGate);}catch(e){}};
 
 /* ===== User settings new UI ===== */
-window.openProfileSettings=function(){var u=getCurrentUser();if(!u){safeAlert('ユーザーがおらんぞい。','No user is selected.');return;}normalizeSecurityUser(u);currentProfileMethod=u.passwordMethod||'password';byId('profile-main-view').style.display='flex';byId('profile-name-view').style.display='none';byId('profile-password-view').style.display='none';var en=langEn();byId('ojwga-profile-title').textContent=en?'👤 User Settings':'👤 ユーザー設定';byId('ojwga-profile-current').textContent=(u.name||'User');byId('ojwga-name-item-title').textContent=en?'Name':'名前';byId('ojwga-name-item-sub').textContent=en?'Change the user name':'名前を変更する';byId('ojwga-pass-item-title').textContent=en?'Password':'パスワード';byId('ojwga-pass-item-sub').textContent=en?'Change authentication method':'認証方式を変更する';byId('ojwga-share-item-title').textContent=en?'Share user':'ユーザーをシェア';byId('ojwga-share-item-sub').textContent=en?'Share this user’s game data':'このユーザーのデータを共有する';byId('ojwga-delete-item-title').textContent=en?'Delete user':'ユーザーの消去';byId('ojwga-delete-item-sub').textContent=en?'Delete this user':'このユーザーを消去する';byId('ojwga-profile-close').textContent=en?'Close':'閉じる';byId('profile-overlay').classList.add('show');safeSpeak('ユーザー設定じゃ。','User settings.');};
+window.openProfileSettings=function(){var u=getCurrentUser();if(!u){safeAlert('ユーザーがおらんぞい。','No user is selected.');return;}normalizeSecurityUser(u);currentProfileMethod=u.passwordMethod||'password';byId('profile-main-view').style.display='flex';byId('profile-name-view').style.display='none';byId('profile-password-view').style.display='none';var en=langEn();byId('ojwga-profile-title').textContent=en?'👤 User Settings':'👤 ユーザー設定';byId('ojwga-profile-current').textContent=(u.name||'User');var __rb=byId('ojwga-current-user-role-badge');if(__rb){__rb.style.display='inline-flex';__rb.textContent=isManagerUser(u)?'👑 管理ユーザー':'👤 通常ユーザー';}byId('ojwga-name-item-title').textContent=en?'Name':'名前';byId('ojwga-name-item-sub').textContent=en?'Change the user name':'名前を変更する';byId('ojwga-pass-item-title').textContent=en?'Password':'パスワード';byId('ojwga-pass-item-sub').textContent=en?'Change authentication method':'認証方式を変更する';byId('ojwga-share-item-title').textContent=en?'Share user':'ユーザーをシェア';byId('ojwga-share-item-sub').textContent=en?'Share this user’s game data':'このユーザーのデータを共有する';byId('ojwga-delete-item-title').textContent=en?'Delete user':'ユーザーの消去';byId('ojwga-delete-item-sub').textContent=en?'Delete this user':'このユーザーを消去する';byId('ojwga-profile-close').textContent=en?'Close':'閉じる';byId('profile-overlay').classList.add('show');safeSpeak('ユーザー設定じゃ。','User settings.');};
 window.ojwgaOpenNameEditor=function(){var u=getCurrentUser();if(!u)return;byId('profile-main-view').style.display='none';byId('profile-name-view').style.display='flex';byId('ojwga-name-title').textContent=langEn()?'Name':'名前';byId('ojwga-name-input').value=u.name||'';byId('ojwga-name-input').placeholder=langEn()?'Name':'名前';byId('ojwga-name-back').textContent=langEn()?'Back':'戻る';byId('ojwga-name-save').textContent=langEn()?'Save':'保存';setTimeout(function(){byId('ojwga-name-input').focus();},60);};
 window.ojwgaSaveName=function(){var u=getCurrentUser(),v=(byId('ojwga-name-input').value||'').trim();if(!u||!v){safeAlert('名前を入れるのじゃ。','Enter a name.');return;}u.name=v;saveRoot();byId('profile-main-view').style.display='flex';byId('profile-name-view').style.display='none';byId('ojwga-profile-current').textContent=v;refreshHome();safeSpeak('名前を変えたぞい。','Name updated.');};
 window.ojwgaOpenPasswordEditor=function(){
@@ -27869,6 +27952,56 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
 })();
 </script>
 
+
+<script id="ojwga-manager-user-permissions">
+(function(){
+  'use strict';
+  function current(){ try{return (typeof getCurrentUser==='function')?getCurrentUser():null;}catch(e){return null;} }
+  function manager(){ try{return typeof isManagerUser==='function' && isManagerUser(current());}catch(e){return false;} }
+  function sync(){
+    var ok=manager();
+    document.querySelectorAll('[data-manager-only="true"]').forEach(function(el){
+      el.style.display=ok?'':'none';
+    });
+    var roleBadge=document.getElementById('ojwga-current-user-role-badge');
+    var u=current();
+    if(roleBadge){
+      roleBadge.textContent=ok?'👑 管理ユーザー':'👤 通常ユーザー';
+      roleBadge.style.display=u?'inline-flex':'none';
+    }
+  }
+  function bind(){
+    sync();
+    try{
+      var origOpen=window.openSettingsMenu;
+      if(typeof origOpen==='function' && !origOpen._managerSync){
+        window.openSettingsMenu=function(){ origOpen.apply(this,arguments); sync(); };
+        window.openSettingsMenu._managerSync=true;
+      }
+      var origSwitch=window.switchUser;
+      if(typeof origSwitch==='function' && !origSwitch._managerSync){
+        window.switchUser=function(){ var r=origSwitch.apply(this,arguments); setTimeout(sync,100); return r; };
+        window.switchUser._managerSync=true;
+      }
+      var origRefresh=window.refreshHome;
+      if(typeof origRefresh==='function' && !origRefresh._managerSync){
+        window.refreshHome=function(){ var r=origRefresh.apply(this,arguments); setTimeout(sync,0); return r; };
+        window.refreshHome._managerSync=true;
+      }
+    }catch(e){}
+  }
+  function mark(){
+    ['parental','user-block','reset'].forEach(function(key){
+      var el=document.querySelector('#settings-overlay [data-menu="'+key+'"]');
+      if(el) el.setAttribute('data-manager-only','true');
+    });
+    sync();
+  }
+  function ready(){ mark(); bind(); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){ setTimeout(ready,0); }); else setTimeout(ready,0);
+  setTimeout(mark,500); setTimeout(mark,1500);
+})();
+</script>
 </body>
 
 <script>
