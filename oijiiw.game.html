@@ -28122,4 +28122,44 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
 })();
 </script>
 
+<script id="ojwga-device-lock-reload-fix">
+/* OJWGA FIX: device-lock authentication must survive a full page reload.
+   The original startup check can run before the later security patch is installed,
+   so device-auth users could fall through because their password field is empty.
+   Run one final, post-script gate only when startup user selection has already
+   been completed for this reload. */
+(function(){
+  'use strict';
+  function byId(id){ return document.getElementById(id); }
+  function currentUser(){ try { return typeof getCurrentUser==='function' ? getCurrentUser() : null; } catch(e){ return null; } }
+  function needsSecurityAuth(u){
+    if(!u) return false;
+    try{
+      if(typeof normalizeSecurityUser==='function') normalizeSecurityUser(u);
+      var m=u.passwordMethod||'password';
+      if(m==='none') return false;
+      if(m==='device') return typeof u.deviceCredentialId==='string' && u.deviceCredentialId.length>0;
+      if(m==='pattern') return Array.isArray(u.passwordPattern) && u.passwordPattern.length>=4;
+      if(m==='pin') return typeof u.password==='string' && /^\d{4,10}$/.test(u.password);
+      return typeof u.password==='string' && u.password.length>0;
+    }catch(e){ return false; }
+  }
+  function apply(){
+    try{
+      /* During the normal first-launch user picker, do nothing. */
+      if(window.__startupUserGate) return;
+      var u=currentUser();
+      if(!needsSecurityAuth(u)) return;
+      var home=byId('home-screen'), auth=byId('auth-overlay');
+      if(home) home.style.display='none';
+      if(auth) auth.classList.add('show');
+      if(typeof window.updateAuthUI==='function') window.updateAuthUI();
+    }catch(e){ console.warn('device lock reload fix failed',e); }
+  }
+  /* Give the later security/WebAuthn scripts time to finish defining their helpers. */
+  window.addEventListener('load', function(){ setTimeout(apply, 0); }, {once:true});
+  setTimeout(apply, 0);
+})();
+</script>
+
 </html>
