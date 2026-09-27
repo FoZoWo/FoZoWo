@@ -7,7 +7,89 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <!-- ===== PeerJS client for OJWGA online rooms ===== -->
-<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+  <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+
+  <!-- ===== Firebase: Googleアカウント / Firestore ===== -->
+  <script type="module" id="ojwga-firebase-online-sdk">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDOEShTnVnyMHgGTy7wuc5RZjWwgBGfJCM",
+      authDomain: "ojwga-online.firebaseapp.com",
+      projectId: "ojwga-online",
+      storageBucket: "ojwga-online.firebasestorage.app",
+      messagingSenderId: "48517900092",
+      appId: "1:48517900092:web:0c113b79481ef894226039",
+      measurementId: "G-VJVF04NRZS"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const googleProvider = new GoogleAuthProvider();
+    googleProvider.setCustomParameters({ prompt: "select_account" });
+
+    window.OJWGA_FIREBASE = { app, auth, db, googleProvider, doc, getDoc, setDoc, serverTimestamp };
+    window.__ojwgaFirebaseAuthUser = null;
+    window.__ojwgaFirebaseAuthReady = false;
+
+    window.ojwgaLoginWithGoogle = async function () {
+      try {
+        const result = await signInWithPopup(auth, googleProvider);
+        const user = result.user;
+        window.__ojwgaFirebaseAuthUser = user;
+        window.__ojwgaFirebaseAuthReady = true;
+        return user;
+      } catch (error) {
+        console.error("[OJWGA] Google login failed:", error);
+        const code = String(error && error.code || "");
+        let message = "Googleログインに失敗しました。";
+        if (code === "auth/unauthorized-domain") {
+          message += "\nこのHTMLを file:// で直接開いている場合は、Firebase HostingやlocalhostなどHTTP(S)で開いてください。";
+        } else if (code === "auth/popup-closed-by-user") {
+          message = "Googleログインをキャンセルしました。";
+        } else if (error && error.message) {
+          message += "\n" + error.message;
+        }
+        try { if (typeof window.oijAlert === "function") window.oijAlert(message); else alert(message); } catch (_) {}
+        return null;
+      }
+    };
+
+    window.ojwgaLogoutGoogle = async function () {
+      try {
+        await signOut(auth);
+        return true;
+      } catch (error) {
+        console.error("[OJWGA] Google logout failed:", error);
+        return false;
+      }
+    };
+
+    onAuthStateChanged(auth, function (user) {
+      window.__ojwgaFirebaseAuthUser = user || null;
+      window.__ojwgaFirebaseAuthReady = true;
+      if (typeof window.ojwgaHandleFirebaseAuthState === "function") {
+        try { window.ojwgaHandleFirebaseAuthState(user || null); } catch (e) { console.warn("[OJWGA] auth state handler error", e); }
+      } else {
+        window.__ojwgaPendingFirebaseAuthUser = user || null;
+      }
+    });
+  </script>
 <title>おいじぃ魔女ゲームコレクション-OJWGA</title>
 <!-- ===== Favicon (外部ファイル embedded, offline safe) ===== -->
 <link rel="icon" type="image/png" sizes="32x32" href="ojwga-favicon-32.png">
@@ -6507,6 +6589,7 @@ function __notifySplashDone(){
             <div class="auth-msg" style="color:#cdb8e8;" data-i18n="userswitch.msg">使うユーザーを選ぶんじゃ（↑↓で選択, Enterで決定）</div>
             <div class="user-list" id="user-list"></div>
             <button class="add-user-btn" id="userswitch-create-btn" onclick="openNewUserModal()" data-i18n="userswitch.create">＋ 新しいユーザーを作成</button>
+            <button class="add-user-btn" id="userswitch-google-btn" type="button" onclick="ojwgaLoginGoogleFromUserSwitcher()">🌐 Googleアカウントでログイン</button>
             <button class="reset-btn-cancel" id="userswitch-close-btn" style="margin-top:10px;width:100%;" onclick="closeUserSwitcher()" data-i18n="common.close">閉じる</button>
             <button class="setup-exit-btn" id="userswitch-startup-exit-btn" type="button" onclick="requestExitGameApp()" data-i18n="userswitch.startExit" style="display:none;margin-top:10px;width:100%;">🚪 ゲーム終了</button>
         </div>
@@ -10483,7 +10566,14 @@ function loadRoot() {
 
 function saveRoot() {
     try {
+        var __cuForCloud = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+        if (__cuForCloud && __cuForCloud.authType === 'google' && __cuForCloud.firebaseUid) {
+            __cuForCloud._cloudDirtyAt = Date.now();
+        }
         localStorage.setItem(ROOT_KEY, JSON.stringify(root));
+        if (__cuForCloud && typeof window.ojwgaScheduleGoogleCloudSync === 'function') {
+            window.ojwgaScheduleGoogleCloudSync(__cuForCloud);
+        }
     } catch (e) { console.warn('保存に失敗', e); }
 }
 
@@ -18299,6 +18389,7 @@ function renderUserList() {
         if (bt === 'permanent') status = _t('userswitch.permBlocked', '⛔ 完全ブロック');
         else if (bt === 'normal') status = _t('userswitch.normalBlocked', '🚫 通常ブロック');
         else if (bt === 'temporary') status = _t('userswitch.tempBlocked', '⏱️ 一時ブロック');
+        else if (u.authType === 'google') status = '🌐 Google連携';
         else if (u.password) status = _t('userswitch.hasPass', '🔑 パスあり');
         else status = _t('userswitch.noPass', 'パス無し');
         const guest = _t('common.guest', 'ゲスト');
@@ -26684,6 +26775,15 @@ function toggleSnsRestrict(key){
 @keyframes mpErrorPulse{0%,100%{box-shadow:inset 0 0 0 0 rgba(255,70,90,0)}50%{box-shadow:inset 0 0 0 7px rgba(255,70,90,.11)}}
 @keyframes mpErrorShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px) rotate(-2deg)}75%{transform:translateX(5px) rotate(2deg)}}
 .mp-home-copy{font-size:.82rem;color:#cdbbd8;line-height:1.65}.mp-hidden{display:none!important}
+.mp-google-wrap{grid-column:1 / -1;padding:12px 14px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:linear-gradient(145deg,rgba(255,255,255,.05),rgba(155,89,182,.08));}
+.mp-google-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.mp-google-title{font-size:.76rem;font-weight:900;color:#f1ddff;}
+.mp-google-state{font-size:.68rem;color:#cdb8e8;line-height:1.4;margin-top:4px;}
+.mp-google-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px;}
+.mp-google-btn{border:0;border-radius:10px;padding:9px 12px;font-weight:900;cursor:pointer;background:#fff;color:#222;box-shadow:0 5px 12px rgba(0,0,0,.22);}
+.mp-google-btn:disabled{opacity:.55;cursor:not-allowed;}
+.mp-google-btn.out{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.12);box-shadow:none;}
+@media(max-width:620px){.mp-google-wrap{grid-column:auto}}
 @media(max-width:620px){.mp-grid2,.mp-games{grid-template-columns:1fr}.mp-players{grid-template-columns:repeat(2,minmax(0,1fr))}.mp-slot{grid-template-columns:30px 1fr}.mp-slot>*:last-child{grid-column:2}.mp-code{font-size:2.2rem}.mp-body{padding:4px 14px 18px}.mp-top{padding:16px 14px 9px}}
 </style>
 
@@ -26696,7 +26796,11 @@ function toggleSnsRestrict(key){
    <section class="mp-step" id="mp-step-local"><div class="mp-kicker">LOCAL BATTLE</div><h2 class="mp-h2">参加メンバー</h2><p class="mp-note">登録ユーザーはポイントを保持したまま参加できます。ゲストは名前だけを使います。最大4人です。</p><div class="mp-roster" id="mp-roster"></div><div class="mp-kicker" style="margin-top:18px">MINI GAME</div><div class="mp-games" id="mp-local-games"></div><div class="mp-actions"><button class="mp-btn secondary" id="mp-local-back">戻る</button><button class="mp-btn" id="mp-local-start">ゲームを開始</button></div></section>
    <section class="mp-step" id="mp-step-online-action"><div class="mp-kicker">ONLINE</div><h2 class="mp-h2">部屋を作る／参加する</h2><p class="mp-note">先に通信だけを確立します。ミニゲームは接続後にホストが選択します。</p><div class="mp-grid2"><button class="mp-choice" data-online-action="create"><span class="big">🏗️</span><b>部屋を作る</b><span>4桁の数字コードを発行して待ちます。</span></button><button class="mp-choice" data-online-action="join"><span class="big">🚪</span><b>部屋に参加する</b><span>相手から受け取った4桁の数字コードを入力します。</span></button></div><div class="mp-actions"><button class="mp-btn secondary" id="mp-online-action-back">戻る</button></div></section>
    <section class="mp-step" id="mp-step-online-connect"><div class="mp-kicker" id="mp-connect-kicker">ONLINE ROOM</div><h2 class="mp-h2" id="mp-connect-title">接続</h2><p class="mp-note" id="mp-connect-note">通信を準備しています。</p><div id="mp-create-box" class="mp-code-wrap mp-hidden"><div class="mp-code-label">ROOM CODE</div><div class="mp-code" id="mp-room-code">----</div><button class="mp-btn secondary" id="mp-copy-code">📋 コードをコピー</button></div><div id="mp-join-box" class="mp-fields mp-hidden"><div><label class="mp-label">4桁の数字コード</label><input class="mp-input" id="mp-join-input" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" autocomplete="one-time-code" placeholder="1234"></div><div class="mp-actions" style="justify-content:stretch"><button class="mp-btn" id="mp-connect-btn" style="flex:1">接続する</button></div></div><div class="mp-status"><span class="mp-dot" id="mp-connect-dot"></span><span id="mp-connect-status">待機中…</span></div><div class="mp-actions"><button class="mp-btn secondary" id="mp-connect-back">戻る</button></div></section>
-   <section class="mp-step" id="mp-step-online-lobby"><div class="mp-kicker">CONNECTED</div><h2 class="mp-h2" id="mp-lobby-title">対戦ロビー</h2><p class="mp-note" id="mp-lobby-note">接続できました。あなたの参加者設定を選びます。</p><div class="mp-alert" id="mp-lobby-alert">🟢 通信接続を確立しました。ここからミニゲームを選びます。</div><div class="mp-kicker">PLAYER</div><div class="mp-grid2"><div><label class="mp-label">参加方法</label><select class="mp-select" id="mp-online-kind"><option value="user">登録ユーザー</option><option value="guest">ゲスト（名前だけ）</option></select></div><div id="mp-online-user-wrap"><label class="mp-label">ユーザー</label><select class="mp-select" id="mp-online-user"></select></div><div id="mp-online-guest-wrap" class="mp-hidden"><label class="mp-label">ゲスト名</label><input class="mp-input" id="mp-online-guest" maxlength="16" value="ゲスト"></div></div><div class="mp-kicker" style="margin-top:18px">CONNECTED PLAYERS</div><div class="mp-players" id="mp-online-players"></div><div class="mp-kicker" style="margin-top:18px">MINI GAME</div><div class="mp-games" id="mp-online-games"></div><div class="mp-alert warn" id="mp-online-wait">👑 ホストがゲームを選んで開始するまで待機します。</div><div class="mp-actions"><button class="mp-btn secondary" id="mp-online-lobby-leave">退出</button><button class="mp-btn" id="mp-online-start">ミニゲームを決定して開始</button></div></section>
+   <section class="mp-step" id="mp-step-online-lobby"><div class="mp-kicker">CONNECTED</div><h2 class="mp-h2" id="mp-lobby-title">対戦ロビー</h2><p class="mp-note" id="mp-lobby-note">接続できました。あなたの参加者設定を選びます。</p><div class="mp-alert" id="mp-lobby-alert">🟢 通信接続を確立しました。ここからミニゲームを選びます。</div><div class="mp-kicker">PLAYER</div><div class="mp-grid2"><div><label class="mp-label">参加方法</label><select class="mp-select" id="mp-online-kind"><option value="user">登録ユーザー</option><option value="google">🌐 Googleアカウント</option><option value="guest">ゲスト（名前だけ）</option></select></div><div id="mp-online-user-wrap"><label class="mp-label">ユーザー</label><select class="mp-select" id="mp-online-user"></select></div><div id="mp-online-guest-wrap" class="mp-hidden"><label class="mp-label">ゲスト名</label><input class="mp-input" id="mp-online-guest" maxlength="16" value="ゲスト"></div>
+<div id="mp-online-google-wrap" class="mp-google-wrap mp-hidden">
+  <div class="mp-google-head"><div><div class="mp-google-title">🌐 Googleアカウント</div><div class="mp-google-state" id="mp-google-state">Googleアカウントでログインすると、ポイントと実績をオンライン保存できます。</div></div></div>
+  <div class="mp-google-actions"><button type="button" class="mp-google-btn" id="mp-google-login-btn">Googleでログイン</button><button type="button" class="mp-google-btn out mp-hidden" id="mp-google-logout-btn">Googleからログアウト</button></div>
+</div></div><div class="mp-kicker" style="margin-top:18px">CONNECTED PLAYERS</div><div class="mp-players" id="mp-online-players"></div><div class="mp-kicker" style="margin-top:18px">MINI GAME</div><div class="mp-games" id="mp-online-games"></div><div class="mp-alert warn" id="mp-online-wait">👑 ホストがゲームを選んで開始するまで待機します。</div><div class="mp-actions"><button class="mp-btn secondary" id="mp-online-lobby-leave">退出</button><button class="mp-btn" id="mp-online-start">ミニゲームを決定して開始</button></div></section>
   </div>
  </div>
 </div>
@@ -28299,6 +28403,386 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   function ready(){ mark(); bind(); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){ setTimeout(ready,0); }); else setTimeout(ready,0);
   setTimeout(mark,500); setTimeout(mark,1500);
+})();
+</script>
+
+
+<!-- ===== OJWGA Googleアカウント連携 / Firestore同期 ===== -->
+<script id="ojwga-google-integration">
+(function(){
+  'use strict';
+
+  var cloudTimer = null;
+
+  function firebaseReady(){
+    return !!(window.OJWGA_FIREBASE && window.OJWGA_FIREBASE.auth && window.OJWGA_FIREBASE.db);
+  }
+  function currentFirebaseUser(){ return window.__ojwgaFirebaseAuthUser || null; }
+  function currentLocalUserByUid(uid){
+    try { return (typeof root !== 'undefined' && Array.isArray(root.users)) ? (root.users.find(function(u){return u && (u.firebaseUid===uid || (u.authType==='google' && u.id===uid));}) || null) : null; } catch(e){ return null; }
+  }
+  function clone(v){
+    try { return JSON.parse(JSON.stringify(v)); } catch(e) { return v; }
+  }
+  function isUsableAvatar(v){
+    if(typeof v!=='string' || !v) return false;
+    if(v.indexOf('data:image/')===0) return v.length < 500000;
+    return v.length <= 30;
+  }
+  function cleanCloudData(u){
+    var data = clone((u && u.data) || {});
+    if(data && typeof data==='object'){
+      delete data._cloudDirtyAt;
+      delete data._cloudSyncedAt;
+    }
+    return data;
+  }
+  function cloudPayload(u, changedAt){
+    var fu=currentFirebaseUser();
+    return {
+      name: String((u && u.name) || (fu && fu.displayName) || 'Googleユーザー').slice(0,32),
+      email: String((u && u.email) || (fu && fu.email) || ''),
+      avatar: isUsableAvatar(u && u.avatar) ? u.avatar : '🌐',
+      theme: (u && typeof u.theme==='string' && typeof THEMES!=='undefined' && THEMES[u.theme]) ? u.theme : 'purple',
+      data: cleanCloudData(u),
+      provider: 'google',
+      firebaseUid: fu ? fu.uid : String(u && u.firebaseUid || ''),
+      clientUpdatedAt: Number(changedAt || Date.now()),
+      updatedAt: window.OJWGA_FIREBASE.serverTimestamp()
+    };
+  }
+
+  function applyCloudUserData(u, cloud, fu){
+    if(!u || !cloud) return;
+    if(cloud.name) u.name=String(cloud.name).slice(0,32);
+    if(isUsableAvatar(cloud.avatar)) u.avatar=cloud.avatar;
+    if(typeof cloud.theme==='string' && typeof THEMES!=='undefined' && THEMES[cloud.theme]) u.theme=cloud.theme;
+    if(cloud.email) u.email=String(cloud.email);
+    if(cloud.data && typeof cloud.data==='object') {
+      var base=(typeof defaultUserData==='function')?defaultUserData():{};
+      u.data=Object.assign(base, clone(cloud.data));
+    }
+    u.authType='google';
+    u.googleLinked=true;
+    u.firebaseUid=fu.uid;
+    u.passwordMethod='none';
+    u.password='';
+    u.hint='';
+    u.isTotallyLocked=false;
+    u.blockType=null;
+    u.blockUntil=0;
+    u._cloudSyncedAt=Number(cloud.clientUpdatedAt || Date.now());
+    u._cloudDirtyAt=0;
+  }
+
+  async function pushGoogleUser(u, forceChangedAt){
+    if(!firebaseReady() || !u || !u.firebaseUid) return false;
+    var fu=currentFirebaseUser();
+    if(!fu || fu.uid!==u.firebaseUid) return false;
+    try {
+      var changed=Number(forceChangedAt || u._cloudDirtyAt || Date.now());
+      var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',u.firebaseUid);
+      await window.OJWGA_FIREBASE.setDoc(ref,cloudPayload(u,changed),{merge:true});
+      u._cloudSyncedAt=changed;
+      u._cloudDirtyAt=0;
+      try { localStorage.setItem(ROOT_KEY,JSON.stringify(root)); } catch(e) {}
+      return true;
+    } catch(e){
+      console.warn('[OJWGA] Firestore save failed',e);
+      return false;
+    }
+  }
+
+  window.ojwgaPushGoogleUser=pushGoogleUser;
+
+  async function syncGoogleAccount(fu){
+    if(!fu || !firebaseReady() || typeof root==='undefined') return null;
+    var u=currentLocalUserByUid(fu.uid);
+    var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',fu.uid);
+    var snap=null;
+    try { snap=await window.OJWGA_FIREBASE.getDoc(ref); }
+    catch(e){
+      console.warn('[OJWGA] Firestore read failed',e);
+      if(typeof oijAlert==='function') oijAlert('Googleアカウントにはログインしましたが、オンラインデータを読み込めませんでした。ネット接続とFirestoreルールを確認してください。');
+      return null;
+    }
+
+    if(!u){
+      u={
+        id:fu.uid,
+        name:(fu.displayName||'Googleユーザー').slice(0,32),
+        avatar:'🌐',
+        password:'',
+        hint:'',
+        wrongCount:0,
+        lockUntil:0,
+        isTotallyLocked:false,
+        blockType:null,
+        blockUntil:0,
+        role:'normal',
+        theme:'purple',
+        data:(typeof defaultUserData==='function'?defaultUserData():{}),
+        passwordMethod:'none',
+        authType:'google',
+        googleLinked:true,
+        firebaseUid:fu.uid,
+        email:fu.email||'',
+        _cloudDirtyAt:0,
+        _cloudSyncedAt:0
+      };
+      root.users.push(u);
+    } else {
+      u.authType='google';
+      u.googleLinked=true;
+      u.firebaseUid=fu.uid;
+      u.passwordMethod='none';
+      u.password='';
+      u.email=fu.email||u.email||'';
+    }
+
+    if(snap && snap.exists()) {
+      var cloud=snap.data()||{};
+      var cloudChanged=Number(cloud.clientUpdatedAt||0);
+      var localDirty=Number(u._cloudDirtyAt||0);
+      if(localDirty > cloudChanged) {
+        await pushGoogleUser(u,localDirty);
+      } else {
+        applyCloudUserData(u,cloud,fu);
+      }
+    } else {
+      await pushGoogleUser(u,Date.now());
+    }
+
+    return u;
+  }
+
+  window.ojwgaSyncGoogleAccount=syncGoogleAccount;
+
+  window.ojwgaScheduleGoogleCloudSync=function(u){
+    if(!u || u.authType!=='google' || !u.firebaseUid || !firebaseReady()) return;
+    var fu=currentFirebaseUser();
+    if(!fu || fu.uid!==u.firebaseUid) return;
+    clearTimeout(cloudTimer);
+    cloudTimer=setTimeout(function(){
+      pushGoogleUser(u).catch(function(e){console.warn('[OJWGA] delayed cloud sync error',e);});
+    },650);
+  };
+
+  function refreshGoogleOnlineUI(){
+    var wrap=document.getElementById('mp-online-google-wrap');
+    var state=document.getElementById('mp-google-state');
+    var login=document.getElementById('mp-google-login-btn');
+    var logout=document.getElementById('mp-google-logout-btn');
+    var fu=currentFirebaseUser();
+    if(!wrap) return;
+    if(state){
+      state.textContent=fu
+        ? ('ログイン中：'+String(fu.displayName||'Googleユーザー')+' ／ '+String(fu.email||'')+'\nこのアカウントでポイント・実績を保存します。')
+        : 'Googleアカウントでログインすると、ポイントと実績をオンライン保存できます。';
+      state.style.whiteSpace='pre-line';
+    }
+    if(login) login.classList.toggle('mp-hidden',!!fu);
+    if(logout) logout.classList.toggle('mp-hidden',!fu);
+  }
+
+  function selectedOnlineKind(){ var el=document.getElementById('mp-online-kind'); return el?el.value:'user'; }
+
+  // Googleをオンライン参加者として扱う。kindは既存MP互換の'user'を維持し、userIdだけFirebase UIDにする。
+  var originalOnlineProfileData=window.onlineProfileData;
+  window.onlineProfileData=function(){
+    var k=selectedOnlineKind();
+    if(k==='google'){
+      var fu=currentFirebaseUser();
+      if(!fu) return null;
+      var u=currentLocalUserByUid(fu.uid);
+      if(!u) return null;
+      return {kind:'user',userId:u.id,name:(u.name||fu.displayName||'Googleユーザー').slice(0,16),persistent:true,authType:'google'};
+    }
+    return originalOnlineProfileData.apply(this,arguments);
+  };
+
+  var originalSyncOnlineProfile=window.syncOnlineProfile;
+  window.syncOnlineProfile=function(){
+    var k=selectedOnlineKind();
+    refreshGoogleOnlineUI();
+    if(k==='google' && !currentFirebaseUser()){
+      MP.onlineProfile=null;
+      var start=document.getElementById('mp-online-start');
+      if(start) start.disabled=true;
+      return;
+    }
+    var out=originalSyncOnlineProfile.apply(this,arguments);
+    refreshGoogleOnlineUI();
+    return out;
+  };
+
+  function setupGoogleOnlineUI(){
+    var kind=document.getElementById('mp-online-kind');
+    var userWrap=document.getElementById('mp-online-user-wrap');
+    var guestWrap=document.getElementById('mp-online-guest-wrap');
+    var googleWrap=document.getElementById('mp-online-google-wrap');
+    if(!kind || kind._googleBound) { refreshGoogleOnlineUI(); return; }
+    kind._googleBound=true;
+    kind.addEventListener('change',function(){
+      var k=kind.value;
+      if(userWrap) userWrap.classList.toggle('mp-hidden',k!=='user');
+      if(guestWrap) guestWrap.classList.toggle('mp-hidden',k!=='guest');
+      if(googleWrap) googleWrap.classList.toggle('mp-hidden',k!=='google');
+      window.syncOnlineProfile();
+    });
+
+    var login=document.getElementById('mp-google-login-btn');
+    var logout=document.getElementById('mp-google-logout-btn');
+    if(login) login.onclick=async function(){
+      login.disabled=true;
+      var fu=await window.ojwgaLoginWithGoogle();
+      login.disabled=false;
+      if(!fu) { refreshGoogleOnlineUI(); return; }
+      var u=await syncGoogleAccount(fu);
+      if(u){
+        root.currentUserId=u.id;
+        if(u.theme && typeof root.display==='object') root.display.theme=u.theme;
+        try { if(typeof applyTheme==='function') applyTheme(); } catch(e) {}
+        try { saveRoot(); } catch(e) {}
+      }
+      if(kind) kind.value='google';
+      if(userWrap) userWrap.classList.add('mp-hidden');
+      if(guestWrap) guestWrap.classList.add('mp-hidden');
+      if(googleWrap) googleWrap.classList.remove('mp-hidden');
+      window.syncOnlineProfile();
+      refreshGoogleOnlineUI();
+    };
+    if(logout) logout.onclick=async function(){
+      logout.disabled=true;
+      await window.ojwgaLogoutGoogle();
+      logout.disabled=false;
+      MP.onlineProfile=null;
+      refreshGoogleOnlineUI();
+      window.syncOnlineProfile();
+    };
+
+    refreshGoogleOnlineUI();
+    var k=kind.value;
+    if(userWrap) userWrap.classList.toggle('mp-hidden',k!=='user');
+    if(guestWrap) guestWrap.classList.toggle('mp-hidden',k!=='guest');
+    if(googleWrap) googleWrap.classList.toggle('mp-hidden',k!=='google');
+  }
+
+  // openOnlineLobbyは既存UIを作った後にGoogle UIを差し込む。
+  var originalOpenOnlineLobby=window.openOnlineLobby;
+  window.openOnlineLobby=function(){
+    var r=originalOpenOnlineLobby.apply(this,arguments);
+    try { setupGoogleOnlineUI(); } catch(e) { console.warn('[OJWGA] online Google UI setup error',e); }
+    return r;
+  };
+
+  // Firebase認証状態 -> ローカルOJWGAユーザーの同期
+  window.ojwgaHandleFirebaseAuthState=async function(fu){
+    if(!fu){
+      refreshGoogleOnlineUI();
+      return;
+    }
+    try {
+      var u=await syncGoogleAccount(fu);
+      if(u){
+        // switchUserからログイン待ちだった場合のみ、そのユーザーへ切り替える。
+        if(window.__ojwgaPendingGoogleTargetId && window.__ojwgaPendingGoogleTargetId===u.id){
+          root.currentUserId=u.id;
+          if(u.theme && root.display) root.display.theme=u.theme;
+          try { saveRoot(); } catch(e) {}
+          window.__ojwgaPendingGoogleTargetId=null;
+          try { sessionStorage.setItem('oijii_startup_user_selected','1'); } catch(e) {}
+          setTimeout(function(){ try { location.reload(); } catch(e) {} },80);
+          return;
+        }
+        if(typeof root!=='undefined' && getCurrentUser && getCurrentUser() && getCurrentUser().authType==='google' && getCurrentUser().firebaseUid===u.firebaseUid){
+          try { saveRoot(); } catch(e) {}
+        }
+      }
+    } catch(e){ console.warn('[OJWGA] Google account sync error',e); }
+    refreshGoogleOnlineUI();
+    if(typeof window.renderOnlinePlayers==='function'){ try { window.renderOnlinePlayers(); } catch(e) {} }
+  };
+
+  // 既存のユーザー切替にGoogle認証を追加。通常ユーザー/ゲストの挙動は元のまま。
+  var originalSwitchUser=window.switchUser;
+  window.switchUser=function(id){
+    var u=null;
+    try { u=(root.users||[]).find(function(x){return x.id===id;})||null; } catch(e) {}
+    if(u && u.authType==='google' && u.firebaseUid){
+      var fu=currentFirebaseUser();
+      if(fu && fu.uid===u.firebaseUid){
+        return originalSwitchUser.apply(this,arguments);
+      }
+      window.__ojwgaPendingGoogleTargetId=u.id;
+      var run=async function(){
+        var signed=await window.ojwgaLoginWithGoogle();
+        if(!signed){ window.__ojwgaPendingGoogleTargetId=null; return; }
+        if(signed.uid!==u.firebaseUid){
+          window.__ojwgaPendingGoogleTargetId=null;
+          try { if(typeof oijAlert==='function') oijAlert('別のGoogleアカウントが選択されました。登録済みのGoogleアカウントでログインしてください。'); } catch(e) {}
+          return;
+        }
+        await syncGoogleAccount(signed);
+        try { root.currentUserId=u.id; root.display.theme=u.theme||'purple'; applyTheme(); saveRoot(); } catch(e) {}
+        try { sessionStorage.setItem('oijii_startup_user_selected','1'); } catch(e) {}
+        setTimeout(function(){ try { location.reload(); } catch(e) {} },80);
+      };
+      run();
+      return;
+    }
+    return originalSwitchUser.apply(this,arguments);
+  };
+
+  // GoogleユーザーはFirebaseアカウント一致を起動時に要求する。
+  var originalCheckAuthOnLoad=window.checkAuthOnLoad;
+  window.checkAuthOnLoad=function(){
+    try {
+      var u=(typeof getCurrentUser==='function')?getCurrentUser():null;
+      if(u && u.authType==='google' && u.firebaseUid){
+        var fu=currentFirebaseUser();
+        if(!fu || fu.uid!==u.firebaseUid){
+          window.__startupUserGate=true;
+          try { document.body.classList.add('startup-user-gate'); } catch(e) {}
+          try { openUserSwitcher(true); } catch(e) {}
+          return;
+        }
+      }
+    } catch(e) {}
+    return originalCheckAuthOnLoad.apply(this,arguments);
+  };
+
+  // ユーザー選択画面からGoogleアカウントを追加/選択する。
+  window.ojwgaLoginGoogleFromUserSwitcher=async function(){
+    var btn=document.getElementById('userswitch-google-btn');
+    if(btn) btn.disabled=true;
+    try {
+      var fu=await window.ojwgaLoginWithGoogle();
+      if(!fu) return;
+      var u=await syncGoogleAccount(fu);
+      if(!u) return;
+      root.currentUserId=u.id;
+      try { if(u.theme && root.display) root.display.theme=u.theme; if(typeof applyTheme==='function') applyTheme(); } catch(e) {}
+      try { saveRoot(); } catch(e) {}
+      try { sessionStorage.setItem('oijii_startup_user_selected','1'); } catch(e) {}
+      var ov=document.getElementById('userswitch-overlay');
+      if(ov) ov.classList.remove('show');
+      setTimeout(function(){ try { location.reload(); } catch(e) {} },80);
+    } finally { if(btn) btn.disabled=false; }
+  };
+
+  // 初期化時にFirebaseコールバックが先に走った場合の後追い処理。
+  function lateBoot(){
+    if(window.__ojwgaPendingFirebaseAuthUser !== undefined){
+      var pending=window.__ojwgaPendingFirebaseAuthUser;
+      window.__ojwgaPendingFirebaseAuthUser=undefined;
+      try { window.ojwgaHandleFirebaseAuthState(pending); } catch(e) {}
+    }
+    try { refreshGoogleOnlineUI(); } catch(e) {}
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',lateBoot,{once:true}); else setTimeout(lateBoot,0);
+
+  // 既存MPの結果表示・プロフィール更新はkind='user'のままなのでそのままGoogle UIDにポイントが戻る。
 })();
 </script>
 </body>
