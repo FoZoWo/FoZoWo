@@ -18266,6 +18266,14 @@ function updateAuthUI() {
 function checkAuthPassword() {
     const u = getCurrentUser();
     if (!u) return;
+    /* ⛔ ブロック中はパスワード認証を絶対に実行しない。
+       UIが一瞬残っていても、認証成功ルートへ進ませない最終防御。 */
+    try {
+        if (typeof getUserBlockType === 'function' && getUserBlockType(u)) {
+            if (typeof updateAuthUI === 'function') updateAuthUI();
+            return;
+        }
+    } catch (e) {}
     const input = document.getElementById('auth-pass-input').value;
     if (input === u.password) {
         u.wrongCount = 0;
@@ -18433,70 +18441,85 @@ function escapeHtml(s) {
 function switchUser(id) {
     const u = root.users.find(x => x.id === id);
     if (!u) return;
-    /* 最後の1人は削除できない状態を常に維持する。 */
     if (!Array.isArray(root.users) || root.users.length <= 0) return;
-    /* ⛔ ブロック中のユーザーを選んだ場合は、起動ゲートを維持する。
-       認証画面の「戻る」からユーザー選択へ戻っても、新規ユーザー作成は出さない。 */
-    if (isUserBlocked(u)) {
-        root.currentUserId = id;
-        saveRoot();
-        try { window.__startupUserGate = true; } catch(e) {}
-        try { document.body.classList.add('startup-user-gate'); } catch(e) {}
-        document.getElementById('userswitch-overlay').classList.remove('show');
-        refreshHome();
-        document.getElementById('home-screen').style.display = 'none';
-        document.getElementById('auth-overlay').classList.add('show');
-        updateAuthUI();
-        try { playAlarmSound(); } catch (e) {}
-        var bt = getUserBlockType(u);
-        witchSpeak(bt === 'permanent' ? '完全ブロック中じゃ。解除できんぞい。' : (bt === 'normal' ? '通常ブロック中じゃ。保護者認証で解除できるぞい。' : '一時ブロック中じゃ。時間がたてば解除されるぞい。'));
-        return;
-    }
-    /* 認証失敗によるロック中のユーザーを選んだ場合も、新規ユーザー作成を禁止する。 */
+
+    /* 選択直後はホームを一度描画してから認証画面へ進まない。
+       先にユーザーを確定し、認証が必要ならその場で認証UIだけを表示する。 */
+    root.currentUserId = id;
+    if (!u.theme || !THEMES[u.theme]) u.theme = 'purple';
+    if (!root.display) root.display = defaultDisplay();
+    root.display.theme = u.theme;
+    try { if (typeof applyTheme === 'function') applyTheme(); } catch(e) {}
+    try { saveRoot(); } catch(e) {}
+
+    const userSwitch = document.getElementById('userswitch-overlay');
+    const home = document.getElementById('home-screen');
+    const auth = document.getElementById('auth-overlay');
+    if (userSwitch) userSwitch.classList.remove('show');
+
+    /* ブロック・認証ロックを最優先する。 */
     try {
-        if (typeof window.ojwgaIsSecurityLocked === 'function' && window.ojwgaIsSecurityLocked(u)) {
-            root.currentUserId = id;
-            saveRoot();
-            window.__startupUserGate = true;
-            try { document.body.classList.add('startup-user-gate'); } catch(e) {}
-            document.getElementById('userswitch-overlay').classList.remove('show');
-            document.getElementById('home-screen').style.display = 'none';
-            document.getElementById('auth-overlay').classList.add('show');
-            updateAuthUI();
+        if (typeof window.ojwgaNormalizeSecurityUser === 'function') {
+            window.ojwgaNormalizeSecurityUser(u);
+        } else if (typeof normalizeSecurityUser === 'function') {
+            normalizeSecurityUser(u);
+        }
+    } catch(e) {}
+
+    var blockType = null;
+    try {
+        if (typeof hardBlockType === 'function') blockType = hardBlockType(u);
+    } catch(e) {}
+    try {
+        if (!blockType && typeof getUserBlockType === 'function') blockType = getUserBlockType(u) || null;
+    } catch(e) {}
+    try {
+        if (blockType || (typeof window.ojwgaIsSecurityLocked === 'function' && window.ojwgaIsSecurityLocked(u))) {
+            if (home) home.style.display = 'none';
+            if (auth) {
+                auth.classList.add('show');
+                auth.style.removeProperty('display');
+            }
+            if (typeof window.updateAuthUI === 'function') window.updateAuthUI();
             try { playAlarmSound(); } catch(e) {}
             return;
         }
     } catch(e) {}
-    /* ユーザー選択後は再読み込みせず、そのまま認証画面へ進む。 */
-    if (window.__startupUserGate) {
-        window.__startupUserGate = false;
-        try { document.body.classList.remove('startup-user-gate'); } catch(e) {}
+
+    /* 認証方式を基準に判定。古いデータで passwordMethod=none でも
+       実際に password が保存されている場合はパスワード認証を要求する。 */
+    var method = u.passwordMethod || ((u.password && String(u.password).length > 0) ? 'password' : 'none');
+    if (method !== 'none' && method !== 'password' && method !== 'pin' && method !== 'pattern' && method !== 'device') {
+        method = 'password';
+        u.passwordMethod = method;
+        try { saveRoot(); } catch(e) {}
     }
-    root.currentUserId = id;
-    /* 🎨 ユーザーごとのテーマを反映（テーマがユーザー間で混ざる不具合修正）
-       各ユーザーが必ず自分のテーマを持つよう補完し、グローバル表示は
-       「現在のユーザーのテーマ」として常に同期させる。 */
-    if (!u.theme || !THEMES[u.theme]) u.theme = 'purple';
-    root.display.theme = u.theme;
-    if (typeof applyTheme === 'function') applyTheme();
-    saveRoot();
-    /* ユーザー選択後は即座に次の認証画面へ。ページは再読み込みしない。 */
-    document.getElementById('userswitch-overlay').classList.remove('show');
-    refreshHome();
-    /* 認証方式を基準に判定する（パターン等は password が空でも認証必須）。 */
-    if (window.ojwgaNormalizeSecurityUser) window.ojwgaNormalizeSecurityUser(u);
-    var __methodAfterSwitch = u.passwordMethod || 'password';
-    if (__methodAfterSwitch !== 'none') {
-        document.getElementById('home-screen').style.display = 'none';
-        document.getElementById('auth-overlay').classList.add('show');
-        updateAuthUI();
-        setTimeout(() => {
-            const inp = document.getElementById('auth-pass-input');
-            if (inp && inp.style.display !== 'none') inp.focus();
-        }, 100);
-    } else {
-        witchSpeak((typeof getAppLang==='function'&&getAppLang()==='en')?(`Welcome, ${u.name}!`):(`ようこそ、${u.name}や！`));
+
+    if (method !== 'none') {
+        if (home) home.style.display = 'none';
+        if (auth) {
+            auth.style.removeProperty('display');
+            auth.classList.add('show');
+        }
+        try { window.__startupUserGate = false; document.body.classList.remove('startup-user-gate'); } catch(e) {}
+        try { if (typeof window.updateAuthUI === 'function') window.updateAuthUI(); else updateAuthUI(); } catch(e) {
+            console.warn('[OJWGA] auth UI after user switch failed', e);
+        }
+        setTimeout(function(){
+            try {
+                var inp = document.getElementById('ojwga-auth-secret') || document.getElementById('auth-pass-input');
+                if (inp && inp.style.display !== 'none') inp.focus();
+            } catch(e) {}
+        }, 60);
+        return;
     }
+
+    /* 認証なしユーザーだけホームへ進む。描画はここで一度だけ行う。 */
+    try { window.__startupUserGate = false; document.body.classList.remove('startup-user-gate'); } catch(e) {}
+    if (auth) { auth.classList.remove('show'); auth.style.display = 'none'; }
+    if (home) home.style.display = 'flex';
+    try { refreshHome(); } catch(e) { console.warn('[OJWGA] refreshHome after user switch failed', e); }
+    try { showHourlyGreeting(u); } catch(e) {}
 }
 
 /* 新規ユーザー */
@@ -27978,7 +28001,17 @@ window.updateAuthUI=function(){
     if(msg)msg.textContent=en?(method==='pin'?'Enter your PIN.':'Enter your password.'):(method==='pin'?'暗証番号を入力するのじゃ。':'パスワードを入力するのじゃ。');var inp=document.createElement('input');inp.id='ojwga-auth-secret';inp.type='password';inp.autocomplete='current-password';inp.inputMode=method==='pin'?'numeric':'text';inp.placeholder=en?(method==='pin'?'PIN':'Password'):(method==='pin'?'暗証番号':'パスワード');if(method==='pin')inp.maxLength=10;inp.className='ojwga-password-fields';ui.appendChild(inp);var b2=document.createElement('button');b2.type='button';b2.className='challenge-btn ojwga-auth-action';b2.textContent=en?'Unlock':'扉を開ける';b2.onclick=function(){var v=inp.value||'';if(method==='pin'&&!/^\d{4,10}$/.test(v)){safeAlert('4〜10桁の数字じゃ。','Enter 4–10 digits.');return;}if(v===String(u.password||'')){resetSecurityFailures(u);authSuccess(u);}else{recordSecurityFailure(u);inp.value='';if(document.body.contains(inp))inp.focus();updateAuthUI();}};ui.appendChild(b2);inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();b2.click();}});setTimeout(function(){try{inp.focus();}catch(e){}},60);return;}
   if(method==='pattern'){if(msg)msg.textContent=en?'Connect the same pattern you saved.':'保存したパターンをつなぐのじゃ。';var pc=document.createElement('div');ui.appendChild(pc);createPatternPad(pc,'auth',function(seq){authPendingPattern=seq;var ok=samePattern(seq,u.passwordPattern);if(ok){resetSecurityFailures(u);authSuccess(u);}else{recordSecurityFailure(u);updateAuthUI();}} ,[]);return;}
 };
-function authSuccess(u){try{document.getElementById('auth-overlay').classList.remove('show');document.getElementById('home-screen').style.display='flex';document.getElementById('auth-pass-input').value='';refreshHome();showHourlyGreeting(u);}catch(e){}}
+function authSuccess(u){
+  /* ⛔ ブロック中は認証成功しても絶対にホームへ通さない。
+     PIN / パターン / 端末ロックから直接呼ばれる経路もここで遮断する。 */
+  try {
+    if (u && typeof getUserBlockType === 'function' && getUserBlockType(u)) {
+      if (typeof updateAuthUI === 'function') updateAuthUI();
+      return;
+    }
+  } catch (e) {}
+  try{var __auth= document.getElementById('auth-overlay');if(__auth){__auth.classList.remove('show');__auth.style.display='none';}document.getElementById('home-screen').style.display='flex';document.getElementById('auth-pass-input').value='';refreshHome();showHourlyGreeting(u);}catch(e){}
+}
 /* PIN UI patch runs in a separate IIFE, so expose these auth helpers explicitly. */
 /* 外部の修正スクリプトからも安全に利用できるよう公開する。
    Security v2 本体は IIFE 内なので、そのままだと外側のスクリプトから
@@ -27990,7 +28023,7 @@ window.ojwgaSafeSpeak=safeSpeak;
 window.ojwgaNormalizeSecurityUser=normalizeSecurityUser;
 window.ojwgaIsSecurityLocked=function(u){try{return isSecurityLockedUser(u);}catch(e){return false;}};
 window.checkAuthPassword=function(){var u=getCurrentUser();if(!u)return;normalizeSecurityUser(u);var el=byId('ojwga-auth-secret');if(el){var v=el.value||'';if(v===String(u.password||'')){resetSecurityFailures(u);authSuccess(u);}else{recordSecurityFailure(u);el.value='';updateAuthUI();}}else{updateAuthUI();}};
-window.cancelAuth=function(){try{document.getElementById('auth-overlay').classList.remove('show');}catch(e){}if('speechSynthesis' in window)speechSynthesis.cancel();try{openUserSwitcher(!!window.__startupUserGate);}catch(e){}};
+window.cancelAuth=function(){try{var __auth=document.getElementById('auth-overlay');if(__auth){__auth.classList.remove('show');__auth.style.display='none';}}catch(e){}if('speechSynthesis' in window)speechSynthesis.cancel();try{openUserSwitcher(!!window.__startupUserGate);}catch(e){}};
 
 /* ===== User settings new UI ===== */
 window.openProfileSettings=function(){var u=getCurrentUser();if(!u){safeAlert('ユーザーがおらんぞい。','No user is selected.');return;}normalizeSecurityUser(u);currentProfileMethod=u.passwordMethod||'password';byId('profile-main-view').style.display='flex';byId('profile-name-view').style.display='none';byId('profile-password-view').style.display='none';var en=langEn();byId('ojwga-profile-title').textContent=en?'👤 User Settings':'👤 ユーザー設定';byId('ojwga-profile-current').textContent=(u.name||'User');var __rb=byId('ojwga-current-user-role-badge');if(__rb){__rb.style.display='inline-flex';__rb.textContent=isManagerUser(u)?'👑 管理ユーザー':'👤 通常ユーザー';}byId('ojwga-name-item-title').textContent=en?'Name':'名前';byId('ojwga-name-item-sub').textContent=en?'Change the user name':'名前を変更する';byId('ojwga-pass-item-title').textContent=en?'Password':'パスワード';byId('ojwga-pass-item-sub').textContent=en?'Change authentication method':'認証方式を変更する';byId('ojwga-share-item-title').textContent=en?'Share user':'ユーザーをシェア';byId('ojwga-share-item-sub').textContent=en?'Share this user’s game data':'このユーザーのデータを共有する';byId('ojwga-delete-item-title').textContent=en?'Delete user':'ユーザーの消去';byId('ojwga-delete-item-sub').textContent=en?'Delete this user':'このユーザーを消去する';byId('ojwga-profile-close').textContent=en?'Close':'閉じる';byId('profile-overlay').classList.add('show');safeSpeak('ユーザー設定じゃ。','User settings.');};
@@ -28142,7 +28175,7 @@ if(typeof prevApplyLanguage==='function')window.applyLanguage=function(){var r=p
 
 /* Fix: returning from a blocked auth screen keeps startup gate mode. */
 window.cancelAuth=function(){
-  try{byId('auth-overlay').classList.remove('show');}catch(e){}
+  try{var __a=byId('auth-overlay');if(__a){__a.classList.remove('show');__a.style.display='none';}}catch(e){}
   if('speechSynthesis' in window)speechSynthesis.cancel();
   try{var __cu=getCurrentUser();var __gate=!!window.__startupUserGate||isSecurityLockedUser(__cu);openUserSwitcher(__gate);}catch(e){}
 };
@@ -28201,7 +28234,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     return r;
   };
   window.cancelAuth = function(){
-    try{ var a=document.getElementById('auth-overlay'); if(a) a.classList.remove('show'); }catch(e){}
+    try{ var a=document.getElementById('auth-overlay'); if(a){a.classList.remove('show');a.style.display='none';} }catch(e){}
     try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){}
     var gate = !!window.__startupUserGate || _isBlockedCurrentUser() || _isSecurityLockedCurrentUser();
     if(gate) window.__startupUserGate = true;
@@ -29087,9 +29120,12 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
       root.currentUserId=u.id;
       try{if(u.theme&&root.display)root.display.theme=u.theme;if(typeof applyTheme==='function')applyTheme();}catch(e){}
       try{saveRoot();}catch(e){}
-      try{sessionStorage.setItem('oijii_startup_user_selected','1');}catch(e){}
-      var ov=document.getElementById('userswitch-overlay'); if(ov)ov.classList.remove('show');
-      try{refreshHome();}catch(e){}
+      /* Google選択も通常ユーザーと同じ選択後フローへ。再読み込みはしない。 */
+      try{sessionStorage.removeItem('oijii_startup_user_selected');}catch(e){}
+      try{window.switchUser(u.id);}catch(e){
+        console.warn('[OJWGA] Google user selection auth transition failed',e);
+        var ov=document.getElementById('userswitch-overlay'); if(ov)ov.classList.remove('show');
+      }
     } finally { if(btn)btn.disabled=false; refreshGoogleCloudUI(); }
   };
 
@@ -30573,23 +30609,193 @@ html.cursor-custom.cursor-custom-ready #magic-cursor{z-index:2147483647 !importa
 <script id="ojwga-block-priority-final-js">
 (function(){
   'use strict';
+
+  function byId(id){ return document.getElementById(id); }
   function currentUser(){ try{return typeof getCurrentUser==='function'?getCurrentUser():null;}catch(e){return null;} }
-  function isBlocked(u){ try{return !!(u&&typeof getUserBlockType==='function'&&getUserBlockType(u));}catch(e){return false;} }
-  var prev=window.updateAuthUI;
-  if(typeof prev!=='function') return;
-  window.updateAuthUI=function(){
-    var u=currentUser();
-    if(isBlocked(u)){
-      try{
-        var home=document.getElementById('home-screen');
-        var auth=document.getElementById('auth-overlay');
-        if(home) home.style.display='none';
-        if(auth) auth.classList.add('show');
-      }catch(e){}
+  function langEn(){ try{return typeof getAppLang==='function'&&getAppLang()==='en';}catch(e){return false;} }
+
+  /*
+   * ブロック状態を「認証方式」と完全に独立して判定する。
+   * temporary は blockUntil が未来の時だけ有効、normal/permanent は期限不要。
+   * password5 の完全ロックは「認証失敗ロック」なのでここでは別扱いにする。
+   */
+  function hardBlockType(u){
+    if(!u) return null;
+    try{
+      var bt=String(u.blockType||'');
+      if(bt==='temporary'){
+        if(Number(u.blockUntil||0)>Date.now()) return 'temporary';
+        /* 期限切れなら自動解除してから通常認証へ戻す。 */
+        u.blockType=null; u.blockUntil=0;
+        if(u.securityLockReason==='manual') u.securityLockReason='';
+        return null;
+      }
+      if(bt==='normal') return 'normal';
+      if(bt==='permanent') return 'permanent';
+      /* 古い保存データとの互換：手動完全ブロックだけ permanent とみなす。 */
+      if(u.isTotallyLocked && String(u.securityLockReason||'')==='manual') return 'permanent';
+    }catch(e){}
+    return null;
+  }
+
+  function speakBlockOnce(type,u){
+    try{
+      var key=String(u&&u.id||'')+':'+type;
+      if(window.__ojwgaBlockPrioritySpoken===key) return;
+      window.__ojwgaBlockPrioritySpoken=key;
+      if(typeof witchSpeak!=='function') return;
+      var en=langEn();
+      witchSpeak(type==='permanent'
+        ? (en?'Permanent block is active. This user cannot be unblocked.':'完全ブロック中じゃ。解除できんぞい。')
+        : type==='normal'
+          ? (en?'Normal block is active. A parent can remove it.':'通常ブロック中じゃ。保護者認証で解除できるぞい。')
+          : (en?'Temporary block is active. It will expire automatically.':'一時ブロック中じゃ。時間がたてば解除されるぞい。'));
+    }catch(e){}
+  }
+
+  function forceBlockedAuthUI(u,type){
+    var home=byId('home-screen'), auth=byId('auth-overlay');
+    var msg=byId('auth-msg'), timer=byId('auth-lock-timer'),
+        input=byId('auth-pass-input'), submit=byId('auth-submit-btn'),
+        forgot=byId('auth-forgot-btn'), unblock=byId('auth-unblock-btn'),
+        ui=byId('auth-method-ui');
+
+    try{ clearInterval(window.authTimerInterval); }catch(e){}
+    try{ if(typeof authTimerInterval!=='undefined') clearInterval(authTimerInterval); }catch(e){}
+
+    if(home) home.style.display='none';
+    if(auth) auth.classList.add('show');
+    try{ window.__startupUserGate=true; document.body.classList.add('startup-user-gate'); }catch(e){}
+
+    /* 既に描画済みのPIN/パスワードUIを完全に消す。 */
+    if(ui) ui.innerHTML='';
+    if(input){ input.value=''; input.style.display='none'; }
+    if(submit) submit.style.display='none';
+    if(byId('ojwga-auth-secret')){ var sec=byId('ojwga-auth-secret'); sec.value=''; sec.style.display='none'; }
+    if(forgot) forgot.style.display='none';
+
+    var en=langEn();
+    var title=byId('auth-title');
+    if(title) title.textContent=en?'Blocked — '+(u.name||'User'):'ブロック中 — '+(u.name||'ユーザー');
+    if(msg) msg.style.display='block';
+    if(timer) timer.style.display='none';
+    if(unblock) unblock.style.display=(type==='normal'||type==='temporary')?'block':'none';
+
+    if(type==='permanent'){
+      if(msg) msg.textContent=en
+        ? 'This user is permanently blocked. It cannot be unblocked.'
+        : 'このユーザーは完全ブロック中です。解除することはできません。';
+      speakBlockOnce(type,u);
+      return;
     }
-    return prev.apply(this,arguments);
+
+    if(type==='normal'){
+      if(msg) msg.textContent=en
+        ? 'This user is under a normal block. A parent must remove the block.'
+        : 'このユーザーは通常ブロック中です。保護者認証で解除できます。';
+      speakBlockOnce(type,u);
+      return;
+    }
+
+    /* temporary */
+    var tick=function(){
+      var remain=Math.max(0,Math.ceil((Number(u.blockUntil||0)-Date.now())/1000));
+      if(remain<=0){
+        u.blockType=null; u.blockUntil=0;
+        if(u.securityLockReason==='manual') u.securityLockReason='';
+        try{saveRoot();}catch(e){}
+        try{ if(typeof updateAuthUI==='function') updateAuthUI(); }catch(e){}
+        return;
+      }
+      if(timer){
+        timer.style.display='block';
+        var m=Math.floor(remain/60),s=remain%60;
+        timer.textContent=en?('Temporary block: '+m+'m '+s+'s left'):('一時ブロック中：あと'+m+'分'+s+'秒');
+      }
+    };
+    tick();
+    try{ authTimerInterval=setInterval(tick,1000); }catch(e){}
+    speakBlockOnce(type,u);
+  }
+
+  var oldUpdate=window.updateAuthUI;
+  window.updateAuthUI=function(){
+    var u=currentUser(), type=hardBlockType(u);
+    if(type){
+      forceBlockedAuthUI(u,type);
+      return;
+    }
+    return typeof oldUpdate==='function' ? oldUpdate.apply(this,arguments) : undefined;
   };
+
+  /* 認証成功経路も最後に再確認。 */
+  var oldWindowAuthSuccess=window.authSuccess;
+  window.authSuccess=function(u){
+    var type=hardBlockType(u||currentUser());
+    if(type){ forceBlockedAuthUI(u||currentUser(),type); return; }
+    if(typeof oldWindowAuthSuccess==='function'){
+      var result=oldWindowAuthSuccess.apply(this,arguments);
+      try{
+        var __a=byId('auth-overlay');
+        if(__a && !__a.classList.contains('show')) __a.style.display='none';
+      }catch(e){}
+      return result;
+    }
+  };
+
+  var oldWindowCheck=window.checkAuthPassword;
+  window.checkAuthPassword=function(){
+    var u=currentUser(), type=hardBlockType(u);
+    if(type){ forceBlockedAuthUI(u,type); return; }
+    if(typeof oldWindowCheck==='function') return oldWindowCheck.apply(this,arguments);
+  };
+
+  /* 初期表示・ユーザー切替直後・フォーカス復帰時にも即時ガード。 */
+  function enforce(){
+    try{
+      var u=currentUser(), type=hardBlockType(u);
+      if(type) forceBlockedAuthUI(u,type);
+    }catch(e){}
+  }
+  window.addEventListener('load',function(){setTimeout(enforce,0);});
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)setTimeout(enforce,0);});
+  setTimeout(enforce,0);
 })();
 </script>
 
+<script id="ojwga-user-selection-auth-transition-final">
+(function(){
+  'use strict';
+  function current(){ try{return typeof getCurrentUser==='function'?getCurrentUser():null;}catch(e){return null;} }
+  function apply(){
+    var u=current(); if(!u) return;
+    var chooser=document.getElementById('userswitch-overlay');
+    if(chooser && chooser.classList.contains('show')) return;
+    var auth=document.getElementById('auth-overlay'), home=document.getElementById('home-screen');
+    if(!auth || !home) return;
+    try{
+      if(typeof window.ojwgaNormalizeSecurityUser==='function') window.ojwgaNormalizeSecurityUser(u);
+      var blocked = (typeof getUserBlockType==='function' && !!getUserBlockType(u));
+      var locked = (typeof window.ojwgaIsSecurityLocked==='function' && window.ojwgaIsSecurityLocked(u));
+      var method=u.passwordMethod||((u.password&&String(u.password).length>0)?'password':'none');
+      if(blocked || locked || method!=='none'){
+        home.style.display='none';
+        auth.style.removeProperty('display');
+        auth.classList.add('show');
+        if(typeof window.updateAuthUI==='function') window.updateAuthUI();
+      }
+    }catch(e){ console.warn('[OJWGA] final user-selection auth bridge failed',e); }
+  }
+  document.addEventListener('click',function(e){
+    try{
+      var t=e.target;
+      if(t && t.closest && (t.closest('#user-list .user-item') || t.closest('#userswitch-google-btn'))){
+        setTimeout(apply,80);
+        setTimeout(apply,350);
+      }
+    }catch(e){}
+  },true);
+  window.addEventListener('focus',function(){setTimeout(apply,0);});
+})();
+</script>
 </html>
