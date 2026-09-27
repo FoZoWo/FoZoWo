@@ -17947,24 +17947,19 @@ document.getElementById('total-points').addEventListener('click', () => {
 ========================================================= */
 let authTimerInterval = null;
 
-/* 起動処理より先に利用できる認証データ正規化。
-   後段のSecurity v2 IIFEでも同じ役割の関数を公開するが、
-   スプラッシュ終了が先に発火してもReferenceErrorにならないよう
-   グローバル側にも最小実装を用意する。 */
-if (typeof window.normalizeSecurityUser !== 'function') {
-    window.normalizeSecurityUser = function(u) {
-        if (!u || typeof u !== 'object') return u;
-        if (!u.passwordMethod) u.passwordMethod = 'password';
-        if (['none','password','pin','pattern','device'].indexOf(u.passwordMethod) < 0) u.passwordMethod = 'password';
-        if (!Array.isArray(u.passwordPattern)) u.passwordPattern = [];
-        if (typeof u.deviceCredentialId !== 'string') u.deviceCredentialId = '';
-        if (typeof u.wrongCount !== 'number') u.wrongCount = 0;
-        if (typeof u.lockUntil !== 'number') u.lockUntil = 0;
-        if (typeof u.isTotallyLocked !== 'boolean') u.isTotallyLocked = false;
-        return u;
-    };
+/* 起動時にも使う正規化関数。ここでは window への自己参照を作らない。
+   後段にも同名の実装があるが、どちらも同じ非再帰ロジック。 */
+function normalizeSecurityUser(u) {
+    if (!u || typeof u !== 'object') return u;
+    if (!u.passwordMethod) u.passwordMethod = 'password';
+    if (['none','password','pin','pattern','device'].indexOf(u.passwordMethod) < 0) u.passwordMethod = 'password';
+    if (!Array.isArray(u.passwordPattern)) u.passwordPattern = [];
+    if (typeof u.deviceCredentialId !== 'string') u.deviceCredentialId = '';
+    if (typeof u.wrongCount !== 'number') u.wrongCount = 0;
+    if (typeof u.lockUntil !== 'number') u.lockUntil = 0;
+    if (typeof u.isTotallyLocked !== 'boolean') u.isTotallyLocked = false;
+    return u;
 }
-function normalizeSecurityUser(u) { return window.normalizeSecurityUser(u); }
 
 function checkAuthOnLoad() {
     /* ユーザーが1人もいない場合は、起動ゲートより先に初期設定を開く。
