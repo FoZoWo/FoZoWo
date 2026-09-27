@@ -59,7 +59,9 @@
         const code = String(error && error.code || "");
         let message = "Googleログインに失敗しました。";
         if (code === "auth/unauthorized-domain") {
-          message += "\nこのHTMLを file:// で直接開いている場合は、Firebase HostingやlocalhostなどHTTP(S)で開いてください。";
+          var host = location.hostname || "現在のドメイン";
+          message += "\n現在のドメイン「" + host + "」がFirebase Authenticationの承認済みドメインに登録されていません。";
+          message += "\nFirebase Console → Authentication → 設定 → 承認済みドメイン に追加してください。";
         } else if (code === "auth/popup-closed-by-user") {
           message = "Googleログインをキャンセルしました。";
         } else if (error && error.message) {
@@ -5946,7 +5948,7 @@ body.startup-user-gate #userswitch-overlay #userswitch-startup-exit-btn { displa
 </div>
 <script>
 /* ===== 起動アニメーション制御（約4秒・音声ナレーション付き） ===== */
-/* 起動時は全画面化を試行し、ブラウザがユーザー操作を要求した場合は最初の操作で再試行。 */
+/* requestFullscreen はユーザー操作中にのみ呼び出す。ページ起動時の自動実行は行わない。 */
 (function(){
     function enterOijiiFullscreen(){
         try {
@@ -5959,15 +5961,13 @@ body.startup-user-gate #userswitch-overlay #userswitch-startup-exit-btn { displa
         } catch(e) { return Promise.resolve(false); }
     }
     window.oijiiEnterFullscreen=enterOijiiFullscreen;
-    setTimeout(function(){ enterOijiiFullscreen(); },30);
     function firstGesture(){
         enterOijiiFullscreen();
         window.removeEventListener('pointerdown',firstGesture,true);
-        window.removeEventListener('keydown',firstGesture,true);
         window.removeEventListener('touchstart',firstGesture,true);
     }
     window.addEventListener('pointerdown',firstGesture,true);
-    window.addEventListener('keydown',firstGesture,true);
+    window.addEventListener('touchstart',firstGesture,true);
     window.addEventListener('touchstart',firstGesture,true);
 })();
 /* 起動アニメ終了を他スクリプトへ知らせる仕組み（既定は「未完了」） */
