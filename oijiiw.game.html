@@ -5799,6 +5799,41 @@ body.startup-user-gate #userswitch-overlay #userswitch-startup-exit-btn { displa
 }
 </style>
 
+
+<style id="ojwga-warning-layer-fix">
+/* 警告・確認画面は、すべての通常UIより最前面に表示する */
+#reset-info-overlay,
+#reset-overlay,
+#block-warn-overlay,
+#block-wizard-overlay,
+#ojwga-delete-user-info-overlay,
+#ojwga-delete-user-spinner-overlay {
+  z-index: 2147483647 !important;
+}
+#reset-overlay,
+#block-warn-overlay,
+#block-wizard-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+}
+#reset-overlay.show,
+#block-warn-overlay.show,
+#block-wizard-overlay.show,
+#ojwga-delete-user-info-overlay.show,
+#ojwga-delete-user-spinner-overlay.show,
+#reset-info-overlay.show {
+  display: flex !important;
+}
+/* 全画面警告の内容も中央に固定し、背後のUIに隠れないようにする */
+#reset-overlay > #reset-warning {
+  position: relative;
+  z-index: 1;
+}
+#block-warn-overlay > #block-warn-warning {
+  position: relative;
+  z-index: 1;
+}
+</style>
 </head>
 <body>
 
@@ -7597,7 +7632,7 @@ function __notifySplashDone(){
     </div>
 
     <style id="ojwga-delete-user-ui">
-    .ojwga-delete-user-overlay{position:fixed;inset:0;z-index:12050;display:none;align-items:center;justify-content:center;padding:18px;box-sizing:border-box;background:rgba(7,3,14,.9);backdrop-filter:blur(9px);}
+    .ojwga-delete-user-overlay{position:fixed;inset:0;z-index:2147483646;display:none;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;background:#000;backdrop-filter:none;}
     .ojwga-delete-user-overlay.show{display:flex;}
     .ojwga-delete-user-card,.ojwga-delete-spinner-card{width:min(500px,94vw);box-sizing:border-box;border-radius:22px;padding:24px 20px 20px;text-align:center;background:linear-gradient(145deg,rgba(52,23,76,.98),rgba(20,9,38,.99));border:1px solid rgba(255,120,120,.34);box-shadow:0 24px 70px rgba(0,0,0,.55);}
     .ojwga-delete-user-card .du-icon{font-size:54px;line-height:1;margin-bottom:8px;filter:drop-shadow(0 0 16px rgba(255,80,80,.3));}
@@ -15558,6 +15593,10 @@ const RESET_MESSAGES = {
         { title: '本当に？', text: 'まだ続けるかい…フォッフォッフォ。\n<span style="color:#ff8888;font-weight:bold;">このユーザーはもう永遠に戻せん</span>ぞ。\n積み上げたポイントも記録も、ぜんぶ闇に消えるんじゃ。後悔せんかのぅ？', speak: 'まだ続けるかい。このユーザーはもう戻せんぞ。後悔せんかのぅ。', html: true },
         { title: '🚨 最終確認', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.1em;">🚨 これが最後の確認じゃ！</span>\n「消去する」を押した瞬間、このユーザーは<span style="color:#ff8888;font-weight:bold;">この世から消え去る</span>ぞい！\n<span style="color:#ff4444;font-weight:bold;">もう戻せん、絶対にじゃ！</span>', speak: 'これが最後の確認じゃ。消去するを押したらこのユーザーはこの世から消え去るぞ。もう戻せん絶対にじゃ。', html: true }
     ],
+    deleteUser: [
+        { title: '⚠️ ユーザー消去・1回目の警告', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.08em;">⚠️ 危険じゃぞ！</span>\nこのユーザーの名前・パスワード・ポイント・記録・チャレンジ履歴・購入情報などが、<span style="color:#ff8888;font-weight:bold;">すべて消える</span>ぞい。\n<span style="color:#ff4444;font-weight:bold;">一度消したら元には戻せん。</span> 本当に続けるかい？', speak: '一回目の警告じゃ。このユーザーのデータはすべて消えて戻せんぞ。本当に続けるかい。', html: true },
+        { title: '🚨 ユーザー消去・最終警告', text: '<span style="color:#ff2222;font-weight:bold;font-size:1.2em;">🚨🚨 これが最後の確認じゃ！！ 🚨🚨</span>\n「消去する」を押すと、このユーザーは<span style="color:#ff8888;font-weight:bold;">完全に消去</span>されるぞい。\n<span style="color:#ff4444;font-weight:bold;">この操作は取り消せん。</span> 本当に消去するのかい？', speak: 'これが最後の警告じゃ。消去するを押すと、このユーザーは完全に消えて戻せんぞ。本当に消去するのかい。', html: true }
+    ],
     allusers: [
         { title: '⚠️ 全ユーザー削除', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.1em;">☠️ 大変危険じゃぞ！</span>\n<span style="color:#ff8888;font-weight:bold;">すべてのユーザーを根こそぎ削除</span>するぞい…！\n家族みんなのデータも、お子さんが積み上げてきた記録も、<span style="color:#ff8888;font-weight:bold;">何ひとつ残らず吹き飛ぶ</span>んじゃ。\n（設定だけは残るが、ユーザー情報は<span style="color:#ff4444;font-weight:bold;">全消去・復元不可能</span>じゃ）', speak: '大変危険じゃぞ。すべてのユーザーを根こそぎ削除するぞ。復元できんが本当によいかい。', html: true },
         { title: '本当に？', text: 'まだ続けるのかい…フォッフォッフォ。\n<span style="color:#ff8888;font-weight:bold;">全員分のポイントも、記録も、思い出も、ぜんぶ戻ってこん</span>ぞ！\n誰ひとり助けられんが、まだ進めるかい？', speak: 'まだ続けるかい。全員分のポイントも記録も戻ってこんぞ。まだ進めるかい。', html: true },
@@ -15666,6 +15705,10 @@ const RESET_MESSAGES_EN = {
         { title: '⚠️ Delete user', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.05em;">⚠️ Danger!</span>\nThis will <span style="color:#ff8888;font-weight:bold;">completely erase</span> the current user…!\nName, avatar, password, points, records, challenges, purchases — <span style="color:#ff8888;font-weight:bold;">all gone forever</span>.', speak: 'Danger. This will completely erase the current user. It cannot be undone. Are you sure?', html: true },
         { title: 'Really?', text: 'Still going… Ho ho ho.\n<span style="color:#ff8888;font-weight:bold;">This user can never come back</span>.\nAll points and records vanish into the dark. No regrets?', speak: 'Still going? This user can never come back. No regrets?', html: true },
         { title: '🚨 Final confirmation', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.1em;">🚨 This is the last check!</span>\nThe moment you press Erase, this user <span style="color:#ff8888;font-weight:bold;">vanishes from this world</span>!\n<span style="color:#ff4444;font-weight:bold;">It cannot be undone!</span>', speak: 'This is the last check. Press Erase and this user vanishes forever. It cannot be undone.', html: true }
+    ],
+    deleteUser: [
+        { title: '⚠️ Delete user — First warning', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.08em;">⚠️ Danger!</span>\nThis user’s name, password, points, records, challenges, purchases, and more will be <span style="color:#ff8888;font-weight:bold;">completely erased</span>.\n<span style="color:#ff4444;font-weight:bold;">It cannot be undone.</span> Continue?', speak: 'First warning. All data for this user will be erased and cannot be restored. Continue?', html: true },
+        { title: '🚨 Delete user — Final warning', text: '<span style="color:#ff2222;font-weight:bold;font-size:1.2em;">🚨🚨 Final warning!! 🚨🚨</span>\nPress “Erase” and this user will be <span style="color:#ff8888;font-weight:bold;">completely deleted</span>.\n<span style="color:#ff4444;font-weight:bold;">This cannot be undone.</span> Are you sure?', speak: 'Final warning. Press Erase and this user will be permanently deleted. Are you sure?', html: true }
     ],
     allusers: [
         { title: '⚠️ Delete all users', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.1em;">☠️ Extremely dangerous!</span>\n<span style="color:#ff8888;font-weight:bold;">Every user will be wiped out</span>…!\nFamily data, kids\' records — <span style="color:#ff8888;font-weight:bold;">nothing remains</span>.\n(Settings stay, but user data is <span style="color:#ff4444;font-weight:bold;">gone forever</span>.)', speak: 'Extremely dangerous. Every user will be wiped out. It cannot be restored. Are you sure?', html: true },
@@ -16676,9 +16719,23 @@ document.getElementById('reset-cancel-btn').addEventListener('click', () => {
         witchSpeak((typeof getAppLang==='function'&&getAppLang()==='en')?'Canceled. That is fine.':'やっぱりやめるのかい。それでいいんじゃよ。');
     }
     hideResetOverlay();
+    if (resetScope === 'deleteUser') resetScope = 'all';
 });
 
 document.getElementById('reset-confirm-btn').addEventListener('click', () => {
+    /* ユーザー消去は初期化と同じ全画面警告を2回表示し、2回目で実行する */
+    if (resetScope === 'deleteUser') {
+        const delList = (typeof getAppLang==='function' && getAppLang()==='en' && typeof RESET_MESSAGES_EN!=='undefined')
+            ? (RESET_MESSAGES_EN.deleteUser || RESET_MESSAGES_EN.user)
+            : (RESET_MESSAGES.deleteUser || RESET_MESSAGES.user);
+        resetStep++;
+        if (resetStep < delList.length) {
+            showResetOverlay();
+        } else {
+            ojwgaPerformDeleteUser();
+        }
+        return;
+    }
     /* ウィザード内バックアップ復元モードの場合はワンタイムハンドラを呼ぶ */
     if (window._onboardRestoreMode) {
         window._onboardRestoreMode = false;
@@ -17970,11 +18027,16 @@ function checkAuthOnLoad() {
         } catch (e) {}
         return;
     }
-    if (u.password) {
+    /* 認証方式を基準に判定する。パターン/端末ロック/PINは password が空でも必ず認証画面を出す。
+       「パターン設定済みなのに、そのまま入れる」抜け道を防ぐ。 */
+    normalizeSecurityUser(u);
+    const authMethod = u.passwordMethod || 'password';
+    const needsAuth = authMethod !== 'none';
+    if (needsAuth) {
         document.getElementById('home-screen').style.display = 'none';
         document.getElementById('auth-overlay').classList.add('show');
         updateAuthUI();
-        // 自動フォーカス
+        // テキスト入力方式だけ自動フォーカス。パターン/端末ロックはUI側で処理する。
         setTimeout(() => {
             const inp = document.getElementById('auth-pass-input');
             if (inp && inp.style.display !== 'none') inp.focus();
@@ -18300,7 +18362,10 @@ function switchUser(id) {
     } catch(e) {}
     document.getElementById('userswitch-overlay').classList.remove('show');
     refreshHome();
-    if (u.password) {
+    /* 認証方式を基準に判定する（パターン等は password が空でも認証必須）。 */
+    normalizeSecurityUser(u);
+    var __methodAfterSwitch = u.passwordMethod || 'password';
+    if (__methodAfterSwitch !== 'none') {
         document.getElementById('home-screen').style.display = 'none';
         document.getElementById('auth-overlay').classList.add('show');
         updateAuthUI();
@@ -27858,7 +27923,7 @@ function renderProfilePasswordForm(){var f=byId('ojwga-profile-password-form'),k
 window.ojwgaSavePasswordMethod=function(){var u=getCurrentUser(),k=currentProfileMethod;if(!u)return;normalizeSecurityUser(u);if(k==='password'||k==='pin'){var a=byId('ojwga-prof-p1'),b=byId('ojwga-prof-p2'),v=a?a.value:'',v2=b?b.value:'';if(k==='password'&&v.length<6){safeAlert('6文字以上にするのじゃ。','Use at least 6 characters.');return;}if(k==='pin'&&!/^\d{4,10}$/.test(v)){safeAlert('暗証番号は4〜10桁の数字じゃ。','PIN must be 4–10 digits.');return;}if(v!==v2){safeAlert('2回とも同じにするのじゃ。','The two entries do not match.');return;}u.passwordMethod=k;u.password=v;u.passwordPattern=[];u.deviceCredentialId='';resetSecurityFailures(u);saveRoot();ojwgaProfileBack();safeSpeak('パスワード方式を変えたぞい。','Authentication method updated.');return;}if(k==='pattern'){if(!profilePendingPattern||profilePendingPattern.length<4||profilePendingPattern._confirmed!==true){safeAlert('パターンを2回、同じようにつなぐのじゃ。','Draw the same pattern twice.');return;}u.passwordMethod='pattern';u.password='';u.passwordPattern=profilePendingPattern.slice();u.deviceCredentialId='';resetSecurityFailures(u);saveRoot();ojwgaProfileBack();safeSpeak('パターンを登録したぞい。','Pattern saved.');return;}if(k==='device'){if(!profilePendingPattern._deviceId){safeAlert('端末ロックの登録と確認をしておくれ。','Register and verify the device lock first.');return;}u.passwordMethod='device';u.password='';u.passwordPattern=[];u.deviceCredentialId=profilePendingPattern._deviceId;resetSecurityFailures(u);saveRoot();profilePendingPattern=[];ojwgaProfileBack();safeSpeak('端末ロックを使うぞい。','Device lock is now active.');}};
 window.ojwgaProfileBack=function(){byId('profile-name-view').style.display='none';byId('profile-password-view').style.display='none';byId('profile-main-view').style.display='flex';};
 window.ojwgaShareUser=async function(){var u=getCurrentUser();if(!u)return;var payload={type:'OJWGA_USER_SHARE',version:1,name:u.name||'',avatar:(u.avatar&&String(u.avatar).startsWith('data:image'))?'':(u.avatar||''),theme:u.theme||'purple',data:u.data||{}};var text=JSON.stringify(payload,null,2);var en=langEn();try{if(navigator.share){await navigator.share({title:'OJWGA User',text:text});safeSpeak('ユーザーをシェアしたぞい。','User shared.');return;}if(navigator.clipboard){await navigator.clipboard.writeText(text);await safeAlert('ユーザーデータをコピーしたぞい。','User data copied to the clipboard.');return;}}catch(e){}try{var blob=new Blob([text],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ojwga_user_'+String(u.name||'user').replace(/[^a-zA-Z0-9_-]/g,'_')+'.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);safeSpeak('ユーザーデータを書き出したぞい。','User data exported.');}catch(e){await safeAlert('シェアできんかったぞい。','Could not share the user data.');}};
-window.ojwgaDeleteUserInfoCancel=function(){var o=byId('ojwga-delete-user-info-overlay');if(o){o.classList.remove('show');o.setAttribute('aria-hidden','true');}};
+window.ojwgaDeleteUserInfoCancel=function(){var o=byId('ojwga-delete-user-info-overlay');if(o){o.classList.remove('show');o.setAttribute('aria-hidden','true');} if(resetScope==='deleteUser') resetScope='all';};
 window.ojwgaDeleteUser=function(){
   var u=getCurrentUser();
   if(!u)return;
@@ -27871,18 +27936,20 @@ window.ojwgaDeleteUser=function(){
 };
 window.ojwgaDeleteUserWarning1=async function(){
   var u=getCurrentUser();if(!u)return;
-  var ok=await safeConfirm('⚠️ 1回目の警告じゃ。\n「'+(u.name||'このユーザー')+'」を消すと、ポイント・記録・パスワードなどがすべて失われるぞい。\n本当に続けるかい？','⚠️ First warning. Deleting “'+(u.name||'this user')+'” removes its points, records, password and more. Continue?');
-  if(!ok)return;
-  await ojwgaDeleteUserWarning2();
+  var info=byId('ojwga-delete-user-info-overlay');
+  if(info){info.classList.remove('show');info.setAttribute('aria-hidden','true');}
+  resetScope='deleteUser';
+  resetStep=0;
+  showResetOverlay();
 };
 window.ojwgaDeleteUserWarning2=async function(){
-  var u=getCurrentUser();if(!u)return;
-  var ok=await safeConfirm('🚨 2回目・最終警告じゃ。\n「'+(u.name||'このユーザー')+'」は、このあと永久に消去されるぞい。\nこの操作は取り消せん。本当に「消去する」のかい？','🚨 Second and final warning. “'+(u.name||'this user')+'” will be permanently deleted. This cannot be undone. Continue?');
-  if(!ok)return;
-  ojwgaPerformDeleteUser();
+  /* 互換用：既存の呼び出しがあっても、初期化と同じ全画面警告へ移行する */
+  if(resetScope!=='deleteUser'){resetScope='deleteUser';resetStep=0;}
+  showResetOverlay();
 };
 window.ojwgaPerformDeleteUser=function(){
   var u=getCurrentUser();if(!u)return;
+  try{hideResetOverlay();}catch(e){}
   ojwgaDeleteUserInfoCancel();
   var spin=byId('ojwga-delete-user-spinner-overlay');if(spin){spin.classList.add('show');spin.setAttribute('aria-hidden','false');}
   try{safeSpeak('消去を開始するぞい。くるくる回っておる間、少し待つのじゃ。','Deletion has started. Please wait while it finishes.');}catch(e){}
@@ -28243,11 +28310,9 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
       if(!u) return false;
       if(typeof normalizeSecurityUser==='function') normalizeSecurityUser(u);
       var method = u.passwordMethod || 'password';
-      var needs = false;
-      if(method==='pattern') needs = Array.isArray(u.passwordPattern) && u.passwordPattern.length >= 4;
-      else if(method==='device') needs = typeof u.deviceCredentialId==='string' && u.deviceCredentialId.length>0;
-      else if(method==='pin') needs = typeof u.password==='string' && /^\d{4,10}$/.test(u.password);
-      else needs = typeof u.password==='string' && u.password.length>0;
+      /* 認証方式そのものが有効なら、保存データの形式に関係なく認証を要求する。
+         特に pattern は password が空なので、ここで password の有無を見てはいけない。 */
+      var needs = method !== 'none';
       if(!needs) return false;
       var home=id('home-screen'), auth=id('auth-overlay');
       if(home) home.style.display='none';
@@ -28499,8 +28564,8 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
       var m=u.passwordMethod||'password';
       if(m==='none') return false;
       if(m==='device') return typeof u.deviceCredentialId==='string' && u.deviceCredentialId.length>0;
-      if(m==='pattern') return Array.isArray(u.passwordPattern) && u.passwordPattern.length>=4;
-      if(m==='pin') return typeof u.password==='string' && /^\d{4,10}$/.test(u.password);
+      if(m==='pattern') return true;
+      if(m==='pin') return true;
       return typeof u.password==='string' && u.password.length>0;
     }catch(e){ return false; }
   }
