@@ -6775,7 +6775,14 @@ function __notifySplashDone(){
                 <div class="auth-msg" style="color:#cdb8e8;"><span data-i18n-html="onb.welcomeMsg">OJWGAへようこそ！
 ここには楽しいゲームがたくさん詰まっとるぞい。
 まずはかんたんな初期設定をするぞい。</span></div>
-                <button class="challenge-btn" onclick="onboardGoto('restore-ask')" data-i18n="onb.start">はじめる</button>
+                
+                <div class="ojwga-onb-online-card" id="ojwga-onb-google-card">
+                    <div class="title">🌐 オンラインユーザーとして始める</div>
+                    <div class="desc">Googleアカウントでログインすると、ポイント・実績などをオンラインで引き継げます。初期設定後もアカウントから管理できます。</div>
+                    <button type="button" class="ojwga-onb-google-btn" id="ojwga-onb-google-btn" onclick="ojwgaV17OnboardingGoogleLogin()"><span class="g">G</span> Googleでログインして始める</button>
+                    <div class="ojwga-onb-google-state" id="ojwga-onb-google-state"></div>
+                </div>
+<button class="challenge-btn" onclick="onboardGoto('restore-ask')" data-i18n="onb.start">はじめる</button>
             </div>
 
             <!-- STEP: 名前 -->
@@ -7821,13 +7828,52 @@ function __notifySplashDone(){
                 <div class="ojwga-profile-kicker">✦ USER SETTINGS ✦</div>
                 <h2 id="ojwga-profile-title">👤 ユーザー設定</h2>
                 <div class="ojwga-profile-current" id="ojwga-profile-current"></div><div id="ojwga-current-user-role-badge" style="display:none;align-self:center;margin:0 0 10px;padding:5px 10px;border-radius:999px;background:rgba(142,68,173,.18);border:1px solid rgba(199,125,255,.35);color:#ecdfff;font-size:.74rem;font-weight:800;"></div>
-                <div class="ojwga-profile-menu">
+                
+                <div class="ojwga-profile-mode-tabs" id="ojwga-profile-mode-tabs">
+                    <button type="button" class="ojwga-profile-mode-tab" id="ojwga-profile-mode-offline" onclick="ojwgaSetProfileMode('offline')">📱 オフライン設定</button>
+                    <button type="button" class="ojwga-profile-mode-tab" id="ojwga-profile-mode-online" onclick="ojwgaSetProfileMode('online')">🌐 オンライン設定</button>
+                </div>
+                <div class="ojwga-profile-mode-note" id="ojwga-profile-mode-note">端末にだけ保存される設定と、Googleアカウントに保存される設定を分けて管理します。</div>
+                <div class="ojwga-offline-panel" id="ojwga-offline-panel">
+                    <div style="margin:0 0 8px 2px;"><span class="ojwga-offline-chip">📱 この端末だけ</span></div>
+<div class="ojwga-profile-menu">
                     <button class="ojwga-profile-item" type="button" onclick="ojwgaOpenNameEditor()"><span class="pi-icon">👤</span><span class="pi-text"><b id="ojwga-name-item-title">名前</b><small id="ojwga-name-item-sub">名前を変更する</small></span><span class="pi-arrow">›</span></button>
                     <button class="ojwga-profile-item" type="button" onclick="ojwgaOpenPasswordEditor()"><span class="pi-icon">🔑</span><span class="pi-text"><b id="ojwga-pass-item-title">パスワード</b><small id="ojwga-pass-item-sub">認証方式を変更する</small></span><span class="pi-arrow">›</span></button>
                     <button class="ojwga-profile-item" type="button" onclick="ojwgaShareUser()"><span class="pi-icon">📤</span><span class="pi-text"><b id="ojwga-share-item-title">ユーザーをシェア</b><small id="ojwga-share-item-sub">このユーザーのデータを共有する</small></span><span class="pi-arrow">›</span></button>
                     <button class="ojwga-profile-item" type="button" onclick="ojwgaOpenRoleSettings()"><span class="pi-icon">👑</span><span class="pi-text"><b id="ojwga-role-item-title">ユーザー権限</b><small id="ojwga-role-item-sub">管理ユーザー／通常ユーザーを設定・申請</small></span><span class="pi-arrow">›</span></button>
                     <button class="ojwga-profile-item danger" id="ojwga-delete-user-item" type="button" onclick="ojwgaDeleteUser()"><span class="pi-icon">🗑️</span><span class="pi-text"><b id="ojwga-delete-item-title">ユーザーの消去</b><small id="ojwga-delete-item-sub">このユーザーを消去する</small></span><span class="pi-arrow">›</span></button>
                 </div>
+                </div>
+                <div class="ojwga-online-panel" id="ojwga-online-panel">
+                    <div style="margin:0 0 8px 2px;"><span class="ojwga-cloud-chip">☁️ Google / Firestore</span></div>
+                    <div class="ojwga-account-card">
+                        <div class="ojwga-account-top">
+                            <div class="ojwga-account-avatar" id="ojwga-online-avatar-preview">🌐</div>
+                            <div class="ojwga-account-meta">
+                                <div class="ojwga-account-name" id="ojwga-online-account-name">オンラインユーザー</div>
+                                <div class="ojwga-account-email" id="ojwga-online-account-email"></div>
+                                <span class="ojwga-account-badge" id="ojwga-online-account-badge">未接続</span>
+                            </div>
+                        </div>
+                        <div class="ojwga-account-status" id="ojwga-online-account-status">Googleアカウントの状態を確認しています…</div>
+                        <div class="ojwga-avatar-change-box">
+                            <div class="txt"><b>プロフィール画像</b><small>このOJWGA専用画像を設定します。Google側の画像は変更しません。</small></div>
+                            <label class="ojwga-v17-btn primary" style="max-width:130px;text-align:center;cursor:pointer;">
+                                画像を変更
+                                <input id="ojwga-online-avatar-input" type="file" accept="image/*" style="display:none;">
+                            </label>
+                        </div>
+                        <div class="ojwga-online-actions">
+                            <button type="button" class="ojwga-v17-btn primary" onclick="ojwgaOpenNameEditor()">✏️ オンライン名</button>
+                            <button type="button" class="ojwga-v17-btn sync" id="ojwga-online-sync-btn">☁️ 今すぐ同期</button>
+                            <button type="button" class="ojwga-v17-btn" id="ojwga-online-login-btn" onclick="ojwgaV17LoginGoogle()">🔐 Googleログイン</button>
+                            <button type="button" class="ojwga-v17-btn" id="ojwga-online-logout-btn" onclick="ojwgaV17LogoutGoogle()">🚪 ログアウト</button>
+                            <button type="button" class="ojwga-v17-btn danger full" id="ojwga-online-delete-btn" onclick="ojwgaV17DeleteAccount()">☠️ Googleアカウント＆OJWGAデータを完全消去</button>
+                        </div>
+                        <div class="ojwga-v17-danger-note">完全消去すると、Firebase AuthenticationのGoogleログインアカウントとFirestore上のOJWGAクラウドデータを削除します。取り消せません。</div>
+                    </div>
+                </div>
+
                 <button class="reset-btn-cancel ojwga-profile-close" type="button" onclick="closeProfileSettings()" id="ojwga-profile-close">閉じる</button>
             </div>
 
@@ -29390,4 +29436,492 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
 })();
 </script>
 
+
+<!-- ===== OJWGA v17 Firebase account controls ===== -->
+<script type="module" id="ojwga-firebase-account-controls">
+  import {
+    deleteUser,
+    reauthenticateWithPopup
+  } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+  import { deleteDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+  function expose(){
+    if(!window.OJWGA_FIREBASE) return;
+    window.OJWGA_FIREBASE.deleteUser = deleteUser;
+    window.OJWGA_FIREBASE.reauthenticateWithPopup = reauthenticateWithPopup;
+    window.OJWGA_FIREBASE.deleteDoc = deleteDoc;
+    window.__ojwgaFirebaseAccountControlsReady = true;
+    if(typeof window.ojwgaAccountControlsReady === 'function'){
+      try{ window.ojwgaAccountControlsReady(); }catch(e){}
+    }
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', expose, {once:true});
+    setTimeout(expose, 0);
+  }else{
+    setTimeout(expose, 0);
+  }
+  // OJWGA_FIREBASE is already created in the head module; retry briefly for slow modules.
+  var tries=0;
+  var timer=setInterval(function(){
+    tries++;
+    expose();
+    if(window.__ojwgaFirebaseAccountControlsReady || tries>80) clearInterval(timer);
+  }, 150);
+</script>
+
+<style id="ojwga-v17-online-offline-css">
+/* ===== v17 ユーザー設定：オンライン / オフライン完全分離 ===== */
+.ojwga-profile-mode-tabs{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 12px;
+  padding:6px;border-radius:16px;background:rgba(0,0,0,.22);
+  border:1px solid rgba(199,125,255,.25);
+}
+.ojwga-profile-mode-tab{
+  min-height:48px;border-radius:12px;border:1px solid rgba(199,125,255,.25);
+  background:rgba(255,255,255,.05);color:#e8ddf5;font-weight:900;cursor:pointer;
+  transition:.15s;display:flex;align-items:center;justify-content:center;gap:7px;
+}
+.ojwga-profile-mode-tab.active{
+  background:linear-gradient(135deg,rgba(155,89,182,.72),rgba(92,44,130,.75));
+  border-color:#c77dff;box-shadow:0 0 18px rgba(155,89,182,.28)
+}
+.ojwga-profile-mode-note{font-size:.72rem;color:#bba8cf;text-align:center;margin:-3px 4px 12px;line-height:1.45}
+.ojwga-online-panel,.ojwga-offline-panel{display:none}
+.ojwga-online-panel.active,.ojwga-offline-panel.active{display:block}
+.ojwga-account-card{
+  background:linear-gradient(145deg,rgba(76,43,110,.42),rgba(20,10,40,.68));
+  border:1px solid rgba(199,125,255,.33);border-radius:16px;padding:14px;margin-bottom:10px;
+}
+.ojwga-account-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.ojwga-account-avatar{
+ width:64px;height:64px;border-radius:50%;overflow:hidden;flex:0 0 64px;
+ background:rgba(255,255,255,.08);border:2px solid #f1c40f;display:flex;align-items:center;justify-content:center;font-size:28px
+}
+.ojwga-account-avatar img{width:100%;height:100%;object-fit:cover}
+.ojwga-account-meta{min-width:0;flex:1}
+.ojwga-account-name{font-size:1rem;font-weight:900;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ojwga-account-email{font-size:.72rem;color:#cab7dd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.ojwga-account-badge{display:inline-flex;margin-top:6px;padding:3px 8px;border-radius:999px;background:rgba(66,190,137,.14);border:1px solid rgba(66,190,137,.3);color:#9ff0c8;font-size:.65rem;font-weight:900}
+.ojwga-account-status{font-size:.75rem;line-height:1.55;color:#d8cae6;white-space:pre-line;padding-top:4px}
+.ojwga-online-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.ojwga-v17-btn{width:100%;padding:11px 10px;border-radius:12px;border:1px solid rgba(199,125,255,.35);background:rgba(255,255,255,.06);color:#fff;font-weight:900;cursor:pointer}
+.ojwga-v17-btn.primary{background:linear-gradient(135deg,#9b59b6,#6c3483);border-color:#c77dff}
+.ojwga-v17-btn.sync{background:linear-gradient(135deg,#3498db,#2874a6);border-color:#76bff2}
+.ojwga-v17-btn.danger{background:linear-gradient(135deg,#9b2c2c,#641919);border-color:#ff8787}
+.ojwga-v17-btn:disabled{opacity:.55;cursor:not-allowed}
+.ojwga-v17-btn.full{grid-column:1/-1}
+.ojwga-avatar-change-box{display:flex;align-items:center;gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08)}
+.ojwga-avatar-change-box .txt{flex:1;min-width:0}.ojwga-avatar-change-box b{display:block;font-size:.82rem}.ojwga-avatar-change-box small{display:block;color:#b9a8cc;line-height:1.45;margin-top:2px}
+.ojwga-v17-danger-note{font-size:.69rem;color:#f2a7a7;line-height:1.5;margin-top:7px}
+.ojwga-separator-label{font-size:.72rem;font-weight:900;color:#bba5d1;letter-spacing:.05em;margin:12px 2px 6px}
+.ojwga-cloud-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;background:rgba(52,152,219,.12);border:1px solid rgba(52,152,219,.26);color:#9ed6ff;font-size:.64rem;font-weight:900}
+.ojwga-offline-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;background:rgba(155,89,182,.12);border:1px solid rgba(199,125,255,.25);color:#d8bdff;font-size:.64rem;font-weight:900}
+@media(max-width:480px){.ojwga-online-actions{grid-template-columns:1fr}.ojwga-v17-btn.full{grid-column:auto}.ojwga-account-avatar{width:56px;height:56px;flex-basis:56px}.ojwga-account-top{gap:10px}}
+
+/* 初期設定 Google ログインカード */
+.ojwga-onb-online-card{margin-top:12px;padding:12px;border-radius:14px;border:1px solid rgba(199,125,255,.28);background:linear-gradient(145deg,rgba(73,38,108,.34),rgba(18,9,35,.48))}
+.ojwga-onb-online-card .title{font-size:.78rem;font-weight:900;color:#e7d9f7;margin-bottom:4px}
+.ojwga-onb-online-card .desc{font-size:.69rem;color:#bfaed1;line-height:1.5;margin-bottom:8px}
+.ojwga-onb-google-btn{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:#fff;color:#222;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.ojwga-onb-google-btn .g{font-weight:900;font-size:1.1rem}
+.ojwga-onb-google-state{font-size:.69rem;color:#9ff0c8;line-height:1.45;text-align:center;margin-top:8px;display:none}
+</style>
+
+<script id="ojwga-v17-online-offline-js">
+(function(){
+  'use strict';
+  var state = { mode:'offline', avatarBusy:false, deleteBusy:false, onboardingGoogle:false };
+
+  function byId(id){ return document.getElementById(id); }
+  function isGoogleUser(u){ return !!(u && u.authType==='google' && u.firebaseUid); }
+  function getU(){ try{return typeof getCurrentUser==='function'?getCurrentUser():null}catch(e){return null} }
+  function langEn(){ try{return typeof getAppLang==='function'&&getAppLang()==='en'}catch(e){return false} }
+  function fbUser(){ return window.__ojwgaFirebaseAuthUser || null; }
+  function fbReady(){ return !!(window.OJWGA_FIREBASE && window.OJWGA_FIREBASE.auth && window.OJWGA_FIREBASE.db); }
+  function dbReady(){ return !!(fbReady() && window.OJWGA_FIREBASE.deleteDoc); }
+  function safeAlert(j,e){ try{ if(typeof oijAlert==='function') return oijAlert(langEn()?e:j); }catch(_){} try{alert(langEn()?e:j)}catch(_){} }
+  function safeSpeak(j,e){ try{ if(typeof witchSpeak==='function') witchSpeak(langEn()?e:j); }catch(_){} }
+  function markDirty(u){
+    try{
+      if(typeof window.ojwgaMarkGoogleDirty==='function') window.ojwgaMarkGoogleDirty(u);
+      else if(u && isGoogleUser(u)){ u._cloudDirtyAt=Date.now(); if(typeof window.ojwgaScheduleGoogleCloudSync==='function') window.ojwgaScheduleGoogleCloudSync(u); }
+    }catch(e){}
+  }
+  function currentOnlineSettings(u){
+    if(!u) return {};
+    if(!u.onlineSettings || typeof u.onlineSettings!=='object') u.onlineSettings={};
+    return u.onlineSettings;
+  }
+  function renderOnlineAvatar(u,fu){
+    var p=byId('ojwga-online-avatar-preview'); if(!p) return;
+    var src=(u&&u.avatar&&String(u.avatar).indexOf('data:image/')===0)?u.avatar:(fu&&fu.photoURL)||'';
+    if(src){ p.innerHTML='<img alt="" src="'+String(src).replace(/"/g,'&quot;')+'">'; }
+    else p.textContent=(u&&u.avatar&&!String(u.avatar).startsWith('data:'))?u.avatar:'🌐';
+  }
+  function renderProfileMode(){
+    var off=byId('ojwga-profile-mode-offline'), on=byId('ojwga-profile-mode-online');
+    var offPanel=byId('ojwga-offline-panel'), onPanel=byId('ojwga-online-panel'), note=byId('ojwga-profile-mode-note');
+    if(!off||!on||!offPanel||!onPanel)return;
+    var online=state.mode==='online';
+    off.classList.toggle('active',!online); on.classList.toggle('active',online);
+    offPanel.classList.toggle('active',!online); onPanel.classList.toggle('active',online);
+    if(note) note.textContent=online
+      ? (langEn()?'Google account data: online identity, custom avatar, cloud sync, sign-out, and account deletion.':'Googleアカウントに保存する設定：オンライン名・専用プロフィール画像・クラウド同期・ログアウト・アカウント完全消去。')
+      : (langEn()?'This device only: local login method, device settings, role, sharing, and local-user deletion.':'この端末だけに保存する設定：ローカル認証方式・端末設定・権限・共有・端末ユーザーの消去。');
+  }
+  window.ojwgaSetProfileMode=function(mode){
+    state.mode=(mode==='online')?'online':'offline';
+    renderProfileMode(); renderOnlineAccountPanel();
+  };
+  function renderOnlineAccountPanel(){
+    var u=getU(), fu=fbUser();
+    var name=byId('ojwga-online-account-name'), email=byId('ojwga-online-account-email'), badge=byId('ojwga-online-account-badge'), status=byId('ojwga-online-account-status');
+    var login=byId('ojwga-online-login-btn'), logout=byId('ojwga-online-logout-btn'), del=byId('ojwga-online-delete-btn'), sync=byId('ojwga-online-sync-btn');
+    if(!name||!email||!badge||!status)return;
+    if(isGoogleUser(u) && fu && fu.uid===u.firebaseUid){
+      name.textContent=u.name||fu.displayName||'Googleユーザー';
+      email.textContent=u.email||fu.email||'';
+      badge.textContent=(u.role==='manager'||u.role==='admin')?'👑 管理ユーザー':'✅ 接続中';
+      status.textContent='Googleアカウント接続済み\nUID: '+fu.uid+'\n'+(u._cloudDirtyAt?'🟠 未同期の変更があります':'🟢 クラウドと同期済み');
+      if(login)login.style.display='none'; if(logout)logout.style.display='block'; if(del)del.style.display='block'; if(sync)sync.style.display='block';
+    }else{
+      name.textContent=u?u.name:'オンラインユーザー未選択';
+      email.textContent=''; badge.textContent='未接続';
+      status.textContent='Googleアカウントにログインすると、このユーザーのオンライン設定を管理できます。';
+      if(login)login.style.display='block'; if(logout)logout.style.display='none'; if(del)del.style.display='none'; if(sync)sync.style.display='none';
+    }
+    renderOnlineAvatar(u,fu);
+  }
+  function ensureProfileAugment(){
+    var rootEl=byId('profile-main-view'); if(!rootEl) return;
+    var u=getU();
+    // Google user opens online section by default; local user opens offline section.
+    if(isGoogleUser(u)) state.mode='online';
+    renderProfileMode(); renderOnlineAccountPanel();
+  }
+
+  // Ensure profile opener keeps new state in sync.
+  var origOpenProfile=window.ojwgaOpenProfileSettings;
+  if(typeof origOpenProfile==='function' && !origOpenProfile._v17){
+    var wrappedOpen=function(){ var r=origOpenProfile.apply(this,arguments); setTimeout(ensureProfileAugment,0); return r; };
+    wrappedOpen._v17=true; window.ojwgaOpenProfileSettings=wrappedOpen;
+  }
+
+  // Avatar compression: small square JPEG data URL suitable for Firestore document field.
+  async function fileToAvatarData(file){
+    if(!file || !/^image\//i.test(file.type)) throw new Error('画像ファイルを選んでください。');
+    if(file.size>8*1024*1024) throw new Error('画像が大きすぎます。8MB以下にしてください。');
+    var bmp=await createImageBitmap(file);
+    var max=256, scale=Math.min(1,max/Math.max(bmp.width,bmp.height));
+    var w=Math.max(1,Math.round(bmp.width*scale)), h=Math.max(1,Math.round(bmp.height*scale));
+    var c=document.createElement('canvas'); c.width=w;c.height=h;
+    var ctx=c.getContext('2d'); ctx.drawImage(bmp,0,0,w,h);
+    bmp.close();
+    var blob=await new Promise(function(resolve){c.toBlob(resolve,'image/jpeg',0.78)});
+    if(!blob) throw new Error('画像を変換できませんでした。');
+    if(blob.size>180000){
+      blob=await new Promise(function(resolve){c.toBlob(resolve,'image/jpeg',0.6)});
+    }
+    var dataUrl=await new Promise(function(resolve,reject){var r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(new Error('画像の読み込みに失敗しました。'));r.readAsDataURL(blob);});
+    if(String(dataUrl).length>250000) throw new Error('画像サイズを小さくしてからもう一度試してください。');
+    return dataUrl;
+  }
+  async function saveCloudOnlineFields(u, fields){
+    if(!u || !isGoogleUser(u) || !fbReady()) return false;
+    var fu=fbUser(); if(!fu || fu.uid!==u.firebaseUid) return false;
+    try{
+      currentOnlineSettings(u);
+      Object.assign(u.onlineSettings, fields||{});
+      if(fields && fields.displayName) u.name=String(fields.displayName).slice(0,32);
+      if(fields && fields.avatar!==undefined) u.avatar=fields.avatar;
+      if(typeof saveRoot==='function') saveRoot();
+      markDirty(u);
+      if(typeof window.ojwgaPushGoogleUser==='function') await window.ojwgaPushGoogleUser(u,Date.now());
+      // Explicit separate onlineSettings document field; setDoc merge avoids changing offline settings.
+      var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',u.firebaseUid);
+      await window.OJWGA_FIREBASE.setDoc(ref,{onlineSettings:u.onlineSettings,schemaVersion:3},{merge:true});
+      return true;
+    }catch(e){ console.warn('[OJWGA v17] online fields save failed',e); return false; }
+  }
+
+  async function refreshOnlineSettingsFromCloud(u){
+    if(!u || !isGoogleUser(u) || !fbReady())return;
+    var fu=fbUser(); if(!fu || fu.uid!==u.firebaseUid)return;
+    try{
+      var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',u.firebaseUid);
+      var snap=await window.OJWGA_FIREBASE.getDoc(ref);
+      if(!snap.exists())return;
+      var d=snap.data()||{};
+      if(d.onlineSettings && typeof d.onlineSettings==='object') u.onlineSettings=Object.assign({},u.onlineSettings||{},d.onlineSettings);
+      if(u.onlineSettings && u.onlineSettings.displayName) u.name=String(u.onlineSettings.displayName).slice(0,32);
+      if(u.onlineSettings && u.onlineSettings.avatar) u.avatar=u.onlineSettings.avatar;
+      if(typeof saveRoot==='function')saveRoot();
+    }catch(e){console.warn('[OJWGA v17] online settings refresh failed',e)}
+  }
+
+  // Avatar change.
+  function bindAvatarInput(){
+    var inp=byId('ojwga-online-avatar-input'); if(!inp||inp._v17)return; inp._v17=true;
+    inp.addEventListener('change',async function(e){
+      var file=e && e.target ? e.target.files[0] : null;
+      var u=getU(), fu=fbUser();
+      inp.value='';
+      if(!isGoogleUser(u)||!fu||fu.uid!==u.firebaseUid){safeAlert('先にGoogleアカウントでログインするのじゃ。','Sign in with Google first.');return;}
+      if(state.avatarBusy)return;
+      state.avatarBusy=true;
+      try{
+        var data=await fileToAvatarData(file);
+        await saveCloudOnlineFields(u,{avatar:data});
+        if(typeof refreshHome==='function')refreshHome();
+        renderOnlineAccountPanel();
+        safeAlert('オンライン用プロフィール画像を変更したぞい！','Online profile image updated!');
+      }catch(e){safeAlert(e.message||'画像変更に失敗しました。',e.message||'Could not update the image.');}
+      finally{state.avatarBusy=false;}
+    });
+  }
+
+  // Login/logout actions exposed to UI.
+  window.ojwgaV17LoginGoogle=async function(){
+    var u=getU();
+    try{
+      var fu=await window.ojwgaLoginWithGoogle();
+      if(!fu)return;
+      var v=await window.ojwgaSyncGoogleAccount(fu);
+      if(v){
+        if(root.users && root.users.length===0) v.role='manager';
+        root.currentUserId=v.id;
+        var os=currentOnlineSettings(v);
+        if(os.displayName) v.name=os.displayName;
+        try{saveRoot();if(typeof applyTheme==='function')applyTheme();}catch(e){}
+        await refreshOnlineSettingsFromCloud(v);
+        renderOnlineAccountPanel();
+        if(typeof refreshHome==='function')refreshHome();
+      }
+    }catch(e){console.warn('[OJWGA v17] login failed',e);safeAlert('Googleログインに失敗しました。','Google sign-in failed.');}
+  };
+  window.ojwgaV17LogoutGoogle=async function(){
+    if(state.deleteBusy)return;
+    var ok=await window.ojwgaLogoutGoogle();
+    if(!ok){safeAlert('ログアウトに失敗しました。','Sign-out failed.');return;}
+    var u=getU();
+    try{
+      // Keep the local shadow record, but prevent it from being auto-selected.
+      if(u && isGoogleUser(u)){
+        var alt=(root.users||[]).find(function(x){return x && !isGoogleUser(x) && x.id!==u.id;});
+        root.currentUserId=alt?alt.id:null;
+        saveRoot();
+      }
+    }catch(e){}
+    renderOnlineAccountPanel();
+    renderProfileMode();
+    try{closeProfileSettings();}catch(e){}
+    try{openUserSwitcher(true);}catch(e){}
+  };
+
+  // Full cloud+Auth account deletion. Firestore main user doc is deleted before Auth delete.
+  async function deleteOnlineAccount(){
+    var u=getU(), fu=fbUser();
+    if(state.deleteBusy)return;
+    if(!isGoogleUser(u)||!fu||fu.uid!==u.firebaseUid){safeAlert('削除するGoogleアカウントでログインしていません。','The Google account to delete is not signed in.');return;}
+    if(!dbReady()){safeAlert('アカウント削除機能の準備中です。少し待ってからもう一度試してください。','Account deletion controls are still loading. Please try again.');return;}
+    state.deleteBusy=true;
+    try{
+      var ok1=confirm('GoogleアカウントとOJWGAオンラインデータを完全に消去します。\nこの操作は元に戻せません。\n\n本当に消去しますか？');
+      if(!ok1)return;
+      var ok2=confirm('最終確認です。\nGoogleログインアカウントとFirestoreのOJWGAデータを削除します。\n\n消去を実行しますか？');
+      if(!ok2)return;
+
+      try{
+        var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',fu.uid);
+        await window.OJWGA_FIREBASE.deleteDoc(ref);
+      }catch(e){
+        console.warn('[OJWGA v17] Firestore profile delete failed',e);
+        // Continue to Auth delete only if the document is already gone; otherwise don't claim full deletion.
+        throw new Error('Firestore側のオンラインデータを削除できませんでした。アカウント削除を中止しました。');
+      }
+
+      var authUser=window.OJWGA_FIREBASE.auth.currentUser;
+      if(!authUser || authUser.uid!==fu.uid) throw new Error('Google認証状態が確認できませんでした。');
+      try{
+        await window.OJWGA_FIREBASE.deleteUser(authUser);
+      }catch(e){
+        if(e && (e.code==='auth/requires-recent-login' || e.code==='auth/user-token-expired')){
+          // Re-authenticate with Google; ensure the same account is used.
+          var provider=window.OJWGA_FIREBASE.googleProvider;
+          var re=await window.OJWGA_FIREBASE.reauthenticateWithPopup(authUser,provider);
+          if(!re || !re.user || re.user.uid!==fu.uid) throw new Error('別のGoogleアカウントが選ばれました。削除を中止しました。');
+          await window.OJWGA_FIREBASE.deleteUser(authUser);
+        }else throw e;
+      }
+
+      // Remove local shadow account too.
+      var idx=(root.users||[]).findIndex(function(x){return x && x.id===u.id;});
+      if(idx>=0)root.users.splice(idx,1);
+      root.currentUserId=(root.users[0]&&root.users[0].id)||null;
+      if(!root.users.length)root.setupCompleted=false;
+      saveRoot();
+      safeAlert('GoogleアカウントとOJWGAオンラインデータを完全に消去しました。','The Google account and OJWGA online data were permanently deleted.');
+      setTimeout(function(){location.reload();},300);
+    }catch(e){
+      console.error('[OJWGA v17] full online account deletion failed',e);
+      safeAlert(e.message||'アカウント削除に失敗しました。','Account deletion failed.');
+    }finally{state.deleteBusy=false;renderOnlineAccountPanel();}
+  }
+  window.ojwgaV17DeleteAccount=deleteOnlineAccount;
+
+  // Initial setup Google flow: creates/selects Google user, skips local password setup, then continues the wizard.
+  window.ojwgaV17OnboardingGoogleLogin=async function(){
+    if(state.onboardingGoogle)return;
+    state.onboardingGoogle=true;
+    var btn=byId('ojwga-onb-google-btn'), stateEl=byId('ojwga-onb-google-state');
+    if(btn)btn.disabled=true;
+    try{
+      var wasEmpty=!(root.users&&root.users.length);
+      var fu=await window.ojwgaLoginWithGoogle();
+      if(!fu)return;
+      var u=await window.ojwgaSyncGoogleAccount(fu);
+      if(!u)throw new Error('Googleユーザーを作成できませんでした。');
+      if(wasEmpty)u.role='manager';
+      currentOnlineSettings(u);
+      u.onlineSettings.displayName=u.name||fu.displayName||'Googleユーザー';
+      root.currentUserId=u.id;
+      try{saveRoot();}catch(e){}
+      window.__ojwgaOnboardGoogleUserId=u.id;
+      window.__ojwgaOnboardGoogleUser=u;
+      onboardData.authType='google';
+      onboardData.firebaseUid=fu.uid;
+      onboardData.name=(fu.displayName||u.name||'Googleユーザー').slice(0,32);
+      onboardData.avatar=u.avatar || fu.photoURL || '🌐';
+      onboardData.password=''; onboardData.hint=''; onboardData.passwordMethod='none';
+      if(stateEl){stateEl.style.display='block';stateEl.textContent='✅ Googleログイン済み：'+onboardData.name+'\nこのまま初期設定を続けます。';}
+      // Continue from the welcome page to music instead of forcing local password setup.
+      onboardGoto('music');
+    }catch(e){
+      console.warn('[OJWGA v17] onboarding google login failed',e);
+      safeAlert(e.message||'Googleログインに失敗しました。','Google sign-in failed.');
+    }finally{state.onboardingGoogle=false;if(btn)btn.disabled=false;}
+  };
+
+  // Override onboarding finish only for Google-created onboarding users.
+  var origOnboardFinish=window.onboardFinish;
+  if(typeof origOnboardFinish==='function' && !origOnboardFinish._v17){
+    window.onboardFinish=function(){
+      var gid=window.__ojwgaOnboardGoogleUserId;
+      if(!gid) return origOnboardFinish.apply(this,arguments);
+      var u=(root.users||[]).find(function(x){return x&&x.id===gid;});
+      if(!u){window.__ojwgaOnboardGoogleUserId=null;return origOnboardFinish.apply(this,arguments);}
+      onboardActive=false; window.onboardMusicPreview=false;
+      u.authType='google';u.googleLinked=true;u.firebaseUid=onboardData.firebaseUid||u.firebaseUid;
+      currentOnlineSettings(u);
+      u.onlineSettings.displayName=String(onboardData.name||u.name||'Googleユーザー').slice(0,32);
+      u.name=u.onlineSettings.displayName;
+      if(onboardData.avatar) { u.avatar=onboardData.avatar; u.onlineSettings.avatar=onboardData.avatar; }
+      u.password='';u.hint='';u.passwordMethod='none';
+      u.theme=onboardData.theme||'purple';
+      if(!u.data)u.data=defaultUserData();
+      root.currentUserId=u.id;
+      root.sound.music=!!onboardData.music;
+      if(!root.gameplay)root.gameplay=defaultGameplay();
+      root.gameplay.showGreeting=(onboardData.greeting!==false);
+      root.display.theme=u.theme;
+      if(!root.display.clock)root.display.clock=defaultDisplay().clock;
+      root.display.clock.enabled=!!onboardData.clock;
+      if(onboardData.clock&&onboardData.clockStyle)root.display.clock.style=onboardData.clockStyle;
+      if(onboardData.parental){
+        var $=function(id){return document.getElementById(id)};
+        root.parental.password=($('onb-pa-pass')||{}).value||'';
+        root.parental.hint=(($('onb-pa-hint')||{}).value||'').trim();
+      }
+      try{saveRoot();applyTheme();if(typeof syncSoundUI==='function')syncSoundUI();if(typeof syncDisplayUI==='function')syncDisplayUI();if(typeof refreshClockWidget==='function')refreshClockWidget();}catch(e){}
+      if(typeof window.ojwgaPushGoogleUser==='function')window.ojwgaPushGoogleUser(u,Date.now()).catch(function(){});
+      // Extra separated online settings fields.
+      if(fbReady()&&fbUser()&&fbUser().uid===u.firebaseUid){
+        try{
+          var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',u.firebaseUid);
+          window.OJWGA_FIREBASE.setDoc(ref,{onlineSettings:u.onlineSettings,schemaVersion:3},{merge:true}).catch(function(e){console.warn(e)});
+        }catch(e){}
+      }
+      byId('onboarding-overlay').classList.remove('show');
+      byId('home-screen').style.display='flex';
+      refreshHome();
+      showPointToast(langEn()?('Welcome, '+u.name+'!'):('ようこそ、'+u.name+'！'));
+      try{witchSpeak(langEn()?('Welcome, '+u.name+'! You are online now.'):('ようこそ、'+u.name+'や！Googleオンラインユーザーとして準備完了じゃ！'));}catch(e){}
+      window.__ojwgaOnboardGoogleUserId=null;
+      window.__ojwgaOnboardGoogleUser=null;
+    };
+    window.onboardFinish._v17=true;
+  }
+
+  // Existing local profile name editor: keep its behavior, but mirror Google online settings.
+  var origSaveName=window.ojwgaSaveName;
+  if(typeof origSaveName==='function' && !origSaveName._v17){
+    window.ojwgaSaveName=function(){
+      var u=getU();
+      var isG=isGoogleUser(u), old=u&&u.name;
+      var r=origSaveName.apply(this,arguments);
+      try{
+        if(isG && u && u.name!==old){
+          currentOnlineSettings(u);u.onlineSettings.displayName=u.name;markDirty(u);
+          if(window.ojwgaPushGoogleUser)window.ojwgaPushGoogleUser(u,Date.now()).catch(function(){});
+          if(fbReady()&&fbUser()&&fbUser().uid===u.firebaseUid){
+            var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',u.firebaseUid);
+            window.OJWGA_FIREBASE.setDoc(ref,{onlineSettings:u.onlineSettings,schemaVersion:3},{merge:true}).catch(function(e){console.warn(e)});
+          }
+        }
+      }catch(e){}
+      setTimeout(renderOnlineAccountPanel,0);
+      return r;
+    };
+    window.ojwgaSaveName._v17=true;
+  }
+
+  // Keep old local delete separate. Google users use the explicit online full-delete control.
+  var origDelete=window.ojwgaDeleteUser;
+  if(typeof origDelete==='function' && !origDelete._v17){
+    window.ojwgaDeleteUser=function(){
+      var u=getU();
+      if(isGoogleUser(u) && state.mode==='online') return window.ojwgaV17DeleteAccount();
+      return origDelete.apply(this,arguments);
+    };
+    window.ojwgaDeleteUser._v17=true;
+  }
+
+  // Firebase auth state: refresh UI and pull separate online settings.
+  var oldAuthHandler=window.ojwgaHandleFirebaseAuthState;
+  window.ojwgaHandleFirebaseAuthState=async function(fu){
+    if(typeof oldAuthHandler==='function'){
+      try{await oldAuthHandler.apply(this,arguments);}catch(e){console.warn(e)}
+    }
+    var u=getU();
+    if(fu && u && isGoogleUser(u) && u.firebaseUid===fu.uid){
+      try{await refreshOnlineSettingsFromCloud(u)}catch(e){}
+    }
+    renderOnlineAccountPanel();
+    bindAvatarInput();
+  };
+
+  function bindSync(){
+    var b=byId('ojwga-online-sync-btn'); if(!b||b._v17)return; b._v17=true;
+    b.addEventListener('click',async function(){
+      var u=getU();if(!isGoogleUser(u)){return}
+      b.disabled=true;b.textContent='⏳ 同期中…';
+      try{
+        if(window.ojwgaCloudSyncNow) await window.ojwgaCloudSyncNow();
+        await refreshOnlineSettingsFromCloud(u);
+        renderOnlineAccountPanel();
+      }finally{b.disabled=false;b.textContent='☁️ 今すぐ同期';}
+    });
+  }
+
+  function late(){
+    bindAvatarInput();bindSync();ensureProfileAugment();
+    var welcome=byId('ojwga-onb-google-card');
+    if(welcome && !welcome._v17) welcome._v17=true;
+    renderOnlineAccountPanel();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(late,120);});else setTimeout(late,120);
+  setInterval(function(){bindAvatarInput();bindSync();renderOnlineAccountPanel();},1500);
+})();
+</script>
 </html>
