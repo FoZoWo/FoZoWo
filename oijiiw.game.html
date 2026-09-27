@@ -6001,6 +6001,23 @@ html.cursor-custom, html.cursor-custom body, html.cursor-custom body * { cursor:
 #magic-cursor { pointer-events: none !important; }
 </style>
 </style>
+
+<style id="ojwga-v26-delete-cursor-style">
+/* v26: Googleユーザー完全消去中のカーソルはDOMではなく、ブラウザの実カーソルを変更する。
+   そのため警告オーバーレイのz-indexやbackdrop-filter、fullscreenの影響で後ろに隠れない。 */
+html.ojwga-delete-cursor,
+html.ojwga-delete-cursor body,
+html.ojwga-delete-cursor body * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath d='M5 3 L5 39 L14 30 L21 44 L27 40 L20 26 L35 26 Z' fill='%23000000' stroke='%23000000' stroke-width='6' stroke-linejoin='round'/%3E%3Cpath d='M7.2 6.2 L7.2 33.8 L14.2 26.8 L20.8 39.1 L24.1 37 L17.6 23.5 L30.0 23.5 Z' fill='%23c77dff' stroke='%23ffffff' stroke-width='2.4' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3, auto !important;
+}
+/* 入力欄も削除フロー中は同じ高コントラスト矢印にして、白い標準カーソルへ戻らないようにする。 */
+html.ojwga-delete-cursor input,
+html.ojwga-delete-cursor textarea,
+html.ojwga-delete-cursor select {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath d='M5 3 L5 39 L14 30 L21 44 L27 40 L20 26 L35 26 Z' fill='%23000000' stroke='%23000000' stroke-width='6' stroke-linejoin='round'/%3E%3Cpath d='M7.2 6.2 L7.2 33.8 L14.2 26.8 L20.8 39.1 L24.1 37 L17.6 23.5 L30.0 23.5 Z' fill='%23c77dff' stroke='%23ffffff' stroke-width='2.4' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3, auto !important;
+}
+</style>
+
 </head>
 <body>
 
@@ -30246,10 +30263,34 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
       try{localStorage.removeItem('oijii_last_google_delete_v1')}catch(e){}
     }catch(e){}
   }
-  function spinner(msg){show('ojwga-online-delete-spinner');var t=el('ojwga-online-delete-spinner-text');if(t)t.textContent=msg||'処理しています…'}
+  var resetSpinnerStarted=false;
+  function spinner(msg){
+    /* Google削除の処理中も、初期化と全く同じ reset-spinner を使用する。 */
+    var resetOverlay=el('reset-overlay');
+    var warning=el('reset-warning');
+    var resetSpinner=el('reset-spinner');
+    if(resetOverlay&&warning&&resetSpinner){
+      hide('ojwga-online-delete-spinner');
+      resetOverlay.classList.add('show');
+      resetOverlay.setAttribute('aria-hidden','false');
+      warning.style.display='none';
+      resetSpinner.classList.add('show');
+      var t=el('reset-spinner-text');
+      if(t)t.textContent='Googleユーザを消去しています。';
+      if(!resetSpinnerStarted){
+        resetSpinnerStarted=true;
+        try{if('speechSynthesis' in window)window.speechSynthesis.cancel();}catch(e){}
+        try{witchSpeak('ヒッヒッヒ…さらばじゃ…すべて消えてしまえぃ……');}catch(e){}
+      }
+      return;
+    }
+    show('ojwga-online-delete-spinner');
+    var old=el('ojwga-online-delete-spinner-text');
+    if(old)old.textContent='Googleユーザを消去しています。';
+  }
 
   async function execute(){
-    if(busy)return; busy=true;
+    if(busy)return; busy=true; resetSpinnerStarted=false;
     var u=current(), fu=fb();
     if(!isGoogle(u)||!fu||fu.uid!==u.firebaseUid){busy=false;allHide();alertMsg('削除するGoogleアカウントでログインしていません。','The Google account to delete is not signed in.');return}
     if(!ready()){busy=false;allHide();alertMsg('削除機能の準備がまだ完了していません。少し待ってからもう一度試してください。','Account deletion is still loading. Please try again.');return}
@@ -30281,6 +30322,8 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
       setTimeout(function(){try{location.reload()}catch(e){location.href=location.href}},1200);
     }catch(e){
       console.error('[OJWGA] full online account deletion failed',e);
+      try{if(typeof window.__ojwgaDeleteCursorOff==='function')window.__ojwgaDeleteCursorOff();}catch(_e){}
+      try{var ro=el('reset-overlay');if(ro)ro.classList.remove('show');var rs=el('reset-spinner');if(rs)rs.classList.remove('show');var rw=el('reset-warning');if(rw)rw.style.display='block';}catch(_e){}
       busy=false;allHide();
       var msg=(e&&e.message)||'アカウントの完全消去に失敗しました。';
       if(e&&e.code==='auth/requires-recent-login')msg='Googleの再認証が必要です。もう一度最初から実行してください。';
@@ -30305,6 +30348,20 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   el('ojwga-delete-final-check').onchange=function(){el('ojwga-delete-execute').disabled=!this.checked};
   el('ojwga-delete-execute').onclick=execute;
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!busy){if(el('ojwga-online-delete-info-overlay').classList.contains('show'))allHide();else if(el('ojwga-online-delete-warn2').classList.contains('show')){hide('ojwga-online-delete-warn2');show('ojwga-online-delete-warn1')}else if(el('ojwga-online-delete-warn1').classList.contains('show')){hide('ojwga-online-delete-warn1');show('ojwga-online-delete-info-overlay')}}});
+})();
+</script>
+
+
+<script id="ojwga-v26-delete-cursor-controller">
+(function(){
+  'use strict';
+  /* v26: 実カーソルをCSSで変更するため、DOM上に別カーソルを重ねない。 */
+  window.__ojwgaDeleteCursorOn=function(){
+    document.documentElement.classList.add('ojwga-delete-cursor');
+  };
+  window.__ojwgaDeleteCursorOff=function(){
+    document.documentElement.classList.remove('ojwga-delete-cursor');
+  };
 })();
 </script>
 
@@ -30340,6 +30397,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     if(active)return;
     window.__OIJII_GOOGLE_DELETE_FLOW=true;
     stopMusic();
+    try{if(typeof window.__ojwgaDeleteCursorOn==='function')window.__ojwgaDeleteCursorOn();}catch(e){}
     try{
       closeProfileSettings();
     }catch(e){}
@@ -30354,6 +30412,8 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
       if(info) info.setAttribute('aria-hidden','false');
     }catch(e){
       console.error('[OJWGA v19] unified delete flow start failed',e);
+      window.__OIJII_GOOGLE_DELETE_FLOW=false;
+      try{if(typeof window.__ojwgaDeleteCursorOff==='function')window.__ojwgaDeleteCursorOff();}catch(_e){}
       resumeMusic();
       safeAlert('完全消去の確認画面を開けませんでした。','Could not open the deletion confirmation.');
     }
@@ -30364,6 +30424,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     var t=ev.target;
     if(t && t.id==='reset-info-cancel-btn' && pendingResetScope==='googleAccountDelete'){
       window.__OIJII_GOOGLE_DELETE_FLOW=false;
+      try{if(typeof window.__ojwgaDeleteCursorOff==='function')window.__ojwgaDeleteCursorOff();}catch(e){}
       resumeMusic();
       pendingResetScope=null;
       resetScope='all';
@@ -30376,6 +30437,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     resetCancel.addEventListener('click',function(){
       if(resetScope==='googleAccountDelete'){
         window.__OIJII_GOOGLE_DELETE_FLOW=false;
+        try{if(typeof window.__ojwgaDeleteCursorOff==='function')window.__ojwgaDeleteCursorOff();}catch(e){}
         resumeMusic();
         resetScope='all'; resetStep=0; pendingResetScope=null;
       }
@@ -30410,6 +30472,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
       }catch(e){
         console.error('[OJWGA v19] deletion executor failed',e);
         window.__OIJII_GOOGLE_DELETE_FLOW=false;
+        try{if(typeof window.__ojwgaDeleteCursorOff==='function')window.__ojwgaDeleteCursorOff();}catch(e){}
         resumeMusic();
         safeAlert('アカウントの完全消去に失敗しました。','Account deletion failed.');
       }
@@ -30422,10 +30485,10 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     var info=el('reset-info-overlay'), ov=el('reset-overlay');
     if(info && info.classList.contains('show')){
       try{closeResetInfo()}catch(_){}
-      pendingResetScope=null; resetScope='all'; resetStep=0; window.__OIJII_GOOGLE_DELETE_FLOW=false; resumeMusic();
+      pendingResetScope=null; resetScope='all'; resetStep=0; window.__OIJII_GOOGLE_DELETE_FLOW=false; try{if(typeof window.__ojwgaDeleteCursorOff==='function')window.__ojwgaDeleteCursorOff();}catch(_){} resumeMusic();
     }else if(ov && ov.classList.contains('show')){
       try{hideResetOverlay()}catch(_){}
-      resetScope='all'; resetStep=0; window.__OIJII_GOOGLE_DELETE_FLOW=false; resumeMusic();
+      resetScope='all'; resetStep=0; window.__OIJII_GOOGLE_DELETE_FLOW=false; try{if(typeof window.__ojwgaDeleteCursorOff==='function')window.__ojwgaDeleteCursorOff();}catch(_){} resumeMusic();
     }
   },true);
 
@@ -30437,6 +30500,14 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   },true);
 })();
 </script>
+<style id="ojwga-v26-delete-cursor-hard-guard">
+/* v26最終ガード: Google削除フロー中は、既存のcursor:auto指定よりこちらを優先。 */
+html.ojwga-delete-cursor,
+html.ojwga-delete-cursor body,
+html.ojwga-delete-cursor body * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath d='M5 3 L5 39 L14 30 L21 44 L27 40 L20 26 L35 26 Z' fill='%23000000' stroke='%23000000' stroke-width='6' stroke-linejoin='round'/%3E%3Cpath d='M7.2 6.2 L7.2 33.8 L14.2 26.8 L20.8 39.1 L24.1 37 L17.6 23.5 L30 23.5 Z' fill='%23c77dff' stroke='%23ffffff' stroke-width='2.4' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3, auto !important;
+}
+</style>
 <style id="ojwga-v19-delete-music-guard">
 /* Googleオンライン完全消去中は、初期化説明・警告ともに通常UIのBGMを表示・再生させない */
 #reset-info-overlay.show,#reset-overlay.show{z-index:2147483647 !important;}
