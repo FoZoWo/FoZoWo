@@ -11,87 +11,163 @@
 
   <!-- ===== Firebase: Googleアカウント / Firestore ===== -->
   <script type="module" id="ojwga-firebase-online-sdk">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-    import {
-      getAuth,
-      GoogleAuthProvider,
-      signInWithPopup,
-      signOut,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-    import {
-      getFirestore,
-      doc,
-      getDoc,
-      setDoc,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+  /* =========================================================
+     OJWGA Online / Firebase bootstrap
+     - Google Authentication with durable browser persistence
+     - Firestore persistent multi-tab cache when supported
+     - Redirect fallback when popup is blocked
+     ========================================================= */
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+  import {
+    initializeAuth,
+    getAuth,
+    indexedDBLocalPersistence,
+    browserLocalPersistence,
+    browserSessionPersistence,
+    browserPopupRedirectResolver,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signInWithRedirect,
+    getRedirectResult,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+  import {
+    initializeFirestore,
+    getFirestore,
+    persistentLocalCache,
+    persistentMultipleTabManager,
+    memoryLocalCache,
+    doc,
+    getDoc,
+    setDoc,
+    serverTimestamp,
+    onSnapshot
+  } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDOEShTnVnyMHgGTy7wuc5RZjWwgBGfJCM",
-      authDomain: "ojwga-online.firebaseapp.com",
-      projectId: "ojwga-online",
-      storageBucket: "ojwga-online.firebasestorage.app",
-      messagingSenderId: "48517900092",
-      appId: "1:48517900092:web:0c113b79481ef894226039",
-      measurementId: "G-VJVF04NRZS"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyDOEShTnVnyMHgGTy7wuc5RZjWwgBGfJCM",
+    authDomain: "ojwga-online.firebaseapp.com",
+    projectId: "ojwga-online",
+    storageBucket: "ojwga-online.firebasestorage.app",
+    messagingSenderId: "48517900092",
+    appId: "1:48517900092:web:0c113b79481ef894226039",
+    measurementId: "G-VJVF04NRZS"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const googleProvider = new GoogleAuthProvider();
-    googleProvider.setCustomParameters({ prompt: "select_account" });
+  const app = initializeApp(firebaseConfig);
 
-    window.OJWGA_FIREBASE = { app, auth, db, googleProvider, doc, getDoc, setDoc, serverTimestamp };
-    window.__ojwgaFirebaseAuthUser = null;
-    window.__ojwgaFirebaseAuthReady = false;
-
-    window.ojwgaLoginWithGoogle = async function () {
-      try {
-        const result = await signInWithPopup(auth, googleProvider);
-        const user = result.user;
-        window.__ojwgaFirebaseAuthUser = user;
-        window.__ojwgaFirebaseAuthReady = true;
-        return user;
-      } catch (error) {
-        console.error("[OJWGA] Google login failed:", error);
-        const code = String(error && error.code || "");
-        let message = "Googleログインに失敗しました。";
-        if (code === "auth/unauthorized-domain") {
-          var host = location.hostname || "現在のドメイン";
-          message += "\n現在のドメイン「" + host + "」がFirebase Authenticationの承認済みドメインに登録されていません。";
-          message += "\nFirebase Console → Authentication → 設定 → 承認済みドメイン に追加してください。";
-        } else if (code === "auth/popup-closed-by-user") {
-          message = "Googleログインをキャンセルしました。";
-        } else if (error && error.message) {
-          message += "\n" + error.message;
-        }
-        try { if (typeof window.oijAlert === "function") window.oijAlert(message); else alert(message); } catch (_) {}
-        return null;
-      }
-    };
-
-    window.ojwgaLogoutGoogle = async function () {
-      try {
-        await signOut(auth);
-        return true;
-      } catch (error) {
-        console.error("[OJWGA] Google logout failed:", error);
-        return false;
-      }
-    };
-
-    onAuthStateChanged(auth, function (user) {
-      window.__ojwgaFirebaseAuthUser = user || null;
-      window.__ojwgaFirebaseAuthReady = true;
-      if (typeof window.ojwgaHandleFirebaseAuthState === "function") {
-        try { window.ojwgaHandleFirebaseAuthState(user || null); } catch (e) { console.warn("[OJWGA] auth state handler error", e); }
-      } else {
-        window.__ojwgaPendingFirebaseAuthUser = user || null;
-      }
+  let auth;
+  try {
+    auth = initializeAuth(app, {
+      persistence: [indexedDBLocalPersistence, browserLocalPersistence, browserSessionPersistence],
+      popupRedirectResolver: browserPopupRedirectResolver
     });
-  </script>
+  } catch (e) {
+    // Hot reload / already-initialized guard.
+    auth = getAuth(app);
+  }
+
+  let db;
+  try {
+    db = initializeFirestore(app, {
+      localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+    });
+    window.__ojwgaFirestorePersistent = true;
+  } catch (e) {
+    try { db = getFirestore(app); } catch (_) {
+      db = initializeFirestore(app, { localCache: memoryLocalCache() });
+    }
+    window.__ojwgaFirestorePersistent = false;
+    console.warn("[OJWGA] Firestore persistent cache unavailable; memory cache is used.", e);
+  }
+
+  const googleProvider = new GoogleAuthProvider();
+  googleProvider.setCustomParameters({ prompt: "select_account" });
+
+  window.OJWGA_FIREBASE = {
+    app, auth, db, googleProvider,
+    doc, getDoc, setDoc, serverTimestamp, onSnapshot
+  };
+  window.__ojwgaFirebaseAuthUser = null;
+  window.__ojwgaFirebaseAuthReady = false;
+  window.__ojwgaFirebaseRedirectHandled = false;
+
+  function authErrorMessage(error) {
+    const code = String(error && error.code || "");
+    const host = location.hostname || "現在のドメイン";
+    if (code === "auth/unauthorized-domain") {
+      return "Googleログインに失敗しました。\n現在のドメイン「" + host + "」がFirebase Authenticationの承認済みドメインに登録されていません。\nFirebase Console → Authentication → 設定 → 承認済みドメインに追加してください。";
+    }
+    if (code === "auth/popup-closed-by-user") return "Googleログインをキャンセルしました。";
+    if (code === "auth/popup-blocked") return "ポップアップがブロックされました。Googleログイン画面へ移動します。";
+    if (code === "auth/network-request-failed") return "ネットワークに接続できません。接続を確認してからもう一度試してください。";
+    if (code === "auth/too-many-requests") return "Googleログインの試行回数が多すぎます。少し待ってから試してください。";
+    if (error && error.message) return "Googleログインに失敗しました。\n" + error.message;
+    return "Googleログインに失敗しました。";
+  }
+
+  window.ojwgaLoginWithGoogle = async function () {
+    try {
+      // Preferred path: popup keeps the current game state alive.
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      window.__ojwgaFirebaseAuthUser = user;
+      window.__ojwgaFirebaseAuthReady = true;
+      return user;
+    } catch (error) {
+      console.error("[OJWGA] Google login failed:", error);
+      const code = String(error && error.code || "");
+      if (code === "auth/popup-blocked") {
+        try {
+          window.__ojwgaFirebaseRedirectHandled = true;
+          await signInWithRedirect(auth, googleProvider, browserPopupRedirectResolver);
+          return null;
+        } catch (redirectError) {
+          console.error("[OJWGA] Google redirect login failed:", redirectError);
+          error = redirectError;
+        }
+      }
+      const message = authErrorMessage(error);
+      try { if (typeof window.oijAlert === "function") window.oijAlert(message); else alert(message); } catch (_) {}
+      return null;
+    }
+  };
+
+  window.ojwgaLogoutGoogle = async function () {
+    try {
+      await signOut(auth);
+      window.__ojwgaFirebaseAuthUser = null;
+      return true;
+    } catch (error) {
+      console.error("[OJWGA] Google logout failed:", error);
+      return false;
+    }
+  };
+
+  // Complete a redirect-based login if the browser returned from Google.
+  getRedirectResult(auth).then(function(result){
+    if (result && result.user) {
+      window.__ojwgaFirebaseAuthUser = result.user;
+    }
+  }).catch(function(error){
+    if (error && String(error.code || "") !== "auth/no-auth-event") {
+      console.warn("[OJWGA] Google redirect result error", error);
+    }
+  });
+
+  onAuthStateChanged(auth, function (user) {
+    window.__ojwgaFirebaseAuthUser = user || null;
+    window.__ojwgaFirebaseAuthReady = true;
+    if (typeof window.ojwgaHandleFirebaseAuthState === "function") {
+      try { window.ojwgaHandleFirebaseAuthState(user || null); } catch (e) {
+        console.warn("[OJWGA] auth state handler error", e);
+      }
+    } else {
+      window.__ojwgaPendingFirebaseAuthUser = user || null;
+    }
+  });
+</script>
 <title>おいじぃ魔女ゲームコレクション-OJWGA</title>
 <!-- ===== Favicon (外部ファイル embedded, offline safe) ===== -->
 <link rel="icon" type="image/png" sizes="32x32" href="ojwga-favicon-32.png">
@@ -5968,7 +6044,6 @@ body.startup-user-gate #userswitch-overlay #userswitch-startup-exit-btn { displa
     }
     window.addEventListener('pointerdown',firstGesture,true);
     window.addEventListener('touchstart',firstGesture,true);
-    window.addEventListener('touchstart',firstGesture,true);
 })();
 /* 起動アニメ終了を他スクリプトへ知らせる仕組み（既定は「未完了」） */
 window.__splashDone = false;
@@ -6297,6 +6372,7 @@ function __notifySplashDone(){
                     <button type="button" class="hero-profile" onclick="openUserSwitcher()">
                         <span class="profile-avatar" id="display-avatar">👤</span>
                         <span class="profile-name" id="display-name">プレイヤー</span>
+                        <span id="display-cloud-status" style="font-size:.52rem;color:#a7d8ff;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:none;"></span>
                     </button>
                     <div class="hero-points-shop">
                         <div class="hero-points points-display points-compact" id="hero-points-wrap">
@@ -6590,6 +6666,11 @@ function __notifySplashDone(){
             <div class="user-list" id="user-list"></div>
             <button class="add-user-btn" id="userswitch-create-btn" onclick="openNewUserModal()" data-i18n="userswitch.create">＋ 新しいユーザーを作成</button>
             <button class="add-user-btn" id="userswitch-google-btn" type="button" onclick="ojwgaLoginGoogleFromUserSwitcher()">🌐 Googleアカウントでログイン</button>
+            <div id="userswitch-google-status" class="google-cloud-status">Googleアカウント未接続</div>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+                <button class="add-user-btn google-cloud-mini-btn" id="userswitch-google-sync-btn" type="button" style="display:none;background:linear-gradient(135deg,#3498db,#2874a6);box-shadow:0 4px 0 #1d557a;">☁️ 今すぐ同期</button>
+                <button class="add-user-btn google-cloud-mini-btn" id="userswitch-google-logout-btn" type="button" style="display:none;background:linear-gradient(135deg,#555,#333);box-shadow:0 4px 0 #222;">ログアウト</button>
+            </div>
             <button class="reset-btn-cancel" id="userswitch-close-btn" style="margin-top:10px;width:100%;" onclick="closeUserSwitcher()" data-i18n="common.close">閉じる</button>
             <button class="setup-exit-btn" id="userswitch-startup-exit-btn" type="button" onclick="requestExitGameApp()" data-i18n="userswitch.startExit" style="display:none;margin-top:10px;width:100%;">🚪 ゲーム終了</button>
         </div>
@@ -10567,12 +10648,14 @@ function loadRoot() {
 function saveRoot() {
     try {
         var __cuForCloud = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
-        if (__cuForCloud && __cuForCloud.authType === 'google' && __cuForCloud.firebaseUid) {
-            __cuForCloud._cloudDirtyAt = Date.now();
-        }
         localStorage.setItem(ROOT_KEY, JSON.stringify(root));
-        if (__cuForCloud && typeof window.ojwgaScheduleGoogleCloudSync === 'function') {
-            window.ojwgaScheduleGoogleCloudSync(__cuForCloud);
+        if (__cuForCloud && __cuForCloud.authType === 'google' && __cuForCloud.firebaseUid) {
+            if (typeof window.ojwgaMarkGoogleDirty === 'function') {
+                window.ojwgaMarkGoogleDirty(__cuForCloud);
+            } else {
+                __cuForCloud._cloudDirtyAt = Date.now();
+            }
+            try { localStorage.setItem(ROOT_KEY, JSON.stringify(root)); } catch (_) {}
         }
     } catch (e) { console.warn('保存に失敗', e); }
 }
@@ -11754,10 +11837,14 @@ function updateProfileDisplay() {
     if (dn) dn.innerText = name;
     refreshPlayerNameLabels();
     const avatarEl = document.getElementById('display-avatar');
-    if (typeof av === 'string' && av.startsWith('data:image')) {
-        avatarEl.innerHTML = `<img src="${av}">`;
-    } else {
-        avatarEl.innerHTML = av;
+    if (avatarEl) {
+        if (u && u.photoURL && /^https?:\/\//i.test(String(u.photoURL))) {
+            avatarEl.innerHTML = `<img src="${escapeHtml(String(u.photoURL))}" alt="" loading="lazy" referrerpolicy="no-referrer">`;
+        } else if (typeof av === 'string' && av.startsWith('data:image')) {
+            avatarEl.innerHTML = `<img src="${av}">`;
+        } else {
+            avatarEl.innerHTML = av;
+        }
     }
 }
 
@@ -18382,7 +18469,8 @@ function renderUserList() {
         item.dataset.userId = u.id;
         item.tabIndex = 0;
         const av = u.avatar || '👤';
-        const avHtml = (typeof av === 'string' && av.startsWith('data:image')) ? `<img src="${av}">` : av;
+        const __photo = (u.photoURL && /^https?:\/\//i.test(String(u.photoURL))) ? String(u.photoURL) : '';
+        const avHtml = __photo ? `<img src="${escapeHtml(__photo)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ((typeof av === 'string' && av.startsWith('data:image')) ? `<img src="${av}">` : av);
         const pts = (u.data && u.data.totalPoints) || 0;
         let status = '';
         var bt = getUserBlockType(u);
@@ -26783,6 +26871,10 @@ function toggleSnsRestrict(key){
 .mp-google-btn{border:0;border-radius:10px;padding:9px 12px;font-weight:900;cursor:pointer;background:#fff;color:#222;box-shadow:0 5px 12px rgba(0,0,0,.22);}
 .mp-google-btn:disabled{opacity:.55;cursor:not-allowed;}
 .mp-google-btn.out{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.12);box-shadow:none;}
+.google-cloud-status{margin-top:8px;padding:9px 11px;border-radius:10px;background:rgba(52,152,219,.10);border:1px solid rgba(52,152,219,.22);color:#cfe8ff;font-size:.68rem;line-height:1.45;text-align:left;white-space:pre-line;}
+.google-cloud-mini-btn{flex:1;font-size:.78rem;padding:9px 6px;}
+#display-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+
 @media(max-width:620px){.mp-google-wrap{grid-column:auto}}
 @media(max-width:620px){.mp-grid2,.mp-games{grid-template-columns:1fr}.mp-players{grid-template-columns:repeat(2,minmax(0,1fr))}.mp-slot{grid-template-columns:30px 1fr}.mp-slot>*:last-child{grid-column:2}.mp-code{font-size:2.2rem}.mp-body{padding:4px 14px 18px}.mp-top{padding:16px 14px 9px}}
 </style>
@@ -26799,7 +26891,7 @@ function toggleSnsRestrict(key){
    <section class="mp-step" id="mp-step-online-lobby"><div class="mp-kicker">CONNECTED</div><h2 class="mp-h2" id="mp-lobby-title">対戦ロビー</h2><p class="mp-note" id="mp-lobby-note">接続できました。あなたの参加者設定を選びます。</p><div class="mp-alert" id="mp-lobby-alert">🟢 通信接続を確立しました。ここからミニゲームを選びます。</div><div class="mp-kicker">PLAYER</div><div class="mp-grid2"><div><label class="mp-label">参加方法</label><select class="mp-select" id="mp-online-kind"><option value="user">登録ユーザー</option><option value="google">🌐 Googleアカウント</option><option value="guest">ゲスト（名前だけ）</option></select></div><div id="mp-online-user-wrap"><label class="mp-label">ユーザー</label><select class="mp-select" id="mp-online-user"></select></div><div id="mp-online-guest-wrap" class="mp-hidden"><label class="mp-label">ゲスト名</label><input class="mp-input" id="mp-online-guest" maxlength="16" value="ゲスト"></div>
 <div id="mp-online-google-wrap" class="mp-google-wrap mp-hidden">
   <div class="mp-google-head"><div><div class="mp-google-title">🌐 Googleアカウント</div><div class="mp-google-state" id="mp-google-state">Googleアカウントでログインすると、ポイントと実績をオンライン保存できます。</div></div></div>
-  <div class="mp-google-actions"><button type="button" class="mp-google-btn" id="mp-google-login-btn">Googleでログイン</button><button type="button" class="mp-google-btn out mp-hidden" id="mp-google-logout-btn">Googleからログアウト</button></div>
+  <div class="mp-google-actions"><button type="button" class="mp-google-btn" id="mp-google-login-btn">Googleでログイン</button><button type="button" class="mp-google-btn out mp-hidden" id="mp-google-logout-btn">Googleからログアウト</button><button type="button" class="mp-google-btn out mp-hidden" id="mp-google-sync-btn">☁️ 今すぐ同期</button></div>
 </div></div><div class="mp-kicker" style="margin-top:18px">CONNECTED PLAYERS</div><div class="mp-players" id="mp-online-players"></div><div class="mp-kicker" style="margin-top:18px">MINI GAME</div><div class="mp-games" id="mp-online-games"></div><div class="mp-alert warn" id="mp-online-wait">👑 ホストがゲームを選んで開始するまで待機します。</div><div class="mp-actions"><button class="mp-btn secondary" id="mp-online-lobby-leave">退出</button><button class="mp-btn" id="mp-online-start">ミニゲームを決定して開始</button></div></section>
   </div>
  </div>
@@ -28407,57 +28499,117 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
 </script>
 
 
-<!-- ===== OJWGA Googleアカウント連携 / Firestore同期 ===== -->
+<!-- ===== OJWGA Googleアカウント連携 / Firestore同期・高機能版 ===== -->
 <script id="ojwga-google-integration">
 (function(){
   'use strict';
 
   var cloudTimer = null;
+  var cloudRetryTimer = null;
+  var cloudRetryCount = 0;
+  var cloudWritePromise = null;
+  var cloudPending = false;
+  var cloudUnsubscribe = null;
+  var cloudUiTimer = null;
+  var syncStatus = 'idle';
+  var syncError = '';
+  var DEVICE_KEY = 'ojwga_cloud_device_id_v1';
+  var DEVICE_ID = '';
+  try {
+    DEVICE_ID = localStorage.getItem(DEVICE_KEY) || '';
+    if (!DEVICE_ID) {
+      DEVICE_ID = 'dev_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+      localStorage.setItem(DEVICE_KEY, DEVICE_ID);
+    }
+  } catch(e) {
+    DEVICE_ID = 'session_' + Date.now().toString(36);
+  }
+  window.__ojwgaCloudDeviceId = DEVICE_ID;
 
   function firebaseReady(){
     return !!(window.OJWGA_FIREBASE && window.OJWGA_FIREBASE.auth && window.OJWGA_FIREBASE.db);
   }
   function currentFirebaseUser(){ return window.__ojwgaFirebaseAuthUser || null; }
   function currentLocalUserByUid(uid){
-    try { return (typeof root !== 'undefined' && Array.isArray(root.users)) ? (root.users.find(function(u){return u && (u.firebaseUid===uid || (u.authType==='google' && u.id===uid));}) || null) : null; } catch(e){ return null; }
+    try {
+      return (typeof root !== 'undefined' && Array.isArray(root.users))
+        ? (root.users.find(function(u){ return u && (u.firebaseUid===uid || (u.authType==='google' && u.id===uid)); }) || null)
+        : null;
+    } catch(e){ return null; }
   }
-  function clone(v){
-    try { return JSON.parse(JSON.stringify(v)); } catch(e) { return v; }
+  function clone(v){ try { return JSON.parse(JSON.stringify(v)); } catch(e) { return v; } }
+  function localWriteOnly(){
+    try { localStorage.setItem(ROOT_KEY, JSON.stringify(root)); } catch(e) {}
   }
+  function now(){ return Date.now(); }
   function isUsableAvatar(v){
     if(typeof v!=='string' || !v) return false;
-    if(v.indexOf('data:image/')===0) return v.length < 500000;
+    if(v.indexOf('data:image/')===0) return v.length < 250000;
+    if(/^https?:\/\//i.test(v)) return v.length <= 2000;
     return v.length <= 30;
   }
+  function safePhotoURL(v){ return (typeof v==='string' && /^https?:\/\//i.test(v) && v.length<=2000) ? v : ''; }
   function cleanCloudData(u){
     var data = clone((u && u.data) || {});
-    if(data && typeof data==='object'){
-      delete data._cloudDirtyAt;
-      delete data._cloudSyncedAt;
+    if(!data || typeof data!=='object') data = {};
+    delete data._cloudDirtyAt;
+    delete data._cloudSyncedAt;
+    // Keep the document comfortably below Firestore's 1 MiB document limit.
+    if(Array.isArray(data.recentRecords) && data.recentRecords.length>200){
+      data.recentRecords = data.recentRecords.slice(-200);
+    }
+    if(Array.isArray(data.favorites) && data.favorites.length>300){
+      data.favorites = data.favorites.slice(-300);
     }
     return data;
   }
-  function cloudPayload(u, changedAt){
+  function cloudPayload(u, changedAt, creating){
     var fu=currentFirebaseUser();
-    return {
-      name: String((u && u.name) || (fu && fu.displayName) || 'Googleユーザー').slice(0,32),
-      email: String((u && u.email) || (fu && fu.email) || ''),
-      avatar: isUsableAvatar(u && u.avatar) ? u.avatar : '🌐',
-      theme: (u && typeof u.theme==='string' && typeof THEMES!=='undefined' && THEMES[u.theme]) ? u.theme : 'purple',
+    var photo = safePhotoURL((u&&u.photoURL) || (fu&&fu.photoURL) || '');
+    var payload = {
+      schemaVersion: 2,
+      name: String((u&&u.name)||(fu&&fu.displayName)||'Googleユーザー').slice(0,32),
+      email: String((u&&u.email)||(fu&&fu.email)||'').slice(0,320),
+      photoURL: photo,
+      avatar: isUsableAvatar(u&&u.avatar) ? ((String(u.avatar).indexOf('data:image/')===0) ? '🌐' : u.avatar) : '🌐',
+      theme: (u&&typeof u.theme==='string'&&typeof THEMES!=='undefined'&&THEMES[u.theme]) ? u.theme : 'purple',
       data: cleanCloudData(u),
       provider: 'google',
-      firebaseUid: fu ? fu.uid : String(u && u.firebaseUid || ''),
-      clientUpdatedAt: Number(changedAt || Date.now()),
+      firebaseUid: fu ? fu.uid : String(u&&u.firebaseUid||''),
+      clientUpdatedAt: Number(changedAt || now()),
+      clientDeviceId: DEVICE_ID,
+      lastSeenAt: window.OJWGA_FIREBASE.serverTimestamp(),
       updatedAt: window.OJWGA_FIREBASE.serverTimestamp()
     };
+    if(creating) payload.createdAt = window.OJWGA_FIREBASE.serverTimestamp();
+    return payload;
+  }
+
+  function setSyncStatus(status, errorText){
+    syncStatus = status || 'idle';
+    syncError = errorText || '';
+    try { refreshGoogleCloudUI(); } catch(e) {}
+  }
+  function statusLabel(){
+    var online = navigator.onLine !== false;
+    if(syncStatus==='syncing') return '☁️ 保存中…';
+    if(syncStatus==='error') return '⚠️ 同期エラー';
+    if(!online) return '📴 オフライン（後で同期）';
+    if(syncStatus==='synced') return '✅ クラウド同期済み';
+    if(syncStatus==='offline') return '📴 オフライン';
+    return '☁️ クラウド待機中';
   }
 
   function applyCloudUserData(u, cloud, fu){
-    if(!u || !cloud) return;
+    if(!u || !cloud || !fu) return;
     if(cloud.name) u.name=String(cloud.name).slice(0,32);
-    if(isUsableAvatar(cloud.avatar)) u.avatar=cloud.avatar;
+    var p=safePhotoURL(cloud.photoURL);
+    if(p) u.photoURL=p;
+    else if(safePhotoURL(fu.photoURL)) u.photoURL=fu.photoURL;
+    if(!u.avatar || u.avatar==='🌐') u.avatar='🌐';
+    if(typeof cloud.avatar==='string' && !String(cloud.avatar).startsWith('data:image/') && String(cloud.avatar).length<=30) u.avatar=cloud.avatar;
     if(typeof cloud.theme==='string' && typeof THEMES!=='undefined' && THEMES[cloud.theme]) u.theme=cloud.theme;
-    if(cloud.email) u.email=String(cloud.email);
+    if(cloud.email) u.email=String(cloud.email).slice(0,320);
     if(cloud.data && typeof cloud.data==='object') {
       var base=(typeof defaultUserData==='function')?defaultUserData():{};
       u.data=Object.assign(base, clone(cloud.data));
@@ -28468,134 +28620,221 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     u.passwordMethod='none';
     u.password='';
     u.hint='';
-    u.isTotallyLocked=false;
-    u.blockType=null;
-    u.blockUntil=0;
-    u._cloudSyncedAt=Number(cloud.clientUpdatedAt || Date.now());
+    // IMPORTANT: do not overwrite local security/block state from cloud sync.
+    u._cloudSyncedAt=Number(cloud.clientUpdatedAt || now());
     u._cloudDirtyAt=0;
+    u._cloudDeviceId=DEVICE_ID;
+  }
+
+  function queueRetry(){
+    clearTimeout(cloudRetryTimer);
+    cloudRetryCount = Math.min(cloudRetryCount+1, 8);
+    var ms = Math.min(30000, 800 * Math.pow(2, cloudRetryCount-1));
+    cloudRetryTimer=setTimeout(function(){
+      var u=(typeof getCurrentUser==='function')?getCurrentUser():null;
+      if(u && u.authType==='google') pushGoogleUser(u).catch(function(){});
+    }, ms);
   }
 
   async function pushGoogleUser(u, forceChangedAt){
     if(!firebaseReady() || !u || !u.firebaseUid) return false;
     var fu=currentFirebaseUser();
     if(!fu || fu.uid!==u.firebaseUid) return false;
-    try {
-      var changed=Number(forceChangedAt || u._cloudDirtyAt || Date.now());
-      var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',u.firebaseUid);
-      await window.OJWGA_FIREBASE.setDoc(ref,cloudPayload(u,changed),{merge:true});
-      u._cloudSyncedAt=changed;
-      u._cloudDirtyAt=0;
-      try { localStorage.setItem(ROOT_KEY,JSON.stringify(root)); } catch(e) {}
-      return true;
-    } catch(e){
-      console.warn('[OJWGA] Firestore save failed',e);
-      return false;
-    }
+    if(navigator.onLine===false){ setSyncStatus('offline'); return false; }
+    if(cloudWritePromise){ cloudPending=true; return cloudWritePromise; }
+
+    var changed=Number(forceChangedAt || u._cloudDirtyAt || now());
+    setSyncStatus('syncing');
+    cloudWritePromise=(async function(){
+      try {
+        var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',u.firebaseUid);
+        var creating=!u._cloudSyncedAt;
+        await window.OJWGA_FIREBASE.setDoc(ref,cloudPayload(u,changed,creating),{merge:true});
+        u._cloudSyncedAt=changed;
+        u._cloudDirtyAt=0;
+        u._cloudDeviceId=DEVICE_ID;
+        cloudRetryCount=0;
+        syncError='';
+        setSyncStatus('synced');
+        localWriteOnly();
+        return true;
+      } catch(e){
+        console.warn('[OJWGA] Firestore save failed',e);
+        syncError=String((e&&e.message)||e||'保存失敗');
+        setSyncStatus('error',syncError);
+        queueRetry();
+        return false;
+      } finally {
+        cloudWritePromise=null;
+        if(cloudPending){
+          cloudPending=false;
+          var again=(typeof getCurrentUser==='function')?getCurrentUser():null;
+          if(again && again.authType==='google') setTimeout(function(){pushGoogleUser(again).catch(function(){});},0);
+        }
+      }
+    })();
+    return cloudWritePromise;
+  }
+  window.ojwgaPushGoogleUser=pushGoogleUser;
+
+  function scheduleSync(u, delay){
+    if(!u || u.authType!=='google' || !u.firebaseUid || !firebaseReady()) return;
+    var fu=currentFirebaseUser();
+    if(!fu || fu.uid!==u.firebaseUid) return;
+    clearTimeout(cloudTimer);
+    cloudTimer=setTimeout(function(){ pushGoogleUser(u).catch(function(){}); }, delay==null?900:delay);
+  }
+  window.ojwgaScheduleGoogleCloudSync=scheduleSync;
+
+  function stopCloudListener(){
+    if(cloudUnsubscribe){ try { cloudUnsubscribe(); } catch(e){} }
+    cloudUnsubscribe=null;
   }
 
-  window.ojwgaPushGoogleUser=pushGoogleUser;
+  function scheduleCloudUI(){
+    clearTimeout(cloudUiTimer);
+    cloudUiTimer=setTimeout(function(){
+      try { if(typeof refreshHome==='function') refreshHome(); } catch(e){}
+      try { if(typeof renderUserList==='function' && document.getElementById('userswitch-overlay') && document.getElementById('userswitch-overlay').classList.contains('show')) renderUserList(); } catch(e){}
+      try { refreshGoogleCloudUI(); } catch(e){}
+    },80);
+  }
+
+  function attachCloudListener(u, fu){
+    stopCloudListener();
+    if(!firebaseReady() || !fu || !u) return;
+    try {
+      var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',fu.uid);
+      cloudUnsubscribe=window.OJWGA_FIREBASE.onSnapshot(ref,{includeMetadataChanges:true},function(snap){
+        if(!snap.exists()) return;
+        var cloud=snap.data()||{};
+        // Local pending writes already reflect the newest local state.
+        if(snap.metadata && snap.metadata.hasPendingWrites){
+          setSyncStatus('syncing');
+          return;
+        }
+        var remoteChanged=Number(cloud.clientUpdatedAt||0);
+        var localDirty=Number(u._cloudDirtyAt||0);
+        var localSynced=Number(u._cloudSyncedAt||0);
+        if(localDirty && localDirty>remoteChanged){
+          scheduleSync(u,100);
+          return;
+        }
+        if(remoteChanged && remoteChanged < localSynced) return;
+        applyCloudUserData(u,cloud,fu);
+        localWriteOnly();
+        setSyncStatus('synced');
+        scheduleCloudUI();
+      },function(err){
+        console.warn('[OJWGA] Firestore listener error',err);
+        syncError=String((err&&err.message)||err||'listener error');
+        setSyncStatus('error',syncError);
+      });
+    } catch(e){
+      console.warn('[OJWGA] Firestore listener setup failed',e);
+      setSyncStatus('error',String((e&&e.message)||e));
+    }
+  }
 
   async function syncGoogleAccount(fu){
     if(!fu || !firebaseReady() || typeof root==='undefined') return null;
     var u=currentLocalUserByUid(fu.uid);
     var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',fu.uid);
     var snap=null;
+    setSyncStatus(navigator.onLine===false?'offline':'syncing');
     try { snap=await window.OJWGA_FIREBASE.getDoc(ref); }
     catch(e){
       console.warn('[OJWGA] Firestore read failed',e);
+      setSyncStatus('error',String((e&&e.message)||e));
       if(typeof oijAlert==='function') oijAlert('Googleアカウントにはログインしましたが、オンラインデータを読み込めませんでした。ネット接続とFirestoreルールを確認してください。');
       return null;
     }
 
+    var isNew=!u;
     if(!u){
       u={
         id:fu.uid,
         name:(fu.displayName||'Googleユーザー').slice(0,32),
         avatar:'🌐',
-        password:'',
-        hint:'',
-        wrongCount:0,
-        lockUntil:0,
-        isTotallyLocked:false,
-        blockType:null,
-        blockUntil:0,
-        role:'normal',
-        theme:'purple',
+        photoURL:safePhotoURL(fu.photoURL),
+        password:'', hint:'', wrongCount:0, lockUntil:0, isTotallyLocked:false,
+        blockType:null, blockUntil:0, role:'normal', theme:'purple',
         data:(typeof defaultUserData==='function'?defaultUserData():{}),
-        passwordMethod:'none',
-        authType:'google',
-        googleLinked:true,
-        firebaseUid:fu.uid,
-        email:fu.email||'',
-        _cloudDirtyAt:0,
-        _cloudSyncedAt:0
+        passwordMethod:'none', authType:'google', googleLinked:true,
+        firebaseUid:fu.uid, email:fu.email||'', _cloudDirtyAt:0, _cloudSyncedAt:0,
+        _cloudDeviceId:DEVICE_ID
       };
       root.users.push(u);
     } else {
-      u.authType='google';
-      u.googleLinked=true;
-      u.firebaseUid=fu.uid;
-      u.passwordMethod='none';
-      u.password='';
-      u.email=fu.email||u.email||'';
+      u.authType='google'; u.googleLinked=true; u.firebaseUid=fu.uid;
+      u.passwordMethod='none'; u.password=''; u.email=fu.email||u.email||'';
+      if(safePhotoURL(fu.photoURL)) u.photoURL=fu.photoURL;
     }
 
-    if(snap && snap.exists()) {
+    if(snap && snap.exists()){
       var cloud=snap.data()||{};
       var cloudChanged=Number(cloud.clientUpdatedAt||0);
       var localDirty=Number(u._cloudDirtyAt||0);
-      if(localDirty > cloudChanged) {
+      if(localDirty && localDirty>cloudChanged){
         await pushGoogleUser(u,localDirty);
-      } else {
+      } else if(cloudChanged>=Number(u._cloudSyncedAt||0)) {
         applyCloudUserData(u,cloud,fu);
       }
     } else {
-      await pushGoogleUser(u,Date.now());
+      await pushGoogleUser(u,now());
     }
 
+    localWriteOnly();
+    attachCloudListener(u,fu);
+    setSyncStatus('synced');
     return u;
   }
-
   window.ojwgaSyncGoogleAccount=syncGoogleAccount;
 
-  window.ojwgaScheduleGoogleCloudSync=function(u){
-    if(!u || u.authType!=='google' || !u.firebaseUid || !firebaseReady()) return;
-    var fu=currentFirebaseUser();
-    if(!fu || fu.uid!==u.firebaseUid) return;
-    clearTimeout(cloudTimer);
-    cloudTimer=setTimeout(function(){
-      pushGoogleUser(u).catch(function(e){console.warn('[OJWGA] delayed cloud sync error',e);});
-    },650);
+  window.ojwgaCloudSyncNow=async function(){
+    var u=(typeof getCurrentUser==='function')?getCurrentUser():null;
+    if(!u || u.authType!=='google') return false;
+    u._cloudDirtyAt=now();
+    localWriteOnly();
+    return pushGoogleUser(u,u._cloudDirtyAt);
   };
 
-  function refreshGoogleOnlineUI(){
-    var wrap=document.getElementById('mp-online-google-wrap');
-    var state=document.getElementById('mp-google-state');
-    var login=document.getElementById('mp-google-login-btn');
-    var logout=document.getElementById('mp-google-logout-btn');
+  window.ojwgaCloudGetStatus=function(){
     var fu=currentFirebaseUser();
-    if(!wrap) return;
-    if(state){
-      state.textContent=fu
-        ? ('ログイン中：'+String(fu.displayName||'Googleユーザー')+' ／ '+String(fu.email||'')+'\nこのアカウントでポイント・実績を保存します。')
-        : 'Googleアカウントでログインすると、ポイントと実績をオンライン保存できます。';
-      state.style.whiteSpace='pre-line';
-    }
-    if(login) login.classList.toggle('mp-hidden',!!fu);
-    if(logout) logout.classList.toggle('mp-hidden',!fu);
+    return { status:syncStatus, label:statusLabel(), error:syncError, uid:fu?fu.uid:null, persistent:!!window.__ojwgaFirestorePersistent };
+  };
+
+  function refreshGoogleCloudUI(){
+    var stateIds=['userswitch-google-status','mp-google-state'];
+    var cloudBadge=document.getElementById('display-cloud-status');
+    var fu=currentFirebaseUser();
+    var u=fu?currentLocalUserByUid(fu.uid):null;
+    var statusText=fu
+      ? ('🟢 '+String(fu.displayName||'Googleユーザー')+' ／ '+String(fu.email||'')+'\n'+statusLabel() + (window.__ojwgaFirestorePersistent?' ・ オフラインキャッシュ有効':'') )
+      : 'Googleアカウントでログインすると、ポイント・実績・テーマなどをクラウドへ同期できます。';
+    if(cloudBadge){ cloudBadge.style.display=fu?'block':'none'; cloudBadge.textContent=fu?statusLabel():''; }
+    stateIds.forEach(function(id){
+      var el=document.getElementById(id); if(el){ el.textContent=statusText; el.style.whiteSpace='pre-line'; }
+    });
+    var login=document.getElementById('userswitch-google-btn');
+    var out=document.getElementById('userswitch-google-logout-btn');
+    var sync=document.getElementById('userswitch-google-sync-btn');
+    if(login) login.disabled=false;
+    if(out) out.classList.toggle('mp-hidden',!fu);
+    if(sync) sync.classList.toggle('mp-hidden',!fu);
+    var gl=document.getElementById('mp-google-login-btn'), go=document.getElementById('mp-google-logout-btn');
+    if(gl) gl.classList.toggle('mp-hidden',!!fu);
+    if(go) go.classList.toggle('mp-hidden',!fu);
   }
 
   function selectedOnlineKind(){ var el=document.getElementById('mp-online-kind'); return el?el.value:'user'; }
-
-  // Googleをオンライン参加者として扱う。kindは既存MP互換の'user'を維持し、userIdだけFirebase UIDにする。
   var originalOnlineProfileData=window.onlineProfileData;
   window.onlineProfileData=function(){
     var k=selectedOnlineKind();
     if(k==='google'){
       var fu=currentFirebaseUser();
-      if(!fu) return null;
-      var u=currentLocalUserByUid(fu.uid);
-      if(!u) return null;
+      var u=fu?currentLocalUserByUid(fu.uid):null;
+      if(!fu || !u) return null;
       return {kind:'user',userId:u.id,name:(u.name||fu.displayName||'Googleユーザー').slice(0,16),persistent:true,authType:'google'};
     }
     return originalOnlineProfileData.apply(this,arguments);
@@ -28604,7 +28843,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   var originalSyncOnlineProfile=window.syncOnlineProfile;
   window.syncOnlineProfile=function(){
     var k=selectedOnlineKind();
-    refreshGoogleOnlineUI();
+    refreshGoogleCloudUI();
     if(k==='google' && !currentFirebaseUser()){
       MP.onlineProfile=null;
       var start=document.getElementById('mp-online-start');
@@ -28612,7 +28851,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
       return;
     }
     var out=originalSyncOnlineProfile.apply(this,arguments);
-    refreshGoogleOnlineUI();
+    refreshGoogleCloudUI();
     return out;
   };
 
@@ -28621,168 +28860,243 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     var userWrap=document.getElementById('mp-online-user-wrap');
     var guestWrap=document.getElementById('mp-online-guest-wrap');
     var googleWrap=document.getElementById('mp-online-google-wrap');
-    if(!kind || kind._googleBound) { refreshGoogleOnlineUI(); return; }
-    kind._googleBound=true;
-    kind.addEventListener('change',function(){
-      var k=kind.value;
-      if(userWrap) userWrap.classList.toggle('mp-hidden',k!=='user');
-      if(guestWrap) guestWrap.classList.toggle('mp-hidden',k!=='guest');
-      if(googleWrap) googleWrap.classList.toggle('mp-hidden',k!=='google');
-      window.syncOnlineProfile();
-    });
-
+    if(!kind){ refreshGoogleCloudUI(); return; }
+    if(!kind._googleBound){
+      kind._googleBound=true;
+      kind.addEventListener('change',function(){
+        var k=kind.value;
+        if(userWrap) userWrap.classList.toggle('mp-hidden',k!=='user');
+        if(guestWrap) guestWrap.classList.toggle('mp-hidden',k!=='guest');
+        if(googleWrap) googleWrap.classList.toggle('mp-hidden',k!=='google');
+        window.syncOnlineProfile();
+      });
+    }
     var login=document.getElementById('mp-google-login-btn');
     var logout=document.getElementById('mp-google-logout-btn');
-    if(login) login.onclick=async function(){
-      login.disabled=true;
-      var fu=await window.ojwgaLoginWithGoogle();
-      login.disabled=false;
-      if(!fu) { refreshGoogleOnlineUI(); return; }
-      var u=await syncGoogleAccount(fu);
-      if(u){
-        root.currentUserId=u.id;
-        if(u.theme && typeof root.display==='object') root.display.theme=u.theme;
-        try { if(typeof applyTheme==='function') applyTheme(); } catch(e) {}
-        try { saveRoot(); } catch(e) {}
+    if(login && !login._googleBound){
+      login._googleBound=true;
+      login.onclick=async function(){
+        login.disabled=true;
+        try{
+          var fu=await window.ojwgaLoginWithGoogle();
+          if(!fu){ refreshGoogleCloudUI(); return; }
+          var u=await syncGoogleAccount(fu);
+          if(u){ root.currentUserId=u.id; if(u.theme&&root.display)root.display.theme=u.theme; try{applyTheme();}catch(e){} try{saveRoot();}catch(e){} }
+          kind.value='google';
+          if(userWrap)userWrap.classList.add('mp-hidden'); if(guestWrap)guestWrap.classList.add('mp-hidden'); if(googleWrap)googleWrap.classList.remove('mp-hidden');
+          window.syncOnlineProfile();
+        } finally { login.disabled=false; refreshGoogleCloudUI(); }
+      };
+    }
+    if(logout && !logout._googleBound){
+      logout._googleBound=true;
+      logout.onclick=async function(){
+        logout.disabled=true;
+        await window.ojwgaLogoutGoogle();
+        logout.disabled=false;
+        MP.onlineProfile=null;
+        refreshGoogleCloudUI();
+        window.syncOnlineProfile();
+      };
+    }
+    // If the active OJWGA user is the signed-in Google account, select it automatically.
+    try{
+      var cu=(typeof getCurrentUser==='function')?getCurrentUser():null;
+      if(currentFirebaseUser() && cu && cu.authType==='google' && cu.firebaseUid===currentFirebaseUser().uid){
+        kind.value='google';
+        if(userWrap)userWrap.classList.add('mp-hidden'); if(guestWrap)guestWrap.classList.add('mp-hidden'); if(googleWrap)googleWrap.classList.remove('mp-hidden');
       }
-      if(kind) kind.value='google';
-      if(userWrap) userWrap.classList.add('mp-hidden');
-      if(guestWrap) guestWrap.classList.add('mp-hidden');
-      if(googleWrap) googleWrap.classList.remove('mp-hidden');
-      window.syncOnlineProfile();
-      refreshGoogleOnlineUI();
-    };
-    if(logout) logout.onclick=async function(){
-      logout.disabled=true;
-      await window.ojwgaLogoutGoogle();
-      logout.disabled=false;
-      MP.onlineProfile=null;
-      refreshGoogleOnlineUI();
-      window.syncOnlineProfile();
-    };
-
-    refreshGoogleOnlineUI();
-    var k=kind.value;
-    if(userWrap) userWrap.classList.toggle('mp-hidden',k!=='user');
-    if(guestWrap) guestWrap.classList.toggle('mp-hidden',k!=='guest');
-    if(googleWrap) googleWrap.classList.toggle('mp-hidden',k!=='google');
+    }catch(e){}
+    refreshGoogleCloudUI();
   }
 
-  // openOnlineLobbyは既存UIを作った後にGoogle UIを差し込む。
   var originalOpenOnlineLobby=window.openOnlineLobby;
   window.openOnlineLobby=function(){
     var r=originalOpenOnlineLobby.apply(this,arguments);
-    try { setupGoogleOnlineUI(); } catch(e) { console.warn('[OJWGA] online Google UI setup error',e); }
+    try{ setupGoogleOnlineUI(); }catch(e){ console.warn('[OJWGA] Google online UI setup error',e); }
     return r;
   };
 
-  // Firebase認証状態 -> ローカルOJWGAユーザーの同期
+  // Firebase auth -> OJWGA local/cloud user
   window.ojwgaHandleFirebaseAuthState=async function(fu){
-    if(!fu){
-      refreshGoogleOnlineUI();
-      return;
-    }
-    try {
+    if(!fu){ stopCloudListener(); setSyncStatus('idle'); refreshGoogleCloudUI(); return; }
+    try{
       var u=await syncGoogleAccount(fu);
       if(u){
-        // switchUserからログイン待ちだった場合のみ、そのユーザーへ切り替える。
         if(window.__ojwgaPendingGoogleTargetId && window.__ojwgaPendingGoogleTargetId===u.id){
           root.currentUserId=u.id;
-          if(u.theme && root.display) root.display.theme=u.theme;
-          try { saveRoot(); } catch(e) {}
+          if(u.theme&&root.display)root.display.theme=u.theme;
+          try{saveRoot();}catch(e){}
           window.__ojwgaPendingGoogleTargetId=null;
-          try { sessionStorage.setItem('oijii_startup_user_selected','1'); } catch(e) {}
-          setTimeout(function(){ try { location.reload(); } catch(e) {} },80);
-          return;
-        }
-        if(typeof root!=='undefined' && getCurrentUser && getCurrentUser() && getCurrentUser().authType==='google' && getCurrentUser().firebaseUid===u.firebaseUid){
-          try { saveRoot(); } catch(e) {}
+          try{sessionStorage.setItem('oijii_startup_user_selected','1');}catch(e){}
+        } else if(typeof getCurrentUser==='function'){
+          var cur=getCurrentUser();
+          if(cur && cur.authType==='google' && cur.firebaseUid===u.firebaseUid){
+            try{saveRoot();}catch(e){}
+          }
         }
       }
-    } catch(e){ console.warn('[OJWGA] Google account sync error',e); }
-    refreshGoogleOnlineUI();
-    if(typeof window.renderOnlinePlayers==='function'){ try { window.renderOnlinePlayers(); } catch(e) {} }
+    }catch(e){ console.warn('[OJWGA] Google account sync error',e); }
+    refreshGoogleCloudUI();
+    if(typeof window.renderOnlinePlayers==='function'){ try{window.renderOnlinePlayers();}catch(e){} }
   };
 
-  // 既存のユーザー切替にGoogle認証を追加。通常ユーザー/ゲストの挙動は元のまま。
+  // Google user selection must prove ownership with the same Firebase account.
   var originalSwitchUser=window.switchUser;
   window.switchUser=function(id){
-    var u=null;
-    try { u=(root.users||[]).find(function(x){return x.id===id;})||null; } catch(e) {}
+    var u=null; try{u=(root.users||[]).find(function(x){return x.id===id;})||null;}catch(e){}
     if(u && u.authType==='google' && u.firebaseUid){
       var fu=currentFirebaseUser();
-      if(fu && fu.uid===u.firebaseUid){
-        return originalSwitchUser.apply(this,arguments);
-      }
+      if(fu && fu.uid===u.firebaseUid) return originalSwitchUser.apply(this,arguments);
       window.__ojwgaPendingGoogleTargetId=u.id;
-      var run=async function(){
+      (async function(){
         var signed=await window.ojwgaLoginWithGoogle();
-        if(!signed){ window.__ojwgaPendingGoogleTargetId=null; return; }
+        if(!signed){window.__ojwgaPendingGoogleTargetId=null;return;}
         if(signed.uid!==u.firebaseUid){
           window.__ojwgaPendingGoogleTargetId=null;
-          try { if(typeof oijAlert==='function') oijAlert('別のGoogleアカウントが選択されました。登録済みのGoogleアカウントでログインしてください。'); } catch(e) {}
+          try{if(typeof oijAlert==='function')oijAlert('別のGoogleアカウントが選択されました。登録済みのGoogleアカウントでログインしてください。');}catch(e){}
           return;
         }
         await syncGoogleAccount(signed);
-        try { root.currentUserId=u.id; root.display.theme=u.theme||'purple'; applyTheme(); saveRoot(); } catch(e) {}
-        try { sessionStorage.setItem('oijii_startup_user_selected','1'); } catch(e) {}
-        setTimeout(function(){ try { location.reload(); } catch(e) {} },80);
-      };
-      run();
+        try{root.currentUserId=u.id; root.display.theme=u.theme||'purple'; applyTheme(); saveRoot();}catch(e){}
+        try{sessionStorage.setItem('oijii_startup_user_selected','1');}catch(e){}
+        setTimeout(function(){try{location.reload();}catch(e){}},100);
+      })();
       return;
     }
     return originalSwitchUser.apply(this,arguments);
   };
 
-  // GoogleユーザーはFirebaseアカウント一致を起動時に要求する。
+  // Existing startup authentication hook: wait briefly for Firebase auth to resolve
+  // before forcing the Google-user chooser gate.
   var originalCheckAuthOnLoad=window.checkAuthOnLoad;
   window.checkAuthOnLoad=function(){
-    try {
+    try{
       var u=(typeof getCurrentUser==='function')?getCurrentUser():null;
       if(u && u.authType==='google' && u.firebaseUid){
+        if(!window.__ojwgaFirebaseAuthReady){
+          setTimeout(function(){ try{ window.checkAuthOnLoad(); }catch(e){} }, 1200);
+          return;
+        }
         var fu=currentFirebaseUser();
         if(!fu || fu.uid!==u.firebaseUid){
           window.__startupUserGate=true;
-          try { document.body.classList.add('startup-user-gate'); } catch(e) {}
-          try { openUserSwitcher(true); } catch(e) {}
+          try{document.body.classList.add('startup-user-gate');}catch(e){}
+          try{openUserSwitcher(true);}catch(e){}
           return;
         }
       }
-    } catch(e) {}
+    }catch(e){}
     return originalCheckAuthOnLoad.apply(this,arguments);
   };
 
-  // ユーザー選択画面からGoogleアカウントを追加/選択する。
   window.ojwgaLoginGoogleFromUserSwitcher=async function(){
     var btn=document.getElementById('userswitch-google-btn');
-    if(btn) btn.disabled=true;
-    try {
+    if(btn)btn.disabled=true;
+    try{
       var fu=await window.ojwgaLoginWithGoogle();
-      if(!fu) return;
+      if(!fu)return;
       var u=await syncGoogleAccount(fu);
-      if(!u) return;
+      if(!u)return;
       root.currentUserId=u.id;
-      try { if(u.theme && root.display) root.display.theme=u.theme; if(typeof applyTheme==='function') applyTheme(); } catch(e) {}
-      try { saveRoot(); } catch(e) {}
-      try { sessionStorage.setItem('oijii_startup_user_selected','1'); } catch(e) {}
-      var ov=document.getElementById('userswitch-overlay');
-      if(ov) ov.classList.remove('show');
-      setTimeout(function(){ try { location.reload(); } catch(e) {} },80);
-    } finally { if(btn) btn.disabled=false; }
+      try{if(u.theme&&root.display)root.display.theme=u.theme;if(typeof applyTheme==='function')applyTheme();}catch(e){}
+      try{saveRoot();}catch(e){}
+      try{sessionStorage.setItem('oijii_startup_user_selected','1');}catch(e){}
+      var ov=document.getElementById('userswitch-overlay'); if(ov)ov.classList.remove('show');
+      try{refreshHome();}catch(e){}
+    } finally { if(btn)btn.disabled=false; refreshGoogleCloudUI(); }
   };
 
-  // 初期化時にFirebaseコールバックが先に走った場合の後追い処理。
+  window.ojwgaLogoutGoogleAndSwitchAway=async function(){
+    var ok=await window.ojwgaLogoutGoogle();
+    if(!ok)return false;
+    stopCloudListener();
+    var u=(typeof getCurrentUser==='function')?getCurrentUser():null;
+    if(u && u.authType==='google'){
+      window.__startupUserGate=true;
+      try{document.body.classList.add('startup-user-gate');openUserSwitcher(true);}catch(e){}
+    }
+    return true;
+  };
+
+  // Mark Google users dirty whenever the existing OJWGA save pipeline runs.
+  window.ojwgaMarkGoogleDirty=function(u){
+    if(!u || u.authType!=='google' || !u.firebaseUid) return;
+    u._cloudDirtyAt=now();
+    u._cloudDeviceId=DEVICE_ID;
+    scheduleSync(u,900);
+  };
+
+  // Network/lifecycle hooks: recover automatically after connectivity returns.
+  window.addEventListener('online',function(){
+    cloudRetryCount=0;
+    var u=(typeof getCurrentUser==='function')?getCurrentUser():null;
+    if(u && u.authType==='google'){
+      setSyncStatus('syncing');
+      if(u._cloudDirtyAt) pushGoogleUser(u,u._cloudDirtyAt).catch(function(){});
+      else setSyncStatus('synced');
+    } else refreshGoogleCloudUI();
+  });
+  window.addEventListener('offline',function(){ setSyncStatus('offline'); });
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='hidden'){
+      var u=(typeof getCurrentUser==='function')?getCurrentUser():null;
+      if(u && u.authType==='google' && u._cloudDirtyAt) pushGoogleUser(u,u._cloudDirtyAt).catch(function(){});
+    }
+  });
+  window.addEventListener('pagehide',function(){
+    var u=(typeof getCurrentUser==='function')?getCurrentUser():null;
+    if(u && u.authType==='google' && u._cloudDirtyAt) pushGoogleUser(u,u._cloudDirtyAt).catch(function(){});
+  });
+
+  function bindUserSwitcherButtons(){
+    var sync=document.getElementById('userswitch-google-sync-btn');
+    var out=document.getElementById('userswitch-google-logout-btn');
+    if(sync && !sync._bound){
+      sync._bound=true;
+      sync.onclick=async function(){
+        sync.disabled=true;
+        try{ await window.ojwgaCloudSyncNow(); }
+        finally{ sync.disabled=false; refreshGoogleCloudUI(); }
+      };
+    }
+    if(out && !out._bound){
+      out._bound=true;
+      out.onclick=async function(){
+        out.disabled=true;
+        await window.ojwgaLogoutGoogleAndSwitchAway();
+        out.disabled=false;
+        refreshGoogleCloudUI();
+      };
+    }
+    refreshGoogleCloudUI();
+  }
+
   function lateBoot(){
     if(window.__ojwgaPendingFirebaseAuthUser !== undefined){
       var pending=window.__ojwgaPendingFirebaseAuthUser;
       window.__ojwgaPendingFirebaseAuthUser=undefined;
-      try { window.ojwgaHandleFirebaseAuthState(pending); } catch(e) {}
+      try{window.ojwgaHandleFirebaseAuthState(pending);}catch(e){}
     }
-    try { refreshGoogleOnlineUI(); } catch(e) {}
+    bindUserSwitcherButtons();
+    refreshGoogleCloudUI();
   }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',lateBoot,{once:true}); else setTimeout(lateBoot,0);
-
-  // 既存MPの結果表示・プロフィール更新はkind='user'のままなのでそのままGoogle UIDにポイントが戻る。
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){setTimeout(lateBoot,0);});
+  else setTimeout(lateBoot,0);
+})();
+</script>
+</script>
+<script id="ojwga-google-ui-extra">
+(function(){
+  function bind(){
+    var b=document.getElementById('mp-google-sync-btn');
+    if(b && !b._bound){
+      b._bound=true;
+      b.onclick=async function(){ b.disabled=true; try{ if(window.ojwgaCloudSyncNow) await window.ojwgaCloudSyncNow(); } finally { b.disabled=false; } };
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){setTimeout(bind,100);}); else setTimeout(bind,100);
+  window.addEventListener('online',bind);
 })();
 </script>
 </body>
