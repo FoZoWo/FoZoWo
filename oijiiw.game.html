@@ -30,6 +30,8 @@
     signInWithRedirect,
     getRedirectResult,
     signOut,
+    deleteUser,
+    reauthenticateWithPopup,
     onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
   import {
@@ -41,6 +43,7 @@
     doc,
     getDoc,
     setDoc,
+    deleteDoc,
     serverTimestamp,
     onSnapshot
   } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -87,7 +90,8 @@
 
   window.OJWGA_FIREBASE = {
     app, auth, db, googleProvider,
-    doc, getDoc, setDoc, serverTimestamp, onSnapshot
+    doc, getDoc, setDoc, deleteDoc, serverTimestamp, onSnapshot,
+    deleteUser, reauthenticateWithPopup
   };
   window.__ojwgaFirebaseAuthUser = null;
   window.__ojwgaFirebaseAuthReady = false;
@@ -114,6 +118,8 @@
       const user = result.user;
       window.__ojwgaFirebaseAuthUser = user;
       window.__ojwgaFirebaseAuthReady = true;
+      // 明示的なGoogleログイン。削除済みOJWGAオンラインユーザーならこのログイン時だけ再作成を許可。
+      window.__ojwgaExplicitGoogleRecreateUid = String(user.uid || '');
       return user;
     } catch (error) {
       console.error("[OJWGA] Google login failed:", error);
@@ -156,8 +162,85 @@
     }
   });
 
+  /* ===== Googleアカウント全端末強制ログアウト監視 =====
+     Google削除時はAuth削除だけに頼らず、FirestoreのaccountStatusも全端末へ即時配信する。 */
+  let __ojwgaGlobalAccountUnsubscribe = null;
+  let __ojwgaGlobalAccountSeen = false;
+  let __ojwgaGlobalAccountUid = '';
+  function __ojwgaStopGlobalAccountWatcher(){
+    try { if (__ojwgaGlobalAccountUnsubscribe) __ojwgaGlobalAccountUnsubscribe(); } catch (_) {}
+    __ojwgaGlobalAccountUnsubscribe = null;
+    __ojwgaGlobalAccountSeen = false;
+    __ojwgaGlobalAccountUid = '';
+  }
+  function __ojwgaStartGlobalAccountWatcher(user){
+    __ojwgaStopGlobalAccountWatcher();
+    if (!user || !user.uid) return;
+    const uid = String(user.uid);
+    __ojwgaGlobalAccountUid = uid;
+    try {
+      const ref = doc(db, 'users', uid);
+      __ojwgaGlobalAccountUnsubscribe = onSnapshot(ref, {includeMetadataChanges:true}, function(snap){
+        if (__ojwgaGlobalAccountUid !== uid) return;
+        if (!snap.exists()) {
+          /* 一度存在を確認したドキュメントが消えた場合も、Googleユーザー消去として扱う。 */
+          if (__ojwgaGlobalAccountSeen && String(window.__ojwgaGlobalDeleteOwnerUid||'') !== uid) {
+            if (typeof window.__ojwgaHandleGlobalGoogleDeletion === 'function') {
+              window.__ojwgaHandleGlobalGoogleDeletion(uid, 'cloud-missing');
+            } else {
+              window.__ojwgaPendingGlobalGoogleDeletionUid = uid;
+            }
+          }
+          return;
+        }
+        __ojwgaGlobalAccountSeen = true;
+        const cloud = snap.data() || {};
+        if (cloud.accountStatus === 'deleted' && String(window.__ojwgaGlobalDeleteOwnerUid||'') !== uid) {
+          if (typeof window.__ojwgaHandleGlobalGoogleDeletion === 'function') {
+            window.__ojwgaHandleGlobalGoogleDeletion(uid, 'cloud-deleted');
+          } else {
+            window.__ojwgaPendingGlobalGoogleDeletionUid = uid;
+          }
+        }
+      }, function(err){
+        console.warn('[OJWGA] global Google deletion watcher error', err);
+      });
+    } catch (e) {
+      console.warn('[OJWGA] global Google deletion watcher setup failed', e);
+    }
+  }
+
+
+  /* 長時間開きっぱなしの端末など、Firestore監視が一時的に切れていても
+     Auth側のrefresh時に削除済みアカウントを検知できるようにする。 */
+  let __ojwgaTokenCheckTimer = null;
+  function __ojwgaStartTokenCheck(user){
+    if (__ojwgaTokenCheckTimer) clearInterval(__ojwgaTokenCheckTimer);
+    __ojwgaTokenCheckTimer = null;
+    if (!user) return;
+    __ojwgaTokenCheckTimer = setInterval(async function(){
+      const current = auth.currentUser;
+      if (!current || current.uid !== user.uid) return;
+      try {
+        await current.getIdToken(true);
+      } catch (e) {
+        const code = String(e && e.code || '');
+        if (code === 'auth/user-not-found' || code === 'auth/user-token-expired' || code === 'auth/user-disabled') {
+          if (typeof window.__ojwgaHandleGlobalGoogleDeletion === 'function') {
+            window.__ojwgaHandleGlobalGoogleDeletion(user.uid, 'auth-token');
+          } else {
+            window.__ojwgaPendingGlobalGoogleDeletionUid = String(user.uid);
+          }
+          try { await signOut(auth); } catch (_) {}
+        }
+      }
+    }, 30000);
+  }
+
   onAuthStateChanged(auth, function (user) {
     window.__ojwgaFirebaseAuthUser = user || null;
+    if (user) { __ojwgaStartGlobalAccountWatcher(user); __ojwgaStartTokenCheck(user); }
+    else { __ojwgaStopGlobalAccountWatcher(); if (__ojwgaTokenCheckTimer) clearInterval(__ojwgaTokenCheckTimer); __ojwgaTokenCheckTimer=null; }
     window.__ojwgaFirebaseAuthReady = true;
     if (typeof window.ojwgaHandleFirebaseAuthState === "function") {
       try { window.ojwgaHandleFirebaseAuthState(user || null); } catch (e) {
@@ -7877,7 +7960,7 @@ function __notifySplashDone(){
                             <button type="button" class="ojwga-v17-btn" id="ojwga-online-logout-btn" onclick="ojwgaV17LogoutGoogle()">🚪 ログアウト</button>
                             <button type="button" class="ojwga-v17-btn danger full" id="ojwga-online-delete-btn" onclick="ojwgaV17DeleteAccount()">☠️ Googleユーザを消去</button>
                         </div>
-                        <div class="ojwga-v17-danger-note">完全消去すると、Firebase AuthenticationのGoogleログインアカウントとFirestore上のOJWGAクラウドデータを削除します。取り消せません。</div>
+                        <div class="ojwga-v17-danger-note">完全消去すると、OJWGAオンラインユーザーのクラウドデータとこの端末のGoogleユーザー情報を削除します。Googleアカウント本体・Firebase認証は削除しません。</div>
                     </div>
                 </div>
 
@@ -16034,7 +16117,7 @@ const RESET_INFO = {
     googleAccountDelete: {
         icon: '☠️',
         title: '【ヒッヒッヒ……Googleオンラインユーザーを完全に消すぞい】',
-        lead: 'このGoogleアカウントに結びついたOJWGAオンラインユーザーを、オンラインの記録ごとぜーんぶ消し去って、そのままログアウトするぞい。よーく読んでから進むのじゃ。',
+        lead: 'このGoogleアカウントに結びついたOJWGAオンラインユーザーを、OJWGA側のオンライン記録ごとぜーんぶ消し去って、この端末だけログアウトするぞい。Googleアカウント本体は消えんぞい。よーく読んでから進むのじゃ。',
         deletes: [
             '🌐 Google連携したOJWGAオンラインユーザー本体',
             '💎 Firestoreのポイント・実績・プレイ記録・オンライン設定',
@@ -16044,6 +16127,7 @@ const RESET_INFO = {
         keeps: [
             '👤 このGoogleユーザーとは別のオフラインユーザー',
             '📧 Googleアカウント本体（Gmail・Driveなど）は消えんぞい',
+            '🔐 Firebase AuthenticationのGoogleログインは残るぞい',
             '🎮 ゲーム本体や外部画像ファイルは消えんぞい'
         ]
     },
@@ -28813,9 +28897,25 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     if(!firebaseReady() || !fu || !u) return;
     try {
       var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',fu.uid);
+      var hadCloudRecord=!!(u&&Number(u._cloudSyncedAt||0));
       cloudUnsubscribe=window.OJWGA_FIREBASE.onSnapshot(ref,{includeMetadataChanges:true},function(snap){
-        if(!snap.exists()) return;
+        if(!snap.exists()){
+          if(hadCloudRecord && String(window.__ojwgaGlobalDeleteOwnerUid||'')!==String(fu.uid||'')){
+            try{handleDeletedCloudUser(fu.uid,u)}catch(e){}
+          }
+          return;
+        }
+        hadCloudRecord=true;
         var cloud=snap.data()||{};
+        if(cloud.accountStatus==='deleted'){
+          // OJWGAオンラインユーザーは消去済み。ただしGoogle/Firebase認証は有効なまま。
+          try{
+            if(window.OJWGA_FIREBASE && window.OJWGA_FIREBASE.__ojwgaHandleDeletedCloudUser){
+              window.OJWGA_FIREBASE.__ojwgaHandleDeletedCloudUser(fu.uid, u);
+            }
+          }catch(e){}
+          return;
+        }
         // Local pending writes already reflect the newest local state.
         if(snap.metadata && snap.metadata.hasPendingWrites){
           setSyncStatus('syncing');
@@ -28844,6 +28944,34 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     }
   }
 
+  function handleDeletedCloudUser(uid, knownUser){
+    uid=String(uid||'');
+    try{
+      /* Firestoreで削除を検知した端末は、まず全画面の強制ログアウトUIを出す。
+         削除を開始した端末はOwnerフラグで二重処理を避ける。 */
+      if(String(window.__ojwgaGlobalDeleteOwnerUid||'')!==uid){
+        if(typeof window.__ojwgaHandleGlobalGoogleDeletion==='function') window.__ojwgaHandleGlobalGoogleDeletion(uid,'cloud-deleted');
+        else window.__ojwgaPendingGlobalGoogleDeletionUid=uid;
+      }
+      if(!root || !Array.isArray(root.users) || !uid) return;
+      var removedCurrent = !!(root.currentUserId && String(root.currentUserId)===uid);
+      root.users=root.users.filter(function(x){
+        return !(x && (String(x.firebaseUid||'')===uid || (x.authType==='google' && String(x.id||'')===uid)));
+      });
+      if(removedCurrent){
+        var fallback=root.users.find(function(x){return x && x.authType!=='google';});
+        root.currentUserId=fallback ? fallback.id : null;
+      }
+      saveRoot();
+      try{stopCloudListener();}catch(e){}
+      try{if(typeof renderUserList==='function')renderUserList();}catch(e){}
+      try{if(typeof refreshHome==='function')refreshHome();}catch(e){}
+      try{if(window.MP)window.MP.onlineProfile=null;}catch(e){}
+      try{refreshGoogleCloudUI();}catch(e){}
+    }catch(e){ console.warn('[OJWGA] deleted Google shadow cleanup failed',e); }
+  }
+  if(window.OJWGA_FIREBASE) window.OJWGA_FIREBASE.__ojwgaHandleDeletedCloudUser=handleDeletedCloudUser;
+
   async function syncGoogleAccountCore(fu){
     if(!fu || !firebaseReady() || typeof root==='undefined') return null;
     var u=currentLocalUserByUid(fu.uid);
@@ -28859,6 +28987,20 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     }
 
     var isNew=!u;
+    var explicitRecreate=(String(window.__ojwgaExplicitGoogleRecreateUid||'')===String(fu.uid||''));
+    if(snap && snap.exists()){
+      var earlyCloud=snap.data()||{};
+      if(earlyCloud.accountStatus==='deleted'){
+        if(!explicitRecreate){
+          try{ handleDeletedCloudUser(fu.uid,u); }catch(e){}
+          setSyncStatus('idle');
+          return null;
+        }
+        // 明示的なGoogleログイン時だけ、削除済みOJWGAユーザーを新規状態で再作成する。
+        snap=null;
+        try{delete window.__ojwgaExplicitGoogleRecreateUid;}catch(e){window.__ojwgaExplicitGoogleRecreateUid=null;}
+      }
+    }
     if(!u){
       u={
         id:fu.uid,
@@ -29101,6 +29243,14 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
 
   // Firebase auth -> OJWGA local/cloud user
   window.ojwgaHandleFirebaseAuthState=async function(fu){
+    if(!fu && window.__ojwgaGlobalDeleteOwnerUid){
+      var deletedUid=String(window.__ojwgaGlobalDeleteOwnerUid);
+      try{if(typeof handleDeletedCloudUser==='function') handleDeletedCloudUser(deletedUid,null);}catch(e){}
+      try{window.__ojwgaGlobalDeleteOwnerUid='';}catch(e){}
+      try{if(typeof window.__ojwgaHandleGlobalGoogleDeletion==='function') window.__ojwgaHandleGlobalGoogleDeletion(deletedUid,'auth-deleted');}catch(e){}
+      try{stopCloudListener()}catch(e){}
+      return;
+    }
     if(!fu){
       /* Firebaseが外部要因でサインアウトした場合も、端末のGoogle影ユーザーを一覧から除去する。
          クラウドFirestoreデータは削除しない。 */
@@ -29284,6 +29434,207 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){setTimeout(bind,100);}); else setTimeout(bind,100);
   window.addEventListener('online',bind);
+})();
+</script>
+
+
+<style id="ojwga-google-global-logout-style">
+/* Google削除の全端末強制ログアウト画面：既存の初期化警告と同系統の全画面UI */
+#ojwga-google-global-logout-overlay{
+  position:fixed !important;
+  inset:0 !important;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  z-index:2147483647 !important;
+  box-sizing:border-box;
+  background:radial-gradient(ellipse at 50% 20%, rgba(140,0,20,.55), transparent 55%), #030001 !important;
+}
+#ojwga-google-global-logout-overlay.show{display:flex !important}
+#ojwga-google-global-logout-card{
+  position:relative;
+  z-index:1;
+  width:min(480px,94vw);
+  max-height:calc(100vh - 48px);
+  overflow-y:auto;
+  box-sizing:border-box;
+  text-align:center;
+  padding:26px 18px 22px;
+  border-radius:20px;
+  background:rgba(20,0,4,.82);
+  border:1px solid rgba(255,70,90,.42);
+  box-shadow:0 20px 60px rgba(0,0,0,.62);
+}
+#ojwga-google-global-logout-icon{
+  font-size:70px;
+  margin-bottom:14px;
+  animation:ojwga-global-logout-shake .5s infinite;
+  filter:drop-shadow(0 0 20px #ff3333);
+}
+@keyframes ojwga-global-logout-shake{
+  0%,100%{transform:rotate(-4deg)}
+  50%{transform:rotate(4deg)}
+}
+#ojwga-google-global-logout-title{
+  color:#ff4444;
+  font-size:1.6rem;
+  margin:0 0 12px;
+  text-shadow:0 0 15px rgba(255,0,0,.6);
+  letter-spacing:2px;
+}
+#ojwga-google-global-logout-text{
+  color:#ffd0d0;
+  font-size:1rem;
+  line-height:1.8;
+  margin:0 0 18px;
+  padding:14px 16px;
+  border-radius:14px;
+  background:rgba(255,40,40,.08);
+  border:1px solid rgba(255,80,80,.25);
+  white-space:pre-line;
+}
+#ojwga-google-global-logout-detail{
+  color:#e7d7dc;
+  font-size:.9rem;
+  line-height:1.7;
+  margin:0 auto 20px;
+  max-width:430px;
+}
+.ojwga-google-global-logout-actions{
+  display:flex;
+  justify-content:center;
+}
+#ojwga-google-global-logout-ok{
+  appearance:none;
+  border:1px solid #ff8a9a;
+  border-radius:999px;
+  padding:13px 34px;
+  min-width:150px;
+  color:#fff;
+  font-weight:800;
+  font-size:1rem;
+  background:linear-gradient(135deg,#ff4d6d,#c0392b);
+  box-shadow:0 6px 0 #7a1a14,0 10px 28px rgba(255,50,50,.35);
+  cursor:pointer;
+}
+#ojwga-google-global-logout-ok:active{transform:translateY(3px);box-shadow:0 3px 0 #7a1a14}
+</style>
+
+<!-- ===== Google削除：全端末強制ログアウト・初期化風エラーUI ===== -->
+<div id="ojwga-google-global-logout-overlay" aria-hidden="true">
+  <div id="ojwga-google-global-logout-card" role="alertdialog" aria-modal="true" aria-labelledby="ojwga-google-global-logout-title">
+    <div id="ojwga-google-global-logout-icon">⚠️</div>
+    <h2 id="ojwga-google-global-logout-title">Googleユーザが削除されました</h2>
+    <p id="ojwga-google-global-logout-text">このGoogleユーザは削除されました。<br>安全のため、すべての端末から強制ログアウトしました。</p>
+    <div id="ojwga-google-global-logout-detail">この端末に保存されていたGoogleユーザー情報も消去されています。Googleオンラインを再び利用する場合は、Googleアカウントでログインしてください。</div>
+    <div class="ojwga-google-global-logout-actions">
+      <button type="button" id="ojwga-google-global-logout-ok">確認</button>
+    </div>
+  </div>
+</div>
+
+<script id="ojwga-google-global-logout-controller">
+(function(){
+  'use strict';
+  var shownUid='';
+  var signingOut=false;
+  function byId(id){return document.getElementById(id)}
+  function currentFb(){try{return window.__ojwgaFirebaseAuthUser||null}catch(e){return null}}
+  function hideOtherOverlays(){
+    var ids=['ojwga-online-delete-info-overlay','ojwga-online-delete-warn1','ojwga-online-delete-warn2','ojwga-online-delete-spinner','reset-info-overlay','reset-overlay'];
+    ids.forEach(function(id){var x=byId(id);if(x){x.classList.remove('show');x.setAttribute('aria-hidden','true')}});
+  }
+  function stopMusic(){
+    try{window.__OIJII_FORCE_AUDIO_STOP=true}catch(e){}
+    try{var a=byId('main-bgm');if(a)a.pause()}catch(e){}
+    try{if(window.MainBGM&&typeof window.MainBGM.syncFromSettings==='function')window.MainBGM.syncFromSettings()}catch(e){}
+  }
+  function resumeMusic(){
+    try{window.__OIJII_FORCE_AUDIO_STOP=false}catch(e){}
+    try{if(window.MainBGM&&typeof window.MainBGM.syncFromSettings==='function')window.MainBGM.syncFromSettings()}catch(e){}
+  }
+  function cleanLocal(uid){
+    uid=String(uid||'');
+    try{
+      if(typeof root!=='undefined'&&root&&Array.isArray(root.users)){
+        var removedCurrent=!!(root.currentUserId&&String(root.currentUserId)===uid);
+        root.users=root.users.filter(function(u){
+          return !(u&&(String(u.firebaseUid||'')===uid||(u.authType==='google'&&String(u.id||'')===uid)));
+        });
+        if(removedCurrent){
+          var fallback=root.users.find(function(u){return u&&u.authType!=='google'});
+          root.currentUserId=fallback?fallback.id:null;
+        }
+        try{saveRoot()}catch(e){}
+      }
+    }catch(e){console.warn('[OJWGA] global logout local cleanup failed',e)}
+    try{if(typeof renderUserList==='function')renderUserList()}catch(e){}
+    try{if(typeof refreshHome==='function')refreshHome()}catch(e){}
+    try{if(window.MP)window.MP.onlineProfile=null}catch(e){}
+    try{if(typeof refreshGoogleCloudUI==='function')refreshGoogleCloudUI()}catch(e){}
+  }
+  function show(uid, reason){
+    uid=String(uid||'');
+    var ov=byId('ojwga-google-global-logout-overlay');
+    if(!ov)return;
+    if(shownUid===uid && ov.classList.contains('show'))return;
+    shownUid=uid;
+    window.__ojwgaGlobalGoogleDeleteVisible=true;
+    hideOtherOverlays();
+    stopMusic();
+    ov.classList.add('show');
+    ov.setAttribute('aria-hidden','false');
+    var title=byId('ojwga-google-global-logout-title');
+    var text=byId('ojwga-google-global-logout-text');
+    var detail=byId('ojwga-google-global-logout-detail');
+    var en=false;try{en=typeof getAppLang==='function'&&getAppLang()==='en'}catch(e){}
+    if(en){
+      if(title)title.textContent='Google user deleted';
+      if(text)text.innerHTML='This Google user has been deleted.<br>For security, all devices have been signed out.';
+      if(detail)detail.textContent='The Google user information saved on this device has also been removed. Sign in with Google again to use OJWGA online.';
+    }else{
+      if(title)title.textContent='Googleユーザが削除されました';
+      if(text)text.innerHTML='このGoogleユーザは削除されました。<br>安全のため、すべての端末から強制ログアウトしました。';
+      if(detail)detail.textContent='この端末に保存されていたGoogleユーザー情報も消去されています。Googleオンラインを再び利用する場合は、Googleアカウントでログインしてください。';
+    }
+    try{
+      if(typeof witchSpeak==='function') witchSpeak(en?'The Google user was deleted. All devices have been signed out.':'Googleユーザが削除されたぞい。安全のため、すべての端末からログアウトさせたぞい。');
+    }catch(e){}
+    cleanLocal(uid);
+    try{sessionStorage.removeItem('oijwga_startup_user_selected')}catch(e){}
+    try{sessionStorage.removeItem('oijii_startup_user_selected')}catch(e){}
+    /* リモート端末は、Firestore通知を受けた直後にこのAuthセッションも終了させる。 */
+    var fu=currentFb();
+    if(fu&&String(fu.uid)===uid&&!signingOut){
+      signingOut=true;
+      setTimeout(async function(){
+        try{
+          if(window.OJWGA_FIREBASE&&window.OJWGA_FIREBASE.signOut)await window.OJWGA_FIREBASE.signOut(window.OJWGA_FIREBASE.auth);
+          else signingOut=false;
+        }catch(e){console.warn('[OJWGA] forced global sign-out failed',e);signingOut=false}
+      },60);
+    }
+  }
+  window.__ojwgaHandleGlobalGoogleDeletion=function(uid,reason){
+    uid=String(uid||''); if(!uid)return;
+    show(uid,reason);
+  };
+  function consumePending(){
+    var uid=window.__ojwgaPendingGlobalGoogleDeletionUid;
+    if(uid){window.__ojwgaPendingGlobalGoogleDeletionUid='';show(uid,'pending')}
+  }
+  var ok=byId('ojwga-google-global-logout-ok');
+  if(ok)ok.addEventListener('click',function(){
+    var ov=byId('ojwga-google-global-logout-overlay');
+    if(ov){ov.classList.remove('show');ov.setAttribute('aria-hidden','true')}
+    window.__ojwgaGlobalGoogleDeleteVisible=false;
+    shownUid='';
+    resumeMusic();
+    try{if(typeof openUserSwitcher==='function')openUserSwitcher(false)}catch(e){}
+  });
+  window.addEventListener('load',consumePending);
+  setTimeout(consumePending,300);
 })();
 </script>
 </body>
@@ -29580,17 +29931,11 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
 
 <!-- ===== OJWGA v17 Firebase account controls ===== -->
 <script type="module" id="ojwga-firebase-account-controls">
-  import {
-    deleteUser,
-    reauthenticateWithPopup
-  } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-  import { deleteDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+  import { reauthenticateWithPopup } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
   function expose(){
     if(!window.OJWGA_FIREBASE) return;
-    window.OJWGA_FIREBASE.deleteUser = deleteUser;
     window.OJWGA_FIREBASE.reauthenticateWithPopup = reauthenticateWithPopup;
-    window.OJWGA_FIREBASE.deleteDoc = deleteDoc;
     window.__ojwgaFirebaseAccountControlsReady = true;
     if(typeof window.ojwgaAccountControlsReady === 'function'){
       try{ window.ojwgaAccountControlsReady(); }catch(e){}
@@ -29909,50 +30254,11 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     return true;
   };
 
-  // Full cloud+Auth account deletion. Firestore main user doc is deleted before Auth delete.
+  // Legacy entry point. The actual Google deletion flow is defined below and no longer deletes Firebase Authentication.
   async function deleteOnlineAccount(){
-    var u=getU(), fu=fbUser();
-    if(state.deleteBusy)return;
-    if(!isGoogleUser(u)||!fu||fu.uid!==u.firebaseUid){safeAlert('削除するGoogleアカウントでログインしていません。','The Google account to delete is not signed in.');return;}
-    if(!dbReady()){safeAlert('アカウント削除機能の準備中です。少し待ってからもう一度試してください。','Account deletion controls are still loading. Please try again.');return;}
-    state.deleteBusy=true;
-    try{
-
-      try{
-        var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',fu.uid);
-        await window.OJWGA_FIREBASE.deleteDoc(ref);
-      }catch(e){
-        console.warn('[OJWGA v17] Firestore profile delete failed',e);
-        // Continue to Auth delete only if the document is already gone; otherwise don't claim full deletion.
-        throw new Error('Firestore側のオンラインデータを削除できませんでした。アカウント削除を中止しました。');
-      }
-
-      var authUser=window.OJWGA_FIREBASE.auth.currentUser;
-      if(!authUser || authUser.uid!==fu.uid) throw new Error('Google認証状態が確認できませんでした。');
-      try{
-        await window.OJWGA_FIREBASE.deleteUser(authUser);
-      }catch(e){
-        if(e && (e.code==='auth/requires-recent-login' || e.code==='auth/user-token-expired')){
-          // Re-authenticate with Google; ensure the same account is used.
-          var provider=window.OJWGA_FIREBASE.googleProvider;
-          var re=await window.OJWGA_FIREBASE.reauthenticateWithPopup(authUser,provider);
-          if(!re || !re.user || re.user.uid!==fu.uid) throw new Error('別のGoogleアカウントが選ばれました。削除を中止しました。');
-          await window.OJWGA_FIREBASE.deleteUser(authUser);
-        }else throw e;
-      }
-
-      // Remove local shadow account too.
-      var idx=(root.users||[]).findIndex(function(x){return x && x.id===u.id;});
-      if(idx>=0)root.users.splice(idx,1);
-      root.currentUserId=(root.users[0]&&root.users[0].id)||null;
-      if(!root.users.length)root.setupCompleted=false;
-      saveRoot();
-      safeAlert('GoogleアカウントとOJWGAオンラインデータを完全に消去しました。','The Google account and OJWGA online data were permanently deleted.');
-      setTimeout(function(){location.reload();},300);
-    }catch(e){
-      console.error('[OJWGA v17] full online account deletion failed',e);
-      safeAlert(e.message||'アカウント削除に失敗しました。','Account deletion failed.');
-    }finally{state.deleteBusy=false;renderOnlineAccountPanel();}
+    if(typeof window.__ojwgaRunOnlineAccountDelete==='function') return window.__ojwgaRunOnlineAccountDelete();
+    safeAlert('完全消去機能の準備がまだ完了していません。','Account deletion is still loading.');
+    return false;
   }
   window.ojwgaV17DeleteAccount=deleteOnlineAccount;
 
@@ -30273,33 +30579,55 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     if(!isGoogle(u)||!fu||fu.uid!==u.firebaseUid){busy=false;allHide();alertMsg('削除するGoogleアカウントでログインしていません。','The Google account to delete is not signed in.');return}
     if(!ready()){busy=false;allHide();alertMsg('削除機能の準備がまだ完了していません。少し待ってからもう一度試してください。','Account deletion is still loading. Please try again.');return}
     try{
-      spinner('Firestoreのオンラインデータを削除しています…');
-      var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',fu.uid);
-      await window.OJWGA_FIREBASE.deleteDoc(ref);
+      var ownerUid=String(fu.uid);
+      window.__ojwgaGlobalDeleteOwnerUid=ownerUid;
+      spinner('OJWGAオンラインデータを消去しています…');
+      var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',ownerUid);
 
-      spinner('Google認証ユーザーを削除しています…');
-      var authUser=window.OJWGA_FIREBASE.auth.currentUser;
-      if(!authUser||authUser.uid!==fu.uid) throw new Error('Google認証状態を確認できませんでした。');
+      /* 1) 先に「削除確定」を全端末へ配信する。接続中の端末はこの瞬間に
+            初期化風の強制ログアウト画面へ移り、AuthもsignOutする。 */
+      await window.OJWGA_FIREBASE.setDoc(ref,{
+        accountStatus:'deleted',
+        deletedAt:window.OJWGA_FIREBASE.serverTimestamp(),
+        globalLogout:true,
+        globalLogoutVersion:1,
+        schemaVersion:5
+      },{merge:true});
+
+      /* 2) Firebase Authenticationユーザーそのものを削除する。
+            Firebaseではユーザー削除によりrefresh tokenも無効化され、
+            他端末のセッションも再認証が必要になる。 */
+      spinner('すべての端末からログアウトしています…');
+      var authUser=(window.OJWGA_FIREBASE.auth&&window.OJWGA_FIREBASE.auth.currentUser)||fu;
       try{
         await window.OJWGA_FIREBASE.deleteUser(authUser);
       }catch(e){
-        if(e&&(e.code==='auth/requires-recent-login'||e.code==='auth/user-token-expired')){
-          spinner('Googleアカウントを再確認しています…');
-          var provider=window.OJWGA_FIREBASE.googleProvider;
-          var rr=await window.OJWGA_FIREBASE.reauthenticateWithPopup(authUser,provider);
-          if(!rr||!rr.user||rr.user.uid!==fu.uid) throw new Error('別のGoogleアカウントが選ばれました。削除を中止しました。');
-          await window.OJWGA_FIREBASE.deleteUser(authUser);
-        }else throw e;
+        if(e&&e.code==='auth/requires-recent-login'){
+          spinner('Googleの再認証を確認しています…');
+          var provider=new GoogleAuthProvider();
+          provider.setCustomParameters({prompt:'select_account'});
+          await window.OJWGA_FIREBASE.reauthenticateWithPopup(
+            window.OJWGA_FIREBASE.auth.currentUser||authUser,provider
+          );
+          await window.OJWGA_FIREBASE.deleteUser(window.OJWGA_FIREBASE.auth.currentUser||authUser);
+        }else{
+          throw e;
+        }
       }
 
-      spinner('この端末のGoogleユーザー情報も削除しています…');
-      try{if(window.OJWGA_FIREBASE.signOut)await window.OJWGA_FIREBASE.signOut(window.OJWGA_FIREBASE.auth);}catch(e){}
-      try{cleanupLocal(fu.uid)}catch(e){}
+      /* deleteUser成功後はこの端末のAuthも終了している。表示は全端末共通の強制ログアウト画面へ。 */
+      try{window.__ojwgaGlobalDeleteOwnerUid=''}catch(e){}
+      try{cleanupLocal(ownerUid)}catch(e){}
       try{localStorage.setItem('oijii_last_google_delete_v1',String(Date.now()))}catch(e){}
-      spinner('完了しました。ログアウトして再起動します…');
-      setTimeout(function(){try{location.reload()}catch(e){location.href=location.href}},1200);
+      try{window.__OIJII_GOOGLE_DELETE_FLOW=false;}catch(e){}
+      try{
+        if(typeof window.__ojwgaHandleGlobalGoogleDeletion==='function')
+          window.__ojwgaHandleGlobalGoogleDeletion(ownerUid,'initiator');
+      }catch(e){}
+      busy=false;
     }catch(e){
       console.error('[OJWGA] full online account deletion failed',e);
+      try{window.__ojwgaGlobalDeleteOwnerUid=''}catch(_e){}
       try{if(typeof window.__ojwgaDeleteCursorOff==='function')window.__ojwgaDeleteCursorOff();}catch(_e){}
       try{var ro=el('reset-overlay');if(ro)ro.classList.remove('show');var rs=el('reset-spinner');if(rs)rs.classList.remove('show');var rw=el('reset-warning');if(rw)rw.style.display='block';}catch(_e){}
       busy=false;allHide();
@@ -30446,7 +30774,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
         return;
       }
       try{
-        // The executor already performs Firestore deletion, Auth deletion/re-auth, local cleanup and reload/sign-out.
+        // The executor performs OJWGA cloud tombstoning, current-device sign-out, local cleanup, and normal UI return.
         runner();
       }catch(e){
         console.error('[OJWGA v19] deletion executor failed',e);
