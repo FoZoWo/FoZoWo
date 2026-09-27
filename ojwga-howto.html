@@ -1,172 +1,1298 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#3a1c5e"><title>OJWGA公式 遊び方完全ガイド</title><style>
-:root{
-  --bg:#08040f;--bg2:#120821;--panel:rgba(25,12,44,.86);--panel2:rgba(42,20,72,.76);
-  --purple:#9b59b6;--violet:#c77dff;--gold:#f1c40f;--gold2:#ffd66b;
-  --text:#fff8ff;--muted:#cdb8e8;--line:rgba(199,125,255,.28);--danger:#ff4d6d;--ok:#2ed573;
-  --shadow:0 18px 55px rgba(0,0,0,.42),0 0 0 1px rgba(199,125,255,.1);
-  --radius:22px;--max:1180px;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;color:var(--text);font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,system-ui,sans-serif;background:
-radial-gradient(circle at 15% 8%,rgba(155,89,182,.24),transparent 34%),
-radial-gradient(circle at 85% 12%,rgba(241,196,15,.10),transparent 28%),
-linear-gradient(180deg,#0a0513 0%,#0b0617 52%,#05030a 100%);min-height:100vh;overflow-x:hidden}
-a{color:inherit;text-decoration:none}button,input{font:inherit}button{cursor:pointer}
-::selection{background:rgba(199,125,255,.38)}
-#stars,#particles{position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden}
-.star{position:absolute;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.68);box-shadow:0 0 10px rgba(199,125,255,.8);animation:twinkle var(--d,4s) ease-in-out infinite}
-.particle{position:absolute;width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--gold));opacity:.18;filter:blur(.4px);animation:drift var(--d,15s) linear infinite}
-@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1.35)}}
-@keyframes drift{0%{transform:translate3d(0,110vh,0) rotate(0);opacity:0}15%{opacity:.28}85%{opacity:.2}100%{transform:translate3d(80px,-20vh,0) rotate(240deg);opacity:0}}
-@keyframes float{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-13px) rotate(3deg)}}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(199,125,255,.22)}50%{box-shadow:0 0 0 14px rgba(199,125,255,0)}}
-@keyframes shimmer{0%{background-position:0% 50%}100%{background-position:200% 50%}}
-@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
-@keyframes glow{0%,100%{filter:drop-shadow(0 0 7px rgba(199,125,255,.45))}50%{filter:drop-shadow(0 0 20px rgba(241,196,15,.52))}}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition:none!important}}
-.topbar{position:sticky;top:0;z-index:50;border-bottom:1px solid rgba(199,125,255,.18);background:rgba(7,3,14,.76);backdrop-filter:blur(16px) saturate(1.15)}
-.nav{max-width:var(--max);margin:auto;min-height:70px;padding:10px 18px;display:flex;align-items:center;gap:18px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.03em;white-space:nowrap}
-.brand-mark{font-size:28px;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 0 10px rgba(199,125,255,.45))}
-.brand small{display:block;color:var(--muted);font-weight:700;font-size:10px;letter-spacing:.14em}
-.navlinks{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end}
-.navlinks a{padding:9px 12px;border-radius:999px;color:#e9def6;font-size:13px;font-weight:800;border:1px solid transparent;transition:.18s}
-.navlinks a:hover{background:rgba(155,89,182,.16);border-color:rgba(199,125,255,.22);transform:translateY(-1px)}
-.nav-cta{background:linear-gradient(135deg,var(--gold),#e67e22)!important;color:#261607!important;box-shadow:0 4px 0 #a05a18}
-@media(max-width:760px){.nav{flex-wrap:wrap}.navlinks{width:100%;overflow:auto;justify-content:flex-start;flex-wrap:nowrap;padding-bottom:4px}.navlinks a{flex:0 0 auto}}
-.wrap{max-width:var(--max);margin:auto;padding:0 18px}
-.hero{padding:86px 0 54px}.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:34px;align-items:center}
-@media(max-width:900px){.hero-grid{grid-template-columns:1fr}}
-.kicker{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid rgba(241,196,15,.36);border-radius:999px;background:rgba(241,196,15,.09);color:var(--gold2);font-size:12px;font-weight:900;letter-spacing:.12em}
-.hero h1{font-size:clamp(42px,6vw,78px);line-height:1.02;margin:16px 0 14px;letter-spacing:-.04em}
-.gradient{background:linear-gradient(90deg,#fff 0%,#f3e8ff 35%,var(--violet) 60%,var(--gold2) 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 5s linear infinite}
-.hero p{color:#e0d4eb;line-height:1.9;max-width:680px;font-size:17px}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:999px;padding:13px 20px;font-weight:900;transition:.18s;box-shadow:0 5px 0 rgba(0,0,0,.28)}
-.btn:hover{transform:translateY(-2px);filter:brightness(1.07)}.btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.28)}
-.btn-primary{background:linear-gradient(135deg,var(--violet),#6c3483);color:#fff}.btn-gold{background:linear-gradient(135deg,var(--gold),#ff8c00);color:#2c1804}.btn-ghost{background:rgba(255,255,255,.06);border:1px solid rgba(199,125,255,.26);color:#f7efff}
-.witch-orb{width:min(100%,420px);aspect-ratio:1;border-radius:50%;position:relative;margin:auto;background:
-radial-gradient(circle at 40% 30%,rgba(199,125,255,.32),transparent 35%),radial-gradient(circle at 65% 65%,rgba(241,196,15,.18),transparent 34%),
-linear-gradient(145deg,rgba(54,25,88,.95),rgba(10,5,22,.98));border:1px solid rgba(199,125,255,.38);box-shadow:var(--shadow);display:grid;place-items:center;overflow:hidden;animation:glow 3.4s ease-in-out infinite}
-.witch-orb:before,.witch-orb:after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.08)}
-.witch-orb:before{inset:12%;animation:pulse 2.8s infinite}.witch-orb:after{inset:24%;border-color:rgba(241,196,15,.17);animation:pulse 3.8s infinite}
-.witch-face{font-size:128px;animation:float 3s ease-in-out infinite;z-index:2;filter:drop-shadow(0 15px 24px rgba(0,0,0,.45))}
-.orb-caption{position:absolute;bottom:20px;padding:8px 12px;border-radius:999px;background:rgba(0,0,0,.42);border:1px solid rgba(199,125,255,.22);font-size:12px;color:#e7d8f7}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:35px}@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}}
-.stat{padding:16px;border-radius:18px;background:rgba(20,10,35,.68);border:1px solid rgba(199,125,255,.19);box-shadow:var(--shadow)}
-.stat .n{font-size:28px;font-weight:1000;color:#fff;text-shadow:0 0 12px rgba(241,196,15,.25)}.stat .l{color:var(--muted);font-size:12px;margin-top:5px}
-section{padding:76px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:28px}
-.eyebrow{color:var(--gold);font-size:11px;font-weight:1000;letter-spacing:.16em;text-transform:uppercase}.section-head h2{font-size:clamp(28px,4vw,44px);margin:6px 0 0}.section-head p{max-width:560px;color:var(--muted);line-height:1.8;margin:0}
-.card{background:linear-gradient(160deg,rgba(30,15,52,.9),rgba(11,5,22,.9));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
-.filterbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.chip{border:none;padding:8px 13px;border-radius:999px;background:rgba(155,89,182,.13);border:1px solid rgba(199,125,255,.22);color:#eadff6;font-size:12px;font-weight:900}
-.chip.active{background:linear-gradient(135deg,var(--gold),#ff8c00);color:#2c1703;border-color:transparent}.search{margin-left:auto;min-width:220px;padding:10px 14px;border-radius:999px;background:rgba(0,0,0,.22);border:1px solid rgba(199,125,255,.2);color:#fff;outline:none}
-.games{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}@media(max-width:920px){.games{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.games{grid-template-columns:1fr}}
-.game{position:relative;padding:20px;overflow:hidden;transform:translateZ(0);transition:.2s}.game:hover{transform:translateY(-5px);border-color:rgba(241,196,15,.42);box-shadow:0 24px 55px rgba(90,30,130,.25)}
-.game:before{content:"";position:absolute;inset:auto -20% -55% -20%;height:140px;background:radial-gradient(circle,rgba(155,89,182,.25),transparent 64%);pointer-events:none}
-.game-top{display:flex;justify-content:space-between;gap:10px;align-items:start}.game-icon{font-size:44px;filter:drop-shadow(0 6px 10px rgba(0,0,0,.5))}
-.badges{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.badge{font-size:10px;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.07);color:#e9dcf4;border:1px solid rgba(255,255,255,.11)}
-.badge.gold{color:#2a1a04;background:var(--gold)}.game h3{margin:15px 0 7px;font-size:19px;line-height:1.35}.game p{color:var(--muted);line-height:1.7;font-size:13px;min-height:66px}
-.meta{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin:14px 0}.meta span{padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.045);font-size:11px;color:#e0d4e9}.game .btn{width:100%;padding:10px 14px;font-size:12px}
-.feature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}@media(max-width:1000px){.feature-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.feature-grid{grid-template-columns:1fr}}
-.feature{padding:20px;min-height:180px}.feature .fi{font-size:28px}.feature h3{margin:11px 0 7px;font-size:16px}.feature p{color:var(--muted);font-size:13px;line-height:1.75;margin:0}
-.showcase{display:grid;grid-template-columns:1fr 1fr;gap:18px}@media(max-width:850px){.showcase{grid-template-columns:1fr}}
-.panel{padding:24px}.panel h3{margin:0 0 10px;font-size:24px}.panel p{color:var(--muted);line-height:1.8}
-.list{display:grid;gap:8px;margin:16px 0 0;padding:0;list-style:none}.list li{padding:11px 12px;border-radius:13px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.05);color:#f4ecf9;font-size:13px}
-.points{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}@media(max-width:600px){.points{grid-template-columns:repeat(2,1fr)}}
-.points div{padding:12px;border-radius:14px;text-align:center;background:linear-gradient(160deg,rgba(241,196,15,.12),rgba(155,89,182,.09));border:1px solid rgba(241,196,15,.24)}
-.points b{display:block;font-size:22px;color:var(--gold2)}.points small{color:#e0d2e8}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}@media(max-width:760px){.steps{grid-template-columns:1fr}}
-.step{padding:20px;position:relative}.step .num{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--violet),var(--purple));font-weight:900}.step h3{margin:12px 0 8px}.step p{margin:0;color:var(--muted);line-height:1.7;font-size:13px}
-.socials{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}@media(max-width:720px){.socials{grid-template-columns:repeat(2,1fr)}}
-.social{padding:16px;text-align:center;background:rgba(255,255,255,.045);border:1px solid rgba(199,125,255,.18);border-radius:16px;transition:.18s}.social:hover{transform:translateY(-3px);border-color:rgba(241,196,15,.45);background:rgba(155,89,182,.12)}
-.social .icon{width:42px;height:42px;margin:0 auto;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,rgba(155,89,182,.22),rgba(255,255,255,.045));border:1px solid rgba(255,255,255,.12);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.22)}.social .icon svg{width:28px;height:28px;display:block;fill:none}.social .icon svg.fb-logo,.social .icon svg.ig-logo{width:28px;height:28px}.social b{display:block;margin-top:10px}.social small{color:var(--muted)}
-.footer{padding:38px 0 52px;border-top:1px solid rgba(199,125,255,.16);margin-top:25px}.footer-row{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}.footer small{color:#9482a9}.mini-nav{display:flex;gap:8px;flex-wrap:wrap}.mini-nav a{color:#d6c7e2;font-size:12px}
-.reveal{opacity:1;transform:none}.reveal.in{animation:rise .7s ease forwards}.hide{display:none!important}
-.inner-hero{padding:62px 0 38px}.inner-hero .card{padding:30px}.breadcrumb{display:flex;gap:7px;flex-wrap:wrap;color:#ad9bbb;font-size:12px;margin-bottom:14px}.breadcrumb a:hover{color:#fff}
-.faq-grid{display:grid;grid-template-columns:260px 1fr;gap:18px}@media(max-width:820px){.faq-grid{grid-template-columns:1fr}}
-.side{padding:18px;position:sticky;top:86px;height:max-content}.side button{width:100%;text-align:left;background:transparent;border:none;color:#d7c8e4;padding:11px 12px;border-radius:11px;font-weight:900}.side button.active,.side button:hover{background:rgba(155,89,182,.16);color:#fff}
-.faq-list{display:grid;gap:10px}.faq-item{padding:0;overflow:hidden}.faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px;background:transparent;border:none;color:#fff;text-align:left;font-weight:900}.faq-q span:last-child{color:var(--gold);font-size:20px}
-.faq-a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s}.faq-a>div{overflow:hidden}.faq-item.open .faq-a{grid-template-rows:1fr}.faq-answer{padding:0 18px 18px;color:var(--muted);line-height:1.8;font-size:14px}
-.notice{padding:14px 16px;border-radius:14px;background:rgba(241,196,15,.08);border:1px solid rgba(241,196,15,.23);color:#f2e7c6;margin-top:14px}
-.howto-tabs{display:flex;gap:7px;overflow:auto;padding-bottom:5px;margin-bottom:18px}.howto-tab{flex:0 0 auto;border:none;border-radius:999px;padding:10px 13px;background:rgba(155,89,182,.14);border:1px solid rgba(199,125,255,.22);color:#e9dff2;font-weight:900;font-size:12px}.howto-tab.active{background:linear-gradient(135deg,var(--gold),#ff8c00);color:#2c1803;border-color:transparent}
-.guide{display:none}.guide.active{display:block}.guide-head{display:flex;gap:14px;align-items:flex-start;padding:22px}.guide-icon{font-size:52px}.guide h2{margin:0 0 6px;font-size:28px}.guide .lead{color:var(--muted);line-height:1.8;margin:0}
-.guide-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}@media(max-width:700px){.guide-grid{grid-template-columns:1fr}}
-.guide-box{padding:18px}.guide-box h3{margin:0 0 9px;font-size:15px;color:var(--gold2)}.guide-box p,.guide-box li{color:#dfd1e9;line-height:1.75;font-size:13px}.guide-box ul{padding-left:18px}
-.table{width:100%;border-collapse:collapse;font-size:12px}.table th,.table td{border-bottom:1px solid rgba(255,255,255,.07);padding:10px;text-align:left}.table th{color:var(--gold2)}
-.meter{display:grid;gap:7px}.meter-row{display:grid;grid-template-columns:90px 1fr 40px;align-items:center;gap:8px}.meter-row label{font-size:11px;color:#d9cce5}.bar{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--violet),var(--gold));width:var(--w)}
-.float-cta{position:fixed;right:18px;bottom:18px;z-index:40}.float-cta a{padding:13px 17px;animation:pulse 2.2s infinite}
-
-.game-image-wrap{width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:radial-gradient(circle at 50% 35%,rgba(155,89,182,.28),rgba(8,4,16,.85));border:1px solid rgba(199,125,255,.18);position:relative;margin:0 0 14px}.game-image{width:100%;height:100%;display:block;object-fit:cover;transition:transform .45s ease,filter .35s ease}.game:hover .game-image{transform:scale(1.045);filter:saturate(1.12) brightness(1.06)}.hero-witch-photo{width:min(76%,310px);height:min(76%,310px);object-fit:cover;border-radius:50%;border:3px solid rgba(241,196,15,.38);box-shadow:0 0 25px rgba(199,125,255,.38),0 0 60px rgba(155,89,182,.22);animation:float 3s ease-in-out infinite;z-index:2}.guide-image{width:100%;height:220px;object-fit:cover;border-radius:18px;border:1px solid rgba(199,125,255,.2);box-shadow:var(--shadow);margin-bottom:16px}@media(max-width:650px){.guide-image{height:180px}}
-.image-fallback{width:100%;height:100%;display:grid;place-items:center;color:#c77dff;font-weight:1000;letter-spacing:.18em;background:radial-gradient(circle at 50% 30%,rgba(199,125,255,.22),transparent 40%),#0b0617}.brand-photo{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid rgba(241,196,15,.5);box-shadow:0 0 18px rgba(199,125,255,.32);animation:float 3s ease-in-out infinite}.game-icon,.guide-icon{display:none}</style></head><body>
-
-<div id="stars"></div><div id="particles"></div>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#3a1c5e"><meta name="description" content="OJWGA公式・遊び方超詳細ガイド"><title>OJWGA公式｜遊び方 超詳細ガイド</title><style>
+:root{--bg:#07030e;--panel:#130920;--panel2:#1d0e31;--violet:#c77dff;--purple:#8e44ad;--gold:#f1c40f;--gold2:#ffe08a;--text:#fff9ff;--muted:#cbb8dc;--line:rgba(199,125,255,.25);--good:#62dfa0;--bad:#ff7b86;--max:1240px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--text);font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,system-ui,sans-serif;background:radial-gradient(circle at 10% 3%,rgba(155,89,182,.2),transparent 31%),radial-gradient(circle at 90% 12%,rgba(241,196,15,.07),transparent 28%),linear-gradient(180deg,#0b0514,#07030e 62%,#030207);min-height:100vh}
+a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
+.topbar{position:sticky;top:0;z-index:100;background:rgba(5,2,10,.88);backdrop-filter:blur(15px);border-bottom:1px solid rgba(199,125,255,.15)}
+.nav{max-width:var(--max);margin:auto;padding:13px 18px;display:flex;align-items:center;gap:18px}.brand{font-weight:1000;letter-spacing:.05em;white-space:nowrap}.brand small{display:block;color:#9f8aad;font-size:9px;letter-spacing:.18em;margin-top:2px}.navlinks{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}.navlinks a{padding:9px 12px;border-radius:999px;font-size:12px;font-weight:900;color:#dfd1e9}.navlinks a:hover{background:rgba(155,89,182,.15)}.navlinks .play{background:linear-gradient(135deg,var(--gold),#e67e22);color:#241503}
+@media(max-width:760px){.nav{flex-wrap:wrap}.navlinks{width:100%;overflow:auto;flex-wrap:nowrap}.navlinks a{flex:0 0 auto}}
+.wrap{max-width:var(--max);margin:auto;padding:0 18px}.hero{padding:54px 0 26px}.hero-card{display:grid;grid-template-columns:1.35fr .65fr;gap:22px;align-items:center;padding:28px;border:1px solid var(--line);border-radius:26px;background:linear-gradient(145deg,rgba(34,15,57,.92),rgba(9,4,16,.96));box-shadow:0 25px 80px rgba(0,0,0,.38)}
+@media(max-width:850px){.hero-card{grid-template-columns:1fr}.hero-art{order:-1;max-width:360px;margin:auto}}
+.eyebrow{color:var(--gold);font-size:10px;letter-spacing:.19em;font-weight:1000;text-transform:uppercase}.hero h1{font-size:clamp(42px,5.5vw,70px);line-height:1.02;margin:12px 0}.gradient{background:linear-gradient(90deg,#fff,#eadcf9,var(--violet),var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}.lead{max-width:800px;color:var(--muted);font-size:15px;line-height:1.95}.hero-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.pill{padding:8px 11px;border:1px solid rgba(199,125,255,.2);border-radius:999px;background:rgba(255,255,255,.04);font-size:11px;font-weight:900;color:#e5d8ec}.pill.gold{color:var(--gold2);background:rgba(241,196,15,.09);border-color:rgba(241,196,15,.28)}
+.hero-art{min-height:260px;border-radius:22px;overflow:hidden;border:1px solid rgba(199,125,255,.25);background:radial-gradient(circle,rgba(199,125,255,.18),transparent 60%),#10071d;display:grid;place-items:center}.hero-art img{width:100%;height:100%;max-height:340px;object-fit:contain;display:block;animation:float 3.4s ease-in-out infinite}.hero-art .image-fallback{display:none}.hero-art .image-fallback.show{display:grid}
+.game-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:0 0 25px}.game-tile{border:1px solid var(--line);border-radius:17px;background:rgba(20,9,35,.83);overflow:hidden;transition:.18s}.game-tile:hover{transform:translateY(-3px);border-color:rgba(241,196,15,.4)}.game-photo{height:105px;background:#0d0616}.game-photo img{width:100%;height:100%;object-fit:cover;display:block}.image-fallback{height:100%;display:none;place-items:center;text-align:center;font-weight:1000;color:#dfd2ea}.image-fallback small{display:block;font-size:9px;color:#927da3;margin-top:4px}.image-fallback.show{display:grid}.game-name{padding:10px;font-size:11px;font-weight:1000;line-height:1.4}
+@media(max-width:930px){.game-strip{grid-template-columns:repeat(3,1fr)}}@media(max-width:620px){.game-strip{grid-template-columns:repeat(2,1fr)}}
+.shell{border:1px solid var(--line);border-radius:22px;overflow:hidden;background:rgba(10,4,18,.96);box-shadow:0 25px 80px rgba(0,0,0,.3)}.tabs{display:flex;gap:5px;padding:10px;border-bottom:1px solid rgba(199,125,255,.14);overflow:auto;background:rgba(19,8,32,.92);scrollbar-width:thin}.tab{flex:0 0 auto;border:none;border-radius:999px;padding:10px 13px;background:rgba(155,89,182,.12);border:1px solid rgba(199,125,255,.18);color:#ded0e9;font-size:11px;font-weight:1000}.tab:hover{background:rgba(155,89,182,.22)}.tab.active{background:linear-gradient(135deg,var(--gold),#e67e22);color:#241503;border-color:transparent;box-shadow:0 0 18px rgba(241,196,15,.13)}
+.content{padding:26px}.guide-page{display:none}.guide-page.active{display:block}.section-title{display:flex;gap:14px;align-items:center;padding-bottom:17px;margin-bottom:18px;border-bottom:1px solid rgba(199,125,255,.14)}.section-index{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(155,89,182,.28),rgba(241,196,15,.09));border:1px solid rgba(199,125,255,.25);font-weight:1000;color:var(--gold2);font-size:13px}.section-title h2{font-size:27px;margin:5px 0 0;line-height:1.2}
+.guide-page h3{margin:28px 0 10px;font-size:19px}.guide-page h4{margin:20px 0 8px;font-size:15px;color:#eadbf2}.guide-page p,.guide-page li{font-size:13px;line-height:1.85;color:#d9cbe4}.guide-page ul,.guide-page ol{margin:10px 0 18px}.guide-page li{margin:4px 0}.guide-page table{width:100%;border-collapse:collapse;margin:12px 0 20px;font-size:12px}.guide-page th,.guide-page td{padding:10px;border-bottom:1px solid rgba(255,255,255,.07);vertical-align:top;text-align:left}.guide-page th{color:var(--gold2);background:rgba(241,196,15,.035)}.guide-page .point{color:#ebbaff;font-weight:900}.guide-page .good{color:var(--good);font-weight:900}.guide-page .warn{color:var(--bad);font-weight:900}.guide-page .pname{color:#f0deff;font-weight:900}.guide-page .key{display:inline-flex;align-items:center;justify-content:center;min-width:28px;padding:4px 7px;margin:1px 2px;border-radius:6px;border:1px solid rgba(255,255,255,.18);border-bottom-width:2px;background:#120a1d;color:#fff;font-size:11px;font-weight:1000}.guide-page .badge{display:inline-block;padding:3px 7px;border-radius:999px;font-size:9px;font-weight:1000}.guide-page .badge.easy{background:#2ecc71;color:#0a2d18}.guide-page .badge.normal{background:#f1c40f;color:#2d1a00}.guide-page .badge.hard{background:#e74c3c;color:#fff}.guide-page .badge.skill{background:#3498db;color:#fff}.guide-page .badge.luck{background:#9b59b6;color:#fff}
+.game-howto-block,.info-box,.tip-box,.warn-box{margin:15px 0;padding:16px 17px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(35,16,59,.75),rgba(11,5,20,.92))}.game-howto-block{border-color:rgba(241,196,15,.25);background:linear-gradient(145deg,rgba(241,196,15,.08),rgba(155,89,182,.07))}.tip-box{border-color:rgba(98,223,160,.24);background:rgba(50,130,84,.06)}.warn-box{border-color:rgba(255,123,134,.26);background:rgba(132,38,48,.07)}.gh-title,.tb-title,.wb-title,.ib-title{font-weight:1000;margin-bottom:7px;color:#fff}.gh-title{font-size:20px}.tb-title,.wb-title,.ib-title{font-size:14px;color:var(--gold2)}
+.game-meta{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 20px}.meta-chip{padding:8px 10px;border-radius:10px;border:1px solid rgba(199,125,255,.17);background:rgba(255,255,255,.035);font-size:11px;color:#dfd2e8}.meta-chip b{color:#fff}.strategy-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:10px 0 18px}.strategy-card{padding:14px;border:1px solid rgba(199,125,255,.18);border-radius:14px;background:rgba(255,255,255,.035)}.sc-title{font-weight:1000;color:var(--gold2);font-size:13px;margin-bottom:4px}.sc-text{font-size:12px;line-height:1.75;color:#d9cbe4}.step-list{padding-left:22px}.guide-image{max-width:760px;border-radius:18px;overflow:hidden;border:1px solid rgba(199,125,255,.22);background:#0d0617;margin:0 0 18px;box-shadow:0 15px 50px rgba(0,0,0,.26)}.guide-image img{width:100%;max-height:400px;object-fit:cover;display:block}
+.footer{padding:38px 0 60px;margin-top:25px;border-top:1px solid rgba(199,125,255,.14);text-align:center;color:#9c8baa;font-size:11px}.footer a{color:#d7c9e4}
+.float{position:fixed;right:18px;bottom:18px;z-index:90;padding:12px 17px;border-radius:999px;background:linear-gradient(135deg,var(--gold),#e67e22);color:#241503;font-weight:1000;box-shadow:0 10px 28px rgba(0,0,0,.35)}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-10px) rotate(1deg)}}
+@media(max-width:700px){.content{padding:17px}.strategy-grid{grid-template-columns:1fr}.section-title h2{font-size:22px}.guide-page h3{font-size:17px}.guide-page p,.guide-page li{font-size:12.5px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style></head><body>
+<header class="topbar"><nav class="nav"><a class="brand" href="ojwga.html">OJWGA<small>HOW TO PLAY</small></a><div class="navlinks"><a href="ojwga.html">公式トップ</a><a href="#guide">遊び方</a><a href="ojwga-faq.html">FAQ</a><a class="play" href="https://www.fozowo.f5.si/oijiiw.game" target="_blank" rel="noopener">ゲームを遊ぶ ↗</a></div></nav></header>
+<main><section class="hero"><div class="wrap"><div class="hero-card"><div><div class="eyebrow">OJWGA OFFICIAL • COMPLETE HOW TO PLAY</div><h1><span class="gradient">遊び方<br>超詳細ガイド</span></h1><p class="lead">現在のOJWGAゲーム本体に入っている遊び方を基準に、基本・はじめての方向けの導入から、5つのゲーム別ルール、デイリー、ポイント、ショップ、装備バー、16テーマ、設定、操作、コツ、保護者、トラブル、FAQまで18セクションをまとめました。</p><div class="hero-meta"><span class="pill gold">18セクション</span><span class="pill">5ゲーム</span><span class="pill">PC / スマホ</span><span class="pill">詳細ルール</span><span class="pill">攻略・設定</span></div></div><div class="hero-art"><img src="watch.png" alt="おいじぃ魔女" onerror="this.style.display='none';this.nextElementSibling.classList.add('show')"><div class="image-fallback">OJWGA<small>watch.png</small></div></div></div></div></section>
+<section style="padding-top:8px"><div class="wrap"><div class="game-strip"><a class="game-tile" href="#guide-game-press" data-jump="game-press"><div class="game-photo"><img src="デスプレス1.png" alt="デス・プレス" onerror="this.style.display='none';this.nextElementSibling.classList.add('show')"><div class="image-fallback">デス・プレス<small>デスプレス1.png</small></div></div><div class="game-name">デス・プレス</div></a><a class="game-tile" href="#guide-game-explosion" data-jump="game-explosion"><div class="game-photo"><img src="大爆発2.png" alt="大爆発" onerror="this.style.display='none';this.nextElementSibling.classList.add('show')"><div class="image-fallback">大爆発<small>大爆発2.png</small></div></div><div class="game-name">大爆発</div></a><a class="game-tile" href="#guide-game-chase" data-jump="game-chase"><div class="game-photo"><img src="猛追3.png" alt="猛追 DX" onerror="this.style.display='none';this.nextElementSibling.classList.add('show')"><div class="image-fallback">猛追 DX<small>猛追3.png</small></div></div><div class="game-name">猛追 DX</div></a><a class="game-tile" href="#guide-game-hq" data-jump="game-hq"><div class="game-photo"><img src="本社入口4.png" alt="本社入り口" onerror="this.style.display='none';this.nextElementSibling.classList.add('show')"><div class="image-fallback">本社入り口<small>本社入口4.png</small></div></div><div class="game-name">本社入り口</div></a><a class="game-tile" href="#guide-game-dodge" data-jump="game-dodge"><div class="game-photo"><img src="ドッジボール5.png" alt="ドッジボール" onerror="this.style.display='none';this.nextElementSibling.classList.add('show')"><div class="image-fallback">ドッジボール<small>ドッジボール5.png</small></div></div><div class="game-name">ドッジボール</div></a></div></div></section>
+<section id="guide" style="padding:8px 0 55px"><div class="wrap"><div class="shell"><div class="tabs" id="tabs"><button class="tab active" data-page="basic">📖 基本</button><button class="tab " data-page="quickstart">🚀 はじめて</button><button class="tab " data-page="game-press">🏗️ プレス</button><button class="tab " data-page="game-explosion">🏭 大爆発</button><button class="tab " data-page="game-chase">🌀 猛追</button><button class="tab " data-page="game-hq">🚪 本社</button><button class="tab " data-page="game-dodge">🧙 ドッジ</button><button class="tab " data-page="daily">🌟 デイリー</button><button class="tab " data-page="points">💰 ポイント</button><button class="tab " data-page="shop">🛒 ショップ</button><button class="tab " data-page="equip">🎒 装備バー</button><button class="tab " data-page="themes">🎨 テーマ</button><button class="tab " data-page="settings">⚙️ 設定詳細</button><button class="tab " data-page="controls">⌨️ 操作</button><button class="tab " data-page="tips">💡 コツ</button><button class="tab " data-page="parent">👨‍👩‍👧 保護者</button><button class="tab " data-page="trouble">🛠️ トラブル</button><button class="tab " data-page="faq">❓ FAQ</button></div><div class="content"><section class="guide-page active" id="guide-basic" data-page="basic"><div class="section-title"><span class="section-index">01</span><div><div class="eyebrow">OJWGA HOW TO PLAY</div><h2>📖 基本</h2></div></div>
+<div class="game-howto-block">
+<div class="gh-title"><span class="gh-icon"><span aria-label="魔女" class="witch-img" role="img"></span></span> OJWGAとは？</div>
+<p>魔女「おいじぃ」が裄供する<span class="point">5つのミニゲーム</span>を遊んで、ポイントを貯めてスコアを伸ばすコレクションじゃ！<br/>
+                        複数ユーザーで交代プレイでき、家族や友達とも楽しめるぞい。</p>
+</div>
+<h3>🔑 スタートの5ステップ</h3>
+<ol class="step-list">
+<li>左上の <span class="point">名前表示</span> をタップ → ユーザー一覧を開く</li>
+<li>「<span class="point">＋ 新しいユーザーを作成</span>」を押し、アイコン・名前を設定</li>
+<li>必要なら <span class="point">パスワード</span> と <span class="point">ヒント</span> を入力（推奨）</li>
+<li>作成完了したらホーム画面へ戻る</li>
+<li>遊びたいゲームカードをタップしてスタート！</li>
+</ol>
+<div class="tip-box">
+<div class="tb-title">✨ ちょっとしたコツ</div>
+<div>パスワードは<span class="warn">設定したら忘れるな</span>よ！ ヒントに「好きな動物」「誕生日」など、自分だけわかる言葉を書くと安全じゃ。</div>
+</div>
+<h3>🏠 ホーム画面の見方</h3>
+<ul>
+<li><span class="point">左上・ユーザー名</span>：タップでユーザー切り替え</li>
+<li><span class="point">合計ポイント</span>：現ユーザーの総獲得ポイント</li>
+<li><span class="point">本日のチャレンジ</span>：1日1回限定の高報酬タスク！</li>
+<li><span class="point">5つのゲームカード</span>：タップで選んだゲームがすぐ始まる</li>
+<li><span class="point">右上・⚙️ ボタン</span>：設定・遊び方・初期化を開く</li>
+</ul>
+<h3>🎮 5つのミニゲーム一覧</h3>
+<table class="rank-table">
+<tr><th>ゲーム</th><th>タイプ</th><th>難易度</th></tr>
+<tr><td>🏗️ デス・プレス</td><td><span class="badge luck">運</span></td><td><span class="badge easy">易</span></td></tr>
+<tr><td>🏭 大爆発工場</td><td><span class="badge luck">運</span><span class="badge skill">洞察</span></td><td><span class="badge normal">中</span></td></tr>
+<tr><td>🌀 魔女の猛追</td><td><span class="badge skill">技術</span></td><td><span class="badge hard">難</span></td></tr>
+<tr><td>🚪 本社入り口</td><td><span class="badge luck">運</span></td><td><span class="badge easy">易</span></td></tr>
+<tr><td><span aria-label="魔女" class="witch-img" role="img"></span> ドッジボール</td><td><span class="badge skill">反射</span></td><td><span class="badge normal">中</span></td></tr>
+</table>
+<h3>💰 ポイントの仕組み（全体像）</h3>
+<table class="rank-table">
+<tr><th>モード</th><th class="rank1">1位</th><th class="rank2">2位</th><th class="rank3">3位</th><th>4位</th></tr>
+<tr><td>通常</td><td class="rank1">+20pt</td><td class="rank2">+12pt</td><td class="rank3">+6pt</td><td>+2pt</td></tr>
+<tr><td>デイリー</td><td class="rank1">+100pt</td><td class="rank2">+60pt</td><td class="rank3">+30pt</td><td>+10pt</td></tr>
+</table>
+<p style="font-size:0.85rem; color:#cdb8e8;">※ ポイントは<span class="point">ユーザーごと</span>に加算されるぞい。</p>
+<h3>🎒 装備バー（v21 新UI）</h3>
+<p>ホーム画面の上部に、<span class="point">5つのスロット</span>が並ぶ装備バーが常時表示されるぞい！<br/>
+                    アバター🖼️ ・使い魔🐾 ・エフェクト✨ ・称号🏆 ・サウンド🎵 をそれぞれ1つずつ装備でき、装備中のスロットは<span class="good">金色に光る</span>。空きスロットには「<span class="point">＋</span>」と「未装備」が表示される。<br/>
+                    スロットを<span class="point">タップするだけで</span>ショップの該当カテゴリが開き、すぐ装備を変えられる。詳しくは <span class="good">🎒 装備バー</span> タブを見てくれ。</p>
+<h3>⚙️ 設定メニュー一覧</h3>
+<ul>
+<li><span class="point">🔊 音設定</span>：声・効果音・警告音(固定ON)・音量・声色・高さ・速さ・BGM</li>
+<li><span class="point">🎵 音楽プレイヤー</span>：ホーム画面BGM「おいじぃ魔女」を再生・リピート・ダウンロード</li>
+<li><span class="point">🎨 表示設定</span>：テーマ（<span class="good">16種類！</span>）・文字サイズ・アニメ・<span class="good">時計ウィジェット</span></li>
+<li><span class="point">🎮 ゲームプレイ設定</span>：振動・チャレンジ表示・トースト・統計表示・キーボード操作</li>
+<li><span class="point">📊 統計情報</span>：プレイ回数・勝利数・ゲーム別記録</li>
+<li><span class="point">⏱️ 遊んだ時間</span>：今日・今週・累計のプレイ時間を見る</li>
+<li><span class="point">👨‍👩‍👧 保護者コントロール</span>：時間制限・休憩タイマー・夜間ロック・保護者パスワード</li>
+<li><span class="point">⌨️ キーボード操作</span>：PCでも快適に遵控できる</li>
+<li><span class="point">💾 バックアップ</span>：JSONでデータの保存・復元・自動バックアップ・端末間移行</li>
+<li><span class="point">⚠️ 初期化</span>：5段階の消去レベル（それぞれ独立）</li>
+</ul>
+<div class="info-box">
+<div class="ib-title">ℹ️ よく使うボタン</div>
+<div>⚙️（設定） / 🏠（ホーム） / 🔙（戻る） / ❌（閉じる）——これだけ覚えれば十分じゃ。</div>
+</div>
+</section><section class="guide-page " id="guide-quickstart" data-page="quickstart"><div class="section-title"><span class="section-index">02</span><div><div class="eyebrow">OJWGA HOW TO PLAY</div><h2>🚀 はじめて</h2></div></div>
+<h3>🚀 30秒で始めるクイックスタート</h3>
+<ol class="step-list">
+<li><b>ユーザー作成</b>：名前を入れて、好きなアイコンを選ぶだけ（パスワードはあとでもOK）</li>
+<li><b>ゲームを選ぶ</b>：初めてなら <span class="good">🚪 本社入り口</span> か <span class="good">🏗️ デス・プレス</span> がシンプルでおすすめじゃ</li>
+<li><b>チュートリアルを見る</b>：魔女のセリフや画面の動きをよく観察</li>
+<li><b>とりあえずタップ！</b>：失敗してもポイントは減らないから安心</li>
+<li><b>結果画面</b>：順位とポイントを確認して「もう一回」か「ホーム」を選ぶ</li>
+</ol>
+<h3>🌟 初心者推奨ゲーム順</h3>
+<div class="strategy-grid">
+<div class="strategy-card">
+<div class="sc-title">1つ目：🚪 本社入り口</div>
+<div class="sc-text">3つの扱を選ぶだけのシンプル運ゲー。ルールがすぐわかる。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">2つ目：🏗️ デス・プレス</div>
+<div class="sc-text">4つの足場を選ぶ運ゲー。魔女のセリフを読む余裕が出る。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">3つ目：🏭 大爆発</div>
+<div class="sc-text">スイッチの見極めとパターン読みが重要。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">4つ目：<span aria-label="魔女" class="witch-img" role="img"></span> ドッジボール</div>
+<div class="sc-text">反射神経勝負。多少難しいがトレーニングになる。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">5つ目：🌀 魔女の猛追</div>
+<div class="sc-text">迷路を走り回る高難易度。操作に慣れてからちゃんと。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">さらに：デイリー</div>
+<div class="sc-text">各ゲームに慣れたら、毎日1回のデイリーチャレンジで一気にポイントを稼ぐぞ！</div>
+</div>
+</div>
+<div class="tip-box">
+<div class="tb-title">🎯 最初の目標</div>
+<ul>
+<li>まずは全ゲームを1回ずつやってみる</li>
+<li>自分に合うゲーム（1～2つ）を見つける</li>
+<li>100pt を超えたらデイリーに挑戦！</li>
+</ul>
+</div>
+<h3>⚠️ 初者がやりがちなミス</h3>
+<ul>
+<li class="warn">パスワードを設定してヒントなし → 5回間違えると完全ロック！</li>
+<li class="warn">デイリーを雑にプレイ → 1日1回だから考えてプレイしよう</li>
+<li class="warn">バックアップしないで初期化 → 貯めたポイントが消える！</li>
+</ul>
+</section><section class="guide-page " id="guide-game-press" data-page="game-press"><div class="section-title"><span class="section-index">03</span><div><div class="eyebrow">OJWGA HOW TO PLAY</div><h2>🏗️ プレス</h2></div></div><div class="guide-image"><img src="デスプレス1.png" alt="デス・プレス" onerror="this.style.display='none';this.nextElementSibling.classList.add('show')"><div class="image-fallback">デス・プレス<small>デスプレス1.png</small></div></div>
+<div class="game-howto-block">
+<div class="gh-title"><span class="gh-icon">🏗️</span> おいじぃのデス・プレス 順位決定戦</div>
+<p>4つの足場の中から1つを選ぶ<span class="point">完全運ゲー</span>!選んだ足場にプレス機が落ちてくるかは運次第。生き残るのはたった1人……<span class="pname">あなた</span>か?</p>
+</div>
+<div class="game-meta">
+<span class="meta-chip"><b>タイプ</b>:運ゲー</span>
+<span class="meta-chip"><b>プレイ人数</b>:4人(自分+CPU3人)</span>
+<span class="meta-chip"><b>所要時間</b>:約1〜2分</span>
+<span class="meta-chip"><b>難易度</b>:<span class="badge easy">易しい</span></span>
+<span class="meta-chip"><b>必要スキル</b>:<span class="badge luck">運</span></span>
+</div>
+<h3>📖 ストーリー背景</h3>
+<p>魔女おいじぃの巨大工場、その地下に潜む「デス・プレスホール」。ここでは生き残った人数分の足場が並び、上空から巨大プレス機が次々と降ってくる。生き残れるのは最後の1人だけ……どこに落ちるかは完全にランダム、運を信じて選ぶのじゃ!</p>
+<h3>🎯 ゲームの目的</h3>
+<ul>
+<li>4人(<span class="pname">あなた</span>+CPU3体)がそれぞれ足場を1つずつ選ぶ(1つの足場には1人しか入れん)</li>
+<li><span class="pname">あなた</span>が選んだ足場は必ず確保、CPUは残りの足場にランダム配置</li>
+<li>プレス機が落ちる足場は<span class="point">完全ランダム</span>。潰された人がそのラウンドの<span class="warn">脱落</span></li>
+<li>ラウンドごとに足場が1つ減り、最後まで生き残れば <span class="good">堂々の1位</span>!</li>
+</ul>
+<h3>🕹️ 操作方法</h3>
+<ul>
+<li><span class="point">タップ/クリック</span>:足場ボタンを1つ選ぶだけ(キーボード操作なし)</li>
+<li><span class="point">考える時間</span>:制限時間なし、じっくり選んでOK</li>
+<li>選んだら魔女がレバーを引いてプレス機落下 → 結果発表</li>
+<li><span class="pname">あなた</span>が脱落した後は「CPUの対決を見届ける」ボタンで最後まで観戦できる</li>
+</ul>
+<div class="info-box">
+<div class="ib-title">ℹ️ 完全な運ゲーじゃ</div>
+<div>プレス機が落ちる足場は<span class="point">Math.randomで完全ランダム</span>。魔女のセリフや表情にヒントは一切ない。何度でも挑戦して運を試すのじゃ。</div>
+</div>
+<div class="tip-box">
+<div class="tb-title">🌟 スペシャルタイム:ツイン・プレス</div>
+<ul>
+<li><span class="point">毎日23:00〜23:30</span>に遊ぶと<span class="warn">ツイン・プレスルール</span>が発動!</li>
+<li>1ラウンドに<span class="warn">2箇所同時</span>にプレス機が落下する通常よりハードなモードじゃ</li>
+<li>残り2人の最終決戦で両方潰れると<span class="warn">覇者なし</span>になることも</li>
+<li>ドキドキ感倍増、運試しに最適な時間帯じゃ</li>
+</ul>
+</div>
+<h3>💡 運試しのコツ</h3>
+<div class="strategy-grid">
+<div class="strategy-card">
+<div class="sc-title">① 好きな数字</div>
+<div class="sc-text">ラッキーナンバー縛りなど、自分ルールで楽しむと飽きない。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">② 端っこ狙い</div>
+<div class="sc-text">真ん中より端を選ぶ人が多い。気分で端を狙うのも一手。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">③ 23時台狙い</div>
+<div class="sc-text">ツイン・プレスの刺激が欲しければ23:00〜23:30に遊ぶべし。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">④ 諦めない</div>
+<div class="sc-text">4位でもポイントは入る。何度も挑戦して運を蓄積じゃ。</div>
+</div>
+</div>
+<div class="warn-box">
+<div class="wb-title">⚠️ 注意点</div>
+<ul>
+<li>セリフにヒントはない → 読みすぎると疲れるだけ。割り切って楽しもう</li>
+<li>ツイン・プレス時は一気に2人脱落することも → 順位変動が激しい</li>
+<li>チャレンジモードなら4位でも+10pt → 負けても損はない</li>
+</ul>
+</div>
+<h3>🏆 ポイント目安</h3>
+<table class="rank-table">
+<tr><th>順位</th><th>通常</th><th>デイリー</th></tr>
+<tr><td class="rank1">1位</td><td>+20pt</td><td>+100pt</td></tr>
+<tr><td class="rank2">2位</td><td>+12pt</td><td>+60pt</td></tr>
+<tr><td class="rank3">3位</td><td>+6pt</td><td>+30pt</td></tr>
+<tr><td>4位</td><td>+2pt</td><td>+10pt</td></tr>
+</table>
+<p style="font-size:0.85rem; color:#cdb8e8;">※ つぶされても挑戦価値あり!負けても確実に小ポイントは入る。</p>
+</section><section class="guide-page " id="guide-game-explosion" data-page="game-explosion"><div class="section-title"><span class="section-index">04</span><div><div class="eyebrow">OJWGA HOW TO PLAY</div><h2>🏭 大爆発</h2></div></div><div class="guide-image"><img src="大爆発2.png" alt="大爆発" onerror="this.style.display='none';this.nextElementSibling.classList.add('show')"><div class="image-fallback">大爆発<small>大爆発2.png</small></div></div>
+<div class="game-howto-block">
+<div class="gh-title"><span class="gh-icon">🏭</span> おいじぃ魔女大爆発 複雑なる工場</div>
+<p>3D工場の中で危険なスイッチを避けながらサバイバル!どれが爆発スイッチかは<span class="point">完全ランダム</span>。10秒以内に選んで運を試せ!</p>
+</div>
+<div class="game-meta">
+<span class="meta-chip"><b>タイプ</b>:運+時間制限</span>
+<span class="meta-chip"><b>プレイ人数</b>:4人</span>
+<span class="meta-chip"><b>所要時間</b>:約2〜3分</span>
+<span class="meta-chip"><b>難易度</b>:<span class="badge normal">中</span></span>
+<span class="meta-chip"><b>必要スキル</b>:<span class="badge luck">運</span> <span class="badge skill">決断力</span></span>
+</div>
+<h3>📖 ストーリー背景</h3>
+<p>おいじぃの大工場には、床にたくさんのスイッチが並んでいる。その中の1つが<span class="warn">爆発スイッチ</span>で、押してしまえば一巻の終わり……。どれが危険かは完全にランダム、10秒以内に選んで運を試せ!</p>
+<h3>🎯 ゲームの目的</h3>
+<ul>
+<li>4人(<span class="pname">あなた</span>+CPU3体)が順番にスイッチを1つ押していく</li>
+<li><span class="warn">爆発スイッチ</span>を引いた人がその場で脱落!</li>
+<li>全員セーフならスイッチをリセットして仕切り直し</li>
+<li>最後まで残れば <span class="good">1位</span></li>
+</ul>
+<h3>🕹️ 操作方法</h3>
+<ul>
+<li><span class="point">タップ/クリック</span>:3D空間のスイッチを直接押す(キーボード操作なし)</li>
+<li><span class="point">10秒以内</span>に選ばないと<span class="warn">即爆発で脱落</span>!</li>
+<li>自分の番が来たら10秒カウントダウン開始。魔女の煽りに惑わされるな</li>
+<li>スイッチを選ぶと魔女がスイッチ目前へ<span class="point">ズームアップ</span>。ドキドキの2.5秒間</li>
+</ul>
+<div class="info-box">
+<div class="ib-title">ℹ️ スイッチの数は生存者で変わる</div>
+<div>4人いる時はスイッチ<span class="point">5個</span>、3人なら<span class="point">4個</span>、2人なら<span class="point">3個</span>。生存者+1個のスイッチが並ぶ。全員セーフならリセットして仕切り直しじゃ。</div>
+</div>
+<div class="info-box">
+<div class="ib-title">ℹ️ 完全な運ゲーじゃ</div>
+<div>爆発スイッチは<span class="point">Math.randomで完全ランダム</span>に決まる。パイプやランプの色・形にヒントは一切ない(工場の配管はただの飾り)。セリフや表情も演出じゃ。</div>
+</div>
+<h3>💡 生き残るコツ</h3>
+<div class="strategy-grid">
+<div class="strategy-card">
+<div class="sc-title">① 10秒を味方に</div>
+<div class="sc-text">焦る必要はないが、10秒経つと即爆発。時計を見ながら余裕を持って選ぶべし。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">② CPUを見届ける</div>
+<div class="sc-text">自分より前のCPUが押したスイッチは除外される。残り選択肢から選ぼう。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">③ リセット待ち</div>
+<div class="sc-text">全員セーフでリセットされればラウンド延長=生存確率UP。安全な順番を狙う。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">④ 直感勝負</div>
+<div class="sc-text">ヒントはない。迷ったら直感で選んでサッと終わらせるのが一番じゃ。</div>
+</div>
+</div>
+<div class="warn-box">
+<div class="wb-title">⚠️ やりがちなミス</div>
+<ul>
+<li>10秒放置 → 即爆発で脱落。タイマーを忘れるな</li>
+<li>パイプやランプを読もうとする → ヒントはない、時間の無駄</li>
+<li>派手な演出にビビる → 爆発位置は見た目と無関係</li>
+<li>ズーム演出中に焦る → 結果は選んだ時点で決まってる、落ち着いて</li>
+</ul>
+</div>
+<h3>🏆 ポイント目安</h3>
+<table class="rank-table">
+<tr><th>順位</th><th>通常</th><th>デイリー</th></tr>
+<tr><td class="rank1">1位</td><td>+20pt</td><td>+100pt</td></tr>
+<tr><td class="rank2">2位</td><td>+12pt</td><td>+60pt</td></tr>
+<tr><td class="rank3">3位</td><td>+6pt</td><td>+30pt</td></tr>
+<tr><td>4位</td><td>+2pt</td><td>+10pt</td></tr>
+</table>
+</section><section class="guide-page " id="guide-game-chase" data-page="game-chase"><div class="section-title"><span class="section-index">05</span><div><div class="eyebrow">OJWGA HOW TO PLAY</div><h2>🌀 猛追</h2></div></div><div class="guide-image"><img src="猛追3.png" alt="猛追 DX" onerror="this.style.display='none';this.nextElementSibling.classList.add('show')"><div class="image-fallback">猛追 DX<small>猛追3.png</small></div></div>
+<div class="game-howto-block">
+<div class="gh-title"><span class="gh-icon">🌀</span> おいじぃ魔女の猛追 DX</div>
+<p>魔女に追いかけられる60秒間のサバイバル!迷路を逃げ続けよ!唯一の本格アクションゲームじゃ。</p>
+</div>
+<div class="game-meta">
+<span class="meta-chip"><b>タイプ</b>:アクション</span>
+<span class="meta-chip"><b>プレイ人数</b>:4人(自分+AI3体)</span>
+<span class="meta-chip"><b>所要時間</b>:約1〜2分</span>
+<span class="meta-chip"><b>難易度</b>:<span class="badge hard">難</span></span>
+<span class="meta-chip"><b>必要スキル</b>:<span class="badge skill">反射神経</span> <span class="badge skill">空間認識</span></span>
+</div>
+<h3>📖 ストーリー背景</h3>
+<p>魔女おいじぃの怒りに触れ、巨大な迷路に閉じ込められた<span class="pname">あなた</span>とAI3体。背後から猛スピードで迫る魔女から、60秒間逃げ切れるか?ミニマップを駆使し、知能で生き残れ!</p>
+<h3>🎯 ゲームの目的</h3>
+<ul>
+<li>魔女に捕まらないように <span class="point">60秒間</span>逃げ続ける</li>
+<li>長く生き残るほど高順位(生存時間で順位決定)</li>
+<li>60秒完全生存で<span class="good">1位確定</span>(複数生存なら同着1位)</li>
+<li>捕まったら脱落、ただし生存時間に応じてポイントは入る</li>
+</ul>
+<h3>🕹️ 操作方法(超詳細)</h3>
+<table class="rank-table">
+<tr><th>端末</th><th>操作</th></tr>
+<tr><td>📱 スマホ</td><td>画面右下の<span class="point">Dパッド(▲◀▶▼)</span>か<span class="point">スワイプ</span>で移動</td></tr>
+<tr><td>📱 タブレット</td><td>同上、画面が大きい分操作しやすい</td></tr>
+<tr><td>💻 PC</td><td><span class="key">↑</span><span class="key">↓</span><span class="key">←</span><span class="key">→</span> または <span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span>キー</td></tr>
+</table>
+<h3>🗺️ ミニマップの使い方</h3>
+<ul>
+<li>画面<span class="point">右上に表示</span>されるレーダーマップ</li>
+<li>🟥 <span style="color:#ef4444">赤い点</span> = <span class="good"><span class="pname">あなた</span></span></li>
+<li>🟪 <span style="color:#a855f7">紫の点</span> = <span class="warn">魔女</span>(凍結中は灰色)</li>
+<li>🟩 緑 / 🟨 黄 / 🩵 シアン = 他のCPU3体</li>
+<li>🟦 <span style="color:#3b82f6">青</span> = ⚡スピードアイテム、🟨 <span style="color:#facc15">黄</span> = ❄️フリーズアイテム</li>
+<li>魔女が近づいてくる方向を常にチェック!</li>
+<li>慣れてきたら遠くから魔女の動きを予測して進路決定</li>
+</ul>
+<h3>⚡ アイテムを活用せよ</h3>
+<ul>
+<li><span class="point">⚡ スピード</span>:一定時間自分の移動速度アップ(全身に⚡オーラ)</li>
+<li><span class="point">❄️ フリーズ</span>:魔女を3秒間凍結!追跡が止まる大チャンス</li>
+<li>アイテムは全部で5個(スピード3・フリーズ2)。拾い合いになるぞい</li>
+</ul>
+<div class="info-box">
+<div class="ib-title">ℹ️ 魔女は時間で加速する</div>
+<div>時間が経つほど魔女の移動速度が上がっていく(<span class="point">0.09 + 経過秒×0.0045</span>)。序盤は逃げやすく、終盤は追い詰められる。終盤ほどアイテムが鍵じゃ。</div>
+</div>
+<h3>🏃 迷路サバイバル戦術</h3>
+<div class="strategy-grid">
+<div class="strategy-card">
+<div class="sc-title">① 視界を切る</div>
+<div class="sc-text">角を曲がって魔女から見えなくする。これが逃走の基本。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">② 円を描いて回る</div>
+<div class="sc-text">広い場所ではぐるぐる回って魔女を消耗させる。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">③ AIを盾にする</div>
+<div class="sc-text">魔女のターゲットを他のAIに移すよう動く。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">④ フェイント走り</div>
+<div class="sc-text">急に方向転換して魔女を惑わせる。曲がり角で有効。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">⑤ 端を活用</div>
+<div class="sc-text">迷路の端は逃げ場が少ないが、魔女の動きも限定される。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">⑥ ミニマップ先読み</div>
+<div class="sc-text">マップを見て、魔女が来る前に進路変更。</div>
+</div>
+</div>
+<div class="tip-box">
+<div class="tb-title">🌟 上級者テクニック</div>
+<ul>
+<li>真っ直ぐ逃げず、<span class="point">ジグザグ</span>に動いて当たり判定を避ける</li>
+<li>魔女が近づいたら<span class="point">直角に曲がる</span>。動きを予測されにくい</li>
+<li>追い詰められたら大きく回り込む。Uターンで魔女を引き離す</li>
+<li>残り時間10秒は安全地帯でひたすら時間稼ぎ</li>
+<li>音を出してプレイすると魔女の足音で位置がわかる</li>
+<li>キーボード操作はスワイプより素早く反応できる</li>
+</ul>
+</div>
+<div class="warn-box">
+<div class="wb-title">⚠️ やりがちなミス</div>
+<ul>
+<li>魔女から目を離さずに走り続ける → 壁にぶつかる</li>
+<li>端に張り付く → 逃げ場がなくなり詰む</li>
+<li>ミニマップを見ない → 待ち伏せされる</li>
+<li>同じ方向にずっと走る → 予測されやすい</li>
+<li>慣れる前にチャレンジ挑戦 → 大量ポイントを逃す</li>
+</ul>
+</div>
+<h3>🎚️ 難易度別プレイ感</h3>
+<ul>
+<li><span class="badge easy">初心者</span>:30秒生存できれば上出来。慣れることを優先</li>
+<li><span class="badge normal">中級者</span>:45〜60秒生存を狙う。ミニマップ活用必須</li>
+<li><span class="badge hard">上級者</span>:60秒完全生存+AIを陥れて1位確定</li>
+</ul>
+<h3>🏆 ポイント目安</h3>
+<table class="rank-table">
+<tr><th>順位</th><th>通常</th><th>デイリー</th></tr>
+<tr><td class="rank1">1位</td><td>+20pt</td><td>+100pt</td></tr>
+<tr><td class="rank2">2位</td><td>+12pt</td><td>+60pt</td></tr>
+<tr><td class="rank3">3位</td><td>+6pt</td><td>+30pt</td></tr>
+<tr><td>4位</td><td>+2pt</td><td>+10pt</td></tr>
+</table>
+</section><section class="guide-page " id="guide-game-hq" data-page="game-hq"><div class="section-title"><span class="section-index">06</span><div><div class="eyebrow">OJWGA HOW TO PLAY</div><h2>🚪 本社</h2></div></div><div class="guide-image"><img src="本社入口4.png" alt="本社入り口" onerror="this.style.display='none';this.nextElementSibling.classList.add('show')"><div class="image-fallback">本社入り口<small>本社入口4.png</small></div></div>
+<div class="game-howto-block">
+<div class="gh-title"><span class="gh-icon">🚪</span> おいじぃ魔女本社入り口 運ゲー</div>
+<p>3つのドアから1つを選んで本社に入る運ゲー!魔女のドアを引くと<span class="warn">ハート1つ失う</span>。3回引かれたら脱落じゃ。</p>
+</div>
+<div class="game-meta">
+<span class="meta-chip"><b>タイプ</b>:運ゲー</span>
+<span class="meta-chip"><b>プレイ人数</b>:4人</span>
+<span class="meta-chip"><b>所要時間</b>:約1〜2分</span>
+<span class="meta-chip"><b>難易度</b>:<span class="badge easy">易</span></span>
+<span class="meta-chip"><b>必要スキル</b>:<span class="badge luck">運</span></span>
+</div>
+<h3>📖 ストーリー背景</h3>
+<p>魔女おいじぃの本社ビル前。入口には3つの扉が並び、その奥のどれか1つに魔女が待ち構えている。魔女のドアを選ぶと<span class="warn">ぶっ飛ばされてハート1つ失う</span>。3つのハートが尽きるまで何ラウンド耐えられる?</p>
+<h3>🎯 ゲームの目的</h3>
+<ul>
+<li>3つのドア(左・真ん中・右)から1つ選ぶ。各ドア<span class="point">定員2人</span></li>
+<li>2つは安全(お菓子)、1つは<span class="warn">魔女のドア</span>。引くとハート1つ失う</li>
+<li>ハートは1人<span class="point">3個</span>。3回引かれたら脱落</li>
+<li>4人中最後まで残れば <span class="good">1位</span></li>
+</ul>
+<h3>🕹️ 操作方法</h3>
+<ul>
+<li><span class="point">タップ/クリック</span>:左・中央・右の3つのドアから1つを選ぶ(キーボード操作なし)</li>
+<li><span class="point">5秒以内</span>に選ばないと<span class="warn">即脱落</span>!タイマーに注意</li>
+<li>魔女のドアは毎ラウンド<span class="point">ランダム</span>に入れ替わる</li>
+<li>CPUはカウントダウン中に各自勝手にドアを選んで移動する</li>
+</ul>
+<div class="info-box">
+<div class="ib-title">ℹ️ 完全な運ゲーじゃ</div>
+<div>魔女のドアは<span class="point">毎ラウンドランダム</span>に入れ替わる。扉の揺れ・笑い声・影・セリフにヒントは一切ない。純粋な3分の1の運勝負じゃ。</div>
+</div>
+<h3>💡 ハートを守るコツ</h3>
+<div class="strategy-grid">
+<div class="strategy-card">
+<div class="sc-title">① 5秒を死守</div>
+<div class="sc-text">時間切れはハート関係なく即脱落。必ず5秒以内に選ぼう。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">② 定員2人を狙う</div>
+<div class="sc-text">各ドア2人まで。CPUが集まったドアを避けて空いてるドアを選ぶ手もある。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">③ ハート3個=3回挑戦</div>
+<div class="sc-text">魔女を引いても3回までは死なん。焦らず何度も運試しできる。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">④ CPUの脱落待ち</div>
+<div class="sc-text">CPUが先に魔女を引いて脱落することも。生き残りを狙う。</div>
+</div>
+</div>
+<div class="warn-box">
+<div class="wb-title">⚠️ やりがちなミス</div>
+<ul>
+<li>5秒放置 → 即脱落。カウントダウンを見忘れるな</li>
+<li>扉の揺れやセリフを探す → ヒントはない、時間の無駄</li>
+<li>毎回同じドア → 魔女はランダムなので意味はないが、気分的に</li>
+<li>ハート0ギリギリまで粘る → 油断して時間切れ脱落に注意</li>
+</ul>
+</div>
+<h3>🏆 ポイント目安</h3>
+<table class="rank-table">
+<tr><th>順位</th><th>通常</th><th>デイリー</th></tr>
+<tr><td class="rank1">1位</td><td>+20pt</td><td>+100pt</td></tr>
+<tr><td class="rank2">2位</td><td>+12pt</td><td>+60pt</td></tr>
+<tr><td class="rank3">3位</td><td>+6pt</td><td>+30pt</td></tr>
+<tr><td>4位</td><td>+2pt</td><td>+10pt</td></tr>
+</table>
+<p style="font-size:0.85rem; color:#cdb8e8;">※ 運要素強いがハマると爽快じゃ!初心者にもおすすめ。</p>
+</section><section class="guide-page " id="guide-game-dodge" data-page="game-dodge"><div class="section-title"><span class="section-index">07</span><div><div class="eyebrow">OJWGA HOW TO PLAY</div><h2>🧙 ドッジ</h2></div></div><div class="guide-image"><img src="ドッジボール5.png" alt="ドッジボール" onerror="this.style.display='none';this.nextElementSibling.classList.add('show')"><div class="image-fallback">ドッジボール<small>ドッジボール5.png</small></div></div>
+<div class="game-howto-block">
+<div class="gh-title"><span class="gh-icon"><span aria-label="魔女" class="witch-img" role="img"></span></span> おいじぃ魔女のドッジボール大会</div>
+<p>巨大鉄球を避け続ける60秒サバイバル!全方位に動いて鉄球をかわす、反射神経ゲームじゃ。</p>
+</div>
+<div class="game-meta">
+<span class="meta-chip"><b>タイプ</b>:アクション(反射神経)</span>
+<span class="meta-chip"><b>プレイ人数</b>:4人</span>
+<span class="meta-chip"><b>所要時間</b>:約1〜2分</span>
+<span class="meta-chip"><b>難易度</b>:<span class="badge normal">中</span></span>
+<span class="meta-chip"><b>必要スキル</b>:<span class="badge skill">反射神経</span> <span class="badge skill">予測力</span></span>
+</div>
+<h3>📖 ストーリー背景</h3>
+<p>魔女おいじぃが転がしてくる<span class="warn">巨大鉄球</span>を避け続けるサバイバル!広場に立ち、<span class="point">前後左右すべての方向</span>に動いて鉄球を回避せよ。反射神経と予測力が勝敗を分ける、純粋スキルゲーじゃ。</p>
+<h3>🎯 ゲームの目的</h3>
+<ul>
+<li>魔女が転がしてくる <span class="warn">巨大鉄球</span>を避け続ける(60秒間)</li>
+<li>当たったら脱落、生存時間で順位が決まる(先に当たったほど下位)</li>
+<li>長く生存した人ほど高順位、60秒生存で1位(同着あり)</li>
+<li>時間が経つと鉄球の速度・数・同時出現数が増えていく</li>
+</ul>
+<h3>🕹️ 操作方法(超詳細)</h3>
+<table class="rank-table">
+<tr><th>端末</th><th>操作</th></tr>
+<tr><td>📱 スマホ</td><td>左下の<span class="point">バーチャルジョイスティック</span>をスワイプで全方位移動</td></tr>
+<tr><td>📱 タブレット</td><td>同上、画面が大きい分逃げやすい</td></tr>
+<tr><td>💻 PC</td><td><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> または <span class="key">↑</span><span class="key">↓</span><span class="key">←</span><span class="key">→</span>キー(全方向)</td></tr>
+</table>
+<ul>
+<li><span class="point">前後左右すべての方向</span>に移動可能(360°フリー移動)</li>
+<li>自分の移動速度は一定、急加速は不可</li>
+<li>鉄球は画面端から<span class="point">地面を転がって</span>やってくる(上からは落ちてこない)</li>
+</ul>
+<div class="info-box">
+<div class="ib-title">ℹ️ 鉄球は地面を転がってくる</div>
+<div>鉄球は画面の端から<span class="point">地面を這うように転がって</span>対岸へ抜けていく。上空から落ちてくるわけではない。進行方向を見て早めに退路を確保するのがコツ。</div>
+</div>
+<div class="info-box">
+<div class="ib-title">ℹ️ 後半ほど激化する</div>
+<div>時間が経つほど鉄球が<span class="point">加速</span>し、<span class="point">出現間隔が短く</span>なり、<span class="point">一度に複数個</span>(最大4個)同時に飛んでくる。序盤は楽でも終盤は地獄じゃ。</div>
+</div>
+<h3>💡 長く生存するための戦術</h3>
+<div class="strategy-grid">
+<div class="strategy-card">
+<div class="sc-title">① 進行方向を読む</div>
+<div class="sc-text">鉄球の進む方向を見て、進路上から早めに退く。直前避けより先読み避け。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">② 中央キープ</div>
+<div class="sc-text">端に追い詰められると逃げ場がない。中央をベースに四方に動けるよう保つ。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">③ 最小限の動き</div>
+<div class="sc-text">動きすぎると次の鉄球に引っかかる。必要な分だけ緻密に動く。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">④ 隙間を通す</div>
+<div class="sc-text">複数同時に来ても鉄球同士の隙間を縫えば回避できる。冷静に。</div>
+</div>
+</div>
+<div class="tip-box">
+<div class="tb-title">🌟 上級者テクニック</div>
+<ul>
+<li>鉄球の<span class="point">進行方向ベクトル</span>を一目で読む。転がる方向から退路を確保</li>
+<li>端っこに張り付きすぎると逃げ場がなくなる</li>
+<li>真ん中をキープして四方に動ける余裕を持て</li>
+<li>後半の複数同時攻撃は隙間を縫うのが鍵</li>
+<li>反射神経を鍛えて高得点を目指せ!</li>
+<li>キーボード(WASD/矢印)の方が反応が速い(PC推奨)</li>
+</ul>
+</div>
+<div class="warn-box">
+<div class="wb-title">⚠️ やりがちなミス</div>
+<ul>
+<li>鉄球の進行方向を見ず本体だけ追う → 退路が遅れる</li>
+<li>端まで逃げきる → 次の鉄球が来たら詰む</li>
+<li>動きすぎる → 鉄球の隙間に入れない</li>
+<li>パニックになる → 落ち着いて方向を読めば全部避けられる</li>
+</ul>
+</div>
+<h3>🎚️ 難易度別目標</h3>
+<ul>
+<li><span class="badge easy">初心者</span>:10〜20秒生存。動き方に慣れる</li>
+<li><span class="badge normal">中級者</span>:30〜45秒生存。影の予測ができる</li>
+<li><span class="badge hard">上級者</span>:60秒以上生存。複数鉄球も冷静に処理</li>
+</ul>
+<h3>🏆 ポイント目安</h3>
+<table class="rank-table">
+<tr><th>順位</th><th>通常</th><th>デイリー</th></tr>
+<tr><td class="rank1">1位</td><td>+20pt</td><td>+100pt</td></tr>
+<tr><td class="rank2">2位</td><td>+12pt</td><td>+60pt</td></tr>
+<tr><td class="rank3">3位</td><td>+6pt</td><td>+30pt</td></tr>
+<tr><td>4位</td><td>+2pt</td><td>+10pt</td></tr>
+</table>
+</section><section class="guide-page " id="guide-daily" data-page="daily"><div class="section-title"><span class="section-index">08</span><div><div class="eyebrow">OJWGA HOW TO PLAY</div><h2>🌟 デイリー</h2></div></div>
+<div class="game-howto-block">
+<div class="gh-title"><span class="gh-icon">🌟</span> デイリーチャレンジとは?</div>
+<p>1日1回限定の高報酬ミッション!通常の5倍のポイントが手に入る大チャンスじゃ。</p>
+</div>
+<h3>🎯 ルールと仕組み</h3>
+<ul>
+<li>毎日<span class="point">0時にリセット</span>、新しいチャレンジが出現</li>
+<li>1日1回しか挑戦できんから慎重に!</li>
+<li>その日のチャレンジゲームはランダムで決まる</li>
+<li>失敗しても1日待たないと再挑戦できない</li>
+<li>ホーム画面の<span class="point">本日のチャレンジ</span>カードから入る</li>
+</ul>
+<h3>💰 ポイント報酬(通常との比較)</h3>
+<table class="rank-table">
+<tr><th>順位</th><th>通常</th><th>デイリー</th><th>差</th></tr>
+<tr><td class="rank1">1位</td><td>+20pt</td><td>+100pt</td><td><span class="good">5倍</span></td></tr>
+<tr><td class="rank2">2位</td><td>+12pt</td><td>+60pt</td><td><span class="good">5倍</span></td></tr>
+<tr><td class="rank3">3位</td><td>+6pt</td><td>+30pt</td><td><span class="good">5倍</span></td></tr>
+<tr><td>4位</td><td>+2pt</td><td>+10pt</td><td><span class="good">5倍</span></td></tr>
+</table>
+<h3>📅 効率的なデイリー攻略法</h3>
+<ol class="step-list">
+<li><b>事前準備</b>:通常モードで同じゲームを2〜3回練習</li>
+<li><b>体調を整える</b>:疲れているときは避ける、頭がスッキリしてから</li>
+<li><b>設定確認</b>:音・振動・テーマが快適な状態か確認</li>
+<li><b>本番</b>:深呼吸して落ち着いてスタート</li>
+<li><b>結果確認</b>:翌日の参考にプレイ動画を覚えておく</li>
+</ol>
+<div class="tip-box">
+<div class="tb-title">📈 ポイント大量獲得の道</div>
+<ul>
+<li>毎日休まずデイリー1位 → 月3000pt以上!</li>
+<li>30日連続クリアで合計で大幅ポイント獲得</li>
+<li>苦手ゲームが来ても4位狙いで+10pt確保</li>
+<li>朝一にプレイすると集中力が高くて成功率UP</li>
+</ul>
+</div>
+<div class="warn-box">
+<div class="wb-title">⚠️ 注意点</div>
+<ul>
+<li>1日1回限定!ホーム画面に戻っても再挑戦不可</li>
+<li>うっかりタップして始めてしまわないよう注意</li>
+<li>失敗しても次の日まで再挑戦できない</li>
+<li>日付変更線は端末の時刻設定に依存する</li>
+</ul>
+</div>
+</section><section class="guide-page " id="guide-points" data-page="points"><div class="section-title"><span class="section-index">09</span><div><div class="eyebrow">OJWGA HOW TO PLAY</div><h2>💰 ポイント</h2></div></div>
+<h3>💰 ポイントシステム完全ガイド</h3>
+<p>ポイントは<span class="pname">あなた</span>の実績の証!ユーザーごとに独立して貯まる、いわば<span class="pname">あなた</span>の「冒険の記録」じゃ。</p>
+<h3>📊 獲得方法</h3>
+<table class="rank-table">
+<tr><th>方法</th><th>1位</th><th>2位</th><th>3位</th><th>4位</th></tr>
+<tr><td>通常プレイ</td><td>+20pt</td><td>+12pt</td><td>+6pt</td><td>+2pt</td></tr>
+<tr><td>デイリー</td><td>+100pt</td><td>+60pt</td><td>+30pt</td><td>+10pt</td></tr>
+</table>
+<h3>📈 ポイント効率を上げる5つの戦略</h3>
+<div class="strategy-grid">
+<div class="strategy-card">
+<div class="sc-title">① 毎日デイリー</div>
+<div class="sc-text">1日1回の100pt(1位時)は絶対に逃さない。月3000pt級。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">② 得意ゲーム集中</div>
+<div class="sc-text">勝率が高いゲームを繰り返し。負け試合を減らす。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">③ 苦手も少しずつ</div>
+<div class="sc-text">最下位でも+2pt入る。練習がてら4位狙い。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">④ 連続プレイ</div>
+<div class="sc-text">短時間で何度もプレイすれば積み重ねで大きく。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">⑤ コンディション</div>
+<div class="sc-text">頭がさえている時間帯を狙う。朝・深夜は避ける。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">⑥ 統計で振り返り</div>
+<div class="sc-text">統計情報で勝率を確認、得意・苦手を見極める。</div>
+</div>
+</div>
+<h3>🏅 マイルストーン(目安)</h3>
+<ul>
+<li><span class="badge easy">100pt</span>:ゲームに慣れた証。デイリーチャレンジへ</li>
+<li><span class="badge normal">500pt</span>:全ゲームの操作に習熟、安定して上位</li>
+<li><span class="badge hard">1000pt</span>:中級者!複数ゲームで勝率50%以上</li>
+<li><span class="badge skill">3000pt</span>:上級者、デイリーで毎日上位</li>
+<li><span class="badge luck">10000pt</span>:伝説のプレイヤー!</li>
+</ul>
+<h3>👥 ポイントはユーザーごとに独立</h3>
+<ul>
+<li>各ユーザーが個別にポイントを保有</li>
+<li>家族・友人と同じ端末でもデータは混ざらない</li>
+<li>ユーザー切替で別アカウントとしてプレイ可能</li>
+<li><span class="warn">ユーザー削除すると保有ポイントも消える</span>ので注意</li>
+</ul>
+<div class="tip-box">
+<div class="tb-title">🎉 楽しみ方の提案</div>
+<ul>
+<li>家族でユーザー作成 → 月末にポイントランキング!</li>
+<li>友達と勝負 → どっちが先に1000pt到達する?</li>
+<li>自分との戦い → 過去最高記録を更新せよ</li>
+<li>ゆるく続ける → 毎日少しずつポイントが貯まる楽しさ</li>
+</ul>
+</div>
+</section><section class="guide-page " id="guide-shop" data-page="shop"><div class="section-title"><span class="section-index">10</span><div><div class="eyebrow">OJWGA HOW TO PLAY</div><h2>🛒 ショップ</h2></div></div>
+<h3>🛒 魔女ショップ完全ガイド</h3>
+<p>ゲームで貯めた<span class="point">ポイント</span>で、魔法のアイテムや装飾・特別効果を買えるショップじゃ！</p>
+<h3>🚪 入り口</h3>
+<ul>
+<li>ホーム画面の<span class="point">🛒 魔女ショップ</span>ボタンを押す</li>
+<li>右上の<span class="point">⚙️設定</span>→「魔女ショップ」からも開ける</li>
+</ul>
+<h3>📂 カテゴリ一覧</h3>
+<div class="strategy-grid">
+<div class="strategy-card">
+<div class="sc-title">🖼️ アバター枠</div>
+<div class="sc-text">アバターの周りを黄金・栗・虜や王冠などで飾り付けられる。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">🐾 使い魔</div>
+<div class="sc-text">ホーム画面に黒猫・梵・ドラゴンなどの使い魔がチラチラ現れる。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">✨ エフェクト</div>
+<div class="sc-text">画面にきらめき、雪、花びら、竜などの装飾効果が出る。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">⚡ ブースト</div>
+<div class="sc-text"><span class="warn">消耗型</span>。次のゲームのptUP、保証、シールドなど効果多様。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">🏆 称号</div>
+<div class="sc-text">プロフィールに表示される「見習い魔女」「伝説の魔女」などの称号。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">🎵 サウンド</div>
+<div class="sc-text">ポイント取得時の効果音を鈴・チャイム・レトロなどに変更。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">🔮 占い・お楽しみ</div>
+<div class="sc-text"><span class="warn">一回使い</span>。今日の占い、名言、だじゃれ、誉め言葉、なぞなぞなど。</div>
+</div>
+<div class="strategy-card">
+<div class="sc-title">🎁 福袋</div>
+<div class="sc-text"><span class="warn">一回使い</span>。ランダムでポイントがもらえる。プレミアム福袋もある！</div>
+</div>
+</div>
+<h3>🛒 アイテムの種類（購入・装備・使用）</h3>
+<ul>
+<li><span class="good">装備型</span>（アバター枠・使い魔・エフェクト・称号・サウンド）：
+                            <br/>・一度購入したら永久保有　・装備ボタンでON/OFF　・カテゴリごとに1つずつ装備できる
+                            <br/>・<span class="good">v21 から</span>：装備はホーム上部の<span class="point">装備バー</span>に5スロット表示され、タップで即変更できる！
+                        </li>
+<li><span class="good">消耗型</span>（ブースト・占い・福袋）：
+                            <br/>・在庫が減る　・複数個ストックできる　・「使用」ボタンで効果発動
+                        </li>
+</ul>
+<h3>⚡ ブーストアイテムの効果</h3>
+<ul>
+<li><span class="point">ダブルポイント券</span>：次のゲームの取得ptが2倍</li>
+<li><span class="point">トリプルポイント券</span>：次のゲームの取得ptが3倍</li>
+<li><span class="point">幸運のクローバー</span>：+50％ボーナス</li>
+<li><span class="point">魔除けのお守り</span>：最下位でも+30pt保証</li>
+<li><span class="point">魔法の盾</span>：ポイントマイナス防止</li>
+<li><span class="point">チャレンジ補助券</span>：今日のデイリーをもう一回</li>
+<li><span class="point">メガポイント券</span>：即座に+500pt</li>
+</ul>
+<h3>🎁 福袋・お楽しみアイテム</h3>
+<ul>
+<li>🎁 <span class="point">小さな福袋</span>：50～200ptランダム</li>
+<li>🎀 <span class="point">中ぐらいの福袋</span>：200～700ptランダム</li>
+<li>🎊 <span class="point">大きな福袋</span>：500～1500ptランダム</li>
+<li>💫 <span class="point">魔法の福袋</span>：0～2000pt（ハイリスク）</li>
+<li>📅 <span class="point">毎日のおとお袋</span>：1日に1回だけ・お得！</li>
+<li>🎰 <span class="point">絵文字ランダムくじ</span>：数千個の中から絵文字が1つ選ばれる！</li>
+<li>✨ <span class="point">プレミアム福袋</span>：1000～3000pt保証の豪華袋</li>
+</ul>
+<div class="tip-box">
+<div class="tb-title">💡 買い物のコツ</div>
+<ul>
+<li>まずは安い<span class="point">称号（100pt～）</span>やアバター枠で見た目をなやそう</li>
+<li><span class="point">ダブル・トリプルポイント券</span>は、得意なゲームの直前に使うと効果大！</li>
+<li><span class="point">魔除けのお守り</span>は苦手ゲームに挑む時に付けると安心</li>
+<li><span class="point">毎日のおとお袋</span>は1回だけなので、忘れずに毎日使おう！</li>
+</ul>
+</div>
+<div class="warn-box">
+<div class="wb-title">⚠️ 注意事項</div>
+<ul>
+<li>ポイントは<span class="warn">ユーザーごとに独立</span>。装備や在庫も個人ごとじゃ</li>
+<li>初期化やユーザー削除で購入アイテムも消えるので注意</li>
+<li>消耗型は複数個ストックできるが、波多は本人負担じゃ！</li>
+</ul>
+</div>
+</section><section class="guide-page " id="guide-equip" data-page="equip"><div class="section-title"><span class="section-index">11</span><div><div class="eyebrow">OJWGA HOW TO PLAY</div><h2>🎒 装備バー</h2></div></div>
+<div class="game-howto-block">
+<div class="gh-title"><span class="gh-icon">🎒</span> 装備バーで一覧＆即変更！</div>
+<p>魔女ショップで装備したアイテムは、ホーム画面<span class="point">上部の装備バー</span>に5つのスロットで常時表示されるぞい！<br/>
+                        今の装備が<span class="good">一目でわかる</span>うえ、スロットをタップすればそのままショップが開いて即変更できる魔法じゃ。</p>
+</div>
+<h3>🎨 5つのスロットで一目瞭然</h3>
+<table class="rank-table">
+<tr><th>スロット</th><th>装備の種類</th><th>画面での見え方</th></tr>
+<tr><td>🖼️ アバター</td><td>アバター枠</td><td>アイコンの<span class="point">縁</span>が光る</td></tr>
+<tr><td>🐾 使い魔</td><td>ペット</td><td>画面右上に<span class="point">チラチラ現れる</span></td></tr>
+<tr><td>✨ エフェクト</td><td>装飾効果</td><td>画面全体に<span class="point">きらめき・雪など</span>が降る</td></tr>
+<tr><td>🏆 称号</td><td>称号</td><td>ユーザー名の下に<span class="point">金色文字</span>で表示</td></tr>
+<tr><td>🎵 サウンド</td><td>取得音</td><td>ポイント取得時の<span class="point">効果音</span>が変わる</td></tr>
+</table>
+<div class="tip-box">
+<div class="tb-title">💡 スロットの見方</div>
+<div>装備中のスロットは<span class="good">金色に光って</span>アイテム名が表示される。空きスロットは少し薄く、「<span class="point">＋</span>」と「未装備」が出る。左から<span class="point">アバター → 使い魔 → エフェクト → 称号 → サウンド</span>の順じゃ。</div>
+</div>
+<h3>🕹️ 装備の変え方（3ステップ）</h3>
+<ol class="step-list">
+<li>装備バーの<span class="point">変えたいスロット</span>をタップ（空きでも装備中でもOK）</li>
+<li>魔女ショップの該当カテゴリが自動で開く</li>
+<li>欲しいアイテムの「<span class="good">装備する</span>」を押せば即反映！ 装備中なら「<span class="warn">外す</span>」で取り外し</li>
+</ol>
+<div class="info-box">
+<div class="ib-title">ℹ️ 装備できるカテゴリと数</div>
+<div>5カテゴリ（アバター・使い魔・エフェクト・称号・サウンド）をそれぞれ1つずつ、同時装備できる。全部埋めれば<span class="point">フル装備</span>じゃ！</div>
+</div>
+<h3>🖼️ 各装備の画面反映</h3>
+<ul>
+<li>アバター枠（黄金・虹色・魔眼など）は<span class="point">アイコンの縁</span>に光として現れる</li>
+<li>使い魔は画面右上、エフェクトは画面全体に重ねて表示される</li>
+<li>称号はユーザー名のすぐ下に金色で並ぶ</li>
+<li>装備し直すと、スロットも即座に切り替わる</li>
+</ul>
+<div class="tip-box">
+<div class="tb-title">✨ こんな遊び方も</div>
+<div>フルコンプリートを目指して<span class="point">5スロット全部を装備</span>すると、ホーム画面がキラキラに埋まって超豪華になるぞ！ 家族や友達に自慢しよう。</div>
+</div>
+</section><section class="guide-page " id="guide-themes" data-page="themes"><div class="section-title"><span class="section-index">12</span><div><div class="eyebrow">OJWGA HOW TO PLAY</div><h2>🎨 テーマ</h2></div></div>
+<div class="game-howto-block">
+<div class="gh-title"><span class="gh-icon">🎨</span> テーマが 16 種類に大増量！</div>
+<p>v19 から、表示設定のテーマが <span class="warn">6 種類</span> から <span class="good">16 種類</span> に増えたぞい！ 気分や時間帯に合わせて、好きな雰囲気で遊べる魔法じゃ。</p>
+</div>
+<h3>🌈 全16テーマ一覧</h3>
+<table class="rank-table">
+<tr><th>テーマ名</th><th>雰囲気</th><th>おすすめシーン</th></tr>
+<tr><td>🔮 紫魔女</td><td>神秘的な紫</td><td>初期設定・魔女らしさ</td></tr>
+<tr><td>🔥 紅炎</td><td>燃える赤黒</td><td>集中したい時</td></tr>
+<tr><td>🌊 青夜</td><td>深い青</td><td>落ち着きたい時</td></tr>
+<tr><td>🌲 森魔</td><td>深緑</td><td>自然派の人</td></tr>
+<tr><td>🌑 漆黒</td><td>真っ黒</td><td>目にやさしい夜</td></tr>
+<tr><td>☀️ 昼魔女</td><td>明るい薄紫</td><td>昼間・明るい所</td></tr>
+<tr><td>🌌 宇宙</td><td>深宇宙の紫</td><td>SFファン</td></tr>
+<tr><td>🐠 水中</td><td>海の底の青緑</td><td>涼しげに</td></tr>
+<tr><td>🌸 桜舞</td><td>桜色ピンク</td><td>春気分</td></tr>
+<tr><td>🍁 秋の紅</td><td>紅葉の茶橙</td><td>秋の夜長</td></tr>
+<tr><td>❄️ 氷雪</td><td>白青の氷</td><td>夏に涼しく</td></tr>
+<tr><td>🏜️ 砂漠</td><td>砂色のベージュ</td><td>暖かい雰囲気</td></tr>
+<tr><td>🌅 夕焼け</td><td>ピンクから紫</td><td>ロマンチック</td></tr>
+<tr><td>🌈 オーロラ</td><td>青緑紫の混色</td><td>幻想的に</td></tr>
+<tr><td>💜 ラベンダー</td><td>柔らかい紫</td><td>やさしい気分</td></tr>
+<tr><td>💻 マトリックス</td><td>黒緑</td><td>プログラマー気分</td></tr>
+</table>
+<div class="tip-box">
+<div class="tb-title">💡 テーマの切り替え方</div>
+<div>右上の <span class="point">⚙️</span> → <span class="point">🎨 表示設定</span> → 「テーマ」から選ぶだけ！ タップすればすぐに反映されるぞ。3列グリッドでスクロールできるようになったから、探しやすいのじゃ。</div>
+</div>
+<h3>👀 明るいテーマ・暗いテーマ</h3>
+<ul>
+<li><span class="point">明るいテーマ</span>（昼魔女・桜舞・氷雪・砂漠）：文字が黒で読みやすい</li>
+<li><span class="point">暗いテーマ</span>（その他12種）：文字が白でメリハリのある表示</li>
+<li>テーマを変えると、スマホの<span class="point">通知バーの色</span>もそれっぽく変わるぞい！</li>
+</ul>
+<div class="info-box">
+<div class="ib-title">ℹ️ 気分でテーマを変えよう</div>
+<div>春は<span class="good">🌸 桜舞</span>、夏は<span class="good">❄️ 氷雪</span>や<span class="good">🐠 水中</span>、秋は<span class="good">🍁 秋の紅</span>、冬は<span class="good">🌌 宇宙</span>や<span class="good">🌅 夕焼け</span>——季節に合わせてテーマを楽しむのも粋じゃ！</div>
+</div>
+<div class="tip-box">
+<div class="tb-title">✨ 隠れたおすすめ</div>
+<div>🌈 <span class="point">オーロラ</span> は青緑紫がグラデーションで、他のテーマと違って独特の雰囲気じゃ。<br/>💻 <span class="point">マトリックス</span> は緑一色で、SFやハッカー気分を味わえる。</div>
+</div>
+</section><section class="guide-page " id="guide-settings" data-page="settings"><div class="section-title"><span class="section-index">13</span><div><div class="eyebrow">OJWGA HOW TO PLAY</div><h2>⚙️ 設定詳細</h2></div></div>
+<h3>⚙️ 設定メニュー完全解説</h3>
+<p>右上の<span class="point">⚙️ボタン</span>から開ける、すべてのカスタマイズメニュー。<span class="pname">あなた</span>好みに調整しよう。</p>
+<h3>🔊 音設定</h3>
+<ul>
+<li><span class="point">音声(声)</span>:魔女のセリフを音声で読み上げ</li>
+<li><span class="point">効果音(SE)</span>:ボタン操作・爆発・足音などの効果音</li>
+<li><span class="point">警告音</span>:危険を知らせる音。<span class="warn">安全のため常にON・固定</span></li>
+<li><span class="point">声の音量</span>:0〜100で細かく調整</li>
+<li><span class="point">声色</span>:かわいい・普通・低い・怖いから選択</li>
+<li><span class="point">話す速さ</span>:ゆっくり〜早口まで</li>
+<li><span class="point">声の高さ</span>:細かいピッチ調整</li>
+<li><span class="point">警告音の音量</span>:別途調整(<span class="warn">最低20%より下には下げられん</span>)</li>
+<li><span class="point">テストボタン</span>:「声をテスト」「警告音テスト」で試聴できる</li>
+</ul>
+<h3>🎵 音楽プレイヤー</h3>
+<p>ホーム画面のBGM「おいじぃ魔女」を聴ける専用プレイヤーじゃ。設定の「音楽プレイヤー」から開く。</p>
+<ul>
+<li><span class="point">再生/一時停止</span>:▶️ボタンで自在に切替</li>
+<li><span class="point">±10秒スキップ</span>:⏪⏩で好きな位置へ</li>
+<li><span class="point">シークバー</span>:ドラッグで任意の位置に移動</li>
+<li><span class="point">音量・リピート</span>:音量調整とリピートON/OFF</li>
+<li><span class="point">最初から</span>:⏮️で曲の頭に戻る</li>
+<li><span class="point">ダウンロード</span>:BGMをファイルとして保存できる</li>
+</ul>
+<div class="info-box">
+<div class="ib-title">ℹ️ BGMのON/OFFは音設定</div>
+<div>ホームBGMを流すかどうかは「音設定」の<span class="point">🎵 音楽 ON/OFF</span>と<span class="point">音楽の音量</span>で決まる。プレイヤーは再生を細かく制御するためのものじゃ。</div>
+</div>
+<h3>🎨 表示設定</h3>
+<ul>
+<li><span class="point">テーマ</span>:全<span class="good">16種類</span>(紫魔女・紅炎・宇宙・桜舞・マトリックス等)。詳しくは🎨テーマタブ</li>
+<li><span class="point">文字サイズ</span>:小・普通・大・特大(高齢者・子ども向け)</li>
+<li><span class="point">アニメーション</span>:魔女の浮遊・警告画面の振動・<span class="good">動きを減らす(省エネ)</span>を切替</li>
+</ul>
+<h3>🕒 時計ウィジェット</h3>
+<p>画面の好きな位置に時計を表示できる魔法じゃ。表示設定の下部で設定する。</p>
+<ul>
+<li><span class="point">表示内容</span>:現在時刻(時:分/秒)・日付+時刻・<span class="good">残りプレイ時間</span>・<span class="good">夜間ロックまで</span>・今回の連続プレイ時間</li>
+<li><span class="point">デザイン</span>:ネオン・LCDレトロ・魔女ピンク・シンプル・クラシックゴールド・魔女アナログ・ミニマル</li>
+<li><span class="point">位置</span>:左上〜右下の6方向・サイズ(小/中/大)</li>
+<li><span class="point">ゲーム中も表示</span>:ON/OFF切替可能</li>
+</ul>
+<h3>🎮 ゲームプレイ設定</h3>
+<ul>
+<li><span class="point">📳 端末の振動</span>:重要シーンでの振動フィードバック</li>
+<li><span class="point">🎯 デイリーチャレンジ表示</span>:ホームのチャレンジカードの表示ON/OFF</li>
+<li><span class="point">🍀 ポイント取得アニメ</span>:取得時のトースト表示ON/OFF</li>
+<li><span class="point">📊 ホームに統計表示</span>:ポイント下の簡易統計のON/OFF</li>
+<li><span class="point">⏱️ 今日のプレイ時間表示</span>:ホームのプレイ時間カードON/OFF</li>
+<li><span class="point">⚠️ 警告音</span>:1種類のみ・<span class="warn">常にON(固定)</span></li>
+<li><span class="point">⌨️ キーボード操作</span>:PCのキー操作を有効化</li>
+</ul>
+<h3>📊 統計情報</h3>
+<ul>
+<li><span class="point">総プレイ回数</span>:すべてのゲームの累計</li>
+<li><span class="point">ゲーム別プレイ回数</span>:どのゲームを多くやっているか</li>
+<li><span class="point">勝率</span>:1位獲得率(自己分析に最適)</li>
+<li><span class="point">最近の記録</span>:直近のプレイ結果一覧</li>
+<li><span class="point">⏱️ 遊んだ時間</span>:今日・今週・累計のプレイ時間も見られる</li>
+</ul>
+<h3>⌨️ キーボード操作</h3>
+<ul>
+<li>PCで矢印キー操作の説明</li>
+<li>各ゲームでの専用キーバインド一覧</li>
+<li>ショートカット集</li>
+</ul>
+<h3>👨‍👩‍👧 保護者コントロール</h3>
+<p>1日のプレイ時間制限・休憩タイマー・夜間ロック・保護者パスワード・延長機能をまとめた画面じゃ。詳しくは<span class="good">👨‍👩‍👧 保護者</span>タブを見てくれ。</p>
+<h3>💾 バックアップ</h3>
+<ul>
+<li><span class="point">書き出す</span>:全データをJSONファイルでダウンロード</li>
+<li><span class="point">読み込む</span>:保存したJSONファイルから復元</li>
+<li><span class="point">自動バックアップ</span>:定期的に自動で保存される</li>
+<li>他の端末に引っ越したいときに便利</li>
+<li><span class="warn">読み込み時は現データが上書き</span>される、必要なら先にバックアップ</li>
+</ul>
+<h3>⚠️ 初期化(段階別・細分化)</h3>
+<p>初期化は「<span class="good">何を消すか</span>」で細かく選べる。危険度に応じて4段階＋カスタム。</p>
+<table class="rank-table">
+<tr><th>レベル</th><th>消えるもの(例)</th></tr>
+<tr><td class="rank1">Lv0 安全</td><td>古い保存データ・自動バックアップ・購入/装備・統計のみ・ポイントのみ</td></tr>
+<tr><td class="rank2">Lv1 設定</td><td>音設定・表示設定・ゲームプレイ設定・保護者設定(各個別に初期化)</td></tr>
+<tr><td class="rank3">Lv2 ユーザー</td><td>現ユーザーの記録/全情報・アプリ全体設定</td></tr>
+<tr><td>Lv3 危険</td><td>全ユーザーの記録/削除・選択ユーザー削除・全ユーザー消去</td></tr>
+<tr><td>Lv4 完全</td><td><span class="warn">全ユーザー・全記録・全設定を完全消去(戻せん!!)</span></td></tr>
+</table>
+<p>さらに<span class="good">カスタム初期化</span>で、チェックを入れた項目だけを自由組み合わせで消せる。各設定画面にも「この設定を初期化」ボタンあり。</p>
+<p class="warn">※ 高レベル(Lv3以上)は保護者パスワードによる保護対象。慎重に!</p>
+</section><section class="guide-page " id="guide-controls" data-page="controls"><div class="section-title"><span class="section-index">14</span><div><div class="eyebrow">OJWGA HOW TO PLAY</div><h2>⌨️ 操作</h2></div></div>
+<h3>⌨️ 操作方法完全ガイド</h3>
+<p>スマホ・タブレット・PC、それぞれに最適化された操作方法を解説するぞい。</p>
+<h3>📱 スマホ/タブレット共通</h3>
+<ul>
+<li><span class="point">タップ</span>:選択・決定の基本操作</li>
+<li><span class="point">ダブルタップ</span>:特定の場面で素早い決定</li>
+<li><span class="point">スワイプ</span>:方向移動(猛追・ドッジで使用)</li>
+<li><span class="point">長押し</span>:確認画面でのキャンセル</li>
+<li><span class="point">2本指タップ</span>:キャンセル・戻る</li>
+</ul>
+<h3>💻 PCキーボード共通</h3>
+<table class="rank-table">
+<tr><th>キー</th><th>機能</th></tr>
+<tr><td><span class="key">↑</span><span class="key">↓</span><span class="key">←</span><span class="key">→</span></td><td>項目移動・キャラ移動</td></tr>
+<tr><td><span class="key">Enter</span></td><td>決定・選択</td></tr>
+<tr><td><span class="key">Space</span></td><td>決定(一部画面)</td></tr>
+<tr><td><span class="key">Esc</span></td><td>戻る・閉じる</td></tr>
+<tr><td><span class="key">Tab</span></td><td>フォーカス移動</td></tr>
+<tr><td><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span></td><td>キャラ移動(猛追)</td></tr>
+<tr><td><span class="key">M</span></td><td>メニュー(設定)を開く</td></tr>
+<tr><td><span class="key">H</span></td><td>ホーム画面に戻る</td></tr>
+<tr><td><span class="key">S</span></td><td>デイリーチャレンジ開始(ホーム画面)</td></tr>
+<tr><td><span class="key">1</span><span class="key">2</span><span class="key">3</span><span class="key">4</span></td><td>選択肢の番号で直接選択</td></tr>
+</table>
+<h3>🎮 ゲーム別操作詳細</h3>
+<h4>🏗️ デス・プレス</h4>
+<ul>
+<li>スマホ:4つの足場ボタンをタップ</li>
+<li>PC:<span class="key">←</span><span class="key">→</span>で選択 → <span class="key">Enter</span>で確定</li>
+<li>または<span class="key">1</span>〜<span class="key">4</span>で直接選択</li>
+</ul>
+<h4>🏭 大爆発工場</h4>
+<ul>
+<li>スマホ:画面上のスイッチを直接タップ</li>
+<li>PC:矢印キーでカーソル移動 → <span class="key">Enter</span></li>
+</ul>
+<h4>🌀 猛追DX</h4>
+<ul>
+<li>スマホ:スワイプ or タップ移動</li>
+<li>PC:<span class="key">↑</span><span class="key">↓</span><span class="key">←</span><span class="key">→</span> or <span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span></li>
+</ul>
+<h4>🚪 本社入り口</h4>
+<ul>
+<li>スマホ:3つの扉をタップ</li>
+<li>PC:<span class="key">1</span><span class="key">2</span><span class="key">3</span> or <span class="key">←</span><span class="key">→</span>+<span class="key">Enter</span></li>
+</ul>
+<h4><span aria-label="魔女" class="witch-img" role="img"></span> ドッジボール</h4>
+<ul>
+<li>スマホ:左右にスライド or タップで移動</li>
+<li>PC:<span class="key">←</span><span class="key">→</span> or <span class="key">A</span><span class="key">D</span>キー</li>
+</ul>
+<div class="tip-box">
+<div class="tb-title">🎯 おすすめデバイス</div>
+<ul>
+<li><b>運ゲー系(プレス・本社・大爆発)</b>:どちらでも快適</li>
+<li><b>アクション系(猛追・ドッジ)</b>:PCキーボードが圧倒的に有利</li>
+<li>本格的に上達したいならゲーミングデバイス推奨</li>
+</ul>
+</div>
+</section><section class="guide-page " id="guide-tips" data-page="tips"><div class="section-title"><span class="section-index">15</span><div><div class="eyebrow">OJWGA HOW TO PLAY</div><h2>💡 コツ</h2></div></div>
+<h3>🌟 全ゲーム共通のコツ(必読!)</h3>
+<ul>
+<li>魔女のセリフをよく見るのじゃ!ヒントが隠れていることがあるぞ</li>
+<li><span class="good">焦らないこと</span>。深呼吸して落ち着いて操作を</li>
+<li>音をONにすると<span class="point">聴覚ヒント</span>が増える(風切り音、足音、ジリジリ音など)</li>
+<li>振動設定をONにすると<span class="point">触覚ヒント</span>も加わる</li>
+<li>結果画面で<span class="point">「もう一回」</span>を活用、すぐに再挑戦できる</li>
+<li>得意ゲームと苦手ゲームを把握して、得意で稼ぐ</li>
+</ul>
+<h3>🎯 ゲーム別の特性まとめ</h3>
+<table class="rank-table">
+<tr><th>ゲーム</th><th>運要素</th><th>スキル要素</th></tr>
+<tr><td>🏗️ プレス</td><td>★★★★☆</td><td>★★☆☆☆</td></tr>
+<tr><td>🏭 大爆発</td><td>★★★☆☆</td><td>★★★☆☆</td></tr>
+<tr><td>🌀 猛追</td><td>★☆☆☆☆</td><td>★★★★★</td></tr>
+<tr><td>🚪 本社</td><td>★★★★★</td><td>★★☆☆☆</td></tr>
+<tr><td><span aria-label="魔女" class="witch-img" role="img"></span> ドッジ</td><td>★★☆☆☆</td><td>★★★★☆</td></tr>
+</table>
+<h3>💪 上達のロードマップ</h3>
+<ol class="step-list">
+<li><b>第1段階(初日)</b>:全ゲームを1回ずつ試し、好みを見つける</li>
+<li><b>第2段階(数日)</b>:得意ゲームに集中、ルールと操作を完璧に</li>
+<li><b>第3段階(1週間)</b>:全ゲームをコンスタントに上位入賞</li>
+<li><b>第4段階</b>:デイリーチャレンジで毎日1位を目指す</li>
+<li><b>第5段階</b>:1000pt突破、全ゲーム勝率50%以上!</li>
+</ol>
+<h3>🎨 表示・音をカスタマイズ</h3>
+<ul>
+<li>テーマを変えて気分転換!ダーク・宇宙・森・水中など複数</li>
+<li>声の高さや速さで魔女のキャラを変えられる(かわいい〜怖いまで)</li>
+<li>文字サイズも変更可能(子どもや高齢者にも見やすく)</li>
+<li>効果音を控えめにして集中力UPもアリ</li>
+</ul>
+<div class="tip-box">
+<div class="tb-title">💎 隠れたコツ</div>
+<ul>
+<li>同じ時間帯にプレイすると、コンディションが安定する</li>
+<li>食後すぐより、少し時間をおいてからの方が集中できる</li>
+<li>連続プレイは3〜5回まで、疲れたら休む</li>
+<li>負けても気にしない、楽しむことが上達の早道</li>
+</ul>
+</div>
+</section><section class="guide-page " id="guide-parent" data-page="parent"><div class="section-title"><span class="section-index">16</span><div><div class="eyebrow">OJWGA HOW TO PLAY</div><h2>👨‍👩‍👧 保護者</h2></div></div>
+<div class="game-howto-block">
+<div class="gh-title"><span class="gh-icon">👨‍👩‍👧</span> 保護者の方へ</div>
+<p>お子さんが安全に楽しく遊べるよう、保護者専用の設定が用意されているぞい。</p>
+</div>
+<h3>🛡️ 保護者コントロールでできること</h3>
+<p>設定 → <span class="point">保護者コントロール</span>から開ける。時間・休憩・夜間・パスワード保護を総合管理する画面じゃ。</p>
+<ul>
+<li><span class="point">⏰ 1日のプレイ時間制限</span>:1分単位で上限設定(0=無制限〜1440分)</li>
+<li><span class="point">⚠️ 制限前の警告</span>:何分前に警告するか設定(0〜60分)</li>
+<li><span class="point">☕ 休憩タイマー</span>:一定間隔で休憩を促す(間隔と休憩時間を設定)</li>
+<li><span class="point">🌙 夜間ロック</span>:指定時刻〜指定時刻は遊べなくする</li>
+<li><span class="point">🔒 パスワード保護</span>:初期化・バックアップ・制限超過時に保護者パスワード必須(各切替)</li>
+<li><span class="point">⏱️ プレイ時間リセット</span>:今日のプレイ時間を0に戻す</li>
+</ul>
+<h3>⏰ 時間制限が迫ると？</h3>
+<ul>
+<li>設定した<span class="point">警告分数</span>前にホーム画面のバッジでお知らせ</li>
+<li>ホームに<span class="good">残りプレイ時間</span>と<span class="good">夜間ロックまで</span>がバッジ表示される</li>
+<li>制限に達すると<span class="warn">タイムロック画面</span>が全面に出る</li>
+</ul>
+<h3>🌙 夜間ロック・休憩タイマー</h3>
+<ul>
+<li><span class="point">夜間ロック</span>:「ロック開始時刻・解除時刻」を設定すると、その時間は遊べん</li>
+<li><span class="point">休憩タイマー</span>:「休憩を促す間隔」と「休憩時間の長さ」を設定すると、定期的に休憩を催促</li>
+<li>時計ウィジェットで<span class="good">夜間ロックまで</span>の残り時間も表示できる</li>
+</ul>
+<div class="info-box">
+<div class="ib-title">ℹ️ タイムロック画面について</div>
+<div>時間切れ・夜間ロック時に出る画面は<span class="warn">再読み込みしても閉じられん</span>。ホームに戻ることもできず、保護者パスワードで<span class="point">時間を延長</span>するしか解除方法はない。子どもが勝手に抜け出せない仕組みじゃ。</div>
+</div>
+<h3>⏱️ 時間を延長したいとき</h3>
+<ol class="step-list">
+<li>タイムロック画面の「<span class="point">🔐 解除ボタン(保護者用)</span>」を押す</li>
+<li>保護者パスワードを入力</li>
+<li>延長する分数を入力(+5/+10/+15/+30/+60分のボタンもあり)</li>
+<li>「延長する」で続きを遊べる</li>
+</ol>
+<h3>🔐 保護者パスワードの設定方法</h3>
+<ol class="step-list">
+<li>設定メニュー → 保護者モードを開く</li>
+<li>「保護者パスワード設定」をタップ</li>
+<li>4桁以上の数字 or 英数字でパスワード入力</li>
+<li><span class="point">ヒント</span>も必ず入力(忘れた時用)</li>
+<li>確認のため再入力 → 確定</li>
+</ol>
+<h3>👶 年齢別おすすめ設定</h3>
+<table class="rank-table">
+<tr><th>年齢</th><th>おすすめ設定</th></tr>
+<tr><td>3〜6歳</td><td>文字特大、警告演出OFF、振動OFF、声色「かわいい」</td></tr>
+<tr><td>7〜12歳</td><td>文字大、軽い振動OK、音量控えめ</td></tr>
+<tr><td>13歳〜</td><td>標準設定でOK、本人の好みに合わせて</td></tr>
+<tr><td>高齢者</td><td>文字特大、ゆっくり読み上げ、アニメOFF</td></tr>
+</table>
+<h3>👀 一緒に遊ぶときのアドバイス</h3>
+<ul>
+<li>初プレイは保護者が横でルール説明</li>
+<li>負けても叱らない!楽しさを第一に</li>
+<li>家族で同じユーザーを使うのではなく、各自で作る</li>
+<li>ポイントを競うミニ大会を開催すると盛り上がる</li>
+<li>定期的にバックアップを取って大事なデータを保護</li>
+</ul>
+<div class="warn-box">
+<div class="wb-title">⚠️ 重要な注意</div>
+<ul>
+<li>保護者パスワードを忘れると重要設定が変更不可</li>
+<li>子どもにパスワードを教えるとロックの意味なし</li>
+<li>初期化はお子さんが触れない場所に隠す感覚で</li>
+<li>長時間プレイの目に負担、適度に休憩を</li>
+</ul>
+</div>
+<div class="tip-box">
+<div class="tb-title">💡 健全な遊び方</div>
+<ul>
+<li>1日30分〜1時間を目安に</li>
+<li>食事中・就寝前は控えめに</li>
+<li>勉強や宿題が終わってからのご褒美として</li>
+<li>家族で会話しながら遊ぶと教育効果もアリ</li>
+</ul>
+</div>
+</section><section class="guide-page " id="guide-trouble" data-page="trouble"><div class="section-title"><span class="section-index">17</span><div><div class="eyebrow">OJWGA HOW TO PLAY</div><h2>🛠️ トラブル</h2></div></div>
+<h3>🔐 パスワードを忘れたら</h3>
+<ol class="step-list">
+<li>入力画面の「<span class="point">パスワードを忘れたかい?</span>」を押す</li>
+<li>登録した <span class="point">ヒント</span>が表示される</li>
+<li>ヒントを参考に再入力</li>
+<li>それでもダメなら、別ユーザーで入り <span class="point">初期化 → このユーザーを初期化</span>で消去</li>
+<li>新規にユーザーを作り直す(ただし<span class="warn">ポイント・記録は消える</span>)</li>
+</ol>
+<h3>🔒 ロックされたら(段階的ペナルティ)</h3>
+<table class="rank-table">
+<tr><th>間違い回数</th><th>ペナルティ</th></tr>
+<tr><td>3回</td><td><span class="warn">1分間</span>お仕置きロック</td></tr>
+<tr><td>4回</td><td><span class="warn">3分間</span>お仕置きロック</td></tr>
+<tr><td>5回</td><td><span class="warn">完全ロック</span>(解除不可)</td></tr>
+</table>
+<ul>
+<li>1〜2分間は別ゲームでもプレイして待つ</li>
+<li>完全ロック後は <span class="point">初期化</span>でユーザー削除しかない</li>
+<li>5回間違える前に「パスワードを忘れた?」でヒント表示を!</li>
+</ul>
+<h3>⛔ ユーザブロック（3種類）</h3>
+<table class="rank-table">
+<tr><th>種類</th><th>内容</th><th>警告</th></tr>
+<tr><td>一時</td><td>10分後に自動解除</td><td>1回</td></tr>
+<tr><td>通常</td><td>保護者認証で解除</td><td>3回</td></tr>
+<tr><td>完全</td><td>解除不可</td><td>5回</td></tr>
+</table>
+<h3>💾 データを別端末に移したい</h3>
+<ol class="step-list">
+<li>元端末:設定 → <span class="point">バックアップ → 書き出す</span>でJSONファイルを保存</li>
+<li>新端末:同じアプリ(URL)を開く</li>
+<li>新端末:設定 → <span class="point">バックアップ → 読み込む</span>でJSON選択</li>
+<li>復元完了!ポイント・統計・ユーザー全データが移行される</li>
+</ol>
+<p class="warn">※ 復元時は現在のデータが上書きされるので、必要なら先にバックアップを!</p>
+<h3>🐛 動作がおかしい</h3>
+<ol class="step-list">
+<li><b>まずはブラウザを再起動</b>してみる</li>
+<li><b>ページを再読み込み</b>(Ctrl+F5 or Cmd+Shift+R)</li>
+<li><b>キャッシュをクリア</b>(ブラウザの設定から)</li>
+<li><b>別のブラウザを試す</b>(Chrome、Safari、Edge等)</li>
+<li><b>端末を再起動</b>してみる</li>
+<li>それでも直らないなら <span class="point">バックアップを取ってから完全初期化</span></li>
+</ol>
+<h3>📱 スマホ特有のトラブル</h3>
+<ul>
+<li><b>画面が小さくて押しにくい</b>:設定 → 表示 → 文字サイズを大に</li>
+<li><b>振動しない</b>:OS側の振動設定をチェック</li>
+<li><b>音が出ない</b>:サイレントモード、音量、ブラウザの音ミュートを確認</li>
+<li><b>横画面にならない</b>:OSの画面回転設定を確認</li>
+<li><b>動作が重い</b>:他のアプリを閉じる、再起動</li>
+</ul>
+<h3>💻 PC特有のトラブル</h3>
+<ul>
+<li><b>キー操作が効かない</b>:ブラウザのウィンドウをクリックしてフォーカス</li>
+<li><b>マウスで反応が悪い</b>:キーボード操作に切替えてみる</li>
+<li><b>音割れする</b>:音量を下げる、または別ブラウザ</li>
+</ul>
+<h3>🔋 ゲーム中によくあるトラブル</h3>
+<ul>
+<li><b>突然戻ってしまった</b>:再度ゲームを始めるだけ(進行は保存されない)</li>
+<li><b>ポイントが入ってない</b>:結果画面を最後まで見るとちゃんと反映</li>
+<li><b>魔女のセリフが読めない</b>:文字サイズを大にする</li>
+<li><b>振動が強すぎる</b>:設定で振動レベル調整 or OFF</li>
+</ul>
+<div class="warn-box">
+<div class="wb-title">⚠️ 重要な注意点</div>
+<ul>
+<li class="warn">パスワードを5回間違えると完全ロック!</li>
+<li class="warn">完全初期化すると全データが消える、戻せん!</li>
+<li class="warn">不安なときはまず <span class="point">バックアップ</span>してから操作するんじゃ</li>
+<li class="warn">ブラウザのプライベートモードではデータが保存されない</li>
+</ul>
+</div>
+</section><section class="guide-page " id="guide-faq" data-page="faq"><div class="section-title"><span class="section-index">18</span><div><div class="eyebrow">OJWGA HOW TO PLAY</div><h2>❓ FAQ</h2></div></div>
+<h3>❓ よくある質問(FAQ)</h3>
+<p>みんなが気になる疑問にまとめてお答えするぞい!</p>
+<h3>🎮 ゲーム全般</h3>
+<div class="faq-item">
+<div class="faq-q">無料で遊べますか?</div>
+<div class="faq-a">完全無料じゃ!広告も課金もなし、安心して遊んでくれ。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q">インターネット接続は必要?</div>
+<div class="faq-a">初回読み込み後はオフラインでも遊べる。データはすべて端末内に保存される。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q">何歳から遊べますか?</div>
+<div class="faq-a">推奨は7歳以上。3〜6歳のお子さんは保護者と一緒に楽しんでほしい。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q">5つのゲームのうち、どれが一番おすすめ?</div>
+<div class="faq-a">初心者には🚪本社入り口🏗️デス・プレスがシンプルでおすすめ。腕に自信があるなら🌀猛追DXに挑戦じゃ。</div>
+</div>
+<h3>👥 ユーザー・データ</h3>
+<div class="faq-item">
+<div class="faq-q">ユーザーは何人まで作れますか?</div>
+<div class="faq-a">ストレージ容量の許す限り、実質無制限じゃ。家族全員分作っても余裕。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q">パスワードを設定しないとどうなる?</div>
+<div class="faq-a">誰でも入れちゃう。共有端末で個別データを守りたいなら設定推奨!</div>
+</div>
+<div class="faq-item">
+<div class="faq-q">削除したユーザーは復活できる?</div>
+<div class="faq-a">バックアップを取っていれば復元可能。取ってないと永久に消える、注意じゃ!</div>
+</div>
+<div class="faq-item">
+<div class="faq-q">複数の端末で同じデータを使いたい</div>
+<div class="faq-a">バックアップ機能でJSONファイルを書き出し → 別端末で読み込み、で同期できる。</div>
+</div>
+<h3>💰 ポイント・ランキング</h3>
+<div class="faq-item">
+<div class="faq-q">他のプレイヤーと競えますか?</div>
+<div class="faq-a">同じ端末内のユーザー同士で比較可能。スクショで友達と共有しよう!</div>
+</div>
+<div class="faq-item">
+<div class="faq-q">ポイントは何に使える?</div>
+<div class="faq-a">🛒 <b>魔女ショップ</b>で使えるぞい！ホーム画面のポイント表示の下にある「魔女ショップ」ボタン、または設定メニューから入れる。アバター枠・テーマ・チャレンジ補助券など、魔法のアイテムが揃っておるぞ！</div>
+</div>
+<div class="faq-item">
+<div class="faq-q">デイリーは何時にリセット?</div>
+<div class="faq-a">端末の時刻設定で午前0時にリセット。深夜0時を超えるとすぐに新しいチャレンジが出現じゃ。</div>
+</div>
+<h3>🛠️ 技術・動作</h3>
+<div class="faq-item">
+<div class="faq-q">対応OSは?</div>
+<div class="faq-a">iOS、Android、Windows、Mac、Linux等、モダンブラウザがあるOSなら何でもOK。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q">推奨ブラウザは?</div>
+<div class="faq-a">Chrome、Safari、Edge、Firefoxの最新版を推奨。古いブラウザでは一部演出が動かないかも。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q">通信量はどれくらい?</div>
+<div class="faq-a">初回読み込みのみ通信。以降はほぼゼロ。外出先でも安心して遊べる。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q">セーブデータの保存場所は?</div>
+<div class="faq-a">ブラウザのlocalStorageに保存。ブラウザのデータをクリアすると消えるので注意!</div>
+</div>
+<h3>🎨 設定・カスタマイズ</h3>
+<div class="faq-item">
+<div class="faq-q">画面が眩しい・暗すぎる</div>
+<div class="faq-a">設定 → 表示 → テーマでダーク・ライトを切り替え可能。明るさは端末側の設定で。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q">音が大きすぎる</div>
+<div class="faq-a">設定 → 音 → 音量で細かく調整可能。声・SE・警告音は個別調整できる。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q">魔女の声を変えたい</div>
+<div class="faq-a">設定 → 音 → 声色で「かわいい」「普通」「低い」「怖い」から選べる。</div>
+</div>
+<h3>🆘 トラブル対応</h3>
+<div class="faq-item">
+<div class="faq-q">完全に動かなくなった</div>
+<div class="faq-a">ブラウザのキャッシュをクリア → ページ再読み込み。バックアップがあれば復元可能。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q">バグを見つけた</div>
+<div class="faq-a">スクリーンショットと再現手順を控えておこう。アップデートで修正される場合が多い。</div>
+</div>
+<div class="faq-item">
+<div class="faq-q">プレイ中にフリーズ</div>
+<div class="faq-a">タブを閉じて開き直す。端末メモリ不足の可能性も、他のアプリを閉じてみよう。</div>
+</div>
+<div class="tip-box">
+<div class="tb-title">💌 まだ疑問が残ったら</div>
+<div>このゲームは奥が深い!プレイを続けながら自分なりの発見をしていくのも楽しさの1つ。<br/>
+                        他のタブにも詳しい情報があるので、ぜひ全部読んで「おいじぃマスター」になってくれ!</div>
+</div>
+</section></div></div></div></section></main>
+<a class="float" href="https://www.fozowo.f5.si/oijiiw.game" target="_blank" rel="noopener">ゲームを遊ぶ</a>
+<footer class="footer"><div class="wrap"><strong style="color:#fff">OJWGA</strong><br>おいじぃ魔女ゲームコレクション 公式遊び方<br><br><a href="ojwga.html">公式トップ</a>　/　<a href="ojwga-faq.html">FAQ</a>　/　<a href="https://www.fozowo.f5.si/oijiiw.game" target="_blank" rel="noopener">ゲーム本体</a></div></footer>
 <script>
-(() => {
- const stars=document.getElementById('stars'), parts=document.getElementById('particles');
- if(stars){for(let i=0;i<70;i++){const s=document.createElement('i');s.className='star';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.setProperty('--d',(2+Math.random()*4)+'s');stars.appendChild(s)}}
- if(parts){for(let i=0;i<20;i++){const p=document.createElement('i');p.className='particle';p.style.left=Math.random()*100+'%';p.style.setProperty('--d',(12+Math.random()*14)+'s');p.style.animationDelay=(-Math.random()*12)+'s';parts.appendChild(p)}}
-})();
-const initReveal=()=>{const observer=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.12});document.querySelectorAll('.reveal').forEach(e=>observer.observe(e));};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initReveal);else initReveal();
-</script>
-
-<header class="topbar"><nav class="nav">
-<a class="brand" href="ojwga.html"><img class="brand-photo" src="watch.png" alt="おいじぃ魔女" onerror="this.style.display='none'"><span>OJWGA<small>HOW TO PLAY / 完全ガイド</small></span></a>
-<div class="navlinks">
-<a href="ojwga.html#games">ゲーム</a><a href="ojwga.html#features">機能</a>
-<a href="ojwga-howto.html">遊び方</a><a href="ojwga-faq.html">FAQ</a><a href="ojwga.html#sns">SNS</a>
-<a class="nav-cta" href="https://www.fozowo.f5.si/oijiiw.game" target="_blank" rel="noopener">今すぐ遊ぶ ↗</a>
-</div></nav></header>
-
-<main><section class="inner-hero"><div class="wrap"><div class="card reveal"><div class="breadcrumb"><a href="ojwga.html">OJWGA</a><span>›</span><b>遊び方</b></div>
-<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:14px"><img class="hero-witch-photo" style="width:88px;height:88px;flex:0 0 88px" src="watch.png" alt="おいじぃ魔女" onerror="this.style.display='none'"><div style="color:#cdb8e8;font-size:12px;font-weight:800">OJWGAの案内役<br><b style="color:#fff">おいじぃ魔女</b></div></div><span class="kicker">HOW TO PLAY — GAME GUIDE ONLY</span><h1 style="font-size:clamp(38px,5vw,62px);margin:16px 0 8px"><span class="gradient">遊び方 完全ガイド</span></h1>
-<p style="color:var(--muted);line-height:1.9;max-width:820px">ここは「遊び方」に集中したページじゃ。各タイトルのルール、操作、ゲームの目的、ポイント、上達法、注意点をまとめています。</p>
-<div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:18px"><a class="btn btn-gold" href="https://www.fozowo.f5.si/oijiiw.game" target="_blank" rel="noopener">ゲームを開く ↗</a><a class="btn btn-ghost" href="ojwga.html">公式トップ</a></div></div></div></section>
-<section style="padding-top:20px"><div class="wrap"><div class="card reveal" style="padding:18px"><div class="eyebrow">SELECT A GAME</div><h2 style="margin:6px 0 14px">まずはゲームを選ぶ</h2>
-<div class="howto-tabs"><button class="howto-tab active" data-id="press">🏗️ デス・プレス</button><button class="howto-tab" data-id="explosion">🏭 大爆発</button><button class="howto-tab" data-id="chase">🌀 猛追 DX</button><button class="howto-tab" data-id="hq">🚪 本社入り口</button><button class="howto-tab" data-id="dodge">🏐 ドッジボール</button></div></div>
-<div style="margin-top:14px">
-<article class="guide active" id="guide-press">
-<div class="game-image-wrap"><img class="guide-image" src="デスプレス1.png" alt="おいじぃのデス・プレス 順位決定戦の画像" onerror="this.parentElement.innerHTML='<div class=\'image-fallback\'>OJWGA</div>'" /></div>
-<div class="guide-head card"><div class="guide-icon">🏗️</div><div><div class="badges" style="justify-content:flex-start"><span class="badge gold">運ゲー</span><span class="badge">難易度：易しい</span></div><h2>おいじぃのデス・プレス 順位決定戦</h2><p class="lead">ゲーム本体の公式遊び方に沿って、ルール・操作・考え方を整理した完全ガイドじゃ。</p></div></div>
-<div class="guide-grid"><div class="guide-box card"><h3>基本情報</h3><table class="table"><tr><th>情報</th><td>4人（あなた＋CPU3体）</td></tr><tr><th>情報</th><td>約1〜2分</td></tr><tr><th>必要スキル</th><td>運</td></tr></table></div>
-<div class="guide-box card"><h3>プレイ感の目安</h3><div class="meter"><div class="meter-row"><label>緊張感</label><div class="bar"><i style="--w:55%"></i></div><b>55%</b></div><div class="meter-row"><label>とっつきやすさ</label><div class="bar"><i style="--w:45%"></i></div><b>45%</b></div></div><p style="margin-top:10px">難易度は公式ゲーム内の案内をベースにした目安です。</p></div>
-<div class="guide-box card"><h3>ゲームの目的</h3><ul><li>4つの足場から1つを選ぶ</li><li>プレス機の落下地点は完全ランダム</li><li>潰された人はそのラウンドで脱落</li><li>ラウンドごとに足場が1つ減る</li><li>最後まで生き残れば1位</li></ul></div><div class="guide-box card"><h3>上達のコツ</h3><ul><li>端っこ・真ん中など、自分なりの選択ルールを作る</li><li>4位でもポイントが入るので再挑戦する</li><li>CPU戦を観戦して流れを楽しむ</li></ul></div></div>
-<div class="guide-grid" style="margin-top:12px"><div class="guide-box card"><h3>基本操作</h3><p>タップ／クリックで足場を1つ選択。制限時間はなく、じっくり決められます。</p></div><div class="guide-box card"><h3>完全ランダム</h3><p>魔女のセリフや表情に当たり判定のヒントはありません。</p></div><div class="guide-box card"><h3>特殊時間帯</h3><p>公式説明では23:00〜23:30に「ツイン・プレス」が発動し、1ラウンドに2か所へプレス機が落ちる高難度ルールがあります。</p></div></div></article>
-<article class="guide " id="guide-explosion">
-<div class="game-image-wrap"><img class="guide-image" src="大爆発2.png" alt="おいじぃ魔女大爆発 複雑なる工場の画像" onerror="this.parentElement.innerHTML='<div class=\'image-fallback\'>OJWGA</div>'" /></div>
-<div class="guide-head card"><div class="guide-icon">🏭</div><div><div class="badges" style="justify-content:flex-start"><span class="badge gold">運＋時間制限</span><span class="badge">難易度：中</span></div><h2>おいじぃ魔女大爆発 複雑なる工場</h2><p class="lead">ゲーム本体の公式遊び方に沿って、ルール・操作・考え方を整理した完全ガイドじゃ。</p></div></div>
-<div class="guide-grid"><div class="guide-box card"><h3>基本情報</h3><table class="table"><tr><th>情報</th><td>4人（あなた＋CPU3体）</td></tr><tr><th>情報</th><td>約2〜3分</td></tr><tr><th>必要スキル</th><td>運・決断力</td></tr></table></div>
-<div class="guide-box card"><h3>プレイ感の目安</h3><div class="meter"><div class="meter-row"><label>緊張感</label><div class="bar"><i style="--w:70%"></i></div><b>70%</b></div><div class="meter-row"><label>とっつきやすさ</label><div class="bar"><i style="--w:30%"></i></div><b>30%</b></div></div><p style="margin-top:10px">難易度は公式ゲーム内の案内をベースにした目安です。</p></div>
-<div class="guide-box card"><h3>ゲームの目的</h3><ul><li>順番にスイッチを1つ押す</li><li>爆発スイッチを引いた人は脱落</li><li>全員セーフならスイッチをリセット</li><li>最後まで残れば1位</li></ul></div><div class="guide-box card"><h3>上達のコツ</h3><ul><li>前のCPUが押したスイッチを見届けて残りから決める</li><li>10秒を使い切らず直感で決める</li><li>派手なズーム演出に惑わされない</li></ul></div></div>
-<div class="guide-grid" style="margin-top:12px"><div class="guide-box card"><h3>基本操作</h3><p>3D空間のスイッチをタップ／クリック。</p></div><div class="guide-box card"><h3>10秒ルール</h3><p>自分の番では10秒以内に選択。時間切れは脱落につながります。</p></div><div class="guide-box card"><h3>スイッチ数</h3><p>4人なら5個、3人なら4個、2人なら3個。生存者＋1個のスイッチが並びます。</p></div><div class="guide-box card"><h3>完全ランダム</h3><p>爆発スイッチはランダム。パイプやランプの色・形、セリフにヒントはありません。</p></div></div></article>
-<article class="guide " id="guide-chase">
-<div class="game-image-wrap"><img class="guide-image" src="猛追3.png" alt="おいじぃ魔女の猛追 DXの画像" onerror="this.parentElement.innerHTML='<div class=\'image-fallback\'>OJWGA</div>'" /></div>
-<div class="guide-head card"><div class="guide-icon">🌀</div><div><div class="badges" style="justify-content:flex-start"><span class="badge gold">アクション</span><span class="badge">難易度：難</span></div><h2>おいじぃ魔女の猛追 DX</h2><p class="lead">ゲーム本体の公式遊び方に沿って、ルール・操作・考え方を整理した完全ガイドじゃ。</p></div></div>
-<div class="guide-grid"><div class="guide-box card"><h3>基本情報</h3><table class="table"><tr><th>情報</th><td>4人（あなた＋AI3体）</td></tr><tr><th>情報</th><td>約1〜2分</td></tr><tr><th>情報</th><td>60秒サバイバル</td></tr></table></div>
-<div class="guide-box card"><h3>プレイ感の目安</h3><div class="meter"><div class="meter-row"><label>緊張感</label><div class="bar"><i style="--w:92%"></i></div><b>92%</b></div><div class="meter-row"><label>とっつきやすさ</label><div class="bar"><i style="--w:8%"></i></div><b>8%</b></div></div><p style="margin-top:10px">難易度は公式ゲーム内の案内をベースにした目安です。</p></div>
-<div class="guide-box card"><h3>ゲームの目的</h3><ul><li>魔女に捕まらないよう60秒逃げ続ける</li><li>生存時間が長いほど高順位</li><li>60秒完全生存で1位確定（同着あり）</li><li>アイテムを拾って逃走を補助</li></ul></div><div class="guide-box card"><h3>上達のコツ</h3><ul><li>角を曲がって視界を切る</li><li>ミニマップで魔女の接近方向を先読み</li><li>直角ターンやジグザグで追跡をかわす</li><li>残り10秒は安全地帯で時間を稼ぐ</li></ul></div></div>
-<div class="guide-grid" style="margin-top:12px"><div class="guide-box card"><h3>PC操作</h3><p>WASDまたは↑↓←→キー。</p></div><div class="guide-box card"><h3>スマホ／タブレット</h3><p>Dパッドやスワイプで移動。</p></div><div class="guide-box card"><h3>ミニマップ</h3><p>赤＝自分、紫＝魔女、緑／黄／シアン＝他AI。青＝スピード、黄＝フリーズ。</p></div><div class="guide-box card"><h3>アイテム</h3><p>スピードで一定時間高速化、フリーズで魔女を3秒止める。全5個（スピード3・フリーズ2）。</p></div><div class="guide-box card"><h3>魔女の加速</h3><p>時間経過で魔女の移動速度が上がるため、終盤ほど危険。</p></div></div></article>
-<article class="guide " id="guide-hq">
-<div class="game-image-wrap"><img class="guide-image" src="本社入口4.png" alt="おいじぃ魔女本社入り口 運ゲーの画像" onerror="this.parentElement.innerHTML='<div class=\'image-fallback\'>OJWGA</div>'" /></div>
-<div class="guide-head card"><div class="guide-icon">🚪</div><div><div class="badges" style="justify-content:flex-start"><span class="badge gold">運ゲー</span><span class="badge">難易度：易</span></div><h2>おいじぃ魔女本社入り口 運ゲー</h2><p class="lead">ゲーム本体の公式遊び方に沿って、ルール・操作・考え方を整理した完全ガイドじゃ。</p></div></div>
-<div class="guide-grid"><div class="guide-box card"><h3>基本情報</h3><table class="table"><tr><th>情報</th><td>4人</td></tr><tr><th>情報</th><td>約1〜2分</td></tr><tr><th>必要スキル</th><td>運</td></tr></table></div>
-<div class="guide-box card"><h3>プレイ感の目安</h3><div class="meter"><div class="meter-row"><label>緊張感</label><div class="bar"><i style="--w:45%"></i></div><b>45%</b></div><div class="meter-row"><label>とっつきやすさ</label><div class="bar"><i style="--w:55%"></i></div><b>55%</b></div></div><p style="margin-top:10px">難易度は公式ゲーム内の案内をベースにした目安です。</p></div>
-<div class="guide-box card"><h3>ゲームの目的</h3><ul><li>左・中央・右の3ドアから1つ選ぶ</li><li>各ドア定員2人</li><li>2つは安全、1つは魔女のドア</li><li>魔女のドアでハート1個減少</li><li>1人3ハート、3回で脱落</li></ul></div><div class="guide-box card"><h3>上達のコツ</h3><ul><li>5秒以内に必ず決める</li><li>CPUの選択状況を見て空いているドアを選ぶ手もある</li><li>ハート3個あるので一度の失敗で焦らない</li></ul></div></div>
-<div class="guide-grid" style="margin-top:12px"><div class="guide-box card"><h3>基本操作</h3><p>タップ／クリックで左・中央・右のドアを選びます。</p></div><div class="guide-box card"><h3>5秒ルール</h3><p>5秒以内に選ばないと即脱落。</p></div><div class="guide-box card"><h3>毎ラウンド変化</h3><p>魔女のドアは毎ラウンドランダムに入れ替わります。</p></div><div class="guide-box card"><h3>ヒントなし</h3><p>ドアの揺れ・笑い声・影・セリフなどにヒントはない公式説明です。</p></div></div></article>
-<article class="guide " id="guide-dodge">
-<div class="game-image-wrap"><img class="guide-image" src="ドッジボール5.png" alt="おいじぃ魔女のドッジボール大会の画像" onerror="this.parentElement.innerHTML='<div class=\'image-fallback\'>OJWGA</div>'" /></div>
-<div class="guide-head card"><div class="guide-icon">🏐</div><div><div class="badges" style="justify-content:flex-start"><span class="badge gold">アクション（反射神経）</span><span class="badge">難易度：中</span></div><h2>おいじぃ魔女のドッジボール大会</h2><p class="lead">ゲーム本体の公式遊び方に沿って、ルール・操作・考え方を整理した完全ガイドじゃ。</p></div></div>
-<div class="guide-grid"><div class="guide-box card"><h3>基本情報</h3><table class="table"><tr><th>情報</th><td>4人</td></tr><tr><th>情報</th><td>約1〜2分</td></tr><tr><th>情報</th><td>60秒サバイバル</td></tr></table></div>
-<div class="guide-box card"><h3>プレイ感の目安</h3><div class="meter"><div class="meter-row"><label>緊張感</label><div class="bar"><i style="--w:70%"></i></div><b>70%</b></div><div class="meter-row"><label>とっつきやすさ</label><div class="bar"><i style="--w:30%"></i></div><b>30%</b></div></div><p style="margin-top:10px">難易度は公式ゲーム内の案内をベースにした目安です。</p></div>
-<div class="guide-box card"><h3>ゲームの目的</h3><ul><li>巨大鉄球を60秒避け続ける</li><li>当たったら脱落</li><li>生存時間で順位決定</li><li>時間とともに速度・数・同時出現数が増える</li></ul></div><div class="guide-box card"><h3>上達のコツ</h3><ul><li>中央をベースに四方へ逃げられる余裕を作る</li><li>鉄球の進行方向を読んで早めに避ける</li><li>必要以上に動かず隙間を通す</li><li>PCではキーボードの反応速度を活かす</li></ul></div></div>
-<div class="guide-grid" style="margin-top:12px"><div class="guide-box card"><h3>PC操作</h3><p>WASDまたは↑↓←→キーで360°移動。</p></div><div class="guide-box card"><h3>スマホ操作</h3><p>左下のバーチャルジョイスティックをスワイプ。</p></div><div class="guide-box card"><h3>鉄球の挙動</h3><p>画面端から地面を転がってくる。</p></div><div class="guide-box card"><h3>後半は最大4個</h3><p>公式説明では後半に同時出現数が最大4個まで増えます。</p></div></div></article></div>
-<div class="showcase" style="margin-top:16px"><div class="panel card reveal"><div class="eyebrow">COMMON POINTS</div><h3>全ゲーム共通ポイント</h3><p>通常プレイの公式目安は順位に応じてポイントが入ります。</p><div class="points"><div><b>+20</b><small>1位</small></div><div><b>+12</b><small>2位</small></div><div><b>+6</b><small>3位</small></div><div><b>+2</b><small>4位</small></div></div></div>
-<div class="panel card reveal"><div class="eyebrow">DAILY</div><h3>デイリーチャレンジ</h3><p>1日1回限定の高報酬。公式説明では通常ポイントより高い報酬です。</p><div class="points"><div><b>+100</b><small>1位</small></div><div><b>+60</b><small>2位</small></div><div><b>+30</b><small>3位</small></div><div><b>+10</b><small>4位</small></div></div></div></div>
-<div class="card reveal" style="padding:22px;margin-top:16px"><h2>初心者ロードマップ</h2><div class="steps"><div class="step card"><div class="num">1</div><h3>全ゲームを1回</h3><p>5タイトルを一度ずつ触って、運ゲーとアクションの違いを体感。</p></div><div class="step card"><div class="num">2</div><h3>得意を発見</h3><p>得意な1〜2本を見つけ、短時間で繰り返し記録を伸ばす。</p></div><div class="step card"><div class="num">3</div><h3>デイリーへ</h3><p>ルールに慣れたら、1日1回の高報酬チャレンジに挑む。</p></div></div></div>
-<div class="notice reveal">⚠️ ヒントの有無やランダム性はゲームごとに違います。特に運ゲー系は、演出から結果を読めない設計として公式説明されています。</div>
-</div></section></main>
-<footer class="footer"><div class="wrap footer-row"><b>🧙‍♀️ OJWGA HOW TO PLAY</b><div class="mini-nav"><a href="ojwga.html">公式トップ</a><a href="ojwga-faq.html">FAQ</a><a href="https://www.fozowo.f5.si/oijiiw.game" target="_blank" rel="noopener">ゲームを開く</a></div></div></footer>
-<div class="float-cta"><a class="btn btn-gold" href="https://www.fozowo.f5.si/oijiiw.game" target="_blank" rel="noopener">遊ぶ</a></div>
-<script>
-const tabs=[...document.querySelectorAll('.howto-tab')],guides=[...document.querySelectorAll('.guide')];
-tabs.forEach(t=>t.addEventListener('click',()=>{tabs.forEach(x=>x.classList.remove('active'));t.classList.add('active');guides.forEach(g=>g.classList.toggle('active',g.id==='guide-'+t.dataset.id));window.scrollTo({top:document.getElementById('guide-'+t.dataset.id).offsetTop-110,behavior:'smooth'})}));
+const tabs=[...document.querySelectorAll('.tab')],pages=[...document.querySelectorAll('.guide-page')];
+function showPage(k,scroll=true){tabs.forEach(t=>t.classList.toggle('active',t.dataset.page===k));pages.forEach(p=>p.classList.toggle('active',p.dataset.page===k));if(scroll){const el=document.getElementById('guide-'+k);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}}
+tabs.forEach(t=>t.addEventListener('click',()=>showPage(t.dataset.page,true)));
+document.querySelectorAll('[data-jump]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showPage(a.dataset.jump,true)}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){location.href='ojwga.html'};if(e.key==='Home'&&!e.ctrlKey){e.preventDefault();window.scrollTo({top:0,behavior:'smooth'})}});
+showPage(tabs[0]?.dataset.page||'basic',false);
 </script></body></html>
