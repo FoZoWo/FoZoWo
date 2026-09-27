@@ -28782,7 +28782,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     }
   }
 
-  async function syncGoogleAccount(fu){
+  async function syncGoogleAccountCore(fu){
     if(!fu || !firebaseReady() || typeof root==='undefined') return null;
     var u=currentLocalUserByUid(fu.uid);
     var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',fu.uid);
@@ -28834,6 +28834,80 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     attachCloudListener(u,fu);
     setSyncStatus('synced');
     return u;
+  }
+  /* Prevent duplicate Google shadow users when auth-state, onboarding, and the
+     user-switcher all react to the same Firebase sign-in at nearly the same time. */
+  var googleSyncInFlight = Object.create(null);
+  function googleUserScore(u){
+    if(!u) return -1;
+    var d=u.data||{};
+    var p=Number(d.totalPoints||0);
+    var r=Array.isArray(d.recentRecords)?d.recentRecords.length:0;
+    var t=Number(u._cloudSyncedAt||0);
+    return p*1000000 + r*100 + Math.min(t%100,99);
+  }
+  function dedupeGoogleShadowUsers(uid, preferred){
+    try{
+      if(!root || !Array.isArray(root.users)) return preferred;
+      var matches=root.users.filter(function(x){
+        return x && (x.firebaseUid===uid || (x.authType==='google' && x.id===uid));
+      });
+      if(matches.length<=1) return preferred || matches[0] || null;
+
+      var keep=preferred && matches.indexOf(preferred)!==-1 ? preferred : matches[0];
+      matches.forEach(function(candidate){
+        if(candidate===keep) return;
+        if(googleUserScore(candidate)>googleUserScore(keep)) keep=candidate;
+      });
+
+      // Merge useful local fields from any duplicate before removing the extra shadow users.
+      matches.forEach(function(candidate){
+        if(candidate===keep) return;
+        try{
+          if((!keep.name || String(keep.name).trim()==='') && candidate.name) keep.name=candidate.name;
+          if((!keep.email || String(keep.email).trim()==='') && candidate.email) keep.email=candidate.email;
+          if((!keep.avatar || keep.avatar==='🌐') && candidate.avatar) keep.avatar=candidate.avatar;
+          if((!keep.photoURL) && candidate.photoURL) keep.photoURL=candidate.photoURL;
+          if((!keep.theme || keep.theme==='purple') && candidate.theme) keep.theme=candidate.theme;
+          keep.data=keep.data||{};
+          var cd=candidate.data||{};
+          if(Number(cd.totalPoints||0)>Number(keep.data.totalPoints||0)) keep.data.totalPoints=Number(cd.totalPoints||0);
+          if(Number(cd.totalGamesPlayed||0)>Number(keep.data.totalGamesPlayed||0)) keep.data.totalGamesPlayed=Number(cd.totalGamesPlayed||0);
+          if(Number(cd.firstPlaceCount||0)>Number(keep.data.firstPlaceCount||0)) keep.data.firstPlaceCount=Number(cd.firstPlaceCount||0);
+          if(Number(cd.challengeWins||0)>Number(keep.data.challengeWins||0)) keep.data.challengeWins=Number(cd.challengeWins||0);
+          if(Number(cd.shopPurchases||0)>Number(keep.data.shopPurchases||0)) keep.data.shopPurchases=Number(cd.shopPurchases||0);
+          if(cd.achievements && typeof cd.achievements==='object') keep.data.achievements=Object.assign({},cd.achievements,keep.data.achievements||{});
+          if(cd.gameCounts && typeof cd.gameCounts==='object') keep.data.gameCounts=Object.assign({},cd.gameCounts,keep.data.gameCounts||{});
+          if(Array.isArray(cd.recentRecords)){
+            var merged=(Array.isArray(keep.data.recentRecords)?keep.data.recentRecords:[]).concat(cd.recentRecords);
+            var seen=Object.create(null), out=[];
+            merged.forEach(function(item){
+              var key='';
+              try{ key=JSON.stringify(item); }catch(e){ key=String(item&&item.date||'')+'|'+String(item&&item.gameId||'')+'|'+String(item&&item.rank||'')+'|'+String(item&&item.points||''); }
+              if(!seen[key]){seen[key]=1;out.push(item);}
+            });
+            keep.data.recentRecords=out.slice(-200);
+          }
+        }catch(e){}
+      });
+
+      root.users=root.users.filter(function(item){ return item===keep || matches.indexOf(item)===-1; });
+      if(root.currentUserId && matches.some(function(x){return x.id===root.currentUserId;})) root.currentUserId=keep.id;
+      saveRoot();
+      return keep;
+    }catch(e){ return preferred; }
+  }
+  async function syncGoogleAccount(fu){
+    if(!fu || !fu.uid) return null;
+    var uid=fu.uid;
+    if(googleSyncInFlight[uid]) return googleSyncInFlight[uid];
+    googleSyncInFlight[uid]=(async function(){
+      var u=await syncGoogleAccountCore(fu);
+      if(!u) return null;
+      u=dedupeGoogleShadowUsers(uid,u) || u;
+      return u;
+    })().finally(function(){ delete googleSyncInFlight[uid]; });
+    return googleSyncInFlight[uid];
   }
   window.ojwgaSyncGoogleAccount=syncGoogleAccount;
 
@@ -29727,10 +29801,6 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     if(!dbReady()){safeAlert('アカウント削除機能の準備中です。少し待ってからもう一度試してください。','Account deletion controls are still loading. Please try again.');return;}
     state.deleteBusy=true;
     try{
-      var ok1=confirm('GoogleアカウントとOJWGAオンラインデータを完全に消去します。\nこの操作は元に戻せません。\n\n本当に消去しますか？');
-      if(!ok1)return;
-      var ok2=confirm('最終確認です。\nGoogleログインアカウントとFirestoreのOJWGAデータを削除します。\n\n消去を実行しますか？');
-      if(!ok2)return;
 
       try{
         var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',fu.uid);
@@ -29922,6 +29992,196 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(late,120);});else setTimeout(late,120);
   setInterval(function(){bindAvatarInput();bindSync();renderOnlineAccountPanel();},1500);
+})();
+</script>
+
+
+<style id="ojwga-v17-full-delete-flow-css">
+/* ===== Googleオンラインアカウント完全消去：説明→警告1→警告2→消去 ===== */
+#ojwga-online-delete-info-overlay,
+#ojwga-online-delete-warn1,
+#ojwga-online-delete-warn2,
+#ojwga-online-delete-spinner{
+  position:fixed;inset:0;z-index:2147483646;display:none;box-sizing:border-box;
+  align-items:center;justify-content:center;padding:20px;
+}
+#ojwga-online-delete-info-overlay.show,
+#ojwga-online-delete-warn1.show,
+#ojwga-online-delete-warn2.show,
+#ojwga-online-delete-spinner.show{display:flex}
+#ojwga-online-delete-info-overlay{background:rgba(5,1,12,.92);backdrop-filter:blur(8px)}
+.ojwga-delete-info-card{
+  width:min(520px,94vw);max-height:90vh;overflow:auto;border-radius:22px;padding:24px 22px 20px;
+  background:linear-gradient(145deg,#2c1746,#120820);border:2px solid rgba(199,125,255,.55);
+  box-shadow:0 24px 80px rgba(0,0,0,.65);color:#fff;
+}
+.ojwga-delete-info-card h2{margin:0 0 10px;text-align:center;font-size:1.35rem;color:#ffd6d6}
+.ojwga-delete-info-card .lead{margin:0 0 14px;text-align:center;color:#eadff2;line-height:1.65}
+.ojwga-delete-info-list{margin:12px 0 16px;padding:12px 14px;border-radius:14px;background:rgba(0,0,0,.28);border:1px solid rgba(255,120,120,.22);line-height:1.8;color:#ffe3e3}
+.ojwga-delete-info-note{font-size:.76rem;color:#d9c7e7;line-height:1.55;margin-top:10px}
+.ojwga-delete-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.ojwga-delete-actions button{min-height:48px;border-radius:13px;border:0;font-weight:900;font-size:.95rem;cursor:pointer}
+.ojwga-delete-cancel{background:#444;color:#fff;border:1px solid #777!important}
+.ojwga-delete-next{background:linear-gradient(135deg,#d64b4b,#8e1d1d);color:#fff;border:1px solid #ff9b9b!important}
+.ojwga-delete-fullscreen{
+  flex-direction:column;text-align:center;color:#fff;background:#000;padding:28px;
+}
+.ojwga-delete-fullscreen .icon{font-size:76px;filter:drop-shadow(0 0 24px #ff4444);margin-bottom:14px}
+.ojwga-delete-fullscreen h2{margin:0 0 12px;color:#ff6f6f;font-size:1.65rem;letter-spacing:2px}
+.ojwga-delete-fullscreen p{margin:0 auto 20px;max-width:620px;color:#ffdede;font-size:1rem;line-height:1.8;white-space:pre-line}
+.ojwga-delete-fullscreen .warning-box{width:min(620px,92vw);padding:14px 16px;margin:0 auto 18px;border-radius:14px;background:rgba(140,0,0,.16);border:2px solid rgba(255,90,90,.5);color:#fff0f0;line-height:1.7}
+.ojwga-delete-fullscreen .confirm-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.ojwga-delete-fullscreen button{min-width:150px;min-height:48px;padding:10px 18px;border-radius:13px;border:0;font-weight:900;font-size:.95rem;cursor:pointer}
+.ojwga-delete-back{background:#333;color:#fff;border:1px solid #777!important}
+.ojwga-delete-danger{background:linear-gradient(135deg,#e74c3c,#8f1f16);color:#fff;border:2px solid #ff8a8a!important;box-shadow:0 5px 0 #5e1510}
+.ojwga-delete-danger:active{transform:translateY(3px);box-shadow:0 2px 0 #5e1510}
+.ojwga-delete-check{display:flex;align-items:flex-start;gap:10px;width:min(620px,92vw);margin:0 auto 18px;text-align:left;padding:12px 14px;border-radius:12px;border:2px solid rgba(255,80,80,.45);background:rgba(255,80,80,.08);color:#ffe5e5;font-weight:800;line-height:1.5}
+.ojwga-delete-check input{width:21px;height:21px;accent-color:#ff4d4d;flex:0 0 auto;margin-top:2px}
+#ojwga-online-delete-spinner{flex-direction:column;background:#000;color:#fff;text-align:center}
+#ojwga-online-delete-spinner .spin{
+  width:64px;height:64px;border-radius:50%;border:7px solid rgba(255,255,255,.16);border-top-color:#ff6666;border-right-color:#ffb0b0;animation:ojwgaDeleteSpin .8s linear infinite;margin-bottom:20px
+}
+@keyframes ojwgaDeleteSpin{to{transform:rotate(360deg)}}
+#ojwga-online-delete-spinner h2{margin:0 0 10px;color:#ff8888}
+#ojwga-online-delete-spinner p{margin:0;color:#e7d6d6;line-height:1.7;white-space:pre-line}
+@media(max-width:560px){.ojwga-delete-actions{grid-template-columns:1fr}.ojwga-delete-fullscreen h2{font-size:1.35rem}.ojwga-delete-fullscreen p{font-size:.9rem}}
+</style>
+
+<div id="ojwga-online-delete-info-overlay" aria-hidden="true">
+  <div class="ojwga-delete-info-card" role="dialog" aria-modal="true">
+    <h2>☠️ オンラインアカウント完全消去</h2>
+    <p class="lead">この操作を進めると、Googleオンラインユーザーを完全に消去します。</p>
+    <div class="ojwga-delete-info-list">
+      ❌ FirestoreのOJWGAオンラインデータ<br>
+      ❌ オンラインユーザーのポイント・実績・履歴<br>
+      ❌ OJWGAに保存したオンライン用プロフィール画像・名前<br>
+      ❌ この端末に残っている同じGoogleユーザーのローカル情報<br>
+      ❌ Firebase AuthenticationのGoogleログイン連携
+    </div>
+    <div class="ojwga-delete-info-note">※ 元に戻せません。GoogleアカウントそのもののGoogleサービス（Gmailなど）を削除する操作ではありません。</div>
+    <div class="ojwga-delete-actions">
+      <button type="button" class="ojwga-delete-cancel" id="ojwga-delete-info-cancel">キャンセル</button>
+      <button type="button" class="ojwga-delete-next" id="ojwga-delete-info-next">説明を確認した</button>
+    </div>
+  </div>
+</div>
+
+<div id="ojwga-online-delete-warn1" class="ojwga-delete-fullscreen" aria-hidden="true">
+  <div class="icon">⚠️</div>
+  <h2>第1警告　完全消去</h2>
+  <p>オンラインユーザーに保存されたデータを消去します。
+この操作は取り消せません。</p>
+  <div class="warning-box">Firestoreのオンラインデータと、この端末にあるGoogleユーザーの情報を削除対象にします。</div>
+  <div class="confirm-row">
+    <button type="button" class="ojwga-delete-back" id="ojwga-delete-warn1-back">戻る</button>
+    <button type="button" class="ojwga-delete-danger" id="ojwga-delete-warn1-next">それでも続ける</button>
+  </div>
+</div>
+
+<div id="ojwga-online-delete-warn2" class="ojwga-delete-fullscreen" aria-hidden="true">
+  <div class="icon">☠️</div>
+  <h2>最終警告　元に戻せません</h2>
+  <p>Google Authenticationのログインユーザーも削除します。
+削除後はこのGoogleアカウントでOJWGAへログインできなくなります。</p>
+  <label class="ojwga-delete-check"><input type="checkbox" id="ojwga-delete-final-check"> <span>「完全消去すると復元できない」ことを理解しました。</span></label>
+  <div class="confirm-row">
+    <button type="button" class="ojwga-delete-back" id="ojwga-delete-warn2-back">戻る</button>
+    <button type="button" class="ojwga-delete-danger" id="ojwga-delete-execute" disabled>完全消去してログアウト</button>
+  </div>
+</div>
+
+<div id="ojwga-online-delete-spinner" aria-hidden="true">
+  <div class="spin"></div>
+  <h2>完全消去しています…</h2>
+  <p id="ojwga-online-delete-spinner-text">オンラインデータを削除しています。</p>
+</div>
+
+<script id="ojwga-v17-full-delete-flow-js">
+(function(){
+  'use strict';
+  var busy=false, step=0;
+  function el(id){return document.getElementById(id)}
+  function show(id){var x=el(id);if(x){x.classList.add('show');x.setAttribute('aria-hidden','false')}}
+  function hide(id){var x=el(id);if(x){x.classList.remove('show');x.setAttribute('aria-hidden','true')}}
+  function allHide(){['ojwga-online-delete-info-overlay','ojwga-online-delete-warn1','ojwga-online-delete-warn2','ojwga-online-delete-spinner'].forEach(hide)}
+  function langEn(){try{return typeof getAppLang==='function'&&getAppLang()==='en'}catch(e){return false}}
+  function alertMsg(j,e){try{if(typeof oijAlert==='function')return oijAlert(langEn()?e:j)}catch(_){}try{alert(langEn()?e:j)}catch(_){}
+  }
+  function isGoogle(u){return !!(u&&u.authType==='google'&&u.firebaseUid)}
+  function current(){try{return typeof getCurrentUser==='function'?getCurrentUser():null}catch(e){return null}}
+  function fb(){return window.__ojwgaFirebaseAuthUser||null}
+  function ready(){return !!(window.OJWGA_FIREBASE&&window.OJWGA_FIREBASE.auth&&window.OJWGA_FIREBASE.db&&window.OJWGA_FIREBASE.deleteDoc)}
+  function cleanupLocal(uid){
+    try{
+      if(root&&Array.isArray(root.users)){
+        root.users=root.users.filter(function(x){return !(x&&(x.firebaseUid===uid||(x.authType==='google'&&x.id===uid)))})
+        root.currentUserId=null;
+        window.__ojwgaPendingGoogleTargetId=null;
+        window.__ojwgaOnboardGoogleUserId=null;
+        try{sessionStorage.removeItem('oijii_startup_user_selected')}catch(e){}
+        root.setupCompleted=!!(root.users&&root.users.length);
+        saveRoot();
+      }
+      try{localStorage.removeItem('oijii_last_google_delete_v1')}catch(e){}
+    }catch(e){}
+  }
+  function spinner(msg){show('ojwga-online-delete-spinner');var t=el('ojwga-online-delete-spinner-text');if(t)t.textContent=msg||'処理しています…'}
+
+  async function execute(){
+    if(busy)return; busy=true;
+    var u=current(), fu=fb();
+    if(!isGoogle(u)||!fu||fu.uid!==u.firebaseUid){busy=false;allHide();alertMsg('削除するGoogleアカウントでログインしていません。','The Google account to delete is not signed in.');return}
+    if(!ready()){busy=false;allHide();alertMsg('削除機能の準備がまだ完了していません。少し待ってからもう一度試してください。','Account deletion is still loading. Please try again.');return}
+    try{
+      spinner('Firestoreのオンラインデータを削除しています…');
+      var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',fu.uid);
+      await window.OJWGA_FIREBASE.deleteDoc(ref);
+
+      spinner('Google認証ユーザーを削除しています…');
+      var authUser=window.OJWGA_FIREBASE.auth.currentUser;
+      if(!authUser||authUser.uid!==fu.uid) throw new Error('Google認証状態を確認できませんでした。');
+      try{
+        await window.OJWGA_FIREBASE.deleteUser(authUser);
+      }catch(e){
+        if(e&&(e.code==='auth/requires-recent-login'||e.code==='auth/user-token-expired')){
+          spinner('Googleアカウントを再確認しています…');
+          var provider=window.OJWGA_FIREBASE.googleProvider;
+          var rr=await window.OJWGA_FIREBASE.reauthenticateWithPopup(authUser,provider);
+          if(!rr||!rr.user||rr.user.uid!==fu.uid) throw new Error('別のGoogleアカウントが選ばれました。削除を中止しました。');
+          await window.OJWGA_FIREBASE.deleteUser(authUser);
+        }else throw e;
+      }
+
+      spinner('この端末のGoogleユーザー情報も削除しています…');
+      try{if(window.OJWGA_FIREBASE.signOut)await window.OJWGA_FIREBASE.signOut(window.OJWGA_FIREBASE.auth);}catch(e){}
+      try{cleanupLocal(fu.uid)}catch(e){}
+      try{localStorage.setItem('oijii_last_google_delete_v1',String(Date.now()))}catch(e){}
+      spinner('完了しました。ログアウトして再起動します…');
+      setTimeout(function(){try{location.reload()}catch(e){location.href=location.href}},1200);
+    }catch(e){
+      console.error('[OJWGA] full online account deletion failed',e);
+      busy=false;allHide();
+      var msg=(e&&e.message)||'アカウントの完全消去に失敗しました。';
+      if(e&&e.code==='auth/requires-recent-login')msg='Googleの再認証が必要です。もう一度最初から実行してください。';
+      alertMsg(msg,msg);
+    }
+  }
+
+  window.ojwgaV17DeleteAccount=function(){
+    var u=current(),fu=fb();
+    if(!isGoogle(u)||!fu||fu.uid!==u.firebaseUid){alertMsg('先に削除するGoogleアカウントへログインするのじゃ。','Sign in with the Google account to delete first.');return}
+    if(busy)return;
+    step=0;allHide();show('ojwga-online-delete-info-overlay');
+  };
+
+  el('ojwga-delete-info-cancel').onclick=function(){allHide()};
+  el('ojwga-delete-info-next').onclick=function(){hide('ojwga-online-delete-info-overlay');step=1;show('ojwga-online-delete-warn1')};
+  el('ojwga-delete-warn1-back').onclick=function(){hide('ojwga-online-delete-warn1');show('ojwga-online-delete-info-overlay')};
+  el('ojwga-delete-warn1-next').onclick=function(){hide('ojwga-online-delete-warn1');step=2;show('ojwga-online-delete-warn2')};
+  el('ojwga-delete-warn2-back').onclick=function(){hide('ojwga-online-delete-warn2');show('ojwga-online-delete-warn1')};
+  el('ojwga-delete-final-check').onchange=function(){el('ojwga-delete-execute').disabled=!this.checked};
+  el('ojwga-delete-execute').onclick=execute;
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!busy){if(el('ojwga-online-delete-info-overlay').classList.contains('show'))allHide();else if(el('ojwga-online-delete-warn2').classList.contains('show')){hide('ojwga-online-delete-warn2');show('ojwga-online-delete-warn1')}else if(el('ojwga-online-delete-warn1').classList.contains('show')){hide('ojwga-online-delete-warn1');show('ojwga-online-delete-info-overlay')}}});
 })();
 </script>
 </html>
