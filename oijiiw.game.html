@@ -17134,6 +17134,14 @@ function executeReset() {
                     }
                 } catch (e) {}
                 root = defaultRoot();
+                /* 完全初期化ではユーザー情報も0人にする。
+                   defaultRoot() 自体はすでに users: [] を返すが、
+                   念のため実行直後にも明示して、旧ユーザーが残る経路を防ぐ。 */
+                root.users = [];
+                root.currentUserId = null;
+                root.roleRequests = [];
+                try { localStorage.removeItem(ROOT_KEY); } catch (e) {}
+                try { saveRoot(); } catch (e) {}
                 applyTheme(); applyFontSize(); applyMotionPrefs();
                 /* 🕒 時計表示も完全にリセットする（デフォルトはオフ） */
                 if (typeof refreshClockWidget === 'function') refreshClockWidget();
