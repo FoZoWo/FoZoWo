@@ -15820,6 +15820,10 @@ const RESET_MESSAGES = {
         { title: '⚠️ ユーザー消去・1回目の警告', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.08em;">⚠️ 危険じゃぞ！</span>\nこのユーザーの名前・パスワード・ポイント・記録・チャレンジ履歴・購入情報などが、<span style="color:#ff8888;font-weight:bold;">すべて消える</span>ぞい。\n<span style="color:#ff4444;font-weight:bold;">一度消したら元には戻せん。</span> 本当に続けるかい？', speak: '一回目の警告じゃ。このユーザーのデータはすべて消えて戻せんぞ。本当に続けるかい。', html: true },
         { title: '🚨 ユーザー消去・最終警告', text: '<span style="color:#ff2222;font-weight:bold;font-size:1.2em;">🚨🚨 これが最後の確認じゃ！！ 🚨🚨</span>\n「消去する」を押すと、このユーザーは<span style="color:#ff8888;font-weight:bold;">完全に消去</span>されるぞい。\n<span style="color:#ff4444;font-weight:bold;">この操作は取り消せん。</span> 本当に消去するのかい？', speak: 'これが最後の警告じゃ。消去するを押すと、このユーザーは完全に消えて戻せんぞ。本当に消去するのかい。', html: true }
     ],
+    googleAccountDelete: [
+        { title: '⚠️ Googleオンラインユーザー・第1警告じゃ', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.08em;">⚠️ ヒッヒッヒ……危険じゃぞい！</span>\nこのGoogleオンラインユーザーに保存してある<span style="color:#ff8888;font-weight:bold;">ポイント・実績・プレイ記録・オンライン設定・専用プロフィール画像</span>を、ぜーんぶ消し去るぞい。\n<span style="color:#ff4444;font-weight:bold;">一度消したら元には戻せん</span>のじゃ。Google本体のGmailなどは消えんぞい。\n本当に続ける覚悟はできておるかい？', speak: 'ヒッヒッヒ……第1警告じゃぞい。このGoogleオンラインユーザーのポイントも実績も記録もプロフィールも、ぜーんぶ消してしまうぞ。本当に続ける覚悟はできておるかい。', html: true },
+        { title: '🚨🚨 Googleオンラインユーザー・最終警告じゃ 🚨🚨', text: '<span style="color:#ff2222;font-weight:bold;font-size:1.18em;">🚨 これが最後の確認じゃ！！ 🚨</span>\n「消去する」を押したら、Googleログイン連携まで<span style="color:#ff8888;font-weight:bold;">完全に切り離して消去</span>するぞい。\nそのあと自動で<span style="color:#ffd166;font-weight:bold;">ログアウトしてホームをやり直す</span>ことになるんじゃ。\n<span style="color:#ff4444;font-weight:bold;">もう戻せんぞ。ワシは止めたからのぅ……</span>\n本当に、それでも消すのかい？', speak: 'ヒッヒッヒ……これが最後じゃぞい。消去するを押せばGoogleオンラインユーザーも連携も、ぜーんぶ消えて戻せん。そのあとログアウトするぞ。本当に、それでも消すのかい。', html: true }
+    ],
     allusers: [
         { title: '⚠️ 全ユーザー削除', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.1em;">☠️ 大変危険じゃぞ！</span>\n<span style="color:#ff8888;font-weight:bold;">すべてのユーザーを根こそぎ削除</span>するぞい…！\n家族みんなのデータも、お子さんが積み上げてきた記録も、<span style="color:#ff8888;font-weight:bold;">何ひとつ残らず吹き飛ぶ</span>んじゃ。\n（設定だけは残るが、ユーザー情報は<span style="color:#ff4444;font-weight:bold;">全消去・復元不可能</span>じゃ）', speak: '大変危険じゃぞ。すべてのユーザーを根こそぎ削除するぞ。復元できんが本当によいかい。', html: true },
         { title: '本当に？', text: 'まだ続けるのかい…フォッフォッフォ。\n<span style="color:#ff8888;font-weight:bold;">全員分のポイントも、記録も、思い出も、ぜんぶ戻ってこん</span>ぞ！\n誰ひとり助けられんが、まだ進めるかい？', speak: 'まだ続けるかい。全員分のポイントも記録も戻ってこんぞ。まだ進めるかい。', html: true },
@@ -16020,6 +16024,22 @@ const RESET_MESSAGES_EN = {
    初期化説明ポップアップのデータ定義
 ========================================================= */
 const RESET_INFO = {
+    googleAccountDelete: {
+        icon: '☠️',
+        title: '【ヒッヒッヒ……Googleオンラインユーザーを完全に消すぞい】',
+        lead: 'このGoogleアカウントに結びついたOJWGAオンラインユーザーを、オンラインの記録ごとぜーんぶ消し去って、そのままログアウトするぞい。よーく読んでから進むのじゃ。',
+        deletes: [
+            '🌐 Google連携したOJWGAオンラインユーザー本体',
+            '💎 Firestoreのポイント・実績・プレイ記録・オンライン設定',
+            '🖼️ OJWGAに保存した専用プロフィール画像・オンライン名',
+            '📱 この端末に残っている同じGoogle UIDのOJWGAユーザー情報'
+        ],
+        keeps: [
+            '👤 このGoogleユーザーとは別のオフラインユーザー',
+            '📧 Googleアカウント本体（Gmail・Driveなど）は消えんぞい',
+            '🎮 ゲーム本体や外部画像ファイルは消えんぞい'
+        ]
+    },
     records: {
         icon: '🎮',
         title: '【ユーザー記録のみ初期化】',
@@ -16336,6 +16356,12 @@ const RESET_INFO = {
 };
 
 const RESET_INFO_EN = {
+    googleAccountDelete: {
+        icon: '☠️', title: '[Completely delete Google online user]',
+        lead: 'Completely erase the OJWGA online user linked to this Google account, then sign out.',
+        deletes: ['OJWGA online user information linked to this Google account', 'Firestore points, achievements, play records, and online profile', 'This device\'s OJWGA shadow users with the same Google UID'],
+        keeps: ['Offline users not belonging to this Google account', 'The Google account itself and other Google services such as Gmail or Drive', 'The game files themselves']
+    },
     records: {
         icon: '🎮', title: '[Reset user records only]',
         lead: 'Only this user\'s points and play records go back to zero.',
@@ -16650,7 +16676,10 @@ function showResetInfoPopup(scope) {
     /* ボタンラベル: clearAutoBackupsの場合は「削除へ進む」／言語対応 */
     const nextBtn = document.getElementById('reset-info-next-btn');
     var _enRi = (typeof getAppLang === 'function' && getAppLang() === 'en');
-    if (scope === 'clearAutoBackups') {
+    if (scope === 'googleAccountDelete') {
+        nextBtn.innerText = _enRi ? 'Heed the witch and continue' : 'ヒッヒッヒ……覚悟して次へ';
+        nextBtn.removeAttribute('data-i18n');
+    } else if (scope === 'clearAutoBackups') {
         nextBtn.innerText = _enRi ? 'Proceed to delete' : '削除へ進む';
         nextBtn.setAttribute('data-i18n', 'reset.nextDelete');
     } else {
@@ -16660,7 +16689,9 @@ function showResetInfoPopup(scope) {
     /* 戻るボタン・セクション見出しも現在言語に合わせる */
     try {
         var cancelBtn = document.getElementById('reset-info-cancel-btn');
-        if (cancelBtn) cancelBtn.innerText = (typeof t === 'function') ? t('common.back', _enRi ? 'Back' : '戻る') : (_enRi ? 'Back' : '戻る');
+        if (cancelBtn) cancelBtn.innerText = scope === 'googleAccountDelete'
+            ? (_enRi ? 'Nay, stop here' : 'いや、やめるのじゃ')
+            : ((typeof t === 'function') ? t('common.back', _enRi ? 'Back' : '戻る') : (_enRi ? 'Back' : '戻る'));
         var delTitle = document.querySelector('#reset-info-box [data-i18n="reset.deletes"]');
         if (delTitle) delTitle.textContent = (typeof t === 'function') ? t('reset.deletes', _enRi ? '❌ Will be deleted' : '❌ 消えるもの') : (_enRi ? '❌ Will be deleted' : '❌ 消えるもの');
         var keepTitle = document.querySelector('#reset-info-box [data-i18n="reset.keeps"]');
@@ -16674,7 +16705,11 @@ function showResetInfoPopup(scope) {
     resetInfoKbFocus = 1;
     refreshResetInfoKbFocus();
     /* アナウンス */
-    if (scope === 'clearAutoBackups') {
+    if (scope === 'googleAccountDelete') {
+        witchSpeak(_enRi
+            ? 'Hee hee hee... Read carefully. This Google online user will be erased completely.'
+            : 'ヒッヒッヒ……このGoogleオンラインユーザーを消すと何が消えるか、よーく見ておくれよ。');
+    } else if (scope === 'clearAutoBackups') {
         witchSpeak('自動バックアップをすべて削除するぞい。何が消えるかよく見ておくれよ。');
     } else {
         witchSpeak('この初期化で何が消えるか、よく見ておくれよ。');
@@ -16806,12 +16841,19 @@ function showResetOverlay() {
         if (exportPanel) exportPanel.classList.remove('show');
         confirmBtn.style.display = '';
         if (mainBtns) mainBtns.style.display = 'flex';
-        confirmBtn.innerText = resetStep < lastStep
-            ? (_en?'Yes':'はい')
-            : (resetScope === 'disableParental'
-                ? (_en?'Turn off':'オフにする')
-                : (_en?'Erase':'消去する'));
-        if (cancelBtn) cancelBtn.innerText = _en ? 'No' : 'いいえ';
+        if (resetScope === 'googleAccountDelete') {
+            confirmBtn.innerText = resetStep < lastStep
+                ? (_en ? 'I accept the witch\'s warning' : 'ヒッヒッヒ……それでも進むのじゃ')
+                : (_en ? 'Erase everything and sign out' : 'すべて消去してログアウトじゃ');
+            if (cancelBtn) cancelBtn.innerText = _en ? 'Stop, witch!' : 'いや、やめるのじゃ';
+        } else {
+            confirmBtn.innerText = resetStep < lastStep
+                ? (_en?'Yes':'はい')
+                : (resetScope === 'disableParental'
+                    ? (_en?'Turn off':'オフにする')
+                    : (_en?'Erase':'消去する'));
+            if (cancelBtn) cancelBtn.innerText = _en ? 'No' : 'いいえ';
+        }
     }
 
     // 最終確認のみ「いいえ」と「消去する／復元する」の左右位置を入れ替える
@@ -16857,6 +16899,10 @@ function showResetOverlay() {
             finalCheckInput.checked = false;
             finalCheckEl.classList.remove('checked');
             confirmBtn.disabled = true;
+            if (resetScope === 'googleAccountDelete') {
+                var _rfc = finalCheckEl.querySelector('.rfc-label');
+                if (_rfc) _rfc.textContent = _en ? 'I understand, witch. This Google online user cannot be restored.' : 'ヒッヒッヒ……分かったぞい。このGoogleオンラインユーザーは二度と戻せん。';
+            }
 
             const refreshDoubleLockGate = function() {
                 const checkOk = finalCheckInput.checked;
@@ -30167,6 +30213,8 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     }
   }
 
+  window.__ojwgaRunOnlineAccountDelete=execute;
+
   window.ojwgaV17DeleteAccount=function(){
     var u=current(),fu=fb();
     if(!isGoogle(u)||!fu||fu.uid!==u.firebaseUid){alertMsg('先に削除するGoogleアカウントへログインするのじゃ。','Sign in with the Google account to delete first.');return}
@@ -30184,4 +30232,135 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!busy){if(el('ojwga-online-delete-info-overlay').classList.contains('show'))allHide();else if(el('ojwga-online-delete-warn2').classList.contains('show')){hide('ojwga-online-delete-warn2');show('ojwga-online-delete-warn1')}else if(el('ojwga-online-delete-warn1').classList.contains('show')){hide('ojwga-online-delete-warn1');show('ojwga-online-delete-info-overlay')}}});
 })();
 </script>
+
+<script id="ojwga-v19-unified-google-delete-flow">
+(function(){
+  'use strict';
+  var active=false;
+  function el(id){return document.getElementById(id)}
+  function en(){try{return typeof getAppLang==='function'&&getAppLang()==='en'}catch(e){return false}}
+  function stopMusic(){
+    active=true;
+    window.__OIJII_FORCE_AUDIO_STOP=true;
+    try{var a=el('main-bgm'); if(a) a.pause();}catch(e){}
+    try{if(window.MainBGM && typeof window.MainBGM.syncFromSettings==='function') window.MainBGM.syncFromSettings();}catch(e){}
+  }
+  function resumeMusic(){
+    active=false;
+    window.__OIJII_FORCE_AUDIO_STOP=false;
+    try{if(window.MainBGM && typeof window.MainBGM.syncFromSettings==='function') window.MainBGM.syncFromSettings();}catch(e){}
+  }
+  function current(){try{return typeof getCurrentUser==='function'?getCurrentUser():null}catch(e){return null}}
+  function fb(){return window.__ojwgaFirebaseAuthUser||null}
+  function isGoogle(u){return !!(u&&u.authType==='google'&&u.firebaseUid)}
+  function safeAlert(j,e){try{if(typeof oijAlert==='function')return oijAlert(en()?e:j)}catch(_){} try{alert(en()?e:j)}catch(_){} }
+
+  // Last definition: the button now enters the same reset explanation + full-screen warnings used by initialization.
+  window.ojwgaV17DeleteAccount=function(){
+    var u=current(), fu=fb();
+    if(!isGoogle(u)||!fu||fu.uid!==u.firebaseUid){
+      safeAlert('先に削除するGoogleアカウントへログインするのじゃ。','Sign in with the Google account to delete first.');
+      return;
+    }
+    if(active)return;
+    stopMusic();
+    try{
+      closeProfileSettings();
+    }catch(e){}
+    try{
+      // One explanation screen, then two full-screen warning screens.
+      if(typeof showResetInfoPopup==='function'){
+        showResetInfoPopup('googleAccountDelete');
+      }else{
+        resetScope='googleAccountDelete'; resetStep=0; showResetOverlay();
+      }
+      var info=el('reset-info-overlay');
+      if(info) info.setAttribute('aria-hidden','false');
+    }catch(e){
+      console.error('[OJWGA v19] unified delete flow start failed',e);
+      resumeMusic();
+      safeAlert('完全消去の確認画面を開けませんでした。','Could not open the deletion confirmation.');
+    }
+  };
+
+  // Common reset-info cancel: restore normal BGM behavior.
+  document.addEventListener('click',function(ev){
+    var t=ev.target;
+    if(t && t.id==='reset-info-cancel-btn' && pendingResetScope==='googleAccountDelete'){
+      resumeMusic();
+      pendingResetScope=null;
+      resetScope='all';
+    }
+  },true);
+
+  // Common reset cancel: restore normal BGM behavior and clear the special scope.
+  var resetCancel=el('reset-cancel-btn');
+  if(resetCancel){
+    resetCancel.addEventListener('click',function(){
+      if(resetScope==='googleAccountDelete'){
+        resumeMusic();
+        resetScope='all'; resetStep=0; pendingResetScope=null;
+      }
+    },true);
+  }
+
+  // Intercept the common reset-confirm button only for this special flow.
+  // This keeps the exact same reset-overlay visuals and alarm sound, while the final click runs the existing secure deletion executor.
+  var confirm=el('reset-confirm-btn');
+  if(confirm){
+    confirm.addEventListener('click',function(ev){
+      if(resetScope!=='googleAccountDelete') return;
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+      var count=2; // exactly two warning screens
+      if(resetStep < count-1){
+        resetStep++;
+        showResetOverlay();
+        return;
+      }
+      resetStep++;
+      var runner=window.__ojwgaRunOnlineAccountDelete;
+      if(typeof runner!=='function'){
+        safeAlert('完全消去機能の準備ができていません。','Account deletion is not ready yet.');
+        resetStep=count-1;
+        showResetOverlay();
+        return;
+      }
+      try{
+        // The executor already performs Firestore deletion, Auth deletion/re-auth, local cleanup and reload/sign-out.
+        runner();
+      }catch(e){
+        console.error('[OJWGA v19] deletion executor failed',e);
+        resumeMusic();
+        safeAlert('アカウントの完全消去に失敗しました。','Account deletion failed.');
+      }
+    },true);
+  }
+
+  // Escape during the unified flow: return to the normal app and resume BGM.
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Escape' || resetScope!=='googleAccountDelete')return;
+    var info=el('reset-info-overlay'), ov=el('reset-overlay');
+    if(info && info.classList.contains('show')){
+      try{closeResetInfo()}catch(_){}
+      pendingResetScope=null; resetScope='all'; resetStep=0; resumeMusic();
+    }else if(ov && ov.classList.contains('show')){
+      try{hideResetOverlay()}catch(_){}
+      resetScope='all'; resetStep=0; resumeMusic();
+    }
+  },true);
+
+  // Safety: if the common explanation advances into the warning flow, keep music forcibly stopped.
+  document.addEventListener('click',function(ev){
+    if(ev.target && ev.target.id==='reset-info-next-btn' && pendingResetScope==='googleAccountDelete'){
+      stopMusic();
+    }
+  },true);
+})();
+</script>
+<style id="ojwga-v19-delete-music-guard">
+/* Googleオンライン完全消去中は、初期化説明・警告ともに通常UIのBGMを表示・再生させない */
+#reset-info-overlay.show,#reset-overlay.show{z-index:2147483647 !important;}
+</style>
+
 </html>
