@@ -15183,7 +15183,13 @@ async function launchGameOnline(gameId, action, joinCode) {
 
     window.__launchLang = (typeof getAppLang==='function'?getAppLang():((typeof root!=='undefined'&&root&&root.lang)||'ja'));
     const _htmlEn = (typeof translateGameHtml==='function'?translateGameHtml(html):html);
-    const blobHtml = _htmlEn.replace(/(<head[^>]*>)/i, '$1' + injectScript + (typeof buildGameI18nInject==='function'?buildGameI18nInject():''));
+    /* Blob iframeでは相対アセットが blob: 基準になり画像が404になる。
+       元のゲームHTML URLを <base> にして、魔女画像(CSS/JS含む)を正しく解決する。 */
+    let _gameBaseUrl = '';
+    try { _gameBaseUrl = resolveGameUrl((game && game.file) ? game.file : (gameId + '.html')); }
+    catch (e) { _gameBaseUrl = String(location.href || ''); }
+    const _safeBase = _gameBaseUrl.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const blobHtml = _htmlEn.replace(/(<head[^>]*>)/i, '$1<base href="' + _safeBase + '">' + injectScript + (typeof buildGameI18nInject==='function'?buildGameI18nInject():''));
     const blob = new Blob([blobHtml], { type: 'text/html' });
     currentBlobUrl = URL.createObjectURL(blob);
 
@@ -15346,7 +15352,12 @@ async function launchGame(gameId, challengeMode) {
 
     window.__launchLang = (typeof getAppLang==='function'?getAppLang():((typeof root!=='undefined'&&root&&root.lang)||'ja'));
     const _htmlEn = (typeof translateGameHtml==='function'?translateGameHtml(html):html);
-    const blobHtml = _htmlEn.replace(/(<head[^>]*>)/i, '$1' + injectScript + (typeof buildGameI18nInject==='function'?buildGameI18nInject():''));
+    /* Blob iframeの相対URL対策：ゲーム本体のURLをbaseに固定する。 */
+    let _gameBaseUrl = '';
+    try { _gameBaseUrl = resolveGameUrl((game && game.file) ? game.file : (gameId + '.html')); }
+    catch (e) { _gameBaseUrl = String(location.href || ''); }
+    const _safeBase = _gameBaseUrl.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const blobHtml = _htmlEn.replace(/(<head[^>]*>)/i, '$1<base href="' + _safeBase + '">' + injectScript + (typeof buildGameI18nInject==='function'?buildGameI18nInject():''));
     const blob = new Blob([blobHtml], { type: 'text/html' });
     currentBlobUrl = URL.createObjectURL(blob);
 
@@ -27051,7 +27062,13 @@ async function mpLaunchGameFrame(gameId,mode,joinCode,participants){
   var _pps=(Array.isArray(participants)?participants:[]).map(function(p,i){var x=Object.assign({},p||{});if(x.slot==null)x.slot=(typeof x.index==='number'?x.index:i);return x});
   var _selfP=(mode==='online'?(_pps.find(function(p){return p&&p.self})||_pps[0]):(_pps[0]||null))||{name:'ゲスト',avatar:'👤'};
   var common='<script>window._oijiiMultiConfig={mode:'+js(mode)+',gameId:'+js(gameId)+',roomCode:'+js(joinCode||'')+',participants:'+js(_pps)+',selectedCount:'+_pps.length+',autoStartOnline:'+(mode==='online'?'true':'false')+'};window._oijiiLocalPlayers='+js(_pps)+';window._oijiiUser='+js(_selfP)+';window._playerName='+js((_selfP&&_selfP.name)||'ゲスト')+';window._isChallenge=false;window._startOnline='+js(mode==='online')+';window._onlineAction='+js(MP.role==='host'?'create':'join')+';window._joinCode='+js(joinCode||'')+';window._oijiiParentRoomCode='+js(joinCode||'')+';window._oijiiAutoStartOnline='+js(mode==='online'&&MP.role==='host')+';window._oijiiYou=\'あなた\';<\/script>';
-  var _htmlEn=(typeof translateGameHtml==='function'?translateGameHtml(html):html);var blobHtml=_htmlEn.replace(/(<head[^>]*>)/i,'$1'+common);var tail=mode==='local'?buildLocalChildPatch(gameId):buildResultBridge(gameId)+buildOnlineChildPatch(gameId);blobHtml=blobHtml.replace(new RegExp(String.fromCharCode(60)+' /body>'.replace(' ',''),'i'),tail+String.fromCharCode(60)+'/body>');if(typeof buildGameI18nInject==='function')blobHtml=blobHtml.replace(new RegExp('('+String.fromCharCode(60)+' /head>'.replace(' ','' )+')','i'),(typeof buildGameI18nInject==='function'?buildGameI18nInject():'')+'$1');if(currentBlobUrl){try{URL.revokeObjectURL(currentBlobUrl)}catch(e){}}currentBlobUrl=URL.createObjectURL(new Blob([blobHtml],{type:'text/html'}));q('game-frame').src=currentBlobUrl;q('home-screen').style.display='none';q('game-screen').style.display='block';var back=q('game-back-btn');if(back){back.style.display='block';back.style.opacity='1'}
+  var _htmlEn=(typeof translateGameHtml==='function'?translateGameHtml(html):html);
+  /* Blob URLの子ゲームでは相対URLが blob: 基準になるため、
+     元ゲームHTMLのURLをbaseに設定して魔女画像などの相対アセットを復元する。 */
+  var _gameBaseUrl='';
+  try { _gameBaseUrl=resolveGameUrl((game&&game.file)?game.file:(gameId+'.html')); } catch(e) { _gameBaseUrl=String(location.href||''); }
+  var _safeBase=_gameBaseUrl.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  var blobHtml=_htmlEn.replace(/(<head[^>]*>)/i,'$1<base href="'+_safeBase+'">'+common);var tail=mode==='local'?buildLocalChildPatch(gameId):buildResultBridge(gameId)+buildOnlineChildPatch(gameId);blobHtml=blobHtml.replace(new RegExp(String.fromCharCode(60)+' /body>'.replace(' ',''),'i'),tail+String.fromCharCode(60)+'/body>');if(typeof buildGameI18nInject==='function')blobHtml=blobHtml.replace(new RegExp('('+String.fromCharCode(60)+' /head>'.replace(' ','' )+')','i'),(typeof buildGameI18nInject==='function'?buildGameI18nInject():'')+'$1');if(currentBlobUrl){try{URL.revokeObjectURL(currentBlobUrl)}catch(e){}}currentBlobUrl=URL.createObjectURL(new Blob([blobHtml],{type:'text/html'}));q('game-frame').src=currentBlobUrl;q('home-screen').style.display='none';q('game-screen').style.display='block';var back=q('game-back-btn');if(back){back.style.display='block';back.style.opacity='1'}
 }
 function buildResultBridge(gameId){
   var body='';
