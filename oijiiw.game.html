@@ -7918,12 +7918,7 @@ function __notifySplashDone(){
                 <div class="ojwga-profile-kicker">✦ USER SETTINGS ✦</div>
                 <h2 id="ojwga-profile-title">👤 ユーザー設定</h2>
                 <div class="ojwga-profile-current" id="ojwga-profile-current"></div><div id="ojwga-current-user-role-badge" style="display:none;align-self:center;margin:0 0 10px;padding:5px 10px;border-radius:999px;background:rgba(142,68,173,.18);border:1px solid rgba(199,125,255,.35);color:#ecdfff;font-size:.74rem;font-weight:800;"></div>
-                
-                <div class="ojwga-profile-mode-tabs" id="ojwga-profile-mode-tabs">
-                    <button type="button" class="ojwga-profile-mode-tab" id="ojwga-profile-mode-offline" onclick="ojwgaSetProfileMode('offline')">📱 オフライン設定</button>
-                    <button type="button" class="ojwga-profile-mode-tab" id="ojwga-profile-mode-online" onclick="ojwgaSetProfileMode('online')">🌐 オンライン設定</button>
-                </div>
-                <div class="ojwga-profile-mode-note" id="ojwga-profile-mode-note">端末にだけ保存される設定と、Googleアカウントに保存される設定を分けて管理します。</div>
+                <div class="ojwga-profile-account-type" id="ojwga-profile-account-type">📱 オフラインアカウント</div>
                 <div class="ojwga-offline-panel" id="ojwga-offline-panel">
                     <div style="margin:0 0 8px 2px;"><span class="ojwga-offline-chip">📱 この端末だけ</span></div>
 <div class="ojwga-profile-menu">
@@ -7955,6 +7950,7 @@ function __notifySplashDone(){
                         </div>
                         <div class="ojwga-online-actions">
                             <button type="button" class="ojwga-v17-btn primary" onclick="ojwgaOpenNameEditor()">✏️ オンライン名</button>
+                            <button type="button" class="ojwga-v17-btn primary" onclick="ojwgaOpenPasswordEditor()">🔑 認証方式（4種類）</button>
                             <button type="button" class="ojwga-v17-btn sync" id="ojwga-online-sync-btn">☁️ 今すぐ同期</button>
                             <button type="button" class="ojwga-v17-btn" id="ojwga-online-login-btn" onclick="ojwgaV17LoginGoogle()">🔐 Googleログイン</button>
                             <button type="button" class="ojwga-v17-btn" id="ojwga-online-logout-btn" onclick="ojwgaV17LogoutGoogle()">🚪 ログアウト</button>
@@ -28026,7 +28022,7 @@ window.checkAuthPassword=function(){var u=getCurrentUser();if(!u)return;normaliz
 window.cancelAuth=function(){try{var __auth=document.getElementById('auth-overlay');if(__auth){__auth.classList.remove('show');__auth.style.display='none';}}catch(e){}if('speechSynthesis' in window)speechSynthesis.cancel();try{openUserSwitcher(!!window.__startupUserGate);}catch(e){}};
 
 /* ===== User settings new UI ===== */
-window.openProfileSettings=function(){var u=getCurrentUser();if(!u){safeAlert('ユーザーがおらんぞい。','No user is selected.');return;}normalizeSecurityUser(u);currentProfileMethod=u.passwordMethod||'password';byId('profile-main-view').style.display='flex';byId('profile-name-view').style.display='none';byId('profile-password-view').style.display='none';var en=langEn();byId('ojwga-profile-title').textContent=en?'👤 User Settings':'👤 ユーザー設定';byId('ojwga-profile-current').textContent=(u.name||'User');var __rb=byId('ojwga-current-user-role-badge');if(__rb){__rb.style.display='inline-flex';__rb.textContent=isManagerUser(u)?'👑 管理ユーザー':'👤 通常ユーザー';}byId('ojwga-name-item-title').textContent=en?'Name':'名前';byId('ojwga-name-item-sub').textContent=en?'Change the user name':'名前を変更する';byId('ojwga-pass-item-title').textContent=en?'Password':'パスワード';byId('ojwga-pass-item-sub').textContent=en?'Change authentication method':'認証方式を変更する';byId('ojwga-share-item-title').textContent=en?'Share user':'ユーザーをシェア';byId('ojwga-share-item-sub').textContent=en?'Share this user’s game data':'このユーザーのデータを共有する';byId('ojwga-delete-item-title').textContent=en?'Delete user':'ユーザーの消去';byId('ojwga-delete-item-sub').textContent=en?'Delete this user':'このユーザーを消去する';byId('ojwga-profile-close').textContent=en?'Close':'閉じる';byId('profile-overlay').classList.add('show');safeSpeak('ユーザー設定じゃ。','User settings.');};
+window.openProfileSettings=function(){var u=getCurrentUser();if(!u){safeAlert('ユーザーがおらんぞい。','No user is selected.');return;}normalizeSecurityUser(u);currentProfileMethod=u.passwordMethod||'password';byId('profile-main-view').style.display='flex';byId('profile-name-view').style.display='none';byId('profile-password-view').style.display='none';var en=langEn();byId('ojwga-profile-title').textContent=en?'👤 User Settings':'👤 ユーザー設定';byId('ojwga-profile-current').textContent=(u.name||'User');var __rb=byId('ojwga-current-user-role-badge');if(__rb){__rb.style.display='inline-flex';__rb.textContent=isManagerUser(u)?'👑 管理ユーザー':'👤 通常ユーザー';}byId('ojwga-name-item-title').textContent=en?'Name':'名前';byId('ojwga-name-item-sub').textContent=en?'Change the user name':'名前を変更する';byId('ojwga-pass-item-title').textContent=en?'Password':'パスワード';byId('ojwga-pass-item-sub').textContent=en?'Change authentication method':'認証方式を変更する';byId('ojwga-share-item-title').textContent=en?'Share user':'ユーザーをシェア';byId('ojwga-share-item-sub').textContent=en?'Share this user’s game data':'このユーザーのデータを共有する';byId('ojwga-delete-item-title').textContent=en?'Delete user':'ユーザーの消去';byId('ojwga-delete-item-sub').textContent=en?'Delete this user':'このユーザーを消去する';byId('ojwga-profile-close').textContent=en?'Close':'閉じる';try{ensureProfileAugment();}catch(e){}byId('profile-overlay').classList.add('show');safeSpeak('ユーザー設定じゃ。','User settings.');};
 window.ojwgaOpenNameEditor=function(){var u=getCurrentUser();if(!u)return;byId('profile-main-view').style.display='none';byId('profile-name-view').style.display='flex';byId('ojwga-name-title').textContent=langEn()?'Name':'名前';byId('ojwga-name-input').value=u.name||'';byId('ojwga-name-input').placeholder=langEn()?'Name':'名前';byId('ojwga-name-back').textContent=langEn()?'Back':'戻る';byId('ojwga-name-save').textContent=langEn()?'Save':'保存';setTimeout(function(){byId('ojwga-name-input').focus();},60);};
 window.ojwgaSaveName=function(){var u=getCurrentUser(),v=(byId('ojwga-name-input').value||'').trim();if(!u||!v){safeAlert('名前を入れるのじゃ。','Enter a name.');return;}u.name=v;saveRoot();byId('profile-main-view').style.display='flex';byId('profile-name-view').style.display='none';byId('ojwga-profile-current').textContent=v;refreshHome();safeSpeak('名前を変えたぞい。','Name updated.');};
 window.ojwgaOpenPasswordEditor=function(){
@@ -28587,10 +28583,8 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     u.authType='google';
     u.googleLinked=true;
     u.firebaseUid=fu.uid;
-    u.passwordMethod='none';
-    u.password='';
-    u.hint='';
-    // IMPORTANT: do not overwrite local security/block state from cloud sync.
+    /* IMPORTANT: Google/Firestore同期では端末側OJWGA認証を上書きしない。 */
+    // passwordMethod / password / pattern / deviceCredentialId / block state are local.
     u._cloudSyncedAt=Number(cloud.clientUpdatedAt || now());
     u._cloudDirtyAt=0;
     u._cloudDeviceId=DEVICE_ID;
@@ -28795,7 +28789,9 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
       root.users.push(u);
     } else {
       u.authType='google'; u.googleLinked=true; u.firebaseUid=fu.uid;
-      u.passwordMethod='none'; u.password=''; u.email=fu.email||u.email||'';
+      /* 既存ユーザーのOJWGA認証方式はローカル設定として保持する。 */
+      if(!u.passwordMethod) u.passwordMethod='none';
+      u.email=fu.email||u.email||'';
       if(safePhotoURL(fu.photoURL)) u.photoURL=fu.photoURL;
     }
 
@@ -29747,22 +29743,21 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
 </script>
 
 <style id="ojwga-v17-online-offline-css">
-/* ===== v17 ユーザー設定：オンライン / オフライン完全分離 ===== */
-.ojwga-profile-mode-tabs{
-  display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 12px;
-  padding:6px;border-radius:16px;background:rgba(0,0,0,.22);
-  border:1px solid rgba(199,125,255,.25);
+/* ===== v18 ユーザー設定：アカウント種別ごとに完全分離 ===== */
+.ojwga-profile-mode-tabs,.ojwga-profile-mode-note{display:none !important}
+.ojwga-profile-account-type{
+  display:flex;align-items:center;justify-content:center;
+  width:max-content;max-width:100%;margin:0 auto 12px;padding:6px 12px;
+  border-radius:999px;border:1px solid rgba(199,125,255,.35);
+  background:rgba(117,57,169,.16);color:#eadcff;
+  font-size:.74rem;font-weight:900;letter-spacing:.03em;
 }
-.ojwga-profile-mode-tab{
-  min-height:48px;border-radius:12px;border:1px solid rgba(199,125,255,.25);
-  background:rgba(255,255,255,.05);color:#e8ddf5;font-weight:900;cursor:pointer;
-  transition:.15s;display:flex;align-items:center;justify-content:center;gap:7px;
+.ojwga-profile-account-type.online{
+  border-color:rgba(105,190,255,.45);background:rgba(52,152,219,.13);color:#d9f0ff;
 }
-.ojwga-profile-mode-tab.active{
-  background:linear-gradient(135deg,rgba(155,89,182,.72),rgba(92,44,130,.75));
-  border-color:#c77dff;box-shadow:0 0 18px rgba(155,89,182,.28)
+.ojwga-profile-account-type.offline{
+  border-color:rgba(199,125,255,.35);background:rgba(117,57,169,.16);color:#eadcff;
 }
-.ojwga-profile-mode-note{font-size:.72rem;color:#bba8cf;text-align:center;margin:-3px 4px 12px;line-height:1.45}
 .ojwga-online-panel,.ojwga-offline-panel{display:none}
 .ojwga-online-panel.active,.ojwga-offline-panel.active{display:block}
 .ojwga-account-card{
@@ -29836,18 +29831,24 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     else p.textContent=(u&&u.avatar&&!String(u.avatar).startsWith('data:'))?u.avatar:'🌐';
   }
   function renderProfileMode(){
-    var off=byId('ojwga-profile-mode-offline'), on=byId('ojwga-profile-mode-online');
-    var offPanel=byId('ojwga-offline-panel'), onPanel=byId('ojwga-online-panel'), note=byId('ojwga-profile-mode-note');
-    if(!off||!on||!offPanel||!onPanel)return;
-    var online=state.mode==='online';
-    off.classList.toggle('active',!online); on.classList.toggle('active',online);
-    offPanel.classList.toggle('active',!online); onPanel.classList.toggle('active',online);
-    if(note) note.textContent=online
-      ? (langEn()?'Google account data: online identity, custom avatar, cloud sync, sign-out, and account deletion.':'Googleアカウントに保存する設定：オンライン名・専用プロフィール画像・クラウド同期・ログアウト・アカウント完全消去。')
-      : (langEn()?'This device only: local login method, device settings, role, sharing, and local-user deletion.':'この端末だけに保存する設定：ローカル認証方式・端末設定・権限・共有・端末ユーザーの消去。');
+    var offPanel=byId('ojwga-offline-panel'), onPanel=byId('ojwga-online-panel'), badge=byId('ojwga-profile-account-type');
+    if(!offPanel||!onPanel)return;
+    var u=getU();
+    var online=isGoogleUser(u);
+    state.mode=online?'online':'offline';
+    offPanel.classList.toggle('active',!online);
+    onPanel.classList.toggle('active',online);
+    if(badge){
+      badge.classList.toggle('online',online);
+      badge.classList.toggle('offline',!online);
+      badge.textContent=online
+        ? (langEn()?'🌐 Online account':'🌐 オンラインアカウント')
+        : (langEn()?'📱 Offline account':'📱 オフラインアカウント');
+    }
   }
-  window.ojwgaSetProfileMode=function(mode){
-    state.mode=(mode==='online')?'online':'offline';
+  window.ojwgaSetProfileMode=function(){
+    // アカウント種別に応じた設定画面だけを表示し、別種別へ手動切替できないようにする。
+    state.mode=isGoogleUser(getU())?'online':'offline';
     renderProfileMode(); renderOnlineAccountPanel();
   };
   function renderOnlineAccountPanel(){
@@ -29872,8 +29873,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   function ensureProfileAugment(){
     var rootEl=byId('profile-main-view'); if(!rootEl) return;
     var u=getU();
-    // Google user opens online section by default; local user opens offline section.
-    if(isGoogleUser(u)) state.mode='online';
+    state.mode=isGoogleUser(u)?'online':'offline';
     renderProfileMode(); renderOnlineAccountPanel();
   }
 
@@ -30052,7 +30052,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   }
   window.ojwgaV17DeleteAccount=deleteOnlineAccount;
 
-  // Initial setup Google flow: creates/selects Google user, skips local password setup, then continues the wizard.
+  // Initial setup Google flow: creates/selects Google user, then uses the same four local authentication methods as normal onboarding.
   window.ojwgaV17OnboardingGoogleLogin=async function(){
     if(state.onboardingGoogle)return;
     state.onboardingGoogle=true;
@@ -30075,10 +30075,19 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
       onboardData.firebaseUid=fu.uid;
       onboardData.name=(fu.displayName||u.name||'Googleユーザー').slice(0,32);
       onboardData.avatar=u.avatar || fu.photoURL || '🌐';
-      onboardData.password=''; onboardData.hint=''; onboardData.passwordMethod='none';
-      if(stateEl){stateEl.style.display='block';stateEl.textContent='✅ Googleログイン済み：'+onboardData.name+'\nこのまま初期設定を続けます。';}
-      // Continue from the welcome page to music instead of forcing local password setup.
-      onboardGoto('music');
+      /* Googleアカウントでも端末側のOJWGA認証を設定できるようにする。
+         初期値はパスワード方式。次の画面で4種類から選択できる。 */
+      onboardData.password='';
+      onboardData.hint='';
+      onboardData.passwordMethod='password';
+      onboardData.passwordPattern=[];
+      onboardData.deviceCredentialId='';
+      onboardData.deviceCredentialVerified=false;
+      if(stateEl){stateEl.style.display='block';stateEl.textContent='✅ Googleログイン済み：'+onboardData.name+'\n続けて認証方式を選ぶのじゃ。';}
+      /* Googleログイン直後も、通常の初期設定と同じ4種類の認証方式へ進む。 */
+      onboardGoto('password-method');
+      renderMethodCards('ojwga-onb-method-grid',onboardData.passwordMethod,ojwgaChooseOnboardMethod);
+      safeSpeak('Googleアカウントの設定は完了じゃ。次は認証方式を4つから選ぶのじゃ。','Google account setup is complete. Now choose one of four authentication methods.');
     }catch(e){
       console.warn('[OJWGA v17] onboarding google login failed',e);
       safeAlert(e.message||'Googleログインに失敗しました。','Google sign-in failed.');
@@ -30099,7 +30108,15 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
       u.onlineSettings.displayName=String(onboardData.name||u.name||'Googleユーザー').slice(0,32);
       u.name=u.onlineSettings.displayName;
       if(onboardData.avatar) { u.avatar=onboardData.avatar; u.onlineSettings.avatar=onboardData.avatar; }
-      u.password='';u.hint='';u.passwordMethod='none';
+      /* GoogleユーザーでもOJWGA側の認証設定は保持する。 */
+      u.password=onboardData.password||'';
+      u.hint=onboardData.hint||'';
+      u.passwordMethod=onboardData.passwordMethod||'password';
+      u.passwordPattern=Array.isArray(onboardData.passwordPattern)?onboardData.passwordPattern.slice():[];
+      u.deviceCredentialId=onboardData.deviceCredentialId||'';
+      u.wrongCount=0;
+      u.lockUntil=0;
+      u.isTotallyLocked=false;
       u.theme=onboardData.theme||'purple';
       if(!u.data)u.data=defaultUserData();
       root.currentUserId=u.id;
