@@ -17947,6 +17947,25 @@ document.getElementById('total-points').addEventListener('click', () => {
 ========================================================= */
 let authTimerInterval = null;
 
+/* 起動処理より先に利用できる認証データ正規化。
+   後段のSecurity v2 IIFEでも同じ役割の関数を公開するが、
+   スプラッシュ終了が先に発火してもReferenceErrorにならないよう
+   グローバル側にも最小実装を用意する。 */
+if (typeof window.normalizeSecurityUser !== 'function') {
+    window.normalizeSecurityUser = function(u) {
+        if (!u || typeof u !== 'object') return u;
+        if (!u.passwordMethod) u.passwordMethod = 'password';
+        if (['none','password','pin','pattern','device'].indexOf(u.passwordMethod) < 0) u.passwordMethod = 'password';
+        if (!Array.isArray(u.passwordPattern)) u.passwordPattern = [];
+        if (typeof u.deviceCredentialId !== 'string') u.deviceCredentialId = '';
+        if (typeof u.wrongCount !== 'number') u.wrongCount = 0;
+        if (typeof u.lockUntil !== 'number') u.lockUntil = 0;
+        if (typeof u.isTotallyLocked !== 'boolean') u.isTotallyLocked = false;
+        return u;
+    };
+}
+function normalizeSecurityUser(u) { return window.normalizeSecurityUser(u); }
+
 function checkAuthOnLoad() {
     /* ユーザーが1人もいない場合は、起動ゲートより先に初期設定を開く。
        完全初期化・全ユーザー削除・初回起動後も、ここから新規ユーザーを作れるようにする。 */
@@ -18363,7 +18382,7 @@ function switchUser(id) {
     document.getElementById('userswitch-overlay').classList.remove('show');
     refreshHome();
     /* 認証方式を基準に判定する（パターン等は password が空でも認証必須）。 */
-    normalizeSecurityUser(u);
+    if (window.ojwgaNormalizeSecurityUser) window.ojwgaNormalizeSecurityUser(u);
     var __methodAfterSwitch = u.passwordMethod || 'password';
     if (__methodAfterSwitch !== 'none') {
         document.getElementById('home-screen').style.display = 'none';
@@ -28299,7 +28318,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     try{
       var u = (typeof getCurrentUser==='function') ? getCurrentUser() : null;
       if(!u) return false;
-      if(typeof normalizeSecurityUser==='function') normalizeSecurityUser(u);
+      if(typeof window.ojwgaNormalizeSecurityUser==='function') window.ojwgaNormalizeSecurityUser(u);
       var method = u.passwordMethod || 'password';
       /* 認証方式そのものが有効なら、保存データの形式に関係なく認証を要求する。
          特に pattern は password が空なので、ここで password の有無を見てはいけない。 */
@@ -28551,7 +28570,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   function needsSecurityAuth(u){
     if(!u) return false;
     try{
-      if(typeof normalizeSecurityUser==='function') normalizeSecurityUser(u);
+      if(typeof window.ojwgaNormalizeSecurityUser==='function') window.ojwgaNormalizeSecurityUser(u);
       var m=u.passwordMethod||'password';
       if(m==='none') return false;
       if(m==='device') return typeof u.deviceCredentialId==='string' && u.deviceCredentialId.length>0;
