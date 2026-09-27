@@ -82,9 +82,9 @@ section{padding:76px 0}.section-head{display:flex;justify-content:space-between;
 .step{padding:20px;position:relative}.step .num{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--violet),var(--purple));font-weight:900}.step h3{margin:12px 0 8px}.step p{margin:0;color:var(--muted);line-height:1.7;font-size:13px}
 .socials{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}@media(max-width:720px){.socials{grid-template-columns:repeat(2,1fr)}}
 .social{padding:16px;text-align:center;background:rgba(255,255,255,.045);border:1px solid rgba(199,125,255,.18);border-radius:16px;transition:.18s}.social:hover{transform:translateY(-3px);border-color:rgba(241,196,15,.45);background:rgba(155,89,182,.12)}
-.social .icon{font-size:26px}.social b{display:block;margin-top:8px}.social small{color:var(--muted)}
+.social .icon{width:42px;height:42px;margin:0 auto;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,rgba(155,89,182,.22),rgba(255,255,255,.045));border:1px solid rgba(255,255,255,.12);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.22)}.social .icon svg{width:28px;height:28px;display:block;fill:none}.social .icon svg.fb-logo,.social .icon svg.ig-logo{width:28px;height:28px}.social b{display:block;margin-top:10px}.social small{color:var(--muted)}
 .footer{padding:38px 0 52px;border-top:1px solid rgba(199,125,255,.16);margin-top:25px}.footer-row{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}.footer small{color:#9482a9}.mini-nav{display:flex;gap:8px;flex-wrap:wrap}.mini-nav a{color:#d6c7e2;font-size:12px}
-.reveal{opacity:0;transform:translateY(24px)}.reveal.in{animation:rise .7s ease forwards}.hide{display:none!important}
+.reveal{opacity:1;transform:none}.reveal.in{animation:rise .7s ease forwards}.hide{display:none!important}
 .inner-hero{padding:62px 0 38px}.inner-hero .card{padding:30px}.breadcrumb{display:flex;gap:7px;flex-wrap:wrap;color:#ad9bbb;font-size:12px;margin-bottom:14px}.breadcrumb a:hover{color:#fff}
 .faq-grid{display:grid;grid-template-columns:260px 1fr;gap:18px}@media(max-width:820px){.faq-grid{grid-template-columns:1fr}}
 .side{padding:18px;position:sticky;top:86px;height:max-content}.side button{width:100%;text-align:left;background:transparent;border:none;color:#d7c8e4;padding:11px 12px;border-radius:11px;font-weight:900}.side button.active,.side button:hover{background:rgba(155,89,182,.16);color:#fff}
@@ -100,7 +100,7 @@ section{padding:76px 0}.section-head{display:flex;justify-content:space-between;
 .float-cta{position:fixed;right:18px;bottom:18px;z-index:40}.float-cta a{padding:13px 17px;animation:pulse 2.2s infinite}
 
 .game-image-wrap{width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:radial-gradient(circle at 50% 35%,rgba(155,89,182,.28),rgba(8,4,16,.85));border:1px solid rgba(199,125,255,.18);position:relative;margin:0 0 14px}.game-image{width:100%;height:100%;display:block;object-fit:cover;transition:transform .45s ease,filter .35s ease}.game:hover .game-image{transform:scale(1.045);filter:saturate(1.12) brightness(1.06)}.hero-witch-photo{width:min(76%,310px);height:min(76%,310px);object-fit:cover;border-radius:50%;border:3px solid rgba(241,196,15,.38);box-shadow:0 0 25px rgba(199,125,255,.38),0 0 60px rgba(155,89,182,.22);animation:float 3s ease-in-out infinite;z-index:2}.guide-image{width:100%;height:220px;object-fit:cover;border-radius:18px;border:1px solid rgba(199,125,255,.2);box-shadow:var(--shadow);margin-bottom:16px}@media(max-width:650px){.guide-image{height:180px}}
-</style></head><body>
+.image-fallback{width:100%;height:100%;display:grid;place-items:center;color:#c77dff;font-weight:1000;letter-spacing:.18em;background:radial-gradient(circle at 50% 30%,rgba(199,125,255,.22),transparent 40%),#0b0617}.brand-photo{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid rgba(241,196,15,.5);box-shadow:0 0 18px rgba(199,125,255,.32);animation:float 3s ease-in-out infinite}.game-icon,.guide-icon{display:none}</style></head><body>
 
 <div id="stars"></div><div id="particles"></div>
 <script>
@@ -109,24 +109,23 @@ section{padding:76px 0}.section-head{display:flex;justify-content:space-between;
  if(stars){for(let i=0;i<70;i++){const s=document.createElement('i');s.className='star';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.setProperty('--d',(2+Math.random()*4)+'s');stars.appendChild(s)}}
  if(parts){for(let i=0;i<20;i++){const p=document.createElement('i');p.className='particle';p.style.left=Math.random()*100+'%';p.style.setProperty('--d',(12+Math.random()*14)+'s');p.style.animationDelay=(-Math.random()*12)+'s';parts.appendChild(p)}}
 })();
-const observer=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.12});
-document.querySelectorAll('.reveal').forEach(e=>observer.observe(e));
+const initReveal=()=>{const observer=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.12});document.querySelectorAll('.reveal').forEach(e=>observer.observe(e));};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initReveal);else initReveal();
 </script>
 
 <header class="topbar"><nav class="nav">
-<a class="brand" href="ojwga.html"><span class="brand-mark">🧙‍♀️</span><span>OJWGA<small>OFFICIAL / GAME COLLECTION</small></span></a>
+<a class="brand" href="ojwga.html"><img class="brand-photo" src="watch.png" alt="おいじぃ魔女" onerror="this.style.display='none'"><span>OJWGA<small>OFFICIAL / GAME COLLECTION</small></span></a>
 <div class="navlinks">
-<a href="ojwga.html#games">🎮 ゲーム</a><a href="ojwga-official.html#features">✨ 機能</a>
-<a href="ojwga-howto.html">📖 遊び方</a><a href="ojwga-faq.html">❓ FAQ</a><a href="ojwga-official.html#sns">🌐 SNS</a>
+<a href="ojwga.html#games">ゲーム</a><a href="ojwga.html#features">機能</a>
+<a href="ojwga-howto.html">遊び方</a><a href="ojwga-faq.html">FAQ</a><a href="ojwga.html#sns">SNS</a>
 <a class="nav-cta" href="https://www.fozowo.f5.si/oijiiw.game" target="_blank" rel="noopener">今すぐ遊ぶ ↗</a>
 </div></nav></header>
 
 <main>
 <section class="hero"><div class="wrap hero-grid">
-<div class="reveal"><span class="kicker">✦ OJWGA OFFICIAL GAME COLLECTION ✦</span>
+<div class="reveal"><span class="kicker">OJWGA OFFICIAL GAME COLLECTION</span>
 <h1><span class="gradient">おいじぃ魔女<br>ゲームコレクション</span><br><small style="font-size:.48em;color:#d8c8e8">— OJWGA —</small></h1>
 <p>「魔法の試練、いざ始まる。」運で勝つか、反射神経で勝つか。5つのミニゲームを中心に、デイリーチャレンジ、ポイント、ショップ、実績、統計、複数ユーザー、保護者コントロールまで楽しめる、おいじぃ魔女のゲームワールドを公式に紹介するサイトじゃ。</p>
-<div class="hero-actions"><a class="btn btn-gold" href="https://www.fozowo.f5.si/oijiiw.game" target="_blank" rel="noopener">🎮 今すぐゲームを開く</a><a class="btn btn-ghost" href="ojwga-howto.html">📖 遊び方を読む</a><a class="btn btn-ghost" href="ojwga-faq.html">❓ FAQ</a></div>
+<div class="hero-actions"><a class="btn btn-gold" href="https://www.fozowo.f5.si/oijiiw.game" target="_blank" rel="noopener">今すぐゲームを開く</a><a class="btn btn-ghost" href="ojwga-howto.html">遊び方を読む</a><a class="btn btn-ghost" href="ojwga-faq.html">FAQ</a></div>
 <div class="stats"><div class="stat"><div class="n">5</div><div class="l">搭載ミニゲーム</div></div><div class="stat"><div class="n">1日1回</div><div class="l">デイリーチャレンジ</div></div><div class="stat"><div class="n">4人</div><div class="l">基本プレイ人数</div></div><div class="stat"><div class="n">∞</div><div class="l">再挑戦して記録更新</div></div></div>
 </div><div class="reveal"><div class="witch-orb"><img class="hero-witch-photo" src="watch.png" alt="おいじぃ魔女" onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('afterbegin','<div class=\'witch-face\'>🧙‍♀️</div>')"><div class="orb-caption">ヒッヒッヒ…試練へようこそ。</div></div></div>
 </div></section>
@@ -194,22 +193,16 @@ document.querySelectorAll('.reveal').forEach(e=>observer.observe(e));
 <div class="steps"><div class="step card reveal"><div class="num">1</div><h3>ユーザーを選ぶ</h3><p>プロフィール、ポイント、実績、プレイ記録を自分のユーザーに紐づけて使います。</p></div><div class="step card reveal"><div class="num">2</div><h3>遊んでポイントを貯める</h3><p>各ゲームで順位に応じたポイントを獲得。デイリーでは高報酬を狙えます。</p></div><div class="step card reveal"><div class="num">3</div><h3>ショップ＆実績へ</h3><p>ポイントで魔法アイテムを手に入れ、実績・統計・お気に入りを伸ばしていきます。</p></div></div></div></section>
 
 <section id="howto"><div class="wrap"><div class="section-head reveal"><div><div class="eyebrow">HOW TO PLAY</div><h2>初心者向けの遊び方</h2></div><p>公式ゲーム内にも詳しい遊び方が搭載されています。ここでは最初に知っておくべきルールをまとめています。</p></div>
-<div class="showcase"><div class="panel card reveal"><h3>🌟 最初におすすめ</h3><ul class="list"><li>🚪 本社入り口 → 3ドアを選ぶだけのシンプル運ゲー</li><li>🏗️ デス・プレス → 4つの足場を選ぶ運ゲー</li><li>🏭 大爆発 → 10秒の判断を含む運＋時間制限</li><li>🏐 ドッジボール → 反射神経で生存</li><li>🌀 猛追 DX → 迷路と追跡の高難度アクション</li></ul></div>
-<div class="panel card reveal"><h3>🧭 上達の基本</h3><ul class="list"><li>まず5ゲームを1回ずつプレイする</li><li>自分が得意な1〜2タイトルを見つける</li><li>通常ポイントで記録を伸ばす</li><li>慣れたらデイリーチャレンジへ</li><li>遊び方の完全版は「遊び方のみ」ページへ</li></ul><a class="btn btn-primary" href="ojwga-howto.html" style="margin-top:16px">📖 完全ガイドを見る</a></div></div></div></section>
+<div class="showcase"><div class="panel card reveal"><h3>最初におすすめ</h3><ul class="list"><li>🚪 本社入り口 → 3ドアを選ぶだけのシンプル運ゲー</li><li>🏗️ デス・プレス → 4つの足場を選ぶ運ゲー</li><li>🏭 大爆発 → 10秒の判断を含む運＋時間制限</li><li>🏐 ドッジボール → 反射神経で生存</li><li>🌀 猛追 DX → 迷路と追跡の高難度アクション</li></ul></div>
+<div class="panel card reveal"><h3>上達の基本</h3><ul class="list"><li>まず5ゲームを1回ずつプレイする</li><li>自分が得意な1〜2タイトルを見つける</li><li>通常ポイントで記録を伸ばす</li><li>慣れたらデイリーチャレンジへ</li><li>遊び方の完全版は「遊び方のみ」ページへ</li></ul><a class="btn btn-primary" href="ojwga-howto.html" style="margin-top:16px">完全ガイドを見る</a></div></div></div></section>
 
 <section id="faq-preview"><div class="wrap"><div class="section-head reveal"><div><div class="eyebrow">FAQ</div><h2>よくある質問</h2></div><a class="btn btn-ghost" href="ojwga-faq.html">FAQページを開く →</a></div>
-<div class="showcase"><div class="panel card reveal"><h3>🔐 パスワードを忘れたら？</h3><p>ユーザー画面にはパスワード再確認・ヒント・ブロックなどの専用導線があります。重要な操作には保護者パスワードを設定することもできます。</p></div><div class="panel card reveal"><h3>💾 データを別端末へ移したい</h3><p>バックアップ／復元機能でJSONやテキストなどを扱えます。初期化前はバックアップを残すのが安全です。</p></div></div></div></section>
+<div class="showcase"><div class="panel card reveal"><h3>パスワードを忘れたら？</h3><p>ユーザー画面にはパスワード再確認・ヒント・ブロックなどの専用導線があります。重要な操作には保護者パスワードを設定することもできます。</p></div><div class="panel card reveal"><h3>データを別端末へ移したい</h3><p>バックアップ／復元機能でJSONやテキストなどを扱えます。初期化前はバックアップを残すのが安全です。</p></div></div></div></section>
 
 <section id="sns"><div class="wrap"><div class="section-head reveal"><div><div class="eyebrow">OFFICIAL SOCIAL</div><h2>@ojwga をフォロー</h2></div><p>YouTube / Facebook / Instagram / X / TikTok で「@ojwga」。</p></div>
-<div class="socials">
-<a class="social reveal" href="https://www.youtube.com/@ojwga" target="_blank" rel="noopener"><div class="icon">▶️</div><b>YouTube</b><small>@ojwga</small></a>
-<a class="social reveal" href="https://www.facebook.com/ojwga" target="_blank" rel="noopener"><div class="icon">f</div><b>Facebook</b><small>@ojwga</small></a>
-<a class="social reveal" href="https://www.instagram.com/ojwga/" target="_blank" rel="noopener"><div class="icon">◎</div><b>Instagram</b><small>@ojwga</small></a>
-<a class="social reveal" href="https://x.com/ojwga" target="_blank" rel="noopener"><div class="icon">𝕏</div><b>X</b><small>@ojwga</small></a>
-<a class="social reveal" href="https://www.tiktok.com/@ojwga" target="_blank" rel="noopener"><div class="icon">♪</div><b>TikTok</b><small>@ojwga</small></a>
-</div></div></section></main>
-<div class="float-cta"><a class="btn btn-gold" href="https://www.fozowo.f5.si/oijiiw.game" target="_blank" rel="noopener">🎮 遊ぶ</a></div>
-<footer class="footer"><div class="wrap footer-row"><div><b>🧙‍♀️ おいじぃ魔女ゲームコレクション-OJWGA</b><div style="margin-top:6px"><small>魔法の試練、いざ始まる。 / OJWGA OFFICIAL</small></div></div><div class="mini-nav"><a href="#games">ゲーム</a><a href="ojwga-howto.html">遊び方</a><a href="ojwga-faq.html">FAQ</a><a href="#sns">SNS</a></div></div></footer>
+<div class="socials"><a class="social reveal" href="https://www.youtube.com/@ojwga" target="_blank" rel="noopener"><div class="icon"><svg viewBox="0 0 48 34" aria-hidden="true"><path d="M47 5.3a6 6 0 0 0-4.2-4.2C39.1 0 24 0 24 0S8.9 0 5.2 1.1A6 6 0 0 0 1 5.3 62 62 0 0 0 0 17a62 62 0 0 0 1 11.7 6 6 0 0 0 4.2 4.2C8.9 34 24 34 24 34s15.1 0 18.8-1.1a6 6 0 0 0 4.2-4.2A62 62 0 0 0 48 17a62 62 0 0 0-1-11.7ZM19 24.3V9.7L32 17l-13 7.3Z"/></svg></div><b>YouTube</b><small>@ojwga</small></a><a class="social reveal" href="https://www.facebook.com/ojwga" target="_blank" rel="noopener"><div class="icon"><svg viewBox="0 0 48 48" aria-hidden="true" class="fb-logo"><circle cx="24" cy="24" r="22" fill="#1877F2"/><path d="M27.35 39V26.4h4.2l.63-4.9h-4.83v-3.12c0-1.42.39-2.39 2.42-2.39h2.58v-4.38c-.45-.06-1.99-.19-3.79-.19-3.75 0-6.32 2.29-6.32 6.49v3.59H18v4.9h4.24V39h5.11Z" fill="#fff"/></svg></div><b>Facebook</b><small>@ojwga</small></a><a class="social reveal" href="https://www.instagram.com/ojwga/" target="_blank" rel="noopener"><div class="icon"><svg viewBox="0 0 48 48" aria-hidden="true" class="ig-logo"><defs><linearGradient id="igGrad" x1="5" y1="43" x2="43" y2="5" gradientUnits="userSpaceOnUse"><stop stop-color="#FFDC80"/><stop offset=".28" stop-color="#FC2C83"/><stop offset=".62" stop-color="#E1306C"/><stop offset="1" stop-color="#833AB4"/></linearGradient></defs><rect x="3" y="3" width="42" height="42" rx="12" fill="url(#igGrad)"/><rect x="12" y="12" width="24" height="24" rx="7" fill="none" stroke="#fff" stroke-width="3.2"/><circle cx="24" cy="24" r="6.2" fill="none" stroke="#fff" stroke-width="3.2"/><circle cx="33.4" cy="14.8" r="2.1" fill="#fff"/></svg></div><b>Instagram</b><small>@ojwga</small></a><a class="social reveal" href="https://x.com/ojwga" target="_blank" rel="noopener"><div class="icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 6h9.1l9.4 12.6L36 6h5L28 22.1 42 42h-9.1l-10.2-13.8L13 42H8l12.8-17.6L7 6Zm8.3 3.7H12l21 28.6h3.3l-21-28.6Z"/></svg></div><b>X</b><small>@ojwga</small></a><a class="social reveal" href="https://www.tiktok.com/@ojwga" target="_blank" rel="noopener"><div class="icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M30.1 6.5c1.9 2.8 4.4 4.5 8 4.7v5.4c-2.8.1-5.4-.8-7.7-2.3v15.5c0 7.6-4.8 12.2-11.3 12.2-6 0-10.7-4.3-10.7-10.4 0-6.6 5.5-11.1 12.2-10.3v5.5c-3.9-.6-6.7 1.5-6.7 4.8 0 2.7 2 4.8 4.9 4.8 3.2 0 5.9-2 5.9-7V6.5h5.4Z"/></svg></div><b>TikTok</b><small>@ojwga</small></a></div></div></section></main>
+<div class="float-cta"><a class="btn btn-gold" href="https://www.fozowo.f5.si/oijiiw.game" target="_blank" rel="noopener">遊ぶ</a></div>
+<footer class="footer"><div class="wrap footer-row"><div><b>おいじぃ魔女ゲームコレクション-OJWGA</b><div style="margin-top:6px"><small>魔法の試練、いざ始まる。 / OJWGA OFFICIAL</small></div></div><div class="mini-nav"><a href="#games">ゲーム</a><a href="ojwga-howto.html">遊び方</a><a href="ojwga-faq.html">FAQ</a><a href="#sns">SNS</a></div></div></footer>
 <script>
 const cards=[...document.querySelectorAll('.game')],chips=[...document.querySelectorAll('.chip')],search=document.getElementById('gameSearch'); let filter='all';
 function apply(){const q=(search.value||'').trim().toLowerCase();cards.forEach(c=>{const type=c.dataset.type||'',name=(c.dataset.name||'').toLowerCase();c.classList.toggle('hide',!(filter==='all'||type===filter)||(q&&!name.includes(q)))})}
