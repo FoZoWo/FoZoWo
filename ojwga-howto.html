@@ -1,0 +1,172 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#3a1c5e"><title>OJWGA公式 遊び方完全ガイド</title><style>
+:root{
+  --bg:#08040f;--bg2:#120821;--panel:rgba(25,12,44,.86);--panel2:rgba(42,20,72,.76);
+  --purple:#9b59b6;--violet:#c77dff;--gold:#f1c40f;--gold2:#ffd66b;
+  --text:#fff8ff;--muted:#cdb8e8;--line:rgba(199,125,255,.28);--danger:#ff4d6d;--ok:#2ed573;
+  --shadow:0 18px 55px rgba(0,0,0,.42),0 0 0 1px rgba(199,125,255,.1);
+  --radius:22px;--max:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--text);font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,system-ui,sans-serif;background:
+radial-gradient(circle at 15% 8%,rgba(155,89,182,.24),transparent 34%),
+radial-gradient(circle at 85% 12%,rgba(241,196,15,.10),transparent 28%),
+linear-gradient(180deg,#0a0513 0%,#0b0617 52%,#05030a 100%);min-height:100vh;overflow-x:hidden}
+a{color:inherit;text-decoration:none}button,input{font:inherit}button{cursor:pointer}
+::selection{background:rgba(199,125,255,.38)}
+#stars,#particles{position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden}
+.star{position:absolute;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.68);box-shadow:0 0 10px rgba(199,125,255,.8);animation:twinkle var(--d,4s) ease-in-out infinite}
+.particle{position:absolute;width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--gold));opacity:.18;filter:blur(.4px);animation:drift var(--d,15s) linear infinite}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1.35)}}
+@keyframes drift{0%{transform:translate3d(0,110vh,0) rotate(0);opacity:0}15%{opacity:.28}85%{opacity:.2}100%{transform:translate3d(80px,-20vh,0) rotate(240deg);opacity:0}}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-13px) rotate(3deg)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(199,125,255,.22)}50%{box-shadow:0 0 0 14px rgba(199,125,255,0)}}
+@keyframes shimmer{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 7px rgba(199,125,255,.45))}50%{filter:drop-shadow(0 0 20px rgba(241,196,15,.52))}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition:none!important}}
+.topbar{position:sticky;top:0;z-index:50;border-bottom:1px solid rgba(199,125,255,.18);background:rgba(7,3,14,.76);backdrop-filter:blur(16px) saturate(1.15)}
+.nav{max-width:var(--max);margin:auto;min-height:70px;padding:10px 18px;display:flex;align-items:center;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.03em;white-space:nowrap}
+.brand-mark{font-size:28px;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 0 10px rgba(199,125,255,.45))}
+.brand small{display:block;color:var(--muted);font-weight:700;font-size:10px;letter-spacing:.14em}
+.navlinks{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end}
+.navlinks a{padding:9px 12px;border-radius:999px;color:#e9def6;font-size:13px;font-weight:800;border:1px solid transparent;transition:.18s}
+.navlinks a:hover{background:rgba(155,89,182,.16);border-color:rgba(199,125,255,.22);transform:translateY(-1px)}
+.nav-cta{background:linear-gradient(135deg,var(--gold),#e67e22)!important;color:#261607!important;box-shadow:0 4px 0 #a05a18}
+@media(max-width:760px){.nav{flex-wrap:wrap}.navlinks{width:100%;overflow:auto;justify-content:flex-start;flex-wrap:nowrap;padding-bottom:4px}.navlinks a{flex:0 0 auto}}
+.wrap{max-width:var(--max);margin:auto;padding:0 18px}
+.hero{padding:86px 0 54px}.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:34px;align-items:center}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr}}
+.kicker{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid rgba(241,196,15,.36);border-radius:999px;background:rgba(241,196,15,.09);color:var(--gold2);font-size:12px;font-weight:900;letter-spacing:.12em}
+.hero h1{font-size:clamp(42px,6vw,78px);line-height:1.02;margin:16px 0 14px;letter-spacing:-.04em}
+.gradient{background:linear-gradient(90deg,#fff 0%,#f3e8ff 35%,var(--violet) 60%,var(--gold2) 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 5s linear infinite}
+.hero p{color:#e0d4eb;line-height:1.9;max-width:680px;font-size:17px}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:999px;padding:13px 20px;font-weight:900;transition:.18s;box-shadow:0 5px 0 rgba(0,0,0,.28)}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.07)}.btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.28)}
+.btn-primary{background:linear-gradient(135deg,var(--violet),#6c3483);color:#fff}.btn-gold{background:linear-gradient(135deg,var(--gold),#ff8c00);color:#2c1804}.btn-ghost{background:rgba(255,255,255,.06);border:1px solid rgba(199,125,255,.26);color:#f7efff}
+.witch-orb{width:min(100%,420px);aspect-ratio:1;border-radius:50%;position:relative;margin:auto;background:
+radial-gradient(circle at 40% 30%,rgba(199,125,255,.32),transparent 35%),radial-gradient(circle at 65% 65%,rgba(241,196,15,.18),transparent 34%),
+linear-gradient(145deg,rgba(54,25,88,.95),rgba(10,5,22,.98));border:1px solid rgba(199,125,255,.38);box-shadow:var(--shadow);display:grid;place-items:center;overflow:hidden;animation:glow 3.4s ease-in-out infinite}
+.witch-orb:before,.witch-orb:after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.08)}
+.witch-orb:before{inset:12%;animation:pulse 2.8s infinite}.witch-orb:after{inset:24%;border-color:rgba(241,196,15,.17);animation:pulse 3.8s infinite}
+.witch-face{font-size:128px;animation:float 3s ease-in-out infinite;z-index:2;filter:drop-shadow(0 15px 24px rgba(0,0,0,.45))}
+.orb-caption{position:absolute;bottom:20px;padding:8px 12px;border-radius:999px;background:rgba(0,0,0,.42);border:1px solid rgba(199,125,255,.22);font-size:12px;color:#e7d8f7}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:35px}@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{padding:16px;border-radius:18px;background:rgba(20,10,35,.68);border:1px solid rgba(199,125,255,.19);box-shadow:var(--shadow)}
+.stat .n{font-size:28px;font-weight:1000;color:#fff;text-shadow:0 0 12px rgba(241,196,15,.25)}.stat .l{color:var(--muted);font-size:12px;margin-top:5px}
+section{padding:76px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:28px}
+.eyebrow{color:var(--gold);font-size:11px;font-weight:1000;letter-spacing:.16em;text-transform:uppercase}.section-head h2{font-size:clamp(28px,4vw,44px);margin:6px 0 0}.section-head p{max-width:560px;color:var(--muted);line-height:1.8;margin:0}
+.card{background:linear-gradient(160deg,rgba(30,15,52,.9),rgba(11,5,22,.9));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.filterbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.chip{border:none;padding:8px 13px;border-radius:999px;background:rgba(155,89,182,.13);border:1px solid rgba(199,125,255,.22);color:#eadff6;font-size:12px;font-weight:900}
+.chip.active{background:linear-gradient(135deg,var(--gold),#ff8c00);color:#2c1703;border-color:transparent}.search{margin-left:auto;min-width:220px;padding:10px 14px;border-radius:999px;background:rgba(0,0,0,.22);border:1px solid rgba(199,125,255,.2);color:#fff;outline:none}
+.games{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}@media(max-width:920px){.games{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.games{grid-template-columns:1fr}}
+.game{position:relative;padding:20px;overflow:hidden;transform:translateZ(0);transition:.2s}.game:hover{transform:translateY(-5px);border-color:rgba(241,196,15,.42);box-shadow:0 24px 55px rgba(90,30,130,.25)}
+.game:before{content:"";position:absolute;inset:auto -20% -55% -20%;height:140px;background:radial-gradient(circle,rgba(155,89,182,.25),transparent 64%);pointer-events:none}
+.game-top{display:flex;justify-content:space-between;gap:10px;align-items:start}.game-icon{font-size:44px;filter:drop-shadow(0 6px 10px rgba(0,0,0,.5))}
+.badges{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.badge{font-size:10px;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.07);color:#e9dcf4;border:1px solid rgba(255,255,255,.11)}
+.badge.gold{color:#2a1a04;background:var(--gold)}.game h3{margin:15px 0 7px;font-size:19px;line-height:1.35}.game p{color:var(--muted);line-height:1.7;font-size:13px;min-height:66px}
+.meta{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin:14px 0}.meta span{padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.045);font-size:11px;color:#e0d4e9}.game .btn{width:100%;padding:10px 14px;font-size:12px}
+.feature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}@media(max-width:1000px){.feature-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.feature-grid{grid-template-columns:1fr}}
+.feature{padding:20px;min-height:180px}.feature .fi{font-size:28px}.feature h3{margin:11px 0 7px;font-size:16px}.feature p{color:var(--muted);font-size:13px;line-height:1.75;margin:0}
+.showcase{display:grid;grid-template-columns:1fr 1fr;gap:18px}@media(max-width:850px){.showcase{grid-template-columns:1fr}}
+.panel{padding:24px}.panel h3{margin:0 0 10px;font-size:24px}.panel p{color:var(--muted);line-height:1.8}
+.list{display:grid;gap:8px;margin:16px 0 0;padding:0;list-style:none}.list li{padding:11px 12px;border-radius:13px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.05);color:#f4ecf9;font-size:13px}
+.points{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}@media(max-width:600px){.points{grid-template-columns:repeat(2,1fr)}}
+.points div{padding:12px;border-radius:14px;text-align:center;background:linear-gradient(160deg,rgba(241,196,15,.12),rgba(155,89,182,.09));border:1px solid rgba(241,196,15,.24)}
+.points b{display:block;font-size:22px;color:var(--gold2)}.points small{color:#e0d2e8}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}@media(max-width:760px){.steps{grid-template-columns:1fr}}
+.step{padding:20px;position:relative}.step .num{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--violet),var(--purple));font-weight:900}.step h3{margin:12px 0 8px}.step p{margin:0;color:var(--muted);line-height:1.7;font-size:13px}
+.socials{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}@media(max-width:720px){.socials{grid-template-columns:repeat(2,1fr)}}
+.social{padding:16px;text-align:center;background:rgba(255,255,255,.045);border:1px solid rgba(199,125,255,.18);border-radius:16px;transition:.18s}.social:hover{transform:translateY(-3px);border-color:rgba(241,196,15,.45);background:rgba(155,89,182,.12)}
+.social .icon{width:42px;height:42px;margin:0 auto;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,rgba(155,89,182,.22),rgba(255,255,255,.045));border:1px solid rgba(255,255,255,.12);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.22)}.social .icon svg{width:28px;height:28px;display:block;fill:none}.social .icon svg.fb-logo,.social .icon svg.ig-logo{width:28px;height:28px}.social b{display:block;margin-top:10px}.social small{color:var(--muted)}
+.footer{padding:38px 0 52px;border-top:1px solid rgba(199,125,255,.16);margin-top:25px}.footer-row{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}.footer small{color:#9482a9}.mini-nav{display:flex;gap:8px;flex-wrap:wrap}.mini-nav a{color:#d6c7e2;font-size:12px}
+.reveal{opacity:1;transform:none}.reveal.in{animation:rise .7s ease forwards}.hide{display:none!important}
+.inner-hero{padding:62px 0 38px}.inner-hero .card{padding:30px}.breadcrumb{display:flex;gap:7px;flex-wrap:wrap;color:#ad9bbb;font-size:12px;margin-bottom:14px}.breadcrumb a:hover{color:#fff}
+.faq-grid{display:grid;grid-template-columns:260px 1fr;gap:18px}@media(max-width:820px){.faq-grid{grid-template-columns:1fr}}
+.side{padding:18px;position:sticky;top:86px;height:max-content}.side button{width:100%;text-align:left;background:transparent;border:none;color:#d7c8e4;padding:11px 12px;border-radius:11px;font-weight:900}.side button.active,.side button:hover{background:rgba(155,89,182,.16);color:#fff}
+.faq-list{display:grid;gap:10px}.faq-item{padding:0;overflow:hidden}.faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px;background:transparent;border:none;color:#fff;text-align:left;font-weight:900}.faq-q span:last-child{color:var(--gold);font-size:20px}
+.faq-a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s}.faq-a>div{overflow:hidden}.faq-item.open .faq-a{grid-template-rows:1fr}.faq-answer{padding:0 18px 18px;color:var(--muted);line-height:1.8;font-size:14px}
+.notice{padding:14px 16px;border-radius:14px;background:rgba(241,196,15,.08);border:1px solid rgba(241,196,15,.23);color:#f2e7c6;margin-top:14px}
+.howto-tabs{display:flex;gap:7px;overflow:auto;padding-bottom:5px;margin-bottom:18px}.howto-tab{flex:0 0 auto;border:none;border-radius:999px;padding:10px 13px;background:rgba(155,89,182,.14);border:1px solid rgba(199,125,255,.22);color:#e9dff2;font-weight:900;font-size:12px}.howto-tab.active{background:linear-gradient(135deg,var(--gold),#ff8c00);color:#2c1803;border-color:transparent}
+.guide{display:none}.guide.active{display:block}.guide-head{display:flex;gap:14px;align-items:flex-start;padding:22px}.guide-icon{font-size:52px}.guide h2{margin:0 0 6px;font-size:28px}.guide .lead{color:var(--muted);line-height:1.8;margin:0}
+.guide-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}@media(max-width:700px){.guide-grid{grid-template-columns:1fr}}
+.guide-box{padding:18px}.guide-box h3{margin:0 0 9px;font-size:15px;color:var(--gold2)}.guide-box p,.guide-box li{color:#dfd1e9;line-height:1.75;font-size:13px}.guide-box ul{padding-left:18px}
+.table{width:100%;border-collapse:collapse;font-size:12px}.table th,.table td{border-bottom:1px solid rgba(255,255,255,.07);padding:10px;text-align:left}.table th{color:var(--gold2)}
+.meter{display:grid;gap:7px}.meter-row{display:grid;grid-template-columns:90px 1fr 40px;align-items:center;gap:8px}.meter-row label{font-size:11px;color:#d9cce5}.bar{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--violet),var(--gold));width:var(--w)}
+.float-cta{position:fixed;right:18px;bottom:18px;z-index:40}.float-cta a{padding:13px 17px;animation:pulse 2.2s infinite}
+
+.game-image-wrap{width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:radial-gradient(circle at 50% 35%,rgba(155,89,182,.28),rgba(8,4,16,.85));border:1px solid rgba(199,125,255,.18);position:relative;margin:0 0 14px}.game-image{width:100%;height:100%;display:block;object-fit:cover;transition:transform .45s ease,filter .35s ease}.game:hover .game-image{transform:scale(1.045);filter:saturate(1.12) brightness(1.06)}.hero-witch-photo{width:min(76%,310px);height:min(76%,310px);object-fit:cover;border-radius:50%;border:3px solid rgba(241,196,15,.38);box-shadow:0 0 25px rgba(199,125,255,.38),0 0 60px rgba(155,89,182,.22);animation:float 3s ease-in-out infinite;z-index:2}.guide-image{width:100%;height:220px;object-fit:cover;border-radius:18px;border:1px solid rgba(199,125,255,.2);box-shadow:var(--shadow);margin-bottom:16px}@media(max-width:650px){.guide-image{height:180px}}
+.image-fallback{width:100%;height:100%;display:grid;place-items:center;color:#c77dff;font-weight:1000;letter-spacing:.18em;background:radial-gradient(circle at 50% 30%,rgba(199,125,255,.22),transparent 40%),#0b0617}.brand-photo{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid rgba(241,196,15,.5);box-shadow:0 0 18px rgba(199,125,255,.32);animation:float 3s ease-in-out infinite}.game-icon,.guide-icon{display:none}</style></head><body>
+
+<div id="stars"></div><div id="particles"></div>
+<script>
+(() => {
+ const stars=document.getElementById('stars'), parts=document.getElementById('particles');
+ if(stars){for(let i=0;i<70;i++){const s=document.createElement('i');s.className='star';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.setProperty('--d',(2+Math.random()*4)+'s');stars.appendChild(s)}}
+ if(parts){for(let i=0;i<20;i++){const p=document.createElement('i');p.className='particle';p.style.left=Math.random()*100+'%';p.style.setProperty('--d',(12+Math.random()*14)+'s');p.style.animationDelay=(-Math.random()*12)+'s';parts.appendChild(p)}}
+})();
+const initReveal=()=>{const observer=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.12});document.querySelectorAll('.reveal').forEach(e=>observer.observe(e));};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initReveal);else initReveal();
+</script>
+
+<header class="topbar"><nav class="nav">
+<a class="brand" href="ojwga.html"><img class="brand-photo" src="watch.png" alt="おいじぃ魔女" onerror="this.style.display='none'"><span>OJWGA<small>HOW TO PLAY / 完全ガイド</small></span></a>
+<div class="navlinks">
+<a href="ojwga.html#games">ゲーム</a><a href="ojwga.html#features">機能</a>
+<a href="ojwga-howto.html">遊び方</a><a href="ojwga-faq.html">FAQ</a><a href="ojwga.html#sns">SNS</a>
+<a class="nav-cta" href="https://www.fozowo.f5.si/oijiiw.game" target="_blank" rel="noopener">今すぐ遊ぶ ↗</a>
+</div></nav></header>
+
+<main><section class="inner-hero"><div class="wrap"><div class="card reveal"><div class="breadcrumb"><a href="ojwga.html">OJWGA</a><span>›</span><b>遊び方</b></div>
+<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:14px"><img class="hero-witch-photo" style="width:88px;height:88px;flex:0 0 88px" src="watch.png" alt="おいじぃ魔女" onerror="this.style.display='none'"><div style="color:#cdb8e8;font-size:12px;font-weight:800">OJWGAの案内役<br><b style="color:#fff">おいじぃ魔女</b></div></div><span class="kicker">HOW TO PLAY — GAME GUIDE ONLY</span><h1 style="font-size:clamp(38px,5vw,62px);margin:16px 0 8px"><span class="gradient">遊び方 完全ガイド</span></h1>
+<p style="color:var(--muted);line-height:1.9;max-width:820px">ここは「遊び方」に集中したページじゃ。各タイトルのルール、操作、ゲームの目的、ポイント、上達法、注意点をまとめています。</p>
+<div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:18px"><a class="btn btn-gold" href="https://www.fozowo.f5.si/oijiiw.game" target="_blank" rel="noopener">ゲームを開く ↗</a><a class="btn btn-ghost" href="ojwga.html">公式トップ</a></div></div></div></section>
+<section style="padding-top:20px"><div class="wrap"><div class="card reveal" style="padding:18px"><div class="eyebrow">SELECT A GAME</div><h2 style="margin:6px 0 14px">まずはゲームを選ぶ</h2>
+<div class="howto-tabs"><button class="howto-tab active" data-id="press">🏗️ デス・プレス</button><button class="howto-tab" data-id="explosion">🏭 大爆発</button><button class="howto-tab" data-id="chase">🌀 猛追 DX</button><button class="howto-tab" data-id="hq">🚪 本社入り口</button><button class="howto-tab" data-id="dodge">🏐 ドッジボール</button></div></div>
+<div style="margin-top:14px">
+<article class="guide active" id="guide-press">
+<div class="game-image-wrap"><img class="guide-image" src="デスプレス1.png" alt="おいじぃのデス・プレス 順位決定戦の画像" onerror="this.parentElement.innerHTML='<div class=\'image-fallback\'>OJWGA</div>'" /></div>
+<div class="guide-head card"><div class="guide-icon">🏗️</div><div><div class="badges" style="justify-content:flex-start"><span class="badge gold">運ゲー</span><span class="badge">難易度：易しい</span></div><h2>おいじぃのデス・プレス 順位決定戦</h2><p class="lead">ゲーム本体の公式遊び方に沿って、ルール・操作・考え方を整理した完全ガイドじゃ。</p></div></div>
+<div class="guide-grid"><div class="guide-box card"><h3>基本情報</h3><table class="table"><tr><th>情報</th><td>4人（あなた＋CPU3体）</td></tr><tr><th>情報</th><td>約1〜2分</td></tr><tr><th>必要スキル</th><td>運</td></tr></table></div>
+<div class="guide-box card"><h3>プレイ感の目安</h3><div class="meter"><div class="meter-row"><label>緊張感</label><div class="bar"><i style="--w:55%"></i></div><b>55%</b></div><div class="meter-row"><label>とっつきやすさ</label><div class="bar"><i style="--w:45%"></i></div><b>45%</b></div></div><p style="margin-top:10px">難易度は公式ゲーム内の案内をベースにした目安です。</p></div>
+<div class="guide-box card"><h3>ゲームの目的</h3><ul><li>4つの足場から1つを選ぶ</li><li>プレス機の落下地点は完全ランダム</li><li>潰された人はそのラウンドで脱落</li><li>ラウンドごとに足場が1つ減る</li><li>最後まで生き残れば1位</li></ul></div><div class="guide-box card"><h3>上達のコツ</h3><ul><li>端っこ・真ん中など、自分なりの選択ルールを作る</li><li>4位でもポイントが入るので再挑戦する</li><li>CPU戦を観戦して流れを楽しむ</li></ul></div></div>
+<div class="guide-grid" style="margin-top:12px"><div class="guide-box card"><h3>基本操作</h3><p>タップ／クリックで足場を1つ選択。制限時間はなく、じっくり決められます。</p></div><div class="guide-box card"><h3>完全ランダム</h3><p>魔女のセリフや表情に当たり判定のヒントはありません。</p></div><div class="guide-box card"><h3>特殊時間帯</h3><p>公式説明では23:00〜23:30に「ツイン・プレス」が発動し、1ラウンドに2か所へプレス機が落ちる高難度ルールがあります。</p></div></div></article>
+<article class="guide " id="guide-explosion">
+<div class="game-image-wrap"><img class="guide-image" src="大爆発2.png" alt="おいじぃ魔女大爆発 複雑なる工場の画像" onerror="this.parentElement.innerHTML='<div class=\'image-fallback\'>OJWGA</div>'" /></div>
+<div class="guide-head card"><div class="guide-icon">🏭</div><div><div class="badges" style="justify-content:flex-start"><span class="badge gold">運＋時間制限</span><span class="badge">難易度：中</span></div><h2>おいじぃ魔女大爆発 複雑なる工場</h2><p class="lead">ゲーム本体の公式遊び方に沿って、ルール・操作・考え方を整理した完全ガイドじゃ。</p></div></div>
+<div class="guide-grid"><div class="guide-box card"><h3>基本情報</h3><table class="table"><tr><th>情報</th><td>4人（あなた＋CPU3体）</td></tr><tr><th>情報</th><td>約2〜3分</td></tr><tr><th>必要スキル</th><td>運・決断力</td></tr></table></div>
+<div class="guide-box card"><h3>プレイ感の目安</h3><div class="meter"><div class="meter-row"><label>緊張感</label><div class="bar"><i style="--w:70%"></i></div><b>70%</b></div><div class="meter-row"><label>とっつきやすさ</label><div class="bar"><i style="--w:30%"></i></div><b>30%</b></div></div><p style="margin-top:10px">難易度は公式ゲーム内の案内をベースにした目安です。</p></div>
+<div class="guide-box card"><h3>ゲームの目的</h3><ul><li>順番にスイッチを1つ押す</li><li>爆発スイッチを引いた人は脱落</li><li>全員セーフならスイッチをリセット</li><li>最後まで残れば1位</li></ul></div><div class="guide-box card"><h3>上達のコツ</h3><ul><li>前のCPUが押したスイッチを見届けて残りから決める</li><li>10秒を使い切らず直感で決める</li><li>派手なズーム演出に惑わされない</li></ul></div></div>
+<div class="guide-grid" style="margin-top:12px"><div class="guide-box card"><h3>基本操作</h3><p>3D空間のスイッチをタップ／クリック。</p></div><div class="guide-box card"><h3>10秒ルール</h3><p>自分の番では10秒以内に選択。時間切れは脱落につながります。</p></div><div class="guide-box card"><h3>スイッチ数</h3><p>4人なら5個、3人なら4個、2人なら3個。生存者＋1個のスイッチが並びます。</p></div><div class="guide-box card"><h3>完全ランダム</h3><p>爆発スイッチはランダム。パイプやランプの色・形、セリフにヒントはありません。</p></div></div></article>
+<article class="guide " id="guide-chase">
+<div class="game-image-wrap"><img class="guide-image" src="猛追3.png" alt="おいじぃ魔女の猛追 DXの画像" onerror="this.parentElement.innerHTML='<div class=\'image-fallback\'>OJWGA</div>'" /></div>
+<div class="guide-head card"><div class="guide-icon">🌀</div><div><div class="badges" style="justify-content:flex-start"><span class="badge gold">アクション</span><span class="badge">難易度：難</span></div><h2>おいじぃ魔女の猛追 DX</h2><p class="lead">ゲーム本体の公式遊び方に沿って、ルール・操作・考え方を整理した完全ガイドじゃ。</p></div></div>
+<div class="guide-grid"><div class="guide-box card"><h3>基本情報</h3><table class="table"><tr><th>情報</th><td>4人（あなた＋AI3体）</td></tr><tr><th>情報</th><td>約1〜2分</td></tr><tr><th>情報</th><td>60秒サバイバル</td></tr></table></div>
+<div class="guide-box card"><h3>プレイ感の目安</h3><div class="meter"><div class="meter-row"><label>緊張感</label><div class="bar"><i style="--w:92%"></i></div><b>92%</b></div><div class="meter-row"><label>とっつきやすさ</label><div class="bar"><i style="--w:8%"></i></div><b>8%</b></div></div><p style="margin-top:10px">難易度は公式ゲーム内の案内をベースにした目安です。</p></div>
+<div class="guide-box card"><h3>ゲームの目的</h3><ul><li>魔女に捕まらないよう60秒逃げ続ける</li><li>生存時間が長いほど高順位</li><li>60秒完全生存で1位確定（同着あり）</li><li>アイテムを拾って逃走を補助</li></ul></div><div class="guide-box card"><h3>上達のコツ</h3><ul><li>角を曲がって視界を切る</li><li>ミニマップで魔女の接近方向を先読み</li><li>直角ターンやジグザグで追跡をかわす</li><li>残り10秒は安全地帯で時間を稼ぐ</li></ul></div></div>
+<div class="guide-grid" style="margin-top:12px"><div class="guide-box card"><h3>PC操作</h3><p>WASDまたは↑↓←→キー。</p></div><div class="guide-box card"><h3>スマホ／タブレット</h3><p>Dパッドやスワイプで移動。</p></div><div class="guide-box card"><h3>ミニマップ</h3><p>赤＝自分、紫＝魔女、緑／黄／シアン＝他AI。青＝スピード、黄＝フリーズ。</p></div><div class="guide-box card"><h3>アイテム</h3><p>スピードで一定時間高速化、フリーズで魔女を3秒止める。全5個（スピード3・フリーズ2）。</p></div><div class="guide-box card"><h3>魔女の加速</h3><p>時間経過で魔女の移動速度が上がるため、終盤ほど危険。</p></div></div></article>
+<article class="guide " id="guide-hq">
+<div class="game-image-wrap"><img class="guide-image" src="本社入口4.png" alt="おいじぃ魔女本社入り口 運ゲーの画像" onerror="this.parentElement.innerHTML='<div class=\'image-fallback\'>OJWGA</div>'" /></div>
+<div class="guide-head card"><div class="guide-icon">🚪</div><div><div class="badges" style="justify-content:flex-start"><span class="badge gold">運ゲー</span><span class="badge">難易度：易</span></div><h2>おいじぃ魔女本社入り口 運ゲー</h2><p class="lead">ゲーム本体の公式遊び方に沿って、ルール・操作・考え方を整理した完全ガイドじゃ。</p></div></div>
+<div class="guide-grid"><div class="guide-box card"><h3>基本情報</h3><table class="table"><tr><th>情報</th><td>4人</td></tr><tr><th>情報</th><td>約1〜2分</td></tr><tr><th>必要スキル</th><td>運</td></tr></table></div>
+<div class="guide-box card"><h3>プレイ感の目安</h3><div class="meter"><div class="meter-row"><label>緊張感</label><div class="bar"><i style="--w:45%"></i></div><b>45%</b></div><div class="meter-row"><label>とっつきやすさ</label><div class="bar"><i style="--w:55%"></i></div><b>55%</b></div></div><p style="margin-top:10px">難易度は公式ゲーム内の案内をベースにした目安です。</p></div>
+<div class="guide-box card"><h3>ゲームの目的</h3><ul><li>左・中央・右の3ドアから1つ選ぶ</li><li>各ドア定員2人</li><li>2つは安全、1つは魔女のドア</li><li>魔女のドアでハート1個減少</li><li>1人3ハート、3回で脱落</li></ul></div><div class="guide-box card"><h3>上達のコツ</h3><ul><li>5秒以内に必ず決める</li><li>CPUの選択状況を見て空いているドアを選ぶ手もある</li><li>ハート3個あるので一度の失敗で焦らない</li></ul></div></div>
+<div class="guide-grid" style="margin-top:12px"><div class="guide-box card"><h3>基本操作</h3><p>タップ／クリックで左・中央・右のドアを選びます。</p></div><div class="guide-box card"><h3>5秒ルール</h3><p>5秒以内に選ばないと即脱落。</p></div><div class="guide-box card"><h3>毎ラウンド変化</h3><p>魔女のドアは毎ラウンドランダムに入れ替わります。</p></div><div class="guide-box card"><h3>ヒントなし</h3><p>ドアの揺れ・笑い声・影・セリフなどにヒントはない公式説明です。</p></div></div></article>
+<article class="guide " id="guide-dodge">
+<div class="game-image-wrap"><img class="guide-image" src="ドッジボール5.png" alt="おいじぃ魔女のドッジボール大会の画像" onerror="this.parentElement.innerHTML='<div class=\'image-fallback\'>OJWGA</div>'" /></div>
+<div class="guide-head card"><div class="guide-icon">🏐</div><div><div class="badges" style="justify-content:flex-start"><span class="badge gold">アクション（反射神経）</span><span class="badge">難易度：中</span></div><h2>おいじぃ魔女のドッジボール大会</h2><p class="lead">ゲーム本体の公式遊び方に沿って、ルール・操作・考え方を整理した完全ガイドじゃ。</p></div></div>
+<div class="guide-grid"><div class="guide-box card"><h3>基本情報</h3><table class="table"><tr><th>情報</th><td>4人</td></tr><tr><th>情報</th><td>約1〜2分</td></tr><tr><th>情報</th><td>60秒サバイバル</td></tr></table></div>
+<div class="guide-box card"><h3>プレイ感の目安</h3><div class="meter"><div class="meter-row"><label>緊張感</label><div class="bar"><i style="--w:70%"></i></div><b>70%</b></div><div class="meter-row"><label>とっつきやすさ</label><div class="bar"><i style="--w:30%"></i></div><b>30%</b></div></div><p style="margin-top:10px">難易度は公式ゲーム内の案内をベースにした目安です。</p></div>
+<div class="guide-box card"><h3>ゲームの目的</h3><ul><li>巨大鉄球を60秒避け続ける</li><li>当たったら脱落</li><li>生存時間で順位決定</li><li>時間とともに速度・数・同時出現数が増える</li></ul></div><div class="guide-box card"><h3>上達のコツ</h3><ul><li>中央をベースに四方へ逃げられる余裕を作る</li><li>鉄球の進行方向を読んで早めに避ける</li><li>必要以上に動かず隙間を通す</li><li>PCではキーボードの反応速度を活かす</li></ul></div></div>
+<div class="guide-grid" style="margin-top:12px"><div class="guide-box card"><h3>PC操作</h3><p>WASDまたは↑↓←→キーで360°移動。</p></div><div class="guide-box card"><h3>スマホ操作</h3><p>左下のバーチャルジョイスティックをスワイプ。</p></div><div class="guide-box card"><h3>鉄球の挙動</h3><p>画面端から地面を転がってくる。</p></div><div class="guide-box card"><h3>後半は最大4個</h3><p>公式説明では後半に同時出現数が最大4個まで増えます。</p></div></div></article></div>
+<div class="showcase" style="margin-top:16px"><div class="panel card reveal"><div class="eyebrow">COMMON POINTS</div><h3>全ゲーム共通ポイント</h3><p>通常プレイの公式目安は順位に応じてポイントが入ります。</p><div class="points"><div><b>+20</b><small>1位</small></div><div><b>+12</b><small>2位</small></div><div><b>+6</b><small>3位</small></div><div><b>+2</b><small>4位</small></div></div></div>
+<div class="panel card reveal"><div class="eyebrow">DAILY</div><h3>デイリーチャレンジ</h3><p>1日1回限定の高報酬。公式説明では通常ポイントより高い報酬です。</p><div class="points"><div><b>+100</b><small>1位</small></div><div><b>+60</b><small>2位</small></div><div><b>+30</b><small>3位</small></div><div><b>+10</b><small>4位</small></div></div></div></div>
+<div class="card reveal" style="padding:22px;margin-top:16px"><h2>初心者ロードマップ</h2><div class="steps"><div class="step card"><div class="num">1</div><h3>全ゲームを1回</h3><p>5タイトルを一度ずつ触って、運ゲーとアクションの違いを体感。</p></div><div class="step card"><div class="num">2</div><h3>得意を発見</h3><p>得意な1〜2本を見つけ、短時間で繰り返し記録を伸ばす。</p></div><div class="step card"><div class="num">3</div><h3>デイリーへ</h3><p>ルールに慣れたら、1日1回の高報酬チャレンジに挑む。</p></div></div></div>
+<div class="notice reveal">⚠️ ヒントの有無やランダム性はゲームごとに違います。特に運ゲー系は、演出から結果を読めない設計として公式説明されています。</div>
+</div></section></main>
+<footer class="footer"><div class="wrap footer-row"><b>🧙‍♀️ OJWGA HOW TO PLAY</b><div class="mini-nav"><a href="ojwga.html">公式トップ</a><a href="ojwga-faq.html">FAQ</a><a href="https://www.fozowo.f5.si/oijiiw.game" target="_blank" rel="noopener">ゲームを開く</a></div></div></footer>
+<div class="float-cta"><a class="btn btn-gold" href="https://www.fozowo.f5.si/oijiiw.game" target="_blank" rel="noopener">遊ぶ</a></div>
+<script>
+const tabs=[...document.querySelectorAll('.howto-tab')],guides=[...document.querySelectorAll('.guide')];
+tabs.forEach(t=>t.addEventListener('click',()=>{tabs.forEach(x=>x.classList.remove('active'));t.classList.add('active');guides.forEach(g=>g.classList.toggle('active',g.id==='guide-'+t.dataset.id));window.scrollTo({top:document.getElementById('guide-'+t.dataset.id).offsetTop-110,behavior:'smooth'})}));
+</script></body></html>
