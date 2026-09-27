@@ -5396,7 +5396,7 @@ html.cursor-custom:not(.cursor-custom-ready) body {
 }
 html.cursor-custom.cursor-custom-ready,
 html.cursor-custom.cursor-custom-ready body {
-  cursor: none !important;
+  cursor: auto !important;
 }
 html.cursor-custom.cursor-custom-ready a,
 html.cursor-custom.cursor-custom-ready button,
@@ -5413,7 +5413,7 @@ html.cursor-custom.cursor-custom-ready .settings-btn,
 html.cursor-custom.cursor-custom-ready [onclick],
 html.cursor-custom.cursor-custom-ready .shop-tab,
 html.cursor-custom.cursor-custom-ready label {
-  cursor: none !important;
+  cursor: auto !important;
 }
 /* 初期設定や各種オーバーレイよりも常に上にカスタムカーソルを表示する。
    pointer-events:none のため、ボタン操作は遮らない。 */
@@ -5993,6 +5993,13 @@ body.startup-user-gate #userswitch-overlay #userswitch-startup-exit-btn { displa
   position: relative;
   z-index: 1;
 }
+<style id="ojwga-v23-native-cursor-failsafe">
+/* v23: ネイティブのマウスカーソルを絶対に消さない。
+   カスタムカーソルは補助表示として残すが、OSカーソルを非表示にしない。 */
+html, html body, html body * { cursor: auto !important; }
+html.cursor-custom, html.cursor-custom body, html.cursor-custom body * { cursor: auto !important; }
+#magic-cursor { pointer-events: none !important; }
+</style>
 </style>
 </head>
 <body>
@@ -7868,7 +7875,7 @@ function __notifySplashDone(){
                             <button type="button" class="ojwga-v17-btn sync" id="ojwga-online-sync-btn">☁️ 今すぐ同期</button>
                             <button type="button" class="ojwga-v17-btn" id="ojwga-online-login-btn" onclick="ojwgaV17LoginGoogle()">🔐 Googleログイン</button>
                             <button type="button" class="ojwga-v17-btn" id="ojwga-online-logout-btn" onclick="ojwgaV17LogoutGoogle()">🚪 ログアウト</button>
-                            <button type="button" class="ojwga-v17-btn danger full" id="ojwga-online-delete-btn" onclick="ojwgaV17DeleteAccount()">☠️ Googleアカウント＆OJWGAデータを完全消去</button>
+                            <button type="button" class="ojwga-v17-btn danger full" id="ojwga-online-delete-btn" onclick="ojwgaV17DeleteAccount()">☠️ Googleユーザを消去</button>
                         </div>
                         <div class="ojwga-v17-danger-note">完全消去すると、Firebase AuthenticationのGoogleログインアカウントとFirestore上のOJWGAクラウドデータを削除します。取り消せません。</div>
                     </div>
@@ -15088,7 +15095,7 @@ async function launchGameOnline(gameId, action, joinCode) {
         'try{' +
         '  var _cs=document.createElement(\"style\");' +
         '  _cs.id=\"oijii-cursor-bridge-style\";' +
-        '  _cs.textContent=\"html.oijii-parent-custom-cursor,html.oijii-parent-custom-cursor *{cursor:none!important;}\";' +
+        '  _cs.textContent=\"html.oijii-parent-custom-cursor,html.oijii-parent-custom-cursor *{cursor:auto!important;}\";' +
         '  (document.head||document.documentElement).appendChild(_cs);' +
         '  function _oijiiCursorSend(type,e){try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:type,x:e.clientX||0,y:e.clientY||0},\"*\");}}catch(_e){}}' +
         '  window.addEventListener(\"mousemove\",function(e){_oijiiCursorSend(\"oijii-cursor-move\",e)},true);' +
@@ -15251,7 +15258,7 @@ async function launchGame(gameId, challengeMode) {
         'try{' +
         '  var _cs=document.createElement(\"style\");' +
         '  _cs.id=\"oijii-cursor-bridge-style\";' +
-        '  _cs.textContent=\"html.oijii-parent-custom-cursor,html.oijii-parent-custom-cursor *{cursor:none!important;}\";' +
+        '  _cs.textContent=\"html.oijii-parent-custom-cursor,html.oijii-parent-custom-cursor *{cursor:auto!important;}\";' +
         '  (document.head||document.documentElement).appendChild(_cs);' +
         '  function _oijiiCursorSend(type,e){try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:type,x:e.clientX||0,y:e.clientY||0},\"*\");}}catch(_e){}}' +
         '  window.addEventListener(\"mousemove\",function(e){_oijiiCursorSend(\"oijii-cursor-move\",e)},true);' +
@@ -15817,12 +15824,12 @@ const RESET_MESSAGES = {
         { title: '🚨 最終確認', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.1em;">🚨 これが最後の確認じゃ！</span>\n「消去する」を押した瞬間、このユーザーは<span style="color:#ff8888;font-weight:bold;">この世から消え去る</span>ぞい！\n<span style="color:#ff4444;font-weight:bold;">もう戻せん、絶対にじゃ！</span>', speak: 'これが最後の確認じゃ。消去するを押したらこのユーザーはこの世から消え去るぞ。もう戻せん絶対にじゃ。', html: true }
     ],
     deleteUser: [
-        { title: '⚠️ ユーザー消去・1回目の警告', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.08em;">⚠️ 危険じゃぞ！</span>\nこのユーザーの名前・パスワード・ポイント・記録・チャレンジ履歴・購入情報などが、<span style="color:#ff8888;font-weight:bold;">すべて消える</span>ぞい。\n<span style="color:#ff4444;font-weight:bold;">一度消したら元には戻せん。</span> 本当に続けるかい？', speak: '一回目の警告じゃ。このユーザーのデータはすべて消えて戻せんぞ。本当に続けるかい。', html: true },
+        { title: '⚠️ ユーザー消去', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.08em;">⚠️ 危険じゃぞ！</span>\nこのユーザーの名前・パスワード・ポイント・記録・チャレンジ履歴・購入情報などが、<span style="color:#ff8888;font-weight:bold;">すべて消える</span>ぞい。\n<span style="color:#ff4444;font-weight:bold;">一度消したら元には戻せん。</span> 本当に続けるかい？', speak: '最初の確認じゃ。このユーザーのデータはすべて消えて戻せんぞ。本当に続けるかい。', html: true },
         { title: '🚨 ユーザー消去・最終警告', text: '<span style="color:#ff2222;font-weight:bold;font-size:1.2em;">🚨🚨 これが最後の確認じゃ！！ 🚨🚨</span>\n「消去する」を押すと、このユーザーは<span style="color:#ff8888;font-weight:bold;">完全に消去</span>されるぞい。\n<span style="color:#ff4444;font-weight:bold;">この操作は取り消せん。</span> 本当に消去するのかい？', speak: 'これが最後の警告じゃ。消去するを押すと、このユーザーは完全に消えて戻せんぞ。本当に消去するのかい。', html: true }
     ],
     googleAccountDelete: [
-        { title: '⚠️ Googleオンラインユーザー・第1警告じゃ', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.08em;">⚠️ ヒッヒッヒ……危険じゃぞい！</span>\nこのGoogleオンラインユーザーに保存してある<span style="color:#ff8888;font-weight:bold;">ポイント・実績・プレイ記録・オンライン設定・専用プロフィール画像</span>を、ぜーんぶ消し去るぞい。\n<span style="color:#ff4444;font-weight:bold;">一度消したら元には戻せん</span>のじゃ。Google本体のGmailなどは消えんぞい。\n本当に続ける覚悟はできておるかい？', speak: 'ヒッヒッヒ……第1警告じゃぞい。このGoogleオンラインユーザーのポイントも実績も記録もプロフィールも、ぜーんぶ消してしまうぞ。本当に続ける覚悟はできておるかい。', html: true },
-        { title: '🚨🚨 Googleオンラインユーザー・最終警告じゃ 🚨🚨', text: '<span style="color:#ff2222;font-weight:bold;font-size:1.18em;">🚨 これが最後の確認じゃ！！ 🚨</span>\n「消去する」を押したら、Googleログイン連携まで<span style="color:#ff8888;font-weight:bold;">完全に切り離して消去</span>するぞい。\nそのあと自動で<span style="color:#ffd166;font-weight:bold;">ログアウトしてホームをやり直す</span>ことになるんじゃ。\n<span style="color:#ff4444;font-weight:bold;">もう戻せんぞ。ワシは止めたからのぅ……</span>\n本当に、それでも消すのかい？', speak: 'ヒッヒッヒ……これが最後じゃぞい。消去するを押せばGoogleオンラインユーザーも連携も、ぜーんぶ消えて戻せん。そのあとログアウトするぞ。本当に、それでも消すのかい。', html: true }
+        { title: '⚠️ Googleユーザを消去', text: 'このオンラインユーザーのポイント・実績・プレイ記録・プロフィール情報などを消去するぞい。\nGoogle本体のアカウント（Gmailなど）は消えんぞい。\n本当によいかい？', speak: 'オンラインユーザーのデータを消去するぞい。本当によいかい。' },
+        { title: '最終確認', text: 'GoogleユーザのデータとGoogleログイン連携を消去するぞい。\n一度消したら元には戻せん。本当によいかい？', speak: 'これが最後の確認じゃ。消去するを押すと、オンラインユーザーのデータとGoogleログイン連携が消えるぞい。本当によいかい。' }
     ],
     allusers: [
         { title: '⚠️ 全ユーザー削除', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.1em;">☠️ 大変危険じゃぞ！</span>\n<span style="color:#ff8888;font-weight:bold;">すべてのユーザーを根こそぎ削除</span>するぞい…！\n家族みんなのデータも、お子さんが積み上げてきた記録も、<span style="color:#ff8888;font-weight:bold;">何ひとつ残らず吹き飛ぶ</span>んじゃ。\n（設定だけは残るが、ユーザー情報は<span style="color:#ff4444;font-weight:bold;">全消去・復元不可能</span>じゃ）', speak: '大変危険じゃぞ。すべてのユーザーを根こそぎ削除するぞ。復元できんが本当によいかい。', html: true },
@@ -16842,10 +16849,11 @@ function showResetOverlay() {
         confirmBtn.style.display = '';
         if (mainBtns) mainBtns.style.display = 'flex';
         if (resetScope === 'googleAccountDelete') {
+            // 初期化と同じ確認文言：1回目は「はい／いいえ」、最終は「消去する／いいえ」
             confirmBtn.innerText = resetStep < lastStep
-                ? (_en ? 'I accept the witch\'s warning' : 'ヒッヒッヒ……それでも進むのじゃ')
-                : (_en ? 'Erase everything and sign out' : 'すべて消去してログアウトじゃ');
-            if (cancelBtn) cancelBtn.innerText = _en ? 'Stop, witch!' : 'いや、やめるのじゃ';
+                ? (_en ? 'Yes' : 'はい')
+                : (_en ? 'Erase' : '消去する');
+            if (cancelBtn) cancelBtn.innerText = _en ? 'No' : 'いいえ';
         } else {
             confirmBtn.innerText = resetStep < lastStep
                 ? (_en?'Yes':'はい')
@@ -26140,6 +26148,7 @@ async function ensureGameHtml(gameId) {
         if (window.__OIJII_FORCE_AUDIO_STOP || window.__OIJII_OFFLINE_ALERT) return false;
         /* 完全ブロックの最終警告中だけBGMを止める。キャンセル後に再開する。 */
         if (window.__OIJII_BLOCK_FINAL_MUSIC_PAUSE) return false;
+        if (window.__OIJII_GOOGLE_DELETE_FLOW) return false;
         /* 🎵 初期設定ウィザードで「音楽ON」を押した直後のプレビュー再生を許可する */
         if (window.onboardMusicPreview) {
             const onb = document.getElementById('onboarding-overlay');
@@ -26563,12 +26572,13 @@ async function ensureGameHtml(gameId) {
     }
     var s = load();
     var useCustom = !!s.enabled;
-    html.classList.toggle('cursor-custom', useCustom);
+    html.classList.remove('cursor-custom');
     ensureEl();
     el.className = 'des-' + (s.design || 'arrow') + ' col-' + (s.color || 'purple');
     el.id = 'magic-cursor';
     if (useCustom) {
       el.style.display = '';
+      el.classList.add('active');
       bind(true);
     } else {
       el.classList.remove('active');
@@ -26592,11 +26602,15 @@ async function ensureGameHtml(gameId) {
   };
 
   function boot(){
+    // ネイティブOSカーソルは常に表示する（カスタムカーソル有効時も消さない）。
+    document.documentElement.classList.remove('cursor-custom-ready');
+    document.documentElement.style.cursor='auto';
     document.documentElement.classList.remove('cursor-custom', 'cursor-custom-ready');
     var frame=document.getElementById('game-frame');
     if(frame && !frame._oijiiCursorBridgeBound){
       frame._oijiiCursorBridgeBound=true;
       frame.addEventListener('load', function(){ syncIframeCursorMode(); });
+      frame.addEventListener('pointerenter', function(e){ try { onMove(e); } catch(_){} }, true);
     }
     ensureEl();
     if (el) { el.style.display='none'; el.classList.remove('active','clicking'); }
@@ -30114,7 +30128,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
 
 <div id="ojwga-online-delete-warn1" class="ojwga-delete-fullscreen" aria-hidden="true">
   <div class="icon">⚠️</div>
-  <h2>第1警告　完全消去</h2>
+  <h2>Googleユーザを消去</h2>
   <p>オンラインユーザーに保存されたデータを消去します。
 この操作は取り消せません。</p>
   <div class="warning-box">Firestoreのオンラインデータと、この端末にあるGoogleユーザーの情報を削除対象にします。</div>
@@ -30263,6 +30277,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
       return;
     }
     if(active)return;
+    window.__OIJII_GOOGLE_DELETE_FLOW=true;
     stopMusic();
     try{
       closeProfileSettings();
@@ -30287,6 +30302,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   document.addEventListener('click',function(ev){
     var t=ev.target;
     if(t && t.id==='reset-info-cancel-btn' && pendingResetScope==='googleAccountDelete'){
+      window.__OIJII_GOOGLE_DELETE_FLOW=false;
       resumeMusic();
       pendingResetScope=null;
       resetScope='all';
@@ -30298,6 +30314,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   if(resetCancel){
     resetCancel.addEventListener('click',function(){
       if(resetScope==='googleAccountDelete'){
+        window.__OIJII_GOOGLE_DELETE_FLOW=false;
         resumeMusic();
         resetScope='all'; resetStep=0; pendingResetScope=null;
       }
@@ -30331,6 +30348,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
         runner();
       }catch(e){
         console.error('[OJWGA v19] deletion executor failed',e);
+        window.__OIJII_GOOGLE_DELETE_FLOW=false;
         resumeMusic();
         safeAlert('アカウントの完全消去に失敗しました。','Account deletion failed.');
       }
@@ -30343,10 +30361,10 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     var info=el('reset-info-overlay'), ov=el('reset-overlay');
     if(info && info.classList.contains('show')){
       try{closeResetInfo()}catch(_){}
-      pendingResetScope=null; resetScope='all'; resetStep=0; resumeMusic();
+      pendingResetScope=null; resetScope='all'; resetStep=0; window.__OIJII_GOOGLE_DELETE_FLOW=false; resumeMusic();
     }else if(ov && ov.classList.contains('show')){
       try{hideResetOverlay()}catch(_){}
-      resetScope='all'; resetStep=0; resumeMusic();
+      resetScope='all'; resetStep=0; window.__OIJII_GOOGLE_DELETE_FLOW=false; resumeMusic();
     }
   },true);
 
