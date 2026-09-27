@@ -29632,6 +29632,8 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     shownUid='';
     resumeMusic();
     try{if(typeof openUserSwitcher==='function')openUserSwitcher(false)}catch(e){}
+    /* Googleユーザ削除エラーの確認後はページを再読み込みして最新状態を反映する。 */
+    setTimeout(function(){ try{ window.location.reload(); }catch(e){ location.reload(); } }, 0);
   });
   window.addEventListener('load',consumePending);
   setTimeout(consumePending,300);
