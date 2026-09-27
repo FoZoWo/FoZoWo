@@ -91,7 +91,7 @@
   window.OJWGA_FIREBASE = {
     app, auth, db, googleProvider,
     doc, getDoc, setDoc, deleteDoc, serverTimestamp, onSnapshot,
-    deleteUser, reauthenticateWithPopup
+    deleteUser, reauthenticateWithPopup, signOut
   };
   window.__ojwgaFirebaseAuthUser = null;
   window.__ojwgaFirebaseAuthReady = false;
@@ -120,6 +120,8 @@
       window.__ojwgaFirebaseAuthReady = true;
       // 明示的なGoogleログイン。削除済みOJWGAオンラインユーザーならこのログイン時だけ再作成を許可。
       window.__ojwgaExplicitGoogleRecreateUid = String(user.uid || '');
+      /* 明示的にGoogleログインした場合だけ、完全初期化後の自動同期禁止を解除。 */
+      try { if (window.__ojwgaClearFactoryResetPending) window.__ojwgaClearFactoryResetPending(); } catch (_) {}
       return user;
     } catch (error) {
       console.error("[OJWGA] Google login failed:", error);
@@ -155,6 +157,7 @@
   getRedirectResult(auth).then(function(result){
     if (result && result.user) {
       window.__ojwgaFirebaseAuthUser = result.user;
+      try { if (window.__ojwgaClearFactoryResetPending) window.__ojwgaClearFactoryResetPending(); } catch (_) {}
     }
   }).catch(function(error){
     if (error && String(error.code || "") !== "auth/no-auth-event") {
@@ -10548,6 +10551,20 @@ const GAMES = [
    ストレージ（複数ユーザー対応）
 ========================================================= */
 const ROOT_KEY = 'oijii_root_v2';
+/* 完全初期化後、Firebase Auth の自動復元でGoogleユーザーが勝手に復活するのを防ぐ。 */
+const FACTORY_RESET_KEY = 'oijii_factory_reset_v1';
+function isFactoryResetPending() {
+    try { return localStorage.getItem(FACTORY_RESET_KEY) === '1'; } catch (e) { return false; }
+}
+function markFactoryResetPending() {
+    try { localStorage.setItem(FACTORY_RESET_KEY, '1'); } catch (e) {}
+}
+function clearFactoryResetPending() {
+    try { localStorage.removeItem(FACTORY_RESET_KEY); } catch (e) {}
+}
+window.__ojwgaFactoryResetPending = isFactoryResetPending;
+window.__ojwgaClearFactoryResetPending = clearFactoryResetPending;
+
 const LEGACY_STORAGE_KEY = 'oijii_game_data_v1';
 const LEGACY_USER_KEY = 'oijii_user_profile_v1';
 
@@ -10714,6 +10731,8 @@ function defaultRoot() {
 }
 
 function loadRoot() {
+    /* 完全初期化フラグはFirebaseの自動Google同期だけを止める。
+       ローカルで新しく作ったオフラインユーザーは通常どおり復元する。 */
     try {
         const raw = localStorage.getItem(ROOT_KEY);
         if (raw) {
@@ -17133,15 +17152,33 @@ function executeReset() {
                         }
                     }
                 } catch (e) {}
+                /* ===== 完全初期化：保存データ・セッション・ユーザーを完全に0へ =====
+                   localStorageだけを消すとFirebase Authの自動復元でGoogleユーザーが再生成されるため、
+                   「初期化済み」フラグを最後に残し、明示的なGoogleログインまで自動同期を禁止する。 */
+                try { localStorage.clear(); } catch (e) {}
+                markFactoryResetPending();
+                try { sessionStorage.clear(); } catch (e) {}
                 root = defaultRoot();
-                /* 完全初期化ではユーザー情報も0人にする。
-                   defaultRoot() 自体はすでに users: [] を返すが、
-                   念のため実行直後にも明示して、旧ユーザーが残る経路を防ぐ。 */
                 root.users = [];
                 root.currentUserId = null;
                 root.roleRequests = [];
-                try { localStorage.removeItem(ROOT_KEY); } catch (e) {}
-                try { saveRoot(); } catch (e) {}
+                root.setupCompleted = false;
+                try { localStorage.setItem(ROOT_KEY, JSON.stringify(root)); } catch (e) {}
+
+                /* Firebase Authの永続ログインも終了する。 */
+                try {
+                    if (window.OJWGA_FIREBASE &&
+                        window.OJWGA_FIREBASE.auth &&
+                        window.OJWGA_FIREBASE.auth.currentUser &&
+                        typeof window.OJWGA_FIREBASE.signOut === 'function') {
+                        window.OJWGA_FIREBASE.signOut(window.OJWGA_FIREBASE.auth).catch(function(){});
+                    }
+                } catch (e) {}
+                try { window.__ojwgaFirebaseAuthUser = null; } catch (e) {}
+                try { stopCloudListener(); } catch (e) {}
+                try { window.__ojwgaPendingFirebaseAuthUser = null; } catch (e) {}
+                try { window.__ojwgaPendingGoogleTargetId = null; } catch (e) {}
+
                 applyTheme(); applyFontSize(); applyMotionPrefs();
                 /* 🕒 時計表示も完全にリセットする（デフォルトはオフ） */
                 if (typeof refreshClockWidget === 'function') refreshClockWidget();
@@ -23160,7 +23197,19 @@ document.addEventListener('visibilitychange', () => {
     if (!__pageHidden) __ptLastTickAt = nowMs();
 });
 /* ブラウザを閉じる前に保存 */
-window.addEventListener('beforeunload', () => { try { saveRoot(); } catch(e){} });
+window.addEventListener('beforeunload', () => {
+    try {
+        if (isFactoryResetPending()) {
+            localStorage.setItem(ROOT_KEY, JSON.stringify({
+                currentUserId:null,
+                users:[],
+                roleRequests:[]
+            }));
+        } else {
+            saveRoot();
+        }
+    } catch(e){}
+});
 /* 起動時に夜間ロックと制限をチェック（再読み込みしても同じ画面が表示される） */
 function enforceLockOnStartup() {
     try {
@@ -28812,6 +28861,8 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   if(window.OJWGA_FIREBASE) window.OJWGA_FIREBASE.__ojwgaHandleDeletedCloudUser=handleDeletedCloudUser;
 
   async function syncGoogleAccountCore(fu){
+    /* 完全初期化後、明示ログインが来るまでAuthからGoogleユーザーを再生成しない。 */
+    if(isFactoryResetPending()) return null;
     if(!fu || !firebaseReady() || typeof root==='undefined') return null;
     var u=currentLocalUserByUid(fu.uid);
     var ref=window.OJWGA_FIREBASE.doc(window.OJWGA_FIREBASE.db,'users',fu.uid);
@@ -29084,6 +29135,13 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
 
   // Firebase auth -> OJWGA local/cloud user
   window.ojwgaHandleFirebaseAuthState=async function(fu){
+    /* 完全初期化後の再読み込みでは、Firebase Authの自動復元をOJWGAへ反映しない。 */
+    if(fu && isFactoryResetPending()){
+      try{ stopCloudListener(); }catch(e){}
+      try{ setSyncStatus('idle'); }catch(e){}
+      try{ refreshGoogleCloudUI(); }catch(e){}
+      return;
+    }
     if(!fu && window.__ojwgaGlobalDeleteOwnerUid){
       var deletedUid=String(window.__ojwgaGlobalDeleteOwnerUid);
       try{if(typeof handleDeletedCloudUser==='function') handleDeletedCloudUser(deletedUid,null);}catch(e){}
