@@ -7574,6 +7574,47 @@ function __notifySplashDone(){
 }
 </style>
 
+    <!-- ===== ユーザー消去：説明／警告／処理UI ===== -->
+    <div id="ojwga-delete-user-info-overlay" class="ojwga-delete-user-overlay" aria-hidden="true">
+        <div class="ojwga-delete-user-card">
+            <div class="du-icon">🗑️</div>
+            <div class="du-kicker">USER DELETE</div>
+            <h2 id="du-info-title">このユーザーを消去する</h2>
+            <p id="du-info-text">この操作では、選んだユーザーの名前・パスワード・ポイント・記録・チャレンジ履歴・購入情報などをまとめて消去します。消去したデータは元に戻せません。</p>
+            <div class="du-data-box">
+                <div>消去されるもの</div>
+                <ul><li>ユーザー名・アバター</li><li>ポイント・記録・チャレンジ履歴</li><li>パスワード・認証設定</li><li>ユーザー固有の購入データ</li></ul>
+            </div>
+            <div class="du-actions"><button type="button" class="reset-btn-cancel" onclick="ojwgaDeleteUserInfoCancel()">やめる</button><button type="button" class="reset-btn-danger" onclick="ojwgaDeleteUserWarning1()">内容を確認する</button></div>
+        </div>
+    </div>
+    <div id="ojwga-delete-user-spinner-overlay" class="ojwga-delete-user-overlay" aria-hidden="true">
+        <div class="ojwga-delete-spinner-card">
+            <div class="du-spinner" aria-hidden="true"></div>
+            <div class="du-spinner-title">ユーザーを消去しています…</div>
+            <div class="du-spinner-sub">データを整理しておるぞい。画面を閉じずに待つのじゃ。</div>
+        </div>
+    </div>
+
+    <style id="ojwga-delete-user-ui">
+    .ojwga-delete-user-overlay{position:fixed;inset:0;z-index:12050;display:none;align-items:center;justify-content:center;padding:18px;box-sizing:border-box;background:rgba(7,3,14,.9);backdrop-filter:blur(9px);}
+    .ojwga-delete-user-overlay.show{display:flex;}
+    .ojwga-delete-user-card,.ojwga-delete-spinner-card{width:min(500px,94vw);box-sizing:border-box;border-radius:22px;padding:24px 20px 20px;text-align:center;background:linear-gradient(145deg,rgba(52,23,76,.98),rgba(20,9,38,.99));border:1px solid rgba(255,120,120,.34);box-shadow:0 24px 70px rgba(0,0,0,.55);}
+    .ojwga-delete-user-card .du-icon{font-size:54px;line-height:1;margin-bottom:8px;filter:drop-shadow(0 0 16px rgba(255,80,80,.3));}
+    .ojwga-delete-user-card .du-kicker{font-size:.64rem;letter-spacing:3px;color:#d2b5e8;font-weight:900;margin-bottom:4px;}
+    .ojwga-delete-user-card h2{margin:0 0 12px;color:#fff;font-size:1.3rem;}
+    .ojwga-delete-user-card p{margin:0 auto 14px;max-width:440px;color:#eadff2;font-size:.9rem;line-height:1.75;}
+    .du-data-box{text-align:left;padding:12px 14px;border-radius:14px;background:rgba(255,68,68,.08);border:1px solid rgba(255,130,130,.25);margin:10px 0 16px;color:#ffdada;font-size:.83rem;}
+    .du-data-box>div{font-weight:900;color:#ffb0b0;margin-bottom:5px;}
+    .du-data-box ul{margin:0;padding-left:20px;line-height:1.65;}
+    .du-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+    .du-actions button{min-width:130px;}
+    .du-spinner{width:60px;height:60px;border:6px solid rgba(255,255,255,.16);border-top-color:#ff8a8a;border-right-color:#ffd0d0;border-radius:50%;animation:ojwgaDeleteSpin .8s linear infinite;margin:0 auto 18px;box-sizing:border-box;}
+    @keyframes ojwgaDeleteSpin{to{transform:rotate(360deg)}}
+    .du-spinner-title{font-size:1.06rem;font-weight:900;color:#fff;margin-bottom:7px;}
+    .du-spinner-sub{font-size:.82rem;color:#d6c5df;line-height:1.6;}
+    @media(max-width:480px){.ojwga-delete-user-card,.ojwga-delete-spinner-card{padding:20px 15px 17px}.ojwga-delete-user-card h2{font-size:1.15rem}.ojwga-delete-user-card p{font-size:.84rem}.du-actions button{width:100%;}}
+    </style>
     <!-- ===== ユーザー設定（新UI） ===== -->
     <div id="profile-overlay" class="modal-overlay ojwga-profile-overlay">
         <div class="modal-box ojwga-profile-box">
@@ -7586,7 +7627,7 @@ function __notifySplashDone(){
                     <button class="ojwga-profile-item" type="button" onclick="ojwgaOpenPasswordEditor()"><span class="pi-icon">🔑</span><span class="pi-text"><b id="ojwga-pass-item-title">パスワード</b><small id="ojwga-pass-item-sub">認証方式を変更する</small></span><span class="pi-arrow">›</span></button>
                     <button class="ojwga-profile-item" type="button" onclick="ojwgaShareUser()"><span class="pi-icon">📤</span><span class="pi-text"><b id="ojwga-share-item-title">ユーザーをシェア</b><small id="ojwga-share-item-sub">このユーザーのデータを共有する</small></span><span class="pi-arrow">›</span></button>
                     <button class="ojwga-profile-item" type="button" onclick="ojwgaOpenRoleSettings()"><span class="pi-icon">👑</span><span class="pi-text"><b id="ojwga-role-item-title">ユーザー権限</b><small id="ojwga-role-item-sub">管理ユーザー／通常ユーザーを設定・申請</small></span><span class="pi-arrow">›</span></button>
-                    <button class="ojwga-profile-item danger" type="button" onclick="ojwgaDeleteUser()"><span class="pi-icon">🗑️</span><span class="pi-text"><b id="ojwga-delete-item-title">ユーザーの消去</b><small id="ojwga-delete-item-sub">このユーザーを消去する</small></span><span class="pi-arrow">›</span></button>
+                    <button class="ojwga-profile-item danger" id="ojwga-delete-user-item" type="button" onclick="ojwgaDeleteUser()"><span class="pi-icon">🗑️</span><span class="pi-text"><b id="ojwga-delete-item-title">ユーザーの消去</b><small id="ojwga-delete-item-sub">このユーザーを消去する</small></span><span class="pi-arrow">›</span></button>
                 </div>
                 <button class="reset-btn-cancel ojwga-profile-close" type="button" onclick="closeProfileSettings()" id="ojwga-profile-close">閉じる</button>
             </div>
@@ -7625,16 +7666,15 @@ function __notifySplashDone(){
                     <div class="ojwga-sub-actions"><button class="reset-btn-cancel" type="button" onclick="ojwgaPasswordFormBack()" id="ojwga-password-form-back">戻る</button><button class="challenge-btn" type="button" onclick="ojwgaSavePasswordMethod()" id="ojwga-password-save">保存</button></div>
                 </div>
             </div>
-        </div>
-            <div class="ojwga-profile-subview" id="profile-role-view" style="display:none;">
+<div class="ojwga-profile-subview" id="profile-role-view" style="display:none;">
                 <div class="ojwga-profile-kicker">✦ ROLE ✦</div>
                 <h2 id="ojwga-role-title">👑 ユーザー権限</h2>
                 <div class="ojwga-step-note" id="ojwga-role-msg">権限を確認するぞい。</div>
                 <div id="ojwga-role-request-box" style="display:none;margin:10px 0;"></div>
                 <div id="ojwga-role-manager-box" style="display:none;margin:10px 0;"></div>
                 <div class="ojwga-sub-actions"><button class="reset-btn-cancel" type="button" onclick="ojwgaRoleBack()" id="ojwga-role-back">戻る</button></div>
-            </div>
         </div>
+    </div>
     </div>
 
     
@@ -27229,23 +27269,25 @@ window.openMP=openMP;window.mpHandleDisconnect=mpHandleDisconnect;
     if(next)next.disabled=!ns.length;
   }
   function selected(){
-    return (root.users||[]).filter(u=>BW.ids.indexOf(u.id)>=0 && !(typeof getUserBlockType==='function'&&getUserBlockType(u)));
+    return (root.users||[]).filter(u=>BW.ids.indexOf(u.id)>=0 && !(typeof isManagerUser==='function'&&isManagerUser(u)) && !(typeof getUserBlockType==='function'&&getUserBlockType(u)));
   }
   window.bwSelectAll=function(v){
     BW.ids=[];
-    (root.users||[]).forEach(u=>{if(!(typeof getUserBlockType==='function'&&getUserBlockType(u))&&v)BW.ids.push(u.id);});
+    (root.users||[]).forEach(u=>{if(!(typeof isManagerUser==='function'&&isManagerUser(u))&&!(typeof getUserBlockType==='function'&&getUserBlockType(u))&&v)BW.ids.push(u.id);});
     renderUsers();
   };
   function renderUsers(){
     const list=$('block-user-list'); if(!list)return;
     const en=langEn(); let html='';
     (root.users||[]).forEach(u=>{
+      const isManager=typeof isManagerUser==='function'&&isManagerUser(u);
       const blocked=typeof getUserBlockType==='function'&&getUserBlockType(u);
-      const checked=BW.ids.indexOf(u.id)>=0&&!blocked;
+      const checked=!isManager&&BW.ids.indexOf(u.id)>=0&&!blocked;
       const av=u.avatar&&typeof u.avatar==='string'&&u.avatar.indexOf('data:image')===0?'<img src="'+u.avatar+'" style="width:34px;height:34px;border-radius:50%;object-fit:cover;vertical-align:middle">':'<span style="font-size:1.55rem;vertical-align:middle">'+(u.avatar||'👤')+'</span>';
-      const status=blocked?'<span style="color:#ffb6bd;font-size:.74rem;margin-left:6px">'+(typeof blockTypeLabel==='function'?blockTypeLabel(getUserBlockType(u),en):'🚫 ブロック中')+'</span>':'';
-      html+='<label class="pick-row" style="display:flex;align-items:center;gap:8px;padding:9px;border:1px solid rgba(255,255,255,.1);border-radius:10px;margin:5px 0;cursor:'+(blocked?'not-allowed':'pointer')+';opacity:'+(blocked?'.55':'1')+'">'+
-        '<input type="checkbox" '+(checked?'checked ':'')+(blocked?'disabled ':'')+' data-bw-uid="'+u.id+'">'+
+      const status=isManager?'<span style="color:#d9b7ff;font-size:.74rem;margin-left:6px">👑 管理ユーザーはブロック不可</span>':(blocked?'<span style="color:#ffb6bd;font-size:.74rem;margin-left:6px">'+(typeof blockTypeLabel==='function'?blockTypeLabel(getUserBlockType(u),en):'🚫 ブロック中')+'</span>':'');
+      const disabled=isManager||blocked;
+      html+='<label class="pick-row" style="display:flex;align-items:center;gap:8px;padding:9px;border:1px solid rgba(255,255,255,.1);border-radius:10px;margin:5px 0;cursor:'+(disabled?'not-allowed':'pointer')+';opacity:'+(disabled?'.58':'1')+'">'+
+        '<input type="checkbox" '+(checked?'checked ':'')+(disabled?'disabled ':'')+' data-bw-uid="'+u.id+'">'+
         '<span style="flex:1;min-width:0"><b>'+escapeHtml(u.name||'(名無し)')+'</b>'+status+'</span>'+av+'</label>';
     });
     list.innerHTML=html;
@@ -27321,6 +27363,7 @@ window.openMP=openMP;window.mpHandleDisconnect=mpHandleDisconnect;
     if(BW.type==='temporary')show(3);else show(2);
   };
   window.bwApply=function(){
+    if(typeof isManagerUser==='function' && !isManagerUser(typeof getCurrentUser==='function'?getCurrentUser():null)){ closeBlockUserPicker(); return; }
     const targets=selected(); if(!targets.length){closeBlockUserPicker();return;}
     const type=BW.type;
     const ov=$('block-wizard-overlay');
@@ -27351,6 +27394,7 @@ window.openMP=openMP;window.mpHandleDisconnect=mpHandleDisconnect;
     }catch(e){}
   };
   window.openBlockUserPicker=function(){
+    if(typeof requireManagerUser==='function'&&!requireManagerUser('ユーザーブロックは管理ユーザーだけができます。','Only a management user can manage blocks.')) return;
     const proceed=function(){
       if(!root.users||!root.users.length){speak('ユーザーがおらんぞ。','There are no users.');return;}
       BW.step=1;BW.ids=[];BW.type='temporary';BW.duration={years:0,months:0,days:0,hours:0,minutes:10,seconds:0};
@@ -27814,7 +27858,49 @@ function renderProfilePasswordForm(){var f=byId('ojwga-profile-password-form'),k
 window.ojwgaSavePasswordMethod=function(){var u=getCurrentUser(),k=currentProfileMethod;if(!u)return;normalizeSecurityUser(u);if(k==='password'||k==='pin'){var a=byId('ojwga-prof-p1'),b=byId('ojwga-prof-p2'),v=a?a.value:'',v2=b?b.value:'';if(k==='password'&&v.length<6){safeAlert('6文字以上にするのじゃ。','Use at least 6 characters.');return;}if(k==='pin'&&!/^\d{4,10}$/.test(v)){safeAlert('暗証番号は4〜10桁の数字じゃ。','PIN must be 4–10 digits.');return;}if(v!==v2){safeAlert('2回とも同じにするのじゃ。','The two entries do not match.');return;}u.passwordMethod=k;u.password=v;u.passwordPattern=[];u.deviceCredentialId='';resetSecurityFailures(u);saveRoot();ojwgaProfileBack();safeSpeak('パスワード方式を変えたぞい。','Authentication method updated.');return;}if(k==='pattern'){if(!profilePendingPattern||profilePendingPattern.length<4||profilePendingPattern._confirmed!==true){safeAlert('パターンを2回、同じようにつなぐのじゃ。','Draw the same pattern twice.');return;}u.passwordMethod='pattern';u.password='';u.passwordPattern=profilePendingPattern.slice();u.deviceCredentialId='';resetSecurityFailures(u);saveRoot();ojwgaProfileBack();safeSpeak('パターンを登録したぞい。','Pattern saved.');return;}if(k==='device'){if(!profilePendingPattern._deviceId){safeAlert('端末ロックの登録と確認をしておくれ。','Register and verify the device lock first.');return;}u.passwordMethod='device';u.password='';u.passwordPattern=[];u.deviceCredentialId=profilePendingPattern._deviceId;resetSecurityFailures(u);saveRoot();profilePendingPattern=[];ojwgaProfileBack();safeSpeak('端末ロックを使うぞい。','Device lock is now active.');}};
 window.ojwgaProfileBack=function(){byId('profile-name-view').style.display='none';byId('profile-password-view').style.display='none';byId('profile-main-view').style.display='flex';};
 window.ojwgaShareUser=async function(){var u=getCurrentUser();if(!u)return;var payload={type:'OJWGA_USER_SHARE',version:1,name:u.name||'',avatar:(u.avatar&&String(u.avatar).startsWith('data:image'))?'':(u.avatar||''),theme:u.theme||'purple',data:u.data||{}};var text=JSON.stringify(payload,null,2);var en=langEn();try{if(navigator.share){await navigator.share({title:'OJWGA User',text:text});safeSpeak('ユーザーをシェアしたぞい。','User shared.');return;}if(navigator.clipboard){await navigator.clipboard.writeText(text);await safeAlert('ユーザーデータをコピーしたぞい。','User data copied to the clipboard.');return;}}catch(e){}try{var blob=new Blob([text],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ojwga_user_'+String(u.name||'user').replace(/[^a-zA-Z0-9_-]/g,'_')+'.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);safeSpeak('ユーザーデータを書き出したぞい。','User data exported.');}catch(e){await safeAlert('シェアできんかったぞい。','Could not share the user data.');}};
-window.ojwgaDeleteUser=async function(){var u=getCurrentUser();if(!u)return;if((root.users||[]).length<=1){await safeAlert('最後の1人は消せんぞい。','The last user cannot be deleted.');return;}var ok=await safeConfirm('「'+(u.name||'このユーザー')+'」を消してしまうぞい。本当によいかい？','Delete “'+(u.name||'this user')+'”? This cannot be undone.');if(!ok)return;var idx=(root.users||[]).findIndex(function(x){return x.id===u.id;});if(idx>=0)root.users.splice(idx,1);root.currentUserId=(root.users[0]&&root.users[0].id)||null;saveRoot();closeProfileSettings();window.__startupUserGate=true;try{document.body.classList.add('startup-user-gate');}catch(e){}safeSpeak('ユーザーを消したぞい。','User deleted.');setTimeout(function(){try{location.reload();}catch(e){}} ,250);};
+window.ojwgaDeleteUserInfoCancel=function(){var o=byId('ojwga-delete-user-info-overlay');if(o){o.classList.remove('show');o.setAttribute('aria-hidden','true');}};
+window.ojwgaDeleteUser=function(){
+  var u=getCurrentUser();
+  if(!u)return;
+  var o=byId('ojwga-delete-user-info-overlay');if(!o)return;
+  var title=byId('du-info-title'),txt=byId('du-info-text');
+  if(title)title.textContent='「'+(u.name||'このユーザー')+'」を消去する';
+  if(txt)txt.textContent='この操作では「'+(u.name||'このユーザー')+'」の名前・パスワード・ポイント・記録・チャレンジ履歴・購入情報などをまとめて消去します。消去したデータは元に戻せません。';
+  o.classList.add('show');o.setAttribute('aria-hidden','false');
+  try{safeSpeak('消去するユーザーの説明じゃ。内容をよく確認するのじゃ。','Here is what will be deleted. Review it carefully.');}catch(e){}
+};
+window.ojwgaDeleteUserWarning1=async function(){
+  var u=getCurrentUser();if(!u)return;
+  var ok=await safeConfirm('⚠️ 1回目の警告じゃ。\n「'+(u.name||'このユーザー')+'」を消すと、ポイント・記録・パスワードなどがすべて失われるぞい。\n本当に続けるかい？','⚠️ First warning. Deleting “'+(u.name||'this user')+'” removes its points, records, password and more. Continue?');
+  if(!ok)return;
+  await ojwgaDeleteUserWarning2();
+};
+window.ojwgaDeleteUserWarning2=async function(){
+  var u=getCurrentUser();if(!u)return;
+  var ok=await safeConfirm('🚨 2回目・最終警告じゃ。\n「'+(u.name||'このユーザー')+'」は、このあと永久に消去されるぞい。\nこの操作は取り消せん。本当に「消去する」のかい？','🚨 Second and final warning. “'+(u.name||'this user')+'” will be permanently deleted. This cannot be undone. Continue?');
+  if(!ok)return;
+  ojwgaPerformDeleteUser();
+};
+window.ojwgaPerformDeleteUser=function(){
+  var u=getCurrentUser();if(!u)return;
+  ojwgaDeleteUserInfoCancel();
+  var spin=byId('ojwga-delete-user-spinner-overlay');if(spin){spin.classList.add('show');spin.setAttribute('aria-hidden','false');}
+  try{safeSpeak('消去を開始するぞい。くるくる回っておる間、少し待つのじゃ。','Deletion has started. Please wait while it finishes.');}catch(e){}
+  setTimeout(function(){
+    var idx=(root.users||[]).findIndex(function(x){return x.id===u.id;});
+    if(idx>=0)root.users.splice(idx,1);
+    root.currentUserId=(root.users[0]&&root.users[0].id)||null;
+    // 最後のユーザーを消した場合は、次回起動時に初期設定へ戻す
+    if((root.users||[]).length===0){
+      root.currentUserId=null;
+      try{root.setupCompleted=false;}catch(e){}
+    }
+    saveRoot();
+    window.__startupUserGate=true;
+    try{document.body.classList.add('startup-user-gate');}catch(e){}
+    setTimeout(function(){try{location.reload();}catch(e){location.href=location.href;}},250);
+  },1500);
+};
 window.closeProfileSettings=function(){var el=byId('profile-overlay');if(el)el.classList.remove('show');};
 
 /* Apply labels on language changes and keep startup user-select gate intact. */
@@ -27976,6 +28062,18 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
 #profile-role-view .role-user-card{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;margin:8px 0;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(255,255,255,.045)}
 #profile-role-view .role-user-meta{min-width:0;flex:1}.role-user-name{font-weight:800}.role-user-sub{font-size:.74rem;color:#bfaed0;margin-top:3px}.role-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.role-actions button,.role-request-btn{border:0;border-radius:9px;padding:8px 10px;font-weight:800;cursor:pointer;color:#fff;background:linear-gradient(135deg,#7d3cb5,#4d2b75)}
 .role-actions button.danger{background:linear-gradient(135deg,#c0392b,#7b1f18)}.role-actions button:disabled{opacity:.45;cursor:not-allowed}.role-pending{color:#ffd37d;font-weight:800;font-size:.75rem}.role-ok{color:#8fe5ad;font-weight:800;font-size:.75rem}.role-denied{color:#ff9c9c;font-weight:800;font-size:.75rem}
+#profile-overlay #profile-role-view{gap:8px;}
+#profile-overlay #ojwga-role-msg{margin:0 0 2px;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.045);border:1px solid rgba(199,125,255,.18);color:#d9cae8;line-height:1.5;font-size:.78rem;}
+#profile-overlay #ojwga-role-request-box,#profile-overlay #ojwga-role-manager-box{margin:0 !important;}
+#profile-overlay #ojwga-role-request-box>div,#profile-overlay #ojwga-role-manager-box>div{background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.025)) !important;border-color:rgba(199,125,255,.20) !important;box-shadow:0 6px 18px rgba(0,0,0,.16);}
+#profile-overlay .role-user-card{padding:10px 11px;border-radius:12px;background:rgba(255,255,255,.045);border-color:rgba(199,125,255,.16);}
+#profile-overlay .role-user-meta{overflow:hidden;}
+#profile-overlay .role-user-name{font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#profile-overlay .role-user-sub{font-size:.7rem;white-space:normal;}
+#profile-overlay .role-actions{flex:0 0 auto;}
+#profile-overlay .role-actions button,#profile-overlay .role-request-btn{min-height:40px;padding:8px 10px;border-radius:10px;font-size:.72rem;}
+#profile-overlay #ojwga-role-back{min-height:44px;}
+@media(max-width:420px){#profile-overlay .role-user-card{align-items:flex-start;flex-direction:column;}#profile-overlay .role-actions{width:100%;display:grid;grid-template-columns:1fr 1fr;}#profile-overlay .role-actions button{width:100%;}}
 </style>
 <script id="ojwga-role-settings-js">
 (function(){
