@@ -18563,7 +18563,14 @@ function renderUserList() {
         listEl.innerHTML = '<div style="color:#cdb8e8;font-size:0.85rem;padding:14px;">' + emptyMsg + '</div>';
         return;
     }
-    root.users.forEach(u => {
+    /* Googleユーザーは現在ログイン中のFirebase UIDだけをユーザー選択へ表示。
+       ログアウト済みのGoogleユーザーのローカル影レコードは一覧に出さない。
+       再ログインすればFirestoreから再取得・再作成される。 */
+    const __activeFirebaseUid = (window.__ojwgaFirebaseAuthUser && window.__ojwgaFirebaseAuthUser.uid) ? String(window.__ojwgaFirebaseAuthUser.uid) : '';
+    root.users.filter(function(u){
+        if (!u || u.authType !== 'google') return true;
+        return !!__activeFirebaseUid && String(u.firebaseUid || '') === __activeFirebaseUid;
+    }).forEach(u => {
         const item = document.createElement('div');
         item.className = 'user-item' + (u.id === root.currentUserId ? ' current' : '');
         item.dataset.userId = u.id;
@@ -29099,6 +29106,16 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
 
   // Firebase auth -> OJWGA local/cloud user
   window.ojwgaHandleFirebaseAuthState=async function(fu){
+    if(!fu){
+      /* Firebaseが外部要因でサインアウトした場合も、端末のGoogle影ユーザーを一覧から除去する。
+         クラウドFirestoreデータは削除しない。 */
+      try{
+        var current=(typeof getCurrentUser==='function')?getCurrentUser():null;
+        if(current && current.authType==='google' && current.firebaseUid){
+          removeGoogleShadowAfterLogout(current.firebaseUid);
+        }
+      }catch(e){}
+    }
     if(!fu){ stopCloudListener(); setSyncStatus('idle'); refreshGoogleCloudUI(); return; }
     try{
       var u=await syncGoogleAccount(fu);
@@ -29188,14 +29205,10 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   };
 
   window.ojwgaLogoutGoogleAndSwitchAway=async function(){
-    var ok=await window.ojwgaLogoutGoogle();
+    var ok=await logoutGoogleWithCleanup();
     if(!ok)return false;
-    stopCloudListener();
-    var u=(typeof getCurrentUser==='function')?getCurrentUser():null;
-    if(u && u.authType==='google'){
-      window.__startupUserGate=true;
-      try{document.body.classList.add('startup-user-gate');openUserSwitcher(true);}catch(e){}
-    }
+    window.__startupUserGate=true;
+    try{document.body.classList.add('startup-user-gate');openUserSwitcher(true);}catch(e){}
     return true;
   };
 
@@ -29244,9 +29257,8 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
       out._bound=true;
       out.onclick=async function(){
         out.disabled=true;
-        await window.ojwgaLogoutGoogleAndSwitchAway();
-        out.disabled=false;
-        refreshGoogleCloudUI();
+        try{ await window.ojwgaLogoutGoogleAndSwitchAway(); }
+        finally{ out.disabled=false; refreshGoogleCloudUI(); }
       };
     }
     refreshGoogleCloudUI();
@@ -29834,23 +29846,72 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
       }
     }catch(e){console.warn('[OJWGA v17] login failed',e);safeAlert('Googleログインに失敗しました。','Google sign-in failed.');}
   };
-  window.ojwgaV17LogoutGoogle=async function(){
-    if(state.deleteBusy)return;
-    var ok=await window.ojwgaLogoutGoogle();
-    if(!ok){safeAlert('ログアウトに失敗しました。','Sign-out failed.');return;}
-    var u=getU();
+  /* ===== Googleログアウト：確認→Firebase signOut→端末のGoogleユーザー影レコード削除 ===== */
+  async function confirmGoogleLogout(){
     try{
-      // Keep the local shadow record, but prevent it from being auto-selected.
-      if(u && isGoogleUser(u)){
-        var alt=(root.users||[]).find(function(x){return x && !isGoogleUser(x) && x.id!==u.id;});
-        root.currentUserId=alt?alt.id:null;
-        saveRoot();
+      var fu=currentFirebaseUser();
+      var name=(fu&&fu.displayName)?String(fu.displayName):'Googleユーザー';
+      if(typeof oijConfirm==='function'){
+        return !!(await oijConfirm('Googleアカウントからログアウトしますか？\n「'+name+'」をログアウトすると、この端末のユーザー選択からGoogleユーザーを外します。\nオンラインのポイント・実績などのデータは消えません。'));
       }
-    }catch(e){}
+      return window.confirm ? window.confirm('Googleアカウントからログアウトしますか？\nオンラインデータは消えません。') : true;
+    }catch(e){ return false; }
+  }
+  function removeGoogleShadowAfterLogout(uid){
+    try{
+      uid=String(uid||'');
+      if(!uid || !root || !Array.isArray(root.users)) return;
+      var removed=[];
+      root.users.forEach(function(u){
+        if(u && u.authType==='google' && String(u.firebaseUid||'')===uid) removed.push(u);
+      });
+      root.users=root.users.filter(function(u){
+        return !(u && u.authType==='google' && String(u.firebaseUid||'')===uid);
+      });
+      /* 古い不具合で id にUIDを入れていた影レコードも同時に掃除 */
+      root.users=root.users.filter(function(u){
+        if(!u || u.authType!=='google') return true;
+        return String(u.id||'')!==uid;
+      });
+      var curId=root.currentUserId;
+      if(removed.some(function(u){return u && u.id===curId;}) || (curId && String(curId)===uid)){
+        var fallback=root.users.find(function(u){return u && u.authType!=='google';});
+        root.currentUserId=fallback?fallback.id:null;
+      }
+      saveRoot();
+      try{ renderUserList(); }catch(e){}
+      try{ refreshHome(); }catch(e){}
+    }catch(e){ console.warn('[OJWGA] local Google shadow cleanup failed',e); }
+  }
+  async function logoutGoogleWithCleanup(){
+    var fu=currentFirebaseUser();
+    var uid=fu&&fu.uid ? String(fu.uid) : '';
+    if(!(await confirmGoogleLogout())) return false;
+    var ok=await window.ojwgaLogoutGoogle();
+    if(!ok) return false;
+    stopCloudListener();
+    if(uid) removeGoogleShadowAfterLogout(uid);
+    window.__ojwgaPendingGoogleTargetId=null;
+    window.__ojwgaPendingFirebaseAuthUser=null;
+    window.__ojwgaOnboardGoogleUserId=null;
+    window.__ojwgaOnboardGoogleUser=null;
+    try{ MP.onlineProfile=null; }catch(e){}
+    try{ if(typeof syncOnlineProfile==='function') syncOnlineProfile(); }catch(e){}
+    try{ refreshGoogleCloudUI(); }catch(e){}
+    return true;
+  }
+  window.ojwgaConfirmGoogleLogout=confirmGoogleLogout;
+  window.ojwgaLogoutGoogleWithCleanup=logoutGoogleWithCleanup;
+
+  window.ojwgaV17LogoutGoogle=async function(){
+    if(state.deleteBusy)return false;
+    var ok=await logoutGoogleWithCleanup();
+    if(!ok)return false;
     renderOnlineAccountPanel();
     renderProfileMode();
     try{closeProfileSettings();}catch(e){}
     try{openUserSwitcher(true);}catch(e){}
+    return true;
   };
 
   // Full cloud+Auth account deletion. Firestore main user doc is deleted before Auth delete.
