@@ -5917,6 +5917,12 @@ body.startup-user-gate #userswitch-overlay #userswitch-startup-exit-btn { displa
 .ojwga-method-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:13px;border-radius:14px;border:1px solid rgba(178,119,255,.35);background:rgba(95,47,137,.15);color:#fff;cursor:pointer;text-align:left;min-height:92px;box-sizing:border-box}
 .ojwga-method-card.active{border-color:#ffd000;box-shadow:0 0 0 2px rgba(255,208,0,.18);background:rgba(104,63,154,.28)}
 .ojwga-method-card .method-num{font-size:.73rem;color:#d8b4ff;font-weight:900;letter-spacing:.06em}.ojwga-method-card .method-title{font-weight:900;font-size:.9rem}.ojwga-method-card .method-desc{font-size:.72rem;line-height:1.35;color:#cbbbdc}
+.ojwga-method-card.ojwga-method-none{border-color:rgba(255,180,80,.5);background:linear-gradient(145deg,rgba(160,88,28,.18),rgba(75,34,12,.28));}
+.ojwga-method-card.ojwga-method-none .method-title{color:#ffd58a}.ojwga-method-card.ojwga-method-none .method-desc{color:#e3c39a}
+#ojwga-none-password-confirm{position:fixed;inset:0;z-index:2147483600;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(5,2,12,.86);backdrop-filter:blur(8px)}
+#ojwga-none-password-confirm.show{display:flex}
+.ojwga-none-confirm-card{width:min(430px,94vw);padding:24px 20px 18px;border-radius:20px;background:linear-gradient(155deg,#32184d,#170b29);border:2px solid rgba(255,180,80,.55);box-shadow:0 20px 70px rgba(0,0,0,.55);text-align:center;color:#fff}
+.ojwga-none-confirm-icon{font-size:48px;margin-bottom:6px}.ojwga-none-confirm-card h2{margin:0 0 10px;font-size:1.22rem;color:#ffd58a}.ojwga-none-confirm-card p{margin:0;color:#eadcf2;line-height:1.7;font-size:.9rem;white-space:pre-line}.ojwga-none-confirm-warning{margin:12px 0;padding:10px 12px;border-radius:12px;background:rgba(255,115,60,.12);border:1px solid rgba(255,145,90,.35);color:#ffd1ba;font-size:.8rem;line-height:1.55}.ojwga-none-confirm-actions{display:flex;gap:10px;margin-top:16px}.ojwga-none-confirm-actions button{flex:1;min-height:46px;padding:10px 12px;border-radius:12px;border:0;font-weight:900;font-size:.9rem;cursor:pointer}.ojwga-none-confirm-cancel{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16)!important;color:#fff}.ojwga-none-confirm-ok{background:linear-gradient(135deg,#e67e22,#b64d12);color:#fff;box-shadow:0 5px 0 #74300d}
 .ojwga-security-icon{text-align:center;font-size:44px;margin:2px 0 6px}
 .ojwga-auth-method-ui{margin:8px 0 4px}.ojwga-auth-method-ui .auth-method-title{text-align:center;color:#fff;font-weight:900;margin-bottom:8px}.ojwga-auth-action{width:100%;margin-top:10px}
 .ojwga-password-fields{display:flex;flex-direction:column;gap:9px}.ojwga-password-fields input{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(200,150,255,.35);background:rgba(0,0,0,.25);color:#fff;box-sizing:border-box;font-size:1rem;text-align:left}
@@ -27798,7 +27804,8 @@ var METHOD_DEFS={
   password:{ja:{title:'普通のパスワード',desc:'6文字以上'},en:{title:'Password',desc:'6+ characters'},icon:'🔤'},
   pin:{ja:{title:'暗証番号',desc:'4〜10桁の数字'},en:{title:'PIN',desc:'4–10 digits'},icon:'🔢'},
   pattern:{ja:{title:'パターン',desc:'3×3・4点以上'},en:{title:'Pattern',desc:'3×3 · 4+ dots'},icon:'🔴'},
-  device:{ja:{title:'端末の画面ロック',desc:'スマホ/PCの画面ロック'},en:{title:'Device screen lock',desc:'Phone / PC lock'},icon:'📱'}
+  device:{ja:{title:'端末の画面ロック',desc:'スマホ/PCの画面ロック'},en:{title:'Device screen lock',desc:'Phone / PC lock'},icon:'📱'},
+  none:{ja:{title:'パスワードなしで進む',desc:'認証なしでこのユーザーを開く'},en:{title:'Continue without a password',desc:'Open this user without authentication'},icon:'🔓'}
 };
 var currentProfileMethod='password';
 var profilePendingPattern=[];
@@ -27900,7 +27907,7 @@ function createPatternPad(container,mode,onDone,initial){
 function patternText(seq){return (seq||[]).join('-');}
 function samePattern(a,b){return Array.isArray(a)&&Array.isArray(b)&&a.length===b.length&&a.every(function(v,i){return v===b[i];});}
 
-function renderMethodCards(containerId,selected,onSelect){var g=byId(containerId);if(!g)return;g.innerHTML='';var en=langEn();['password','pin','pattern','device'].forEach(function(k,i){var d=METHOD_DEFS[k][en?'en':'ja'];var b=document.createElement('button');b.type='button';b.className='ojwga-method-card'+(selected===k?' active':'');b.innerHTML='<span class="method-num">'+(i+1)+'</span><span class="method-title">'+METHOD_DEFS[k].icon+' '+d.title+'</span><span class="method-desc">'+d.desc+'</span>';b.onclick=function(){onSelect(k);};g.appendChild(b);});}
+function renderMethodCards(containerId,selected,onSelect,includeNone){var g=byId(containerId);if(!g)return;g.innerHTML='';var en=langEn();var keys=['password','pin','pattern','device'];if(includeNone)keys.push('none');keys.forEach(function(k,i){var d=METHOD_DEFS[k][en?'en':'ja'];var b=document.createElement('button');b.type='button';b.className='ojwga-method-card'+(selected===k?' active':'')+(k==='none'?' ojwga-method-none':'');b.innerHTML='<span class="method-num">'+(i+1)+'</span><span class="method-title">'+METHOD_DEFS[k].icon+' '+d.title+'</span><span class="method-desc">'+d.desc+'</span>';b.onclick=function(){onSelect(k);};g.appendChild(b);});}
 
 /* ===== Onboarding ===== */
 var origStartOnboarding=window.startOnboarding;
@@ -27916,7 +27923,7 @@ window.startOnboarding=function(){
   safeSpeak('ヒッヒッヒ。まず言語を選ぶのじゃ。','Hee hee. First, choose your language.');
 };
 window.onboardMainIndex=function(stepKey){if(stepKey==='password-method'||stepKey==='password')return ONBOARD_MAIN_STEPS.indexOf('user');if(stepKey==='clock-design')return ONBOARD_MAIN_STEPS.indexOf('clock');if(stepKey.indexOf('parental')===0)return ONBOARD_MAIN_STEPS.indexOf('parental');var idx=ONBOARD_MAIN_STEPS.indexOf(stepKey);return idx===-1?0:idx;};
-window.onboardCreateUser=function(){var name=(byId('onb-name-input')&&byId('onb-name-input').value.trim())||'';if(!name){safeAlert('名前を入れてほしいのじゃ。','Please enter a name.');safeSpeak('名前を入れてほしいのじゃ。','Please enter a name.');return;}onboardData.name=name;onboardGoto('password-method');safeSpeak('次はパスワードの方法を選ぶのじゃ。','Next, choose an authentication method.');renderMethodCards('ojwga-onb-method-grid',onboardData.passwordMethod,ojwgaChooseOnboardMethod);};
+window.onboardCreateUser=function(){var name=(byId('onb-name-input')&&byId('onb-name-input').value.trim())||'';if(!name){safeAlert('名前を入れてほしいのじゃ。','Please enter a name.');safeSpeak('名前を入れてほしいのじゃ。','Please enter a name.');return;}onboardData.name=name;onboardGoto('password-method');safeSpeak('次はパスワードの方法を選ぶのじゃ。','Next, choose an authentication method.');renderMethodCards('ojwga-onb-method-grid',onboardData.passwordMethod,ojwgaChooseOnboardMethod,true);};
 function renderOnboardPasswordForm(){
   var k=onboardData.passwordMethod||'password',en=langEn(),title=byId('ojwga-onb-password-title'),msg=byId('ojwga-onb-password-msg'),form=byId('ojwga-onb-password-form');if(!form)return;form.innerHTML='';byId('ojwga-onb-password-icon').textContent=METHOD_DEFS[k].icon;
   title.textContent=en?({password:'Set your password',pin:'Set your PIN',pattern:'Set your pattern',device:'Set device screen lock'}[k]):({password:'パスワードを決めるのじゃ',pin:'暗証番号を決めるのじゃ',pattern:'パターンを決めるのじゃ',device:'端末の画面ロックを登録するのじゃ'}[k]);
@@ -27933,9 +27940,44 @@ function renderOnboardPasswordForm(){
     var b=document.createElement('button');b.type='button';b.className='challenge-btn ojwga-auth-action';b.textContent=en?'Register device lock':'端末ロックを登録';b.onclick=async function(){if(webauthnBusy)return;var id=await registerDeviceCredential(onboardData.name);if(id){onboardData.deviceCredentialId=id;safeSpeak('よし、端末ロックを登録したぞい。もう一度確認するのじゃ。','Device lock registered. Let us confirm it once more.');var ok=await authenticateDeviceCredential(id);if(ok){onboardData.deviceCredentialVerified=true;safeSpeak('確認もできたぞい。','Verification complete.');}}};form.appendChild(box);form.appendChild(b);onboardData.deviceCredentialVerified=false;
   }
 }
-function ojwgaChooseOnboardMethod(k){onboardData.passwordMethod=k;renderMethodCards('ojwga-onb-method-grid',k,ojwgaChooseOnboardMethod);onboardGoto('password');renderOnboardPasswordForm();}
+function ojwgaEnsureNoPasswordConfirm(){
+  var ov=byId('ojwga-none-password-confirm');if(ov)return ov;
+  ov=document.createElement('div');ov.id='ojwga-none-password-confirm';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');
+  ov.innerHTML='<div class="ojwga-none-confirm-card">'+
+    '<div class="ojwga-none-confirm-icon">🔓</div>'+
+    '<h2 id="ojwga-none-confirm-title"></h2>'+
+    '<p id="ojwga-none-confirm-text"></p>'+
+    '<div class="ojwga-none-confirm-warning" id="ojwga-none-confirm-warning"></div>'+
+    '<div class="ojwga-none-confirm-actions">'+
+      '<button type="button" class="ojwga-none-confirm-cancel" id="ojwga-none-confirm-cancel"></button>'+
+      '<button type="button" class="ojwga-none-confirm-ok" id="ojwga-none-confirm-ok"></button>'+
+    '</div>'+
+  '</div>';
+  document.body.appendChild(ov);
+  byId('ojwga-none-confirm-cancel').onclick=function(){ov.classList.remove('show');safeSpeak(tr('やめて、認証方式の選択に戻るぞい。','Cancelled. Back to authentication method selection.'));};
+  byId('ojwga-none-confirm-ok').onclick=function(){
+    onboardData.passwordMethod='none';onboardData.password='';onboardData.passwordPattern=[];onboardData.deviceCredentialId='';onboardData.deviceCredentialVerified=false;
+    ov.classList.remove('show');renderMethodCards('ojwga-onb-method-grid','none',ojwgaChooseOnboardMethod,true);onboardGoto('music');
+    safeSpeak(tr('確認したぞい。パスワードなしで進むぞい。','Confirmed. Continuing without a password.'),tr('Confirmed. Continuing without a password.','Confirmed. Continuing without a password.'));
+  };
+  return ov;
+}
+function ojwgaShowNoPasswordConfirm(){
+  var ov=ojwgaEnsureNoPasswordConfirm(),en=langEn();
+  byId('ojwga-none-confirm-title').textContent=en?'Continue without a password?':'パスワードなしで進むかい？';
+  byId('ojwga-none-confirm-text').textContent=en?'You are choosing to open this user without a password or other OJWGA authentication.':'このユーザーにはパスワード・暗証番号・パターン・端末ロックを設定せず、そのまま開くようにするぞい。';
+  byId('ojwga-none-confirm-warning').textContent=en?'Anyone who can open this app on this device may be able to enter this user without authentication.':'この端末でゲームを開ける人は、このユーザーに認証なしで入れるようになるぞい。よく確認するのじゃ。';
+  byId('ojwga-none-confirm-cancel').textContent=en?'Back':'もどる';
+  byId('ojwga-none-confirm-ok').textContent=en?'Continue without password':'パスワードなしで進む';
+  ov.classList.add('show');
+  safeSpeak(tr('パスワードなしで進む設定じゃ。本当によいかい？','You chose to continue without a password. Are you sure?'));
+}
+function ojwgaChooseOnboardMethod(k){
+  if(k==='none'){ojwgaShowNoPasswordConfirm();return;}
+  onboardData.passwordMethod=k;renderMethodCards('ojwga-onb-method-grid',k,ojwgaChooseOnboardMethod,true);onboardGoto('password');renderOnboardPasswordForm();
+}
 window.ojwgaOnboardPasswordNext=function(){var k=onboardData.passwordMethod;if(k==='password'||k==='pin'){var a=byId('ojwga-onb-p1'),b=byId('ojwga-onb-p2'),v1=a?a.value:'',v2=b?b.value:'';if(k==='password'&&v1.length<6){safeAlert('6文字以上にするのじゃ。','Use at least 6 characters.');return;}if(k==='pin'&&(!/^\d{4,10}$/.test(v1))){safeAlert('暗証番号は4〜10桁の数字じゃ。','PIN must be 4–10 digits.');return;}if(v1!==v2){safeAlert('2回とも同じにするのじゃ。','The two entries do not match.');return;}onboardData.password=v1;onboardData.passwordPattern=[];onboardData.deviceCredentialId='';onboardGoto('music');safeSpeak('よし、認証方式は決まったぞい。','Good. Your authentication method is set.');return;}if(k==='pattern'){if(!onboardPendingPattern||onboardPendingPattern.length<4){safeAlert('まず4点以上つなぐのじゃ。','Connect at least 4 points first.');return;}var p2=onboardData.passwordPattern2||[];if(!samePattern(onboardPendingPattern,p2)){safeAlert('パターンが違うぞい。もう一度じゃ。','The patterns do not match. Try again.');return;}onboardData.password='';onboardData.passwordPattern=onboardPendingPattern.slice();onboardGoto('music');safeSpeak('パターンを覚えたぞい。','Pattern saved.');return;}if(k==='device'){if(!onboardData.deviceCredentialId||!onboardData.deviceCredentialVerified){safeAlert('端末ロックの登録と確認をしておくれ。','Register and verify the device lock first.');return;}onboardData.password='';onboardData.passwordPattern=[];onboardGoto('music');safeSpeak('端末ロックを使うぞい。','Device lock will be used.');}};
-window.showOnboardStepKey=(function(orig){return function(key){orig(key);if(key==='password-method'){renderMethodCards('ojwga-onb-method-grid',onboardData.passwordMethod,ojwgaChooseOnboardMethod);}if(key==='password')renderOnboardPasswordForm();};})(window.showOnboardStepKey);
+window.showOnboardStepKey=(function(orig){return function(key){orig(key);if(key==='password-method'){renderMethodCards('ojwga-onb-method-grid',onboardData.passwordMethod,ojwgaChooseOnboardMethod,true);}if(key==='password')renderOnboardPasswordForm();};})(window.showOnboardStepKey);
 window.onboardFinish=(function(orig){return function(){try{if(onboardData.passwordMethod!=='device' && onboardData.passwordMethod!=='pattern'){}orig();var u=getCurrentUser();if(u){normalizeSecurityUser(u);u.passwordMethod=onboardData.passwordMethod||'password';u.password=onboardData.password||'';u.passwordPattern=Array.isArray(onboardData.passwordPattern)?onboardData.passwordPattern.slice():[];u.deviceCredentialId=onboardData.deviceCredentialId||'';u.wrongCount=0;u.lockUntil=0;u.isTotallyLocked=false;saveRoot();}}catch(e){console.error(e);}}})(origOnboardFinish);
 
 /* ===== Device / WebAuthn ===== */
@@ -30103,7 +30145,7 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
       if(stateEl){stateEl.style.display='block';stateEl.textContent='✅ Googleログイン済み：'+onboardData.name+'\n続けて認証方式を選ぶのじゃ。';}
       /* Googleログイン直後も、通常の初期設定と同じ4種類の認証方式へ進む。 */
       onboardGoto('password-method');
-      renderMethodCards('ojwga-onb-method-grid',onboardData.passwordMethod,ojwgaChooseOnboardMethod);
+      renderMethodCards('ojwga-onb-method-grid',onboardData.passwordMethod,ojwgaChooseOnboardMethod,true);
       safeSpeak('Googleアカウントの設定は完了じゃ。次は認証方式を4つから選ぶのじゃ。','Google account setup is complete. Now choose one of four authentication methods.');
     }catch(e){
       console.warn('[OJWGA v17] onboarding google login failed',e);
