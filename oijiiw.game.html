@@ -10264,7 +10264,7 @@ function __notifySplashDone(){
                 <button type="button" class="reset-folder-head" onclick="toggleResetFolder(this)">
                     <span class="rf-ico">☠️</span>
                     <span class="rf-title">全削除（危険）</span>
-                    <span class="rf-count">5</span>
+                    <span class="rf-count">4</span>
                     <span class="rf-chevron">▶</span>
                 </button>
                 <div class="reset-folder-body">
@@ -10279,10 +10279,6 @@ function __notifySplashDone(){
                     <button class="reset-menu-item lv3" onclick="openSelectiveUserDeletePicker()">
                         <span data-i18n="reset.item.selectiveUsers">🎯 ユーザを選んで消去</span>
                         <small data-i18n="reset.item.selectiveUsers.sub">消したいユーザーを選んでまとめて削除（戻せない）</small>
-                    </button>
-                    <button class="reset-menu-item lv3" onclick="askReset('allusers')">
-                        <span data-i18n="reset.item.allusers">👥 すべてのユーザーを削除</span>
-                        <small data-i18n="reset.item.allusers.sub">全ユーザーを消去（設定は残る・戻せない）</small>
                     </button>
                     <button class="reset-menu-item lv4" onclick="askReset('all')">
                         <span data-i18n="reset.item.all">⚠️ 完全初期化（工場出荷状態）</span>
@@ -15914,17 +15910,6 @@ const RESET_MESSAGES = {
         { title: '⚠️ Googleユーザを消去', text: 'このオンラインユーザーのポイント・実績・プレイ記録・プロフィール情報などを消去するぞい。\nGoogle本体のアカウント（Gmailなど）は消えんぞい。\n本当によいかい？', speak: 'オンラインユーザーのデータを消去するぞい。本当によいかい。' },
         { title: '最終確認', text: 'GoogleユーザのデータとGoogleログイン連携を消去するぞい。\n一度消したら元には戻せん。本当によいかい？', speak: 'これが最後の確認じゃ。消去するを押すと、オンラインユーザーのデータとGoogleログイン連携が消えるぞい。本当によいかい。' }
     ],
-    allusers: [
-        { title: '⚠️ 全ユーザー削除', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.1em;">☠️ 大変危険じゃぞ！</span>\n<span style="color:#ff8888;font-weight:bold;">すべてのユーザーを根こそぎ削除</span>するぞい…！\n家族みんなのデータも、お子さんが積み上げてきた記録も、<span style="color:#ff8888;font-weight:bold;">何ひとつ残らず吹き飛ぶ</span>んじゃ。\n（設定だけは残るが、ユーザー情報は<span style="color:#ff4444;font-weight:bold;">全消去・復元不可能</span>じゃ）', speak: '大変危険じゃぞ。すべてのユーザーを根こそぎ削除するぞ。復元できんが本当によいかい。', html: true },
-        { title: '本当に？', text: 'まだ続けるのかい…フォッフォッフォ。\n<span style="color:#ff8888;font-weight:bold;">全員分のポイントも、記録も、思い出も、ぜんぶ戻ってこん</span>ぞ！\n誰ひとり助けられんが、まだ進めるかい？', speak: 'まだ続けるかい。全員分のポイントも記録も戻ってこんぞ。まだ進めるかい。', html: true },
-        { title: '🚨 最終確認', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.15em;">🚨 これが最後の確認じゃ！！</span>\n「消去する」を押したら、<span style="color:#ff8888;font-weight:bold;">家族全員のデータが永遠に消滅</span>するぞい！\n<span style="color:#ff4444;font-weight:bold;">本気で本気で全ユーザーを消すんじゃな！？</span>', speak: 'これが最後の確認じゃ。家族全員のデータが永遠に消滅するぞ。本気で全ユーザーを消すんじゃな。', html: true }
-    ],
-    /* 選んだユーザーをまとめて消去：3段階確認 */
-    selectiveUsers: [
-        { title: '🎯 選んだユーザーを消去', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.05em;">⚠️ 危険じゃぞ！</span>\nチェックしたユーザーを<span style="color:#ff8888;font-weight:bold;">丸ごと消し去る</span>ぞい！\n名前・アバター・パスワード・ポイント・記録・チャレンジ履歴・購入アイテム、<span style="color:#ff8888;font-weight:bold;">ぜーんぶ消えて二度と戻せん</span>のじゃ。\n本当によい？', speak: '危険じゃぞ。チェックしたユーザーを丸ごと消し去るぞ。二度と戻せんが本当によいかい。', html: true },
-        { title: '本当に？', text: 'まだ続けるのかい…フォッフォッフォ。\n<span style="color:#ff8888;font-weight:bold;">選んだユーザーはもう永遠に戻せん</span>ぞ。\n積み上げたポイントも記録も、ぜんぶ闇に消えるんじゃ。後悔せんかのぅ？', speak: 'まだ続けるかい。選んだユーザーはもう戻せんぞ。後悔せんかのぅ。', html: true },
-        { title: '🚨 最終確認', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.1em;">🚨 これが最後の確認じゃ！</span>\n「消去する」を押した瞬間、選んだユーザーは<span style="color:#ff8888;font-weight:bold;">この世から消え去る</span>ぞい！\n<span style="color:#ff4444;font-weight:bold;">もう戻せん、絶対にじゃ！</span>', speak: 'これが最後の確認じゃ。消去するを押したら選んだユーザーはこの世から消え去るぞ。もう戻せん絶対にじゃ。', html: true }
-    ],
     all: [
         { title: '⚠️ 完全初期化', text: '<span style="color:#ff2222;font-weight:bold;font-size:1.15em;">☠️☠️ 最も危険な操作じゃ！ ☠️☠️</span>\nお前、本気かのぅ…？\n<span style="color:#ff8888;font-weight:bold;">すべてのユーザー、ぜーんぶのポイント、チャレンジ記録、ショップ履歴、保護者設定、音設定、表示設定、自動バックアップ、その他あらゆるデータ</span>がこの世から消え去ってしまうんじゃぞ。\n<span style="color:#ff4444;font-weight:bold;">工場出荷状態に戻り、絶対に復元できん</span>ぞい！', speak: '最も危険な操作じゃ。すべてのデータがこの世から消え去り、絶対に復元できんぞ。本当にやるのかい。', html: true },
         { title: '本当に？', text: 'まだ続けるのかい…フォッフォッフォ。\nこれは<span style="color:#ff4444;font-weight:bold;">取り返しがつかん最終手段</span>じゃぞ。\n家族全員の思い出、努力、すべてが<span style="color:#ff8888;font-weight:bold;">永遠に失われる</span>。後悔せんかのぅ？', speak: 'まだ続けるかい。これは取り返しがつかん最終手段じゃ。後悔せんかのぅ。', html: true },
@@ -16026,11 +16011,6 @@ const RESET_MESSAGES_EN = {
     deleteUser: [
         { title: '⚠️ Delete user — First warning', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.08em;">⚠️ Danger!</span>\nThis user’s name, password, points, records, challenges, purchases, and more will be <span style="color:#ff8888;font-weight:bold;">completely erased</span>.\n<span style="color:#ff4444;font-weight:bold;">It cannot be undone.</span> Continue?', speak: 'First warning. All data for this user will be erased and cannot be restored. Continue?', html: true },
         { title: '🚨 Delete user — Final warning', text: '<span style="color:#ff2222;font-weight:bold;font-size:1.2em;">🚨🚨 Final warning!! 🚨🚨</span>\nPress “Erase” and this user will be <span style="color:#ff8888;font-weight:bold;">completely deleted</span>.\n<span style="color:#ff4444;font-weight:bold;">This cannot be undone.</span> Are you sure?', speak: 'Final warning. Press Erase and this user will be permanently deleted. Are you sure?', html: true }
-    ],
-    allusers: [
-        { title: '⚠️ Delete all users', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.1em;">☠️ Extremely dangerous!</span>\n<span style="color:#ff8888;font-weight:bold;">Every user will be wiped out</span>…!\nFamily data, kids\' records — <span style="color:#ff8888;font-weight:bold;">nothing remains</span>.\n(Settings stay, but user data is <span style="color:#ff4444;font-weight:bold;">gone forever</span>.)', speak: 'Extremely dangerous. Every user will be wiped out. It cannot be restored. Are you sure?', html: true },
-        { title: 'Really?', text: 'Still going… Ho ho ho.\n<span style="color:#ff8888;font-weight:bold;">Everyone\'s points, records, memories — all gone</span>!\nNo one can be saved. Continue?', speak: 'Still going? Everyone\'s points and records will not come back. Continue?', html: true },
-        { title: '🚨 Final confirmation', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.15em;">🚨 This is the last check!!</span>\nPress Erase and <span style="color:#ff8888;font-weight:bold;">the whole family\'s data vanishes forever</span>!\n<span style="color:#ff4444;font-weight:bold;">Are you truly sure you want to delete every user!?</span>', speak: 'This is the last check. Press Erase and all family data vanishes forever. Are you truly sure?', html: true }
     ],
     selectiveUsers: [
         { title: '⚠️ Delete selected users', text: '<span style="color:#ff4444;font-weight:bold;">⚠️ Danger!</span>\nChecked users will be <span style="color:#ff8888;font-weight:bold;">completely erased</span>…!\nNames, avatars, passwords, points, records — all gone and cannot return.', speak: 'Danger. Selected users will be completely erased. It cannot be undone. Are you sure?', html: true },
@@ -16180,279 +16160,6 @@ const RESET_INFO = {
             'バックアップ'
         ]
     },
-    allusers: {
-        icon: '👥',
-        title: '【すべてのユーザーを削除】',
-        lead: 'すべてのユーザーを消去するぞい。もう一度言うが、もう戻せんぞ！',
-        deletes: [
-            '全てのユーザー情報（名前・アバター・パスワード）',
-            '全てのポイント・プレイ記録',
-            'チャレンジ履歴'
-        ],
-        keeps: [
-            'アプリ設定（音・表示など）',
-            '保護者設定',
-            'バックアップ'
-        ]
-    },
-    /* ⚠️ 改修v16: ユーザを選んで消去の事前説明 */
-    selectiveUsers: {
-        icon: '🎯',
-        title: '【ユーザを選んで消去】',
-        lead: 'チェックしたユーザーをまとめて丸ごと消去するぞい。もう戻せんから慎重に！',
-        deletes: [
-            '選んだユーザーの名前・アバター・パスワード',
-            '選んだユーザーのすべてのポイント・プレイ記録',
-            '選んだユーザーのチャレンジ・購入履歴'
-        ],
-        keeps: [
-            'チェックしていない他のユーザー',
-            'アプリ設定（音・表示・保護者など）',
-            '自動バックアップ'
-        ]
-    },
-    all: {
-        icon: '⚠️',
-        title: '【完全初期化（工場出荷状態）】',
-        lead: 'このアプリに関わるすべてのデータを消去し、インストール直後の状態に戻すぞい。もう一切戻せんぞ！',
-        deletes: [
-            'すべてのユーザーとデータ',
-            'すべてのポイント・記録',
-            '音・表示・ゲームプレイ設定',
-            '保護者設定・パスワード',
-            'チャレンジ・実績・あらゆる設定',
-            '自動バックアップ（すべて消える）'
-        ],
-        keeps: [
-            '（何も残らん…アプリそのものだけ）'
-        ]
-    },
-    legacyStorage: {
-        icon: '🗃️',
-        title: '【古いストレージ（legacy）をクリア】',
-        lead: '使われなくなった古い保存領域だけをそっと片付けるぞい。今使っているデータには影響しないから安心しておくれ。',
-        deletes: [
-            '古い形式で残っていた保存データ（現在は使われていない）'
-        ],
-        keeps: [
-            'すべてのユーザーとポイント・記録',
-            'すべての設定',
-            '自動バックアップ'
-        ]
-    },
-    allUsersDataOnly: {
-        icon: '📦',
-        title: '【全ユーザーのポイント・記録のみ一斉ゼロ】',
-        lead: 'ユーザー自体は残したまま、全ユーザーのポイントやプレイ記録だけをまとめてゼロに戻すぞい。もう戻せんぞ！',
-        deletes: [
-            '全ユーザーの合計ポイント',
-            '全ユーザーのプレイ記録・最高順位・統計',
-            '全ユーザーのチャレンジ履歴・購入アイテム'
-        ],
-        keeps: [
-            'すべてのユーザー（名前・アバター・パスワード）',
-            'アプリ設定（音・表示・保護者など）',
-            '自動バックアップ'
-        ]
-    },
-    allOtherUsersDelete: {
-        icon: '👥',
-        title: '【他のユーザーをすべて削除】',
-        lead: '今のユーザーは残したまま、それ以外のユーザーをすべて消去するぞい。もう戻せんぞ！',
-        deletes: [
-            '今のユーザー以外の全ユーザー情報（名前・アバター・パスワード）',
-            '今のユーザー以外の全ポイント・プレイ記録',
-            '今のユーザー以外のチャレンジ履歴'
-        ],
-        keeps: [
-            '今のユーザーとそのデータすべて',
-            'アプリ設定（音・表示・保護者など）',
-            'バックアップ'
-        ]
-    },
-    clearAutoBackups: {
-        icon: '🗑️',
-        title: '【自動バックアップをすべて削除】',
-        lead: '保管されている自動バックアップをすべて削除するぞい。ユーザーデータや設定はそのまま残るんじゃ。',
-        deletes: [
-            '起動時の自動バックアップ',
-            '終了時の自動バックアップ',
-            '一定間隔で作られたバックアップ',
-            '手動で作ったバックアップ'
-        ],
-        keeps: [
-            'すべてのユーザーとポイント',
-            'プレイ記録・チャレンジ記録',
-            'すべての設定',
-            '手動で書き出したJSONファイル'
-        ]
-    },
-    shopHistory: {
-        icon: '🛒',
-        title: '【ショップ購入履歴のみ初期化】',
-        lead: '今のユーザーがショップで買ったアイテムや装備をリセットするぞい。ポイントは消えんぞ。',
-        deletes: [
-            '購入済みアイテム一覧',
-            '装備中のアイテム',
-            'ショップ関連のブースト効果'
-        ],
-        keeps: [
-            '合計ポイント',
-            'プレイ記録・チャレンジ履歴',
-            'ユーザー名・アバター',
-            'すべての設定'
-        ]
-    },
-    challengeOnly: {
-        icon: '🏅',
-        title: '【チャレンジ記録のみ初期化】',
-        lead: '今のユーザーのデイリーチャレンジ履歴だけを消すぞい。ポイントや他の記録は残るぞ。',
-        deletes: [
-            '最後にやったチャレンジの日とゲーム',
-            'チャレンジ順位・チャレンジ獲得ポイント'
-        ],
-        keeps: [
-            '合計ポイント',
-            '通常プレイの記録',
-            'プレイ回数・最高順位',
-            'ユーザー名・アバター'
-        ]
-    },
-    statsOnly: {
-        icon: '📊',
-        title: '【統計・プレイ回数のみ初期化】',
-        lead: '今のユーザーのプレイ回数や記録の統計情報だけをリセットするぞい。',
-        deletes: [
-            '累計プレイ回数',
-            'ゲーム別プレイ回数',
-            '最高順位記録',
-            '最近のプレイ記録'
-        ],
-        keeps: [
-            '合計ポイント',
-            'チャレンジ記録',
-            'ユーザー名・アバター',
-            'すべての設定'
-        ]
-    },
-    pointsOnly: {
-        icon: '💎',
-        title: '【ポイントのみゼロに戻す】',
-        lead: '今のユーザーの合計ポイントをゼロに戻すぞい。プレイ回数やチャレンジ記録は残るぞ。',
-        deletes: [
-            '合計ポイント（0pt にリセット）'
-        ],
-        keeps: [
-            'プレイ回数',
-            'チャレンジ記録',
-            '最高順位',
-            'ショップ購入履歴',
-            'ユーザー名・アバター'
-        ]
-    },
-    soundOnly: {
-        icon: '🔊',
-        title: '【音設定のみ初期化】',
-        lead: '音関連の設定だけを初期値に戻すぞい。',
-        deletes: [
-            '音量・読み上げ速度',
-            '声色・ピッチ',
-            'アラーム音量'
-        ],
-        keeps: [
-            '表示・テーマ設定',
-            'ゲームプレイ設定',
-            '保護者設定',
-            '全ユーザーとポイント',
-            '自動バックアップ'
-        ]
-    },
-    displayOnly: {
-        icon: '🖼',
-        title: '【表示設定のみ初期化】',
-        lead: '見た目関連の設定だけを初期値に戻すぞい。',
-        deletes: [
-            'テーマ色・文字サイズ',
-            'アニメ・モーション設定',
-            '時計表示設定（オフになる）'
-        ],
-        keeps: [
-            '音設定',
-            'ゲームプレイ設定',
-            '保護者設定',
-            '全ユーザーとポイント',
-            '自動バックアップ'
-        ]
-    },
-    gameplayOnly: {
-        icon: '🎮',
-        title: '【ゲームプレイ設定のみ初期化】',
-        lead: 'ゲーム中の振動・トースト・統計表示などの設定だけを初期値に戻すぞい。',
-        deletes: [
-            '振動・トースト表示',
-            'チャレンジカード表示',
-            '統計カード表示',
-            'キーボード操作設定',
-            'プレイ時間表示'
-        ],
-        keeps: [
-            '音設定',
-            '表示設定',
-            '保護者設定',
-            '全ユーザーとポイント'
-        ]
-    },
-    parentalOnly: {
-        icon: '🛡',
-        title: '【保護者設定のみ初期化】',
-        lead: '保護者コントロールだけを初期値に戻すぞい。プレイ時間履歴は残るぞ。',
-        deletes: [
-            '保護者パスワード・ヒント',
-            '1日の制限時間',
-            '休憩間隔・夜間ロック設定',
-            '初期化・バックアップのパスワード要求設定'
-        ],
-        keeps: [
-            '今日・累計プレイ時間履歴',
-            '音・表示・ゲームプレイ設定',
-            '全ユーザーとポイント',
-            '自動バックアップ'
-        ]
-    },
-    parentalFull: {
-        icon: '🛑',
-        title: '【保護者設定を完全リセット】',
-        lead: '保護者関連のすべて（プレイ時間履歴含む）を初期化するぞい。もう戻せんぞ！',
-        deletes: [
-            '保護者パスワード・ヒント',
-            '1日の制限時間',
-            '休憩・夜間ロック設定',
-            '今日のプレイ時間',
-            '累計プレイ時間と過去の履歴',
-            '初プレイ日'
-        ],
-        keeps: [
-            'ユーザーとポイント',
-            '音・表示・ゲームプレイ設定',
-            '自動バックアップ'
-        ]
-    },
-    custom: {
-        icon: '🛠️',
-        title: '【カスタム初期化】',
-        lead: 'チェックした項目をまとめて初期化するぞい。以下の内容でよいかのう？',
-        deletes: [], /* customDescribe() で動的に差し替え */
-        keeps: []
-    }
-};
-
-const RESET_INFO_EN = {
-    googleAccountDelete: {
-        icon: '☠️', title: '[Completely delete Google online user]',
-        lead: 'Completely erase the OJWGA online user linked to this Google account, then sign out.',
-        deletes: ['OJWGA online user information linked to this Google account', 'Firestore points, achievements, play records, and online profile', 'This device\'s OJWGA shadow users with the same Google UID'],
-        keeps: ['Offline users not belonging to this Google account', 'The Google account itself and other Google services such as Gmail or Drive', 'The game files themselves']
-    },
     records: {
         icon: '🎮', title: '[Reset user records only]',
         lead: 'Only this user\'s points and play records go back to zero.',
@@ -16470,12 +16177,6 @@ const RESET_INFO_EN = {
         lead: 'Completely erase the current user. Other users stay.',
         deletes: ['User name & avatar', 'Password', 'All points & records for this user'],
         keeps: ['Other users', 'App settings (sound, display, etc.)', 'Backups']
-    },
-    allusers: {
-        icon: '👥', title: '[Delete all users]',
-        lead: 'Erase every user. Once more: this cannot be undone!',
-        deletes: ['All user info (name, avatar, password)', 'All points & play records', 'Challenge history'],
-        keeps: ['App settings (sound, display, etc.)', 'Parental settings', 'Backups']
     },
     selectiveUsers: {
         icon: '🎯', title: '[Delete selected users]',
@@ -16698,6 +16399,12 @@ function askReset(scope) {
     const needsCurrentUser = ['records', 'user', 'shopHistory', 'statsOnly', 'pointsOnly', 'allOtherUsersDelete'];
     if (needsCurrentUser.indexOf(scope) >= 0) {
         if (!getCurrentUser()) { witchSpeak((typeof getAppLang==='function'&&getAppLang()==='en')?'No users found.':'ユーザーがおらんぞ。'); return; }
+    }
+    /* 最後の1人はユーザー消去できない。 */
+    if (scope === 'user' && Array.isArray(root.users) && root.users.length <= 1) {
+        var _enLastUserReset = (typeof getAppLang==='function'&&getAppLang()==='en');
+        safeAlert(_enLastUserReset ? 'The last user cannot be deleted. Create another user first.' : '最後の1人は消去できんぞい。先に新しいユーザーを1人作るのじゃ。');
+        return;
     }
     /* ⚠️ 改修v16: ユーザを選んで消去：選択を検証 */
     if (scope === 'selectiveUsers') {
@@ -17363,13 +17070,25 @@ function executeReset() {
                 try { updateAutoStatus(); } catch (e) {}
                 try { if (typeof scheduleAutoBackupTimer === 'function') scheduleAutoBackupTimer(); } catch (e) {}
             } else if (resetScope === 'user') {
+                /* 最後の1人は残す。実行直前にも二重チェックする。 */
+                if (Array.isArray(root.users) && root.users.length <= 1) {
+                    safeAlert((typeof getAppLang==='function'&&getAppLang()==='en') ? 'The last user cannot be deleted.' : '最後の1人は消去できんぞい。');
+                    hideResetOverlay();
+                    return;
+                }
                 const cid = root.currentUserId;
                 root.users = root.users.filter(u => u.id !== cid);
                 root.currentUserId = root.users.length > 0 ? root.users[0].id : null;
                 saveRoot();
             } else if (resetScope === 'selectiveUsers') {
-                /* ⚠️ 改修v16: チェックしたユーザーだけを削除 */
+                /* ⚠️ 改修v16: チェックしたユーザーだけを削除。最後の1人は必ず残す。 */
                 const ids = getSelectedUsersForDelete();
+                if (Array.isArray(root.users) && ids.length >= root.users.length) {
+                    selectiveUserDeleteSelected = {};
+                    safeAlert((typeof getAppLang==='function'&&getAppLang()==='en') ? 'At least one user must remain.' : '少なくとも1人のユーザーは残すのじゃ。');
+                    hideResetOverlay();
+                    return;
+                }
                 const idSet = {};
                 ids.forEach(function(x){ idSet[x] = true; });
                 root.users = root.users.filter(function(u){ return !idSet[u.id]; });
@@ -17378,12 +17097,7 @@ function executeReset() {
                 }
                 /* 選択状態クリア */
                 selectiveUserDeleteSelected = {};
-                saveRoot();
-            } else if (resetScope === 'allusers') {
-                root.users = [];
-                root.currentUserId = null;
-                saveRoot();
-            } else {
+                saveRoot();            } else {
                 localStorage.removeItem(ROOT_KEY);
                 localStorage.removeItem(LEGACY_STORAGE_KEY);
                 localStorage.removeItem(LEGACY_USER_KEY);
@@ -17428,7 +17142,7 @@ function executeReset() {
 
         if (!getCurrentUser()) {
             /* 🌟 完全初期化・全ユーザー削除・緊急初期化の場合は初期設定ウィザードからやり直し */
-            if (resetScope === 'all' || resetScope === 'allusers' || resetScope === 'emergency') {
+            if (resetScope === 'all' || resetScope === 'emergency') {
                 startOnboarding();
             } else {
                 openUserSwitcher();
@@ -17782,14 +17496,40 @@ function renderSelectiveUserDeleteList() {
 }
 
 function onSelectiveUserDeleteToggle(id, checked) {
+    if (checked && Array.isArray(root.users) && root.users.length <= 1) {
+        var _en = (typeof getAppLang === 'function' && getAppLang() === 'en');
+        safeAlert(_en ? 'The last user cannot be deleted.' : '最後の1人は消去できんぞい。');
+        checked = false;
+    }
     selectiveUserDeleteSelected[id] = !!checked;
+    /* 全員消去にならないよう、最後の1人は必ず残す。 */
+    if (Array.isArray(root.users) && root.users.length > 1) {
+        var _ids = getSelectedUsersForDelete();
+        if (_ids.length >= root.users.length) {
+            delete selectiveUserDeleteSelected[id];
+            var _en2 = (typeof getAppLang === 'function' && getAppLang() === 'en');
+            safeAlert(_en2 ? 'At least one user must remain.' : '少なくとも1人のユーザーは残す必要があるぞい。');
+        }
+    }
     updateSelectiveUserDeleteSummary();
 }
 
 function selectiveUserDeleteSelectAll(v) {
-    (root.users || []).forEach(function(u) {
-        selectiveUserDeleteSelected[u.id] = !!v;
-    });
+    var users = Array.isArray(root.users) ? root.users : [];
+    if (v && users.length > 1) {
+        /* 「全選択」でも最後の1人は残す。 */
+        users.forEach(function(u, i) {
+            selectiveUserDeleteSelected[u.id] = (i < users.length - 1);
+        });
+    } else if (v && users.length <= 1) {
+        selectiveUserDeleteSelected = {};
+        var _en = (typeof getAppLang === 'function' && getAppLang() === 'en');
+        safeAlert(_en ? 'The last user cannot be deleted.' : '最後の1人は消去できんぞい。');
+    } else {
+        users.forEach(function(u) {
+            selectiveUserDeleteSelected[u.id] = false;
+        });
+    }
     renderSelectiveUserDeleteList();
     updateSelectiveUserDeleteSummary();
 }
@@ -17810,6 +17550,9 @@ function updateSelectiveUserDeleteSummary() {
     const en = (typeof getAppLang === 'function' && getAppLang() === 'en');
     if (sel.length === 0) {
         sumEl.innerHTML = en ? 'Selected: <b>0</b> — check users.' : '選択中: <b>0人</b>　チェックを入れるのじゃ。';
+        if (btn) btn.disabled = true;
+    } else if (Array.isArray(root.users) && sel.length >= root.users.length) {
+        sumEl.innerHTML = en ? 'At least one user must remain.' : '少なくとも1人のユーザーは残すのじゃ。';
         if (btn) btn.disabled = true;
     } else {
         const names = sel.map(function(id){
@@ -18690,6 +18433,8 @@ function escapeHtml(s) {
 function switchUser(id) {
     const u = root.users.find(x => x.id === id);
     if (!u) return;
+    /* 最後の1人は削除できない状態を常に維持する。 */
+    if (!Array.isArray(root.users) || root.users.length <= 0) return;
     /* ⛔ ブロック中のユーザーを選んだ場合は、起動ゲートを維持する。
        認証画面の「戻る」からユーザー選択へ戻っても、新規ユーザー作成は出さない。 */
     if (isUserBlocked(u)) {
@@ -18722,9 +18467,8 @@ function switchUser(id) {
             return;
         }
     } catch(e) {}
-    /* ブロックも認証ロックもないユーザーを選んだ時点で、起動ゲートを解除する。 */
+    /* ユーザー選択後は再読み込みせず、そのまま認証画面へ進む。 */
     if (window.__startupUserGate) {
-        try { sessionStorage.setItem('oijii_startup_user_selected', '1'); } catch(e) {}
         window.__startupUserGate = false;
         try { document.body.classList.remove('startup-user-gate'); } catch(e) {}
     }
@@ -18736,14 +18480,7 @@ function switchUser(id) {
     root.display.theme = u.theme;
     if (typeof applyTheme === 'function') applyTheme();
     saveRoot();
-    /* ✨ v21改修: ユーザーを選択したら画面を再読み込みして初期化（真っ白防止） */
-    /* パスワードが設定されている場合はロード後にパスワード画面がそのまま表示される */
-    try {
-        /* 少し待ってから再読み込みして UI に切替を反映してから確実にリロード */
-        document.getElementById('userswitch-overlay').classList.remove('show');
-        setTimeout(function(){ location.reload(); }, 60);
-        return;
-    } catch(e) {}
+    /* ユーザー選択後は即座に次の認証画面へ。ページは再読み込みしない。 */
     document.getElementById('userswitch-overlay').classList.remove('show');
     refreshHome();
     /* 認証方式を基準に判定する（パターン等は password が空でも認証必須）。 */
@@ -20231,8 +19968,6 @@ const I18N = {
     'reset.item.allUsersDataOnly.sub': 'ユーザー自体は残したまま、全員のポイント・プレイ記録だけをゼロに戻す（戻せん！）',
     'reset.item.allOtherUsersDelete': '👥 他のユーザーをすべて削除',
     'reset.item.allOtherUsersDelete.sub': '今のユーザーは残し、それ以外のユーザーをすべて削除する（戻せん！）',
-    'reset.item.allusers': '👥 すべてのユーザーを削除',
-    'reset.item.allusers.sub': '全ユーザーを消去（設定は残る、戻せん！）',
     'reset.item.all': '⚠️ 完全初期化（工場出荷状態）',
     'reset.item.all.sub': 'すべてのユーザー・全記録・設定を完全に消去（戻せん！！）',
     'reset.menuHint': 'どこまで消すか選ぶのじゃ…\n下に行くほど消す範囲が広いぞい！',
@@ -21026,8 +20761,6 @@ const I18N = {
     'reset.item.allUsersDataOnly.sub': 'Keep users; zero all points & play records (cannot undo!)',
     'reset.item.allOtherUsersDelete': '👥 Delete all other users',
     'reset.item.allOtherUsersDelete.sub': 'Keep current user; delete everyone else (cannot undo!)',
-    'reset.item.allusers': '👥 Delete all users',
-    'reset.item.allusers.sub': 'Erase all users (settings stay, cannot undo!)',
     'reset.item.all': '⚠️ Full factory reset',
     'reset.item.all.sub': 'Erase all users, records, and settings (cannot undo!!)',
     'reset.menuHint': 'Choose how far to erase…\nLower items erase a wider range!',
@@ -28320,6 +28053,11 @@ window.ojwgaDeleteUserInfoCancel=function(){var o=byId('ojwga-delete-user-info-o
 window.ojwgaDeleteUser=function(){
   var u=getCurrentUser();
   if(!u)return;
+  if(!Array.isArray(root.users) || root.users.length <= 1){
+    var _enLast = langEn();
+    safeAlert(_enLast ? 'The last user cannot be deleted. Create another user first.' : '最後の1人は消去できんぞい。先に新しいユーザーを1人作るのじゃ。', _enLast ? 'The last user cannot be deleted. Create another user first.' : '最後の1人は消去できんぞい。先に新しいユーザーを1人作るのじゃ。');
+    return;
+  }
   var o=byId('ojwga-delete-user-info-overlay');if(!o)return;
   var title=byId('du-info-title'),txt=byId('du-info-text');
   if(title)title.textContent='「'+(u.name||'このユーザー')+'」を消去する';
@@ -28342,6 +28080,13 @@ window.ojwgaDeleteUserWarning2=async function(){
 };
 window.ojwgaPerformDeleteUser=function(){
   var u=getCurrentUser();if(!u)return;
+  if(!Array.isArray(root.users) || root.users.length <= 1){
+    try{hideResetOverlay();}catch(e){}
+    try{ojwgaDeleteUserInfoCancel();}catch(e){}
+    var _enLast = langEn();
+    safeAlert(_enLast ? 'The last user cannot be deleted. Create another user first.' : '最後の1人は消去できんぞい。先に新しいユーザーを1人作るのじゃ。', _enLast ? 'The last user cannot be deleted. Create another user first.' : '最後の1人は消去できんぞい。先に新しいユーザーを1人作るのじゃ。');
+    return;
+  }
   try{hideResetOverlay();}catch(e){}
   ojwgaDeleteUserInfoCancel();
   var spin=byId('ojwga-delete-user-spinner-overlay');if(spin){spin.classList.add('show');spin.setAttribute('aria-hidden','false');}
@@ -29270,7 +29015,6 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
           if(u.theme&&root.display)root.display.theme=u.theme;
           try{saveRoot();}catch(e){}
           window.__ojwgaPendingGoogleTargetId=null;
-          try{sessionStorage.setItem('oijii_startup_user_selected','1');}catch(e){}
         } else if(typeof getCurrentUser==='function'){
           var cur=getCurrentUser();
           if(cur && cur.authType==='google' && cur.firebaseUid===u.firebaseUid){
@@ -29301,8 +29045,8 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
         }
         await syncGoogleAccount(signed);
         try{root.currentUserId=u.id; root.display.theme=u.theme||'purple'; applyTheme(); saveRoot();}catch(e){}
-        try{sessionStorage.setItem('oijii_startup_user_selected','1');}catch(e){}
-        setTimeout(function(){try{location.reload();}catch(e){}},100);
+        /* Googleユーザーも通常ユーザーと同じく、選択直後に認証UIへ進む。再読み込みしない。 */
+        try{ originalSwitchUser.apply(this,[u.id]); }catch(e){ console.warn('[OJWGA] Google user switch failed',e); }
       })();
       return;
     }
@@ -29819,6 +29563,10 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
     try{
       var u=typeof getCurrentUser==='function'?getCurrentUser():null;
       if(u&&typeof window.ojwgaNormalizeSecurityUser==='function')window.ojwgaNormalizeSecurityUser(u);
+      /* ブロック中は暗証番号入力よりブロック中の画面を最優先する。 */
+      if(u && typeof getUserBlockType==='function' && getUserBlockType(u)){
+        return oldUpdate.apply(this,arguments);
+      }
       if(u&&(u.passwordMethod||'password')==='pin'){
         var ui=byId('auth-method-ui'),msg=byId('auth-msg'),timer=byId('auth-lock-timer'),title=byId('auth-title'),forgot=byId('auth-forgot-btn'),unblock=byId('auth-unblock-btn');
         if(!ui)return oldUpdate.apply(this,arguments);
@@ -29849,6 +29597,10 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
   function applyAuthFailureText(){
     var msg=getMsg(), u=currentUser();
     if(!msg || !u) return;
+    /* ブロック中の表示を「暗証番号が違う」等で上書きしない。 */
+    try{
+      if(typeof getUserBlockType==='function' && getUserBlockType(u)) return;
+    }catch(e){}
     var n=Number(u.wrongCount||0);
     var now=Date.now();
     var en=langIsEn();
@@ -30816,5 +30568,28 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
 /* カスタムカーソルは警告レイヤーの上に描画する。白いネイティブカーソルとの二重表示を防ぐ。 */
 html.cursor-custom.cursor-custom-ready #magic-cursor{z-index:2147483647 !important;}
 </style>
+
+
+<script id="ojwga-block-priority-final-js">
+(function(){
+  'use strict';
+  function currentUser(){ try{return typeof getCurrentUser==='function'?getCurrentUser():null;}catch(e){return null;} }
+  function isBlocked(u){ try{return !!(u&&typeof getUserBlockType==='function'&&getUserBlockType(u));}catch(e){return false;} }
+  var prev=window.updateAuthUI;
+  if(typeof prev!=='function') return;
+  window.updateAuthUI=function(){
+    var u=currentUser();
+    if(isBlocked(u)){
+      try{
+        var home=document.getElementById('home-screen');
+        var auth=document.getElementById('auth-overlay');
+        if(home) home.style.display='none';
+        if(auth) auth.classList.add('show');
+      }catch(e){}
+    }
+    return prev.apply(this,arguments);
+  };
+})();
+</script>
 
 </html>
