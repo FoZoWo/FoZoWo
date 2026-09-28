@@ -3,314 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>10秒脳トレ｜間違い探し＆文字パズル - 運営: fozowo</title>
+    <title>10秒脳トレ｜間違い探し＆文字パズル - 公式サイト</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Inter:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #0d0d0d;
-            --card-bg: #181818;
-            --accent-color: #ffcc00;
-            --text-main: #ffffff;
-            --text-sub: #a0a0a0;
-            --border-color: #2a2a2a;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        }
-
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.6;
-            padding-bottom: 60px;
+            font-family: 'Noto Sans JP', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #09090b;
+            color: #f4f4f5;
         }
-
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        header {
-            background-color: #000000;
-            border-bottom: 2px solid var(--accent-color);
-            padding: 20px;
-            text-align: center;
-        }
-
-        .header-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: 0.05em;
-            color: var(--text-main);
-        }
-
-        .header-sub {
-            font-size: 0.8rem;
-            color: var(--accent-color);
-            margin-top: 4px;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .hero {
-            text-align: center;
-            padding: 30px 10px;
-        }
-
-        .hero h1 {
-            font-size: 1.8rem;
-            margin-bottom: 12px;
-            letter-spacing: -0.02em;
-        }
-
-        .hero p {
-            color: var(--text-sub);
-            font-size: 0.95rem;
-        }
-
-        /* SNS Links */
-        .sns-section {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 24px;
-            margin: 24px 0;
-            text-align: center;
-        }
-
-        .section-title {
-            font-size: 1.2rem;
-            margin-bottom: 16px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
-            text-align: center;
-            letter-spacing: 0.05em;
-        }
-
-        .sns-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 16px;
-        }
-
-        @media (min-width: 600px) {
-            .sns-buttons {
-                flex-direction: row;
-            }
-        }
-
-        .sns-btn {
-            flex: 1;
-            padding: 14px 20px;
-            font-weight: bold;
-            border-radius: 6px;
-            display: block;
-            text-align: center;
-            transition: opacity 0.2s;
-        }
-
-        .sns-btn:hover {
-            opacity: 0.85;
-        }
-
-        .btn-instagram {
-            background-color: #e1306c;
-            color: #ffffff;
-        }
-
-        .btn-facebook {
-            background-color: #1877f2;
-            color: #ffffff;
-        }
-
-        /* Interactive Game Section */
-        .game-section {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 24px;
-            margin: 24px 0;
-            text-align: center;
-        }
-
-        .game-status {
-            font-size: 1.1rem;
-            margin-bottom: 16px;
-            color: var(--accent-color);
-            font-weight: bold;
-            min-height: 1.6em;
-        }
-
-        .puzzle-grid {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 2px;
-            max-width: 400px;
-            margin: 0 auto;
-            background-color: #000;
-            padding: 8px;
-            border-radius: 4px;
+        .grid-cell {
             user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
         }
-
-        .puzzle-cell {
-            background-color: #ffffff;
-            color: #000000;
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.1rem;
-            cursor: pointer;
-        }
-
-        .game-controls {
-            margin-top: 16px;
-        }
-
-        .start-btn {
-            background-color: var(--accent-color);
-            color: #000000;
-            border: none;
-            padding: 12px 28px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        /* Concept List */
-        .concept-section {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 24px;
-            margin: 24px 0;
-        }
-
-        .concept-list {
-            list-style: none;
-        }
-
-        .concept-list li {
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.95rem;
-        }
-
-        .concept-list li:last-child {
-            border-bottom: none;
-        }
-
-        .concept-title {
-            color: var(--accent-color);
-            font-weight: bold;
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        /* Footer */
-        footer {
-            margin-top: 40px;
-            padding: 24px;
-            text-align: center;
-            border-top: 1px solid var(--border-color);
-            font-size: 0.85rem;
-            color: var(--text-sub);
-        }
-
-        .footer-brand {
-            font-weight: bold;
-            color: var(--text-main);
-            margin-bottom: 8px;
-        }
-
-        .footer-link {
-            color: var(--accent-color);
-            text-decoration: underline;
+        .puzzle-box {
+            box-shadow: 0 0 40px rgba(250, 204, 21, 0.1);
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col justify-between selection:bg-yellow-400 selection:text-black">
 
-    <header>
-        <div class="header-title">10秒脳トレ｜間違い探し＆文字パズル</div>
-        <div class="header-sub">PRODUCED BY FOZOWO</div>
+    <!-- Top Header -->
+    <header class="w-full bg-black border-b-2 border-yellow-400 py-5 px-4 sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
+            <div>
+                <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center justify-center sm:justify-start gap-2">
+                    <span class="w-3.5 h-3.5 rounded-full bg-yellow-400 inline-block shadow-sm shadow-yellow-400"></span>
+                    10秒脳トレ｜間違い探し＆文字パズル
+                </h1>
+                <p class="text-xs text-yellow-400 font-bold tracking-widest mt-0.5">PRODUCED BY FOZOWO</p>
+            </div>
+            <div class="text-xs text-zinc-400 font-mono">
+                fozowo.f5.si
+            </div>
+        </div>
     </header>
 
-    <div class="container">
+    <!-- Main Container -->
+    <main class="w-full max-w-4xl mx-auto px-4 py-8 flex-grow space-y-10">
 
-        <section class="hero">
-            <h1>動かすのは目ではなく、直感。</h1>
-            <p>10秒で見抜けるか。毎日更新の難問漢字パズルで脳のストレッチ。</p>
-        </section>
-
-        <!-- 公式SNS案内 -->
-        <section class="sns-section">
-            <h2 class="section-title">公式SNSで毎日配信中</h2>
-            <p style="color: var(--text-sub); font-size: 0.9rem; margin-bottom: 16px;">
-                最新の問題や回答・タイムの書き込みは各SNSのコメント欄へ。
+        <!-- Hero Catchphrase -->
+        <section class="text-center space-y-3 py-4">
+            <h2 class="text-2xl sm:text-4xl font-black tracking-tight text-white leading-tight">
+                動かすのは目ではなく、直感。
+            </h2>
+            <p class="text-zinc-400 text-sm sm:text-base max-w-xl mx-auto">
+                10秒で見抜けるか。毎日更新の漢字パズルで脳のストレッチ。
             </p>
-            <div class="sns-buttons">
-                <a href="https://www.instagram.com/10s_brain" target="_blank" rel="noopener" class="sns-btn btn-instagram">
-                    Instagramで挑戦 (@10s_brain)
+        </section>
+
+        <!-- Official SNS Link Section -->
+        <section class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 sm:p-8 space-y-6">
+            <div class="border-b border-zinc-800 pb-4 text-center sm:text-left">
+                <h3 class="text-lg font-bold text-white flex items-center justify-center sm:justify-start gap-2">
+                    <span class="w-2 h-2 rounded-full bg-yellow-400"></span>
+                    公式SNSアカウント（毎日配信中）
+                </h3>
+                <p class="text-xs text-zinc-400 mt-1">
+                    最新問題の解答やタイム報告・挑戦コメントは各SNSのコメント欄へ投稿してください。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- X (Twitter) -->
+                <a href="https://x.com/10s_brain" target="_blank" rel="noopener noreferrer" 
+                   class="group bg-black hover:bg-zinc-950 border border-zinc-700 hover:border-yellow-400 p-5 rounded-xl transition-all duration-200 flex flex-col justify-between space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-zinc-400 group-hover:text-yellow-400 transition-colors">X (旧Twitter)</span>
+                            <div class="text-base font-black text-white mt-0.5">@10s_brain</div>
+                        </div>
+                        <svg class="w-6 h-6 fill-white group-hover:fill-yellow-400 transition-colors" viewBox="0 0 24 24">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                        </svg>
+                    </div>
+                    <div class="text-xs text-zinc-400 font-bold group-hover:text-white flex items-center gap-1">
+                        Xで最新問題を解く &rarr;
+                    </div>
                 </a>
-                <a href="https://www.facebook.com/10s.brain" target="_blank" rel="noopener" class="sns-btn btn-facebook">
-                    Facebookで挑戦 (@10s.brain)
+
+                <!-- Instagram -->
+                <a href="https://www.instagram.com/10s_brain" target="_blank" rel="noopener noreferrer" 
+                   class="group bg-black hover:bg-zinc-950 border border-zinc-700 hover:border-yellow-400 p-5 rounded-xl transition-all duration-200 flex flex-col justify-between space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-zinc-400 group-hover:text-yellow-400 transition-colors">Instagram</span>
+                            <div class="text-base font-black text-white mt-0.5">@10s_brain</div>
+                        </div>
+                        <svg class="w-6 h-6 fill-white group-hover:fill-yellow-400 transition-colors" viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                    </div>
+                    <div class="text-xs text-zinc-400 font-bold group-hover:text-white flex items-center gap-1">
+                        Instagramで挑戦 &rarr;
+                    </div>
+                </a>
+
+                <!-- Facebook -->
+                <a href="https://www.facebook.com/10s.brain" target="_blank" rel="noopener noreferrer" 
+                   class="group bg-black hover:bg-zinc-950 border border-zinc-700 hover:border-yellow-400 p-5 rounded-xl transition-all duration-200 flex flex-col justify-between space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-zinc-400 group-hover:text-yellow-400 transition-colors">Facebook</span>
+                            <div class="text-base font-black text-white mt-0.5">@10s.brain</div>
+                        </div>
+                        <svg class="w-6 h-6 fill-white group-hover:fill-yellow-400 transition-colors" viewBox="0 0 24 24">
+                            <path d="M9 8H6v4h3v12h5V12h3.642L18 8h-4V6.333C14 5.374 14.5 5 15.5 5H18V0h-3.808C10.592 0 9 1.583 9 4.615V8z"/>
+                        </svg>
+                    </div>
+                    <div class="text-xs text-zinc-400 font-bold group-hover:text-white flex items-center gap-1">
+                        Facebookで挑戦 &rarr;
+                    </div>
                 </a>
             </div>
         </section>
 
-        <!-- Web体験版パズル -->
-        <section class="game-section">
-            <h2 class="section-title">WEB体験パズル</h2>
-            <div class="game-status" id="gameStatus">スタートボタンを押して測定開始</div>
+        <!-- Interactive Web Puzzle Section -->
+        <section class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 sm:p-8 space-y-6 text-center puzzle-box">
+            <div class="border-b border-zinc-800 pb-4">
+                <h3 class="text-lg font-bold text-white flex items-center justify-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
+                    WEB体験パズル（タイム計測）
+                </h3>
+                <p class="text-xs text-zinc-400 mt-1">
+                    「氷」の群れの中に1つだけ潜む「水」をタップで見つけ出してください。
+                </p>
+            </div>
+
+            <!-- Game Display Area -->
+            <div class="space-y-4">
+                <div id="gameStatus" class="text-yellow-400 font-mono text-lg font-bold min-h-[1.75rem] flex items-center justify-center">
+                    「パズルを開始する」を押してください
+                </div>
+
+                <div class="w-full max-w-xs sm:max-w-md mx-auto aspect-square bg-black p-2 rounded-xl border border-zinc-800 flex items-center justify-center">
+                    <div id="puzzleGrid" class="grid grid-cols-10 gap-1 w-full h-full">
+                        <!-- Dynamic cells -->
+                    </div>
+                </div>
+
+                <div>
+                    <button id="startBtn" onclick="startGame()" class="bg-yellow-400 hover:bg-yellow-500 text-black font-black px-8 py-3.5 rounded-xl transition-all shadow-lg shadow-yellow-400/10 active:scale-95 text-base">
+                        パズルを開始する
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features / Concept -->
+        <section class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 sm:p-8 space-y-4">
+            <h3 class="text-lg font-bold text-white border-b border-zinc-800 pb-3 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-yellow-400"></span>
+                10秒脳トレの特長
+            </h3>
             
-            <div class="puzzle-grid" id="puzzleGrid">
-                <!-- JavaScriptで生成 -->
-            </div>
-
-            <div class="game-controls">
-                <button class="start-btn" id="startBtn" onclick="startGame()">パズルを開始する</button>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm pt-2">
+                <div class="bg-black p-4 rounded-xl border border-zinc-800 space-y-1">
+                    <div class="text-yellow-400 font-bold text-xs">01. 思考力を磨く10秒間</div>
+                    <div class="text-zinc-300">びっしり敷き詰められた同型漢字の中から、直感と集中力だけで違和感を見破ります。</div>
+                </div>
+                <div class="bg-black p-4 rounded-xl border border-zinc-800 space-y-1">
+                    <div class="text-yellow-400 font-bold text-xs">02. ライバルとタイム勝負</div>
+                    <div class="text-zinc-300">「5秒で見つけた」「12秒かかった」など、SNSのコメント欄で他の挑戦者と記録を競えます。</div>
+                </div>
+                <div class="bg-black p-4 rounded-xl border border-zinc-800 space-y-1">
+                    <div class="text-yellow-400 font-bold text-xs">03. ミニマル＆ストイック</div>
+                    <div class="text-zinc-300">無駄な装飾や絵文字を一切排し、純粋なパズルの解快感に没頭できるフォーマットです。</div>
+                </div>
             </div>
         </section>
 
-        <!-- コンセプト -->
-        <section class="concept-section">
-            <h2 class="section-title">10秒脳トレの特徴</h2>
-            <ul class="concept-list">
-                <li>
-                    <span class="concept-title">思考力を鍛える10秒間</span>
-                    画面いっぱいに敷き詰められた同じ漢字の中に1つだけ潜む「間違い」を直感で探し出します。
-                </li>
-                <li>
-                    <span class="concept-title">全国のユーザーとタイム競争</span>
-                    見破った時間はSNSのコメント欄に投稿。「3秒で見つけた」「15秒かかった」など競い合いが楽しめます。
-                </li>
-                <li>
-                    <span class="concept-title">完全ストイック・デザイン</span>
-                    余計な装飾を排し、脳の集中力とパズル本来の快感に特化したフォーマットでお届けします。
-                </li>
-            </ul>
-        </section>
+    </main>
 
-    </div>
-
-    <footer>
-        <div class="footer-brand">運営：fozowo（フォゾウォ）</div>
-        <p>公式ウェブサイト: <a href="http://fozowo.f5.si" class="footer-link">fozowo.f5.si</a></p>
-        <p style="margin-top: 12px; font-size: 0.75rem; color: #666;"></p>
+    <!-- Footer -->
+    <footer class="w-full bg-black border-t border-zinc-800 py-8 px-4 text-center text-xs text-zinc-500 space-y-3">
+        <div class="space-y-1">
+            <div class="text-zinc-300 font-bold">10秒脳トレ｜間違い探し＆文字パズル</div>
+            <div>運営元: <span class="text-white font-bold">fozowo（フォゾウォ）</span></div>
+        </div>
+        <div class="text-zinc-400">
+            公式Webサイト: <a href="http://www.fozowo.f5.si" target="_blank" rel="noopener noreferrer" class="text-yellow-400 hover:underline">fozowo.f5.si</a>
+        </div>
+        <div class="text-[10px] text-zinc-600 pt-2">
+            
+        </div>
     </footer>
 
     <script>
@@ -325,33 +202,40 @@
 
         const baseChar = "氷";
         const targetChar = "水";
-        const totalCells = 100; // 10x10
+        const totalCells = 100; // 10x10 Grid
 
-        function initGrid() {
+        function initPlaceholderGrid() {
             gridElement.innerHTML = '';
             for (let i = 0; i < totalCells; i++) {
                 const cell = document.createElement('div');
-                cell.className = 'puzzle-cell';
+                cell.className = 'grid-cell bg-zinc-950 text-zinc-600 rounded flex items-center justify-center font-black text-sm sm:text-base aspect-square cursor-not-allowed';
                 cell.textContent = baseChar;
-                cell.addEventListener('click', () => handleCellClick(i));
                 gridElement.appendChild(cell);
             }
         }
 
         function startGame() {
-            initGrid();
+            if (timerInterval) clearInterval(timerInterval);
+            
+            gridElement.innerHTML = '';
             targetIndex = Math.floor(Math.random() * totalCells);
-            const cells = gridElement.querySelectorAll('.puzzle-cell');
-            cells[targetIndex].textContent = targetChar;
+
+            for (let i = 0; i < totalCells; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell bg-white hover:bg-yellow-200 text-black font-black text-sm sm:text-base aspect-square flex items-center justify-center rounded cursor-pointer transition-colors';
+                cell.textContent = (i === targetIndex) ? targetChar : baseChar;
+                cell.addEventListener('click', () => handleCellClick(i));
+                gridElement.appendChild(cell);
+            }
 
             isPlaying = true;
             startTime = performance.now();
-            startBtn.style.display = 'none';
+            startBtn.textContent = 'やり直す';
 
             timerInterval = setInterval(() => {
                 const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
                 statusElement.textContent = `経過時間: ${elapsed} 秒`;
-            }, 50);
+            }, 30);
         }
 
         function handleCellClick(index) {
@@ -361,17 +245,20 @@
                 clearInterval(timerInterval);
                 const finalTime = ((performance.now() - startTime) / 1000).toFixed(2);
                 isPlaying = false;
-                statusElement.textContent = `正解！ 記録: ${finalTime} 秒`;
+                
+                statusElement.innerHTML = `<span class="text-yellow-400 font-bold">正解！ タイム: ${finalTime} 秒</span>`;
                 startBtn.textContent = 'もう一度挑戦する';
-                startBtn.style.display = 'inline-block';
+
+                // Highlight target cell
+                const cells = gridElement.querySelectorAll('.grid-cell');
+                cells[targetIndex].className = 'grid-cell bg-yellow-400 text-black font-black text-sm sm:text-base aspect-square flex items-center justify-center rounded ring-4 ring-yellow-300';
             } else {
-                statusElement.textContent = 'おしい！もう一度探してください。';
+                statusElement.textContent = 'おしい！もう一度探してください';
             }
         }
 
-        // 初期表示
-        initGrid();
+        // Initialize display
+        initPlaceholderGrid();
     </script>
-
 </body>
 </html>
