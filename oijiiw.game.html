@@ -2680,6 +2680,19 @@
         border: 1px solid #8e44ad; border-radius: 8px;
         font-size: 0.88rem; outline: none;
         margin: 0;
+    .music-track-select {
+        min-width: 210px; max-width: 62%;
+        padding: 9px 10px;
+        background: #2a1a44; color: #fff;
+        border: 1px solid #8e44ad; border-radius: 9px;
+        font-size: 0.84rem; outline: none;
+    }
+    .music-track-select:focus {
+        border-color: #c77dff; box-shadow: 0 0 0 3px rgba(199,125,255,.14);
+    }
+    @media (max-width: 520px) {
+        .music-track-select { width: 100%; max-width: none; }
+    }
     }
 
     /* バックアップ */
@@ -6916,11 +6929,20 @@ function __notifySplashDone(){
                 </div>
             </div>
 
-            <!-- STEP: 音楽 ON/OFF -->
+            <!-- STEP: 音楽 ON/OFF / 曲選択 -->
             <div class="onboard-step" data-step="music" style="display:none;">
                 <div style="font-size:44px;margin-bottom:6px;">🎵</div>
                 <h2 data-i18n="onb.music">音楽を流すかい？</h2>
-                <div class="auth-msg" style="color:#cdb8e8;"><span data-i18n="onb.musicMsg">ホーム画面でBGMを流すか選ぶのじゃ。あとで設定からいつでも変えられるぞ。</span></div>
+                <div class="auth-msg" style="color:#cdb8e8;"><span data-i18n="onb.musicMsg">ホーム画面でBGMを流すか、4曲の中から好きな曲を選ぶのじゃ。あとで設定からいつでも変えられるぞ。</span></div>
+                <div class="select-row" style="margin:14px 0;">
+                    <label data-i18n="sound.musicTrack">🎵 ホーム画面の曲</label>
+                    <select id="onb-music-track" class="music-track-select" onchange="onboardSetMusicTrack(this.value)">
+                        <option value="main" data-i18n="music.track.main">おいじぃ魔女</option>
+                        <option value="ondo" data-i18n="music.track.ondo">おいじぃ魔女音頭</option>
+                        <option value="trivia" data-i18n="music.track.trivia">おいじぃ魔女のヤバい雑学の歌</option>
+                        <option value="ojwga" data-i18n="music.track.ojwga">おいじぃ魔女ゲームコレクションの歌</option>
+                    </select>
+                </div>
                 <div class="onboard-choice-row">
                     <button class="challenge-btn" onclick="onboardSetMusic(true)" data-i18n="onb.musicOn">🎵 音楽ON</button>
                     <button class="reset-btn-cancel" onclick="onboardSetMusic(false)" data-i18n="onb.musicOff">🔇 音楽OFF</button>
@@ -8097,6 +8119,15 @@ function __notifySplashDone(){
                 <label><span data-i18n="sound.musicOnOff">🎵 音楽 ON/OFF</span> <small style="display:block;font-size:0.7rem;color:#cdb8e8;" data-i18n="sound.musicOnOff.sub">ホーム画面のBGMを再生</small></label>
                 <div class="switch" id="sw-music" onclick="toggleSwitch('music')"></div>
             </div>
+            <div class="select-row">
+                <label data-i18n="sound.musicTrack">🎵 ホーム画面の曲</label>
+                <select id="music-track-select" class="music-track-select" onchange="setMusicTrack(this.value)">
+                    <option value="main" data-i18n="music.track.main">おいじぃ魔女</option>
+                    <option value="ondo" data-i18n="music.track.ondo">おいじぃ魔女音頭</option>
+                    <option value="trivia" data-i18n="music.track.trivia">おいじぃ魔女のヤバい雑学の歌</option>
+                    <option value="ojwga" data-i18n="music.track.ojwga">おいじぃ魔女ゲームコレクションの歌</option>
+                </select>
+            </div>
             <div class="slider-row">
                 <label><span data-i18n="sound.volMusic">🎚️ 音楽の音量</span> <span id="vol-music-val">45%</span></label>
                 <input type="range" id="vol-music" min="0" max="100" value="45" oninput="setMusicVolume(this.value)">
@@ -8142,8 +8173,8 @@ function __notifySplashDone(){
                 <span class="witch-img" role="img" aria-label="魔女"></span>
                 <div class="mp-eq"><span></span><span></span><span></span><span></span></div>
             </div>
-            <div class="mp-title" data-i18n="music.track">おいじぃ魔女</div>
-            <div class="mp-artist" data-i18n="music.artist">ホーム画面テーマソング</div>
+            <div class="mp-title">おいじぃ魔女</div>
+            <div class="mp-artist">ホーム画面テーマソング</div>
 
             <div class="mp-progress-row">
                 <span class="mp-time" id="mp-time-cur">0:00</span>
@@ -8477,7 +8508,7 @@ function __notifySplashDone(){
                     <h3>⚙️ 設定メニュー一覧</h3>
                     <ul>
                         <li><span class="point">🔊 音設定</span>：声・効果音・警告音(固定ON)・音量・声色・高さ・速さ・BGM</li>
-                        <li><span class="point">🎵 音楽プレイヤー</span>：ホーム画面BGM「おいじぃ魔女」を再生・リピート・ダウンロード</li>
+                        <li><span class="point">🎵 音楽プレイヤー</span>：ホーム画面BGMを4曲から選んで再生・リピート・ダウンロード</li>
                         <li><span class="point">🎨 表示設定</span>：テーマ（<span class="good">16種類！</span>）・文字サイズ・アニメ・<span class="good">時計ウィジェット</span></li>
                         <li><span class="point">🎮 ゲームプレイ設定</span>：振動・チャレンジ表示・トースト・統計表示・キーボード操作</li>
                         <li><span class="point">📊 統計情報</span>：プレイ回数・勝利数・ゲーム別記録</li>
@@ -9423,7 +9454,7 @@ function __notifySplashDone(){
                     </ul>
 
                     <h3>🎵 音楽プレイヤー</h3>
-                    <p>ホーム画面のBGM「おいじぃ魔女」を聴ける専用プレイヤーじゃ。設定の「音楽プレイヤー」から開く。</p>
+                    <p>ホーム画面BGMを4曲から聴ける専用プレイヤーじゃ。設定の「音楽プレイヤー」から開く。</p>
                     <ul>
                         <li><span class="point">再生/一時停止</span>:▶️ボタンで自在に切替</li>
                         <li><span class="point">±10秒スキップ</span>:⏪⏩で好きな位置へ</li>
@@ -10611,7 +10642,8 @@ function defaultSound() {
         alarmType: 'classic', /* 安全のため固定 */
         music: true,           /* 改修v18: メインメニューBGM ON/OFF */
         musicVolume: 0.45,     /* 改修v18: BGM音量 0.0〜1.0 */
-        musicRepeat: true      /* 改修v19: 音楽プレイヤーのリピートON/OFF */
+        musicRepeat: true,      /* 改修v19: 音楽プレイヤーのリピートON/OFF */
+        musicTrack: 'main'      /* 改修v20: ホーム画面BGMの選択曲 */
     };
 }
 
@@ -10755,6 +10787,7 @@ function loadRoot() {
             if (typeof parsed.sound.music !== 'boolean') parsed.sound.music = true;
             if (typeof parsed.sound.musicVolume !== 'number') parsed.sound.musicVolume = 0.45;
             parsed.sound.musicVolume = Math.max(0, Math.min(1, parsed.sound.musicVolume));
+            if (!['main','ondo','trivia','ojwga'].includes(parsed.sound.musicTrack)) parsed.sound.musicTrack = 'main';
             /* 🎨 各ユーザーが自分のテーマを持つよう補完（テーマがユーザー間で混ざる不具合修正）。
                テーマ未設定のユーザーは既定(紫魔女)にする。 */
             if (Array.isArray(parsed.users)) {
@@ -18686,7 +18719,7 @@ let onboardCurrentStep = 'welcome';
 let onboardHistory = [];
 let onboardData = {
     name: '', avatar: null, password: '', hint: '',
-    music: true, greeting: true, theme: 'purple',
+    music: true, musicTrack: 'main', greeting: true, theme: 'purple',
     clock: false, clockStyle: 'digital-neon',
     parental: false, howto: false
 };
@@ -18756,7 +18789,7 @@ function startOnboarding() {
     window.onboardMusicPreview = false;
     onboardData = {
         name: '', avatar: null, password: '', hint: '',
-        music: true, theme: 'purple',
+        music: true, musicTrack: 'main', theme: 'purple',
         clock: false, clockStyle: 'digital-neon',
         parental: false, howto: false
     };
@@ -18782,6 +18815,9 @@ function showOnboardStepKey(key) {
     });
     /* 初期設定のテーマ画面は、画面を表示した直後にも必ず再描画する。
        古い初期設定状態や言語切替で #onb-theme-grid が空になることを防ぐ。 */
+    if (key === 'music') {
+        try { var musicSel = document.getElementById('onb-music-track'); if (musicSel) musicSel.value = normalizeMusicTrackId(onboardData.musicTrack || 'main'); } catch (e) {}
+    }
     if (key === 'theme') {
         try { renderOnboardThemeGrid(); } catch (e) { console.warn('theme grid render failed', e); }
         try { requestAnimationFrame(function(){ try { renderOnboardThemeGrid(); } catch(e){} }); } catch(e) {}
@@ -18887,10 +18923,95 @@ function renderOnboardClockDesignGrid() {
         g.appendChild(card);
     });
 }
+/* =========================================================
+   🎵 改修v20: ホーム画面BGM 4曲対応
+   - main-bgm.mp3 : おいじぃ魔女
+   - おいじぃ魔女音頭.mp3
+   - おいじぃ魔女のヤバい雑学の歌.mp3
+   - ojwga.mp3 : おいじぃ魔女ゲームコレクションの歌
+   ========================================================= */
+const OJWGA_MUSIC_TRACKS = Object.freeze({
+    main:   { id:'main',   src:'main-bgm.mp3',                 ja:'おいじぃ魔女',                       en:'Oijii Witch',                    artistJa:'ホーム画面テーマソング', artistEn:'Home screen theme song', file:'おいじぃ魔女.mp3' },
+    ondo:   { id:'ondo',   src:'おいじぃ魔女音頭.mp3',         ja:'おいじぃ魔女音頭',                   en:'Oijii Witch Ondo',                artistJa:'ホーム画面BGM', artistEn:'Home screen BGM', file:'おいじぃ魔女音頭.mp3' },
+    trivia: { id:'trivia', src:'おいじぃ魔女のヤバい雑学の歌.mp3', ja:'おいじぃ魔女のヤバい雑学の歌',       en:'Oijii Witch Crazy Trivia Song',    artistJa:'ホーム画面BGM', artistEn:'Home screen BGM', file:'おいじぃ魔女のヤバい雑学の歌.mp3' },
+    ojwga:  { id:'ojwga',  src:'ojwga.mp3',                    ja:'おいじぃ魔女ゲームコレクションの歌', en:'OJWGA Theme Song',                 artistJa:'おいじぃ魔女ゲームコレクション', artistEn:'Oijii Witch Game Collection', file:'ojwga.mp3' }
+});
+
+function normalizeMusicTrackId(id) {
+    return OJWGA_MUSIC_TRACKS[id] ? id : 'main';
+}
+function getSelectedMusicTrackId() {
+    try { return normalizeMusicTrackId(root && root.sound ? root.sound.musicTrack : 'main'); } catch (_) { return 'main'; }
+}
+function getSelectedMusicTrack() { return OJWGA_MUSIC_TRACKS[getSelectedMusicTrackId()]; }
+function applyMainBgmTrack(trackId, opts) {
+    opts = opts || {};
+    const id = normalizeMusicTrackId(trackId);
+    const track = OJWGA_MUSIC_TRACKS[id];
+    const audio = document.getElementById('main-bgm');
+    if (!audio) return track;
+    const oldSrc = audio.getAttribute('src') || audio.currentSrc || '';
+    if (oldSrc !== track.src) {
+        const wasPlaying = !audio.paused;
+        try { audio.pause(); } catch (_) {}
+        audio.src = track.src;
+        try { audio.load(); } catch (_) {}
+        if (root && root.sound && typeof root.sound.musicRepeat === 'boolean') audio.loop = root.sound.musicRepeat;
+        if (opts.autoplay || (wasPlaying && opts.keepPlaying)) {
+            const p = audio.play();
+            if (p && p.catch) p.catch(function(){});
+        }
+    } else if (opts.autoplay && audio.paused) {
+        const p = audio.play();
+        if (p && p.catch) p.catch(function(){});
+    }
+    return track;
+}
+function syncMusicTrackUI() {
+    const id = getSelectedMusicTrackId();
+    const tinfo = OJWGA_MUSIC_TRACKS[id];
+    const sel = document.getElementById('music-track-select');
+    if (sel) sel.value = id;
+    const playerTitle = document.querySelector('#music-player-overlay .mp-title');
+    const playerArtist = document.querySelector('#music-player-overlay .mp-artist');
+    const en = (typeof getAppLang === 'function' && getAppLang() === 'en');
+    if (playerTitle) playerTitle.textContent = en ? tinfo.en : tinfo.ja;
+    if (playerArtist) playerArtist.textContent = en ? tinfo.artistEn : tinfo.artistJa;
+    return tinfo;
+}
+function setMusicTrack(trackId) {
+    const id = normalizeMusicTrackId(trackId);
+    if (!root.sound) root.sound = defaultSound();
+    root.sound.musicTrack = id;
+    const audio = document.getElementById('main-bgm');
+    const wasPlaying = !!(audio && !audio.paused);
+    applyMainBgmTrack(id, { keepPlaying: wasPlaying, autoplay: false });
+    if (audio) {
+        audio.volume = Math.max(0, Math.min(1, Number(root.sound.musicVolume == null ? 0.45 : root.sound.musicVolume)));
+        audio.loop = root.sound.musicRepeat !== false;
+    }
+    saveRoot();
+    syncSoundUI();
+    syncMusicTrackUI();
+    try { witchSpeak((getAppLang()==='en' ? 'Music changed to ' : '音楽を「') + (getAppLang()==='en' ? OJWGA_MUSIC_TRACKS[id].en : OJWGA_MUSIC_TRACKS[id].ja) + (getAppLang()==='en' ? '.' : '」に変更したぞい！')); } catch (_) {}
+    if (root.sound.music !== false && wasPlaying && window.MainBGM) window.MainBGM.enable();
+}
+function onboardSetMusicTrack(trackId) {
+    const id = normalizeMusicTrackId(trackId);
+    onboardData.musicTrack = id;
+    const sel = document.getElementById('onb-music-track');
+    if (sel) sel.value = id;
+    /* 初期設定中にONなら、その曲をプレビューする。OFFなら曲だけ切り替える。 */
+    const audio = document.getElementById('main-bgm');
+    applyMainBgmTrack(id, { autoplay: !!onboardData.music, keepPlaying: !!(audio && !audio.paused) });
+}
+
 function onboardSetMusic(v) {
     onboardData.music = v;
-    /* 🎵 音楽ONを押した瞬間にその場で再生を始める（あとで完了時にも改めて確定される） */
+    onboardData.musicTrack = normalizeMusicTrackId(onboardData.musicTrack || 'main');
+    /* 🎵 音楽ONを押した瞬間に、その場で選択中の曲を再生する */
     window.onboardMusicPreview = !!v;
+    applyMainBgmTrack(onboardData.musicTrack, { autoplay: !!v, keepPlaying: !!v });
     try {
         if (typeof root !== 'undefined' && root && root.sound) {
             root.sound.music = !!v;
@@ -19014,6 +19135,8 @@ function onboardFinish() {
 
     /* 🎵 音楽設定 */
     root.sound.music = !!onboardData.music;
+    root.sound.musicTrack = normalizeMusicTrackId(onboardData.musicTrack || 'main');
+    applyMainBgmTrack(root.sound.musicTrack, { autoplay: false });
     if (!root.gameplay) root.gameplay = defaultGameplay();
     root.gameplay.showGreeting = (onboardData.greeting !== false);
 
@@ -19732,6 +19855,7 @@ const I18N = {
     'sound.rateLabel': '🎚️ 話す速さ',
     'sound.musicOnOff': '🎵 音楽 ON/OFF',
     'sound.musicOnOff.sub': 'ホーム画面のBGMを再生',
+    'sound.musicTrack': '🎵 ホーム画面の曲',
     'sound.volMusic': '🎚️ 音楽の音量',
     'sound.sfxOnOff': '効果音 ON/OFF',
     'sound.alarmLabel': '⚠️ 警告音',
@@ -19743,6 +19867,10 @@ const I18N = {
     'music.title': '🎵 音楽プレイヤー',
     'music.track': 'おいじぃ魔女',
     'music.artist': 'ホーム画面テーマソング',
+    'music.track.main': 'おいじぃ魔女',
+    'music.track.ondo': 'おいじぃ魔女音頭',
+    'music.track.trivia': 'おいじぃ魔女のヤバい雑学の歌',
+    'music.track.ojwga': 'おいじぃ魔女ゲームコレクションの歌',
     'music.volume': '🎚️ 音量',
     'music.repeatOn': '🔁 リピート: ON',
     'music.repeatOff': '🔁 リピート: OFF',
@@ -20519,6 +20647,7 @@ const I18N = {
     'sound.rateLabel': '🎚️ Speech Rate',
     'sound.musicOnOff': '🎵 Music ON/OFF',
     'sound.musicOnOff.sub': 'Play home screen BGM',
+    'sound.musicTrack': '🎵 Home screen track',
     'sound.volMusic': '🎚️ Music Volume',
     'sound.sfxOnOff': 'SFX ON/OFF',
     'sound.alarmLabel': '⚠️ Alert Sound',
@@ -20530,6 +20659,10 @@ const I18N = {
     'music.title': '🎵 Music Player',
     'music.track': 'Oijii Witch',
     'music.artist': 'Home screen theme song',
+    'music.track.main': 'Oijii Witch',
+    'music.track.ondo': 'Oijii Witch Ondo',
+    'music.track.trivia': 'Oijii Witch Crazy Trivia Song',
+    'music.track.ojwga': 'OJWGA Theme Song',
     'music.volume': '🎚️ Volume',
     'music.repeatOn': '🔁 Repeat: ON',
     'music.repeatOff': '🔁 Repeat: OFF',
@@ -21094,6 +21227,7 @@ function syncSoundUI() {
     if ($('sw-sfx')) $('sw-sfx').classList.toggle('on', s.sfx !== false);
     /* 改修v18: 音楽スイッチ・音量 */
     if ($('sw-music')) $('sw-music').classList.toggle('on', s.music !== false);
+    if ($('music-track-select')) $('music-track-select').value = normalizeMusicTrackId(s.musicTrack || 'main');
     if ($('vol-music')) $('vol-music').value = Math.round((s.musicVolume != null ? s.musicVolume : 0.45) * 100);
     if ($('vol-music-val')) $('vol-music-val').innerText = Math.round((s.musicVolume != null ? s.musicVolume : 0.45) * 100) + '%';
     if ($('vol-voice')) $('vol-voice').value = Math.round((s.volume != null ? s.volume : 1) * 100);
@@ -21104,6 +21238,7 @@ function syncSoundUI() {
     if ($('rate-voice-val')) $('rate-voice-val').innerText = (s.rate != null ? s.rate : 0.95).toFixed(2);
     if ($('vol-alarm')) $('vol-alarm').value = Math.round((s.alarmVolume != null ? s.alarmVolume : 0.7) * 100);
     if ($('vol-alarm-val')) $('vol-alarm-val').innerText = Math.round((s.alarmVolume != null ? s.alarmVolume : 0.7) * 100) + '%';
+    syncMusicTrackUI();
 }
 function toggleSwitch(kind) {
     if (kind === 'voice') root.sound.voice = !(root.sound.voice !== false);
@@ -21225,6 +21360,7 @@ function openMusicPlayer() {
     if (typeof root.sound.musicRepeat !== 'boolean') root.sound.musicRepeat = true;
     const a = mpAudio();
     if (a) a.loop = root.sound.musicRepeat;
+    syncMusicTrackUI();
 
     mpSyncUI();
     document.getElementById('music-player-overlay').classList.add('show');
@@ -21253,6 +21389,7 @@ function mpSyncUI() {
     const repeatBtn = document.getElementById('mp-repeat-btn');
 
     if (!a) return;
+    syncMusicTrackUI();
 
     const playing = !a.paused && root.sound.music !== false;
     if (playBtn) playBtn.innerText = playing ? '⏸️' : '▶️';
@@ -21328,19 +21465,21 @@ function mpToggleRepeat() {
 function mpDownloadTrack() {
     try {
         const a = mpAudio();
-        const src = a ? (a.querySelector('source') ? a.querySelector('source').src : a.currentSrc) : null;
+        const src = a ? (a.currentSrc || a.src) : null;
+        const track = getSelectedMusicTrack();
         if (!src) {
             showSafetyToast('⚠️ 音楽データが見つからないのじゃ…');
             return;
         }
         const link = document.createElement('a');
         link.href = src;
-        link.download = 'おいじぃ魔女.mp3';
+        link.download = track.file;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        showPointToast((typeof getAppLang==='function'&&getAppLang()==='en')?'🎵 Downloaded “Witch Ojii”!':'🎵「おいじぃ魔女」をダウンロードしたぞい！');
-        witchSpeak('「おいじぃ魔女」の曲をダウンロードしたぞい！大事に聴くのじゃぞ。');
+        const en = (typeof getAppLang==='function'&&getAppLang()==='en');
+        showPointToast(en ? ('🎵 Downloaded “' + track.en + '”!') : ('🎵「' + track.ja + '」をダウンロードしたぞい！'));
+        witchSpeak(en ? ('“' + track.en + '” downloaded. Enjoy the song!') : ('「' + track.ja + '」をダウンロードしたぞい！大事に聴くのじゃぞ。'));
     } catch (e) {
         showSafetyToast('⚠️ ダウンロードに失敗したのじゃ…');
     }
@@ -26162,6 +26301,11 @@ async function ensureGameHtml(gameId) {
             }
         } catch (e) {}
         audio.volume = v;
+        /* 改修v20: 保存済みの選択曲を読み込む */
+        try {
+            const id = normalizeMusicTrackId((root && root.sound && root.sound.musicTrack) || 'main');
+            applyMainBgmTrack(id, { autoplay:false });
+        } catch (e) {}
         /* 改修v19: 音楽プレイヤーのリピート設定を反映 */
         try {
             if (typeof root !== 'undefined' && root && root.sound && typeof root.sound.musicRepeat === 'boolean') {
@@ -26206,6 +26350,7 @@ async function ensureGameHtml(gameId) {
                 if (typeof root !== 'undefined' && root && root.sound) {
                     bgmEnabled = (root.sound.music !== false);
                     const a = bgm();
+                    try { applyMainBgmTrack(root.sound.musicTrack || 'main', { autoplay:false }); } catch (e) {}
                     if (a && typeof root.sound.musicVolume === 'number') {
                         a.volume = Math.max(0, Math.min(1, root.sound.musicVolume));
                     }
@@ -27973,7 +28118,7 @@ window.startOnboarding=function(){
   try{if(window.__startupUserGate){safeSpeak('起動画面では初期設定は開けんぞい。','Initial setup is not available here.');return;}}catch(e){}
   try{if(typeof applyLanguage==='function')applyLanguage();}catch(e){}
   onboardActive=true;onboardHistory=[];window.onboardMusicPreview=false;
-  onboardData={name:'',avatar:null,password:'',hint:'',music:true,theme:'purple',clock:false,clockStyle:'digital-neon',parental:false,howto:false,passwordMethod:'password',passwordPattern:[],deviceCredentialId:''};
+  onboardData={name:'',avatar:null,password:'',hint:'',music:true,musicTrack:'main',theme:'purple',clock:false,clockStyle:'digital-neon',parental:false,howto:false,passwordMethod:'password',passwordPattern:[],deviceCredentialId:''};
   var n=byId('onb-name-input');if(n)n.value='';
   onboardPickedLang=(typeof getAppLang==='function')?getAppLang():'ja';
   onboardCurrentStep='language';showOnboardStepKey('language');syncOnboardLangChecks();byId('onboarding-overlay').classList.add('show');
@@ -30246,6 +30391,8 @@ try{refreshSecurityLabels();try{ojwgaEnforceStartupUserGate();}catch(e){}}catch(
       if(!u.data)u.data=defaultUserData();
       root.currentUserId=u.id;
       root.sound.music=!!onboardData.music;
+      root.sound.musicTrack=normalizeMusicTrackId(onboardData.musicTrack||'main');
+      applyMainBgmTrack(root.sound.musicTrack,{autoplay:false});
       if(!root.gameplay)root.gameplay=defaultGameplay();
       root.gameplay.showGreeting=(onboardData.greeting!==false);
       root.display.theme=u.theme;
