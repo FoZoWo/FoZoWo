@@ -510,8 +510,71 @@ footer { display: none; }
   .power-toggle-btn span.lbl-text { display: none; }
 }
 </style>
+
+<style id="ai-use-restriction-style">
+#ai-use-restriction{position:fixed;left:50%;top:78px;transform:translateX(-50%);z-index:99999;width:min(92vw,680px);padding:12px 16px;border:1px solid rgba(255,145,82,.38);border-radius:16px;background:rgba(20,24,30,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 12px 35px rgba(0,0,0,.28);color:#fff;text-align:center;font:700 13px/1.55 system-ui,sans-serif;letter-spacing:.01em}
+#ai-use-restriction[hidden]{display:none!important}
+#ai-use-restriction strong{display:block;font-size:14px;margin-bottom:2px}
+#ai-use-restriction .ai-restriction-time{opacity:.82;font-weight:600;font-size:12px}
+[data-theme="light"] #ai-use-restriction{background:rgba(255,255,255,.96);color:#222;border-color:rgba(200,110,40,.25);box-shadow:0 12px 35px rgba(0,0,0,.12)}
+@media(max-width:600px){#ai-use-restriction{top:70px;width:calc(100vw - 20px);padding:10px 12px;font-size:12px}.ai-restriction-time{font-size:11px!important}}
+</style>
+
 </head>
 <body>
+<div id="ai-use-restriction" hidden aria-live="polite">
+  <strong id="ai-use-restriction-title">AI利用を一時制限中</strong>
+  <span id="ai-use-restriction-text">ブログAIの自動投稿準備のため、8:45〜9:30（日本時間）はAIを利用できません。</span>
+  <span class="ai-restriction-time" id="ai-use-restriction-time"></span>
+</div>
+
+<script id="ai-use-restriction-script">
+(function(){
+  const startMin=8*60+45;
+  const endMin=9*60+30;
+  const notice=document.getElementById('ai-use-restriction');
+  const title=document.getElementById('ai-use-restriction-title');
+  const text=document.getElementById('ai-use-restriction-text');
+  const time=document.getElementById('ai-use-restriction-time');
+  function jst(){
+    const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hour12:false,hourCycle:'h23'}).formatToParts(new Date());
+    const h=Number((parts.find(p=>p.type==='hour')||{}).value||0);
+    const m=Number((parts.find(p=>p.type==='minute')||{}).value||0);
+    return h*60+m;
+  }
+  function restricted(){
+    const m=jst();
+    return m>=startMin && m<endMin;
+  }
+  function update(){
+    const locked=restricted();
+    const en=(document.documentElement.lang||'ja').toLowerCase().startsWith('en');
+    if(notice){
+      notice.hidden=!locked;
+      if(locked){
+        title.textContent=en?'AI use temporarily limited':'AI利用を一時制限中';
+        text.textContent=en
+          ?'AI use is paused from 8:45 to 9:30 JST for the daily blog AI run.'
+          :'ブログAIの自動投稿準備のため、8:45〜9:30（日本時間）はAIを利用できません。';
+        const remain=Math.max(0,endMin-jst());
+        const rm=Math.floor(remain/60), rs=remain%60;
+        time.textContent=en
+          ?`Resumes at 09:30 JST (about ${rm}m ${String(rs).padStart(2,'0')}s remaining)`
+          :`9:30（日本時間）に再開します（あと${rm}分${String(rs).padStart(2,'0')}秒）`;
+      }else{
+        time.textContent='';
+      }
+    }
+    document.dispatchEvent(new CustomEvent('ai-use-restriction-change',{detail:{restricted:locked}}));
+  }
+  window.__isAIUseRestricted=restricted;
+  window.__updateAIUseRestriction=update;
+  update();
+  setInterval(update,1000);
+  document.addEventListener('languagechange',update);
+})();
+</script>
+
 
 <div class="network-toast" id="networkToast" role="status" aria-live="polite">
   <svg id="networkToastIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -808,20 +871,20 @@ footer { display: none; }
   https://www.facebook.com/oijiiw (Facebook) 
   https://x.com/oijiiw (X)
   https://www.tiktok.com/@oijiiw (TikTok)
-おいじぃ魔女のホームページは https://www.fozowo.f5.si/oijiiw です
+おいじぃ魔女のホームページは https://oisasi.f5.si/oijiiw です
 おいじぃ魔女雑学snsは
   https://www.instagram.com/oijiizatu (Instagram)
   https://www.youtube.com/@oijiizatu (YouTube) 
   https://www.facebook.com/oijiizatu (Facebook) 
   https://x.com/oijiizatu (X)
   https://www.tiktok.com/@oijiizatu (TikTok)
-雑学ホームページは https://www.fozowo.f5.si/oijiizatu です
-・fozowoのsns 
-   https://www.youtube.com/@fozowo (YouTube)
-   https://www.facebook.com/fozowo (Facebook) 
-   https://x.com/fozowo (X)
-   https://www.tiktok.com/@fozowo (TikTok)
-・fozowo公式ホームページは https://www.fozowo.f5.si です。`
+雑学ホームページは https://oisasi.f5.si/oijiizatu です
+・おいさしのsns 
+   https://www.youtube.com/@oisasiofficial (YouTube)
+   https://www.facebook.com/oisasiofficial (Facebook) 
+   https://x.com/oisasiofficial (X)
+   https://www.tiktok.com/@oisasiofficial (TikTok)
+・おいさし公式ホームページは https://oisasi.f5.si です。`
     }
   ];
 
@@ -887,6 +950,10 @@ footer { display: none; }
 
   // 送信処理（エラー時のクラッシュ対策を強化）
   async function sendMessage() {
+    if (window.__isAIUseRestricted && window.__isAIUseRestricted()) {
+      alert('ブログAIの自動投稿準備のため、9:30までAIを利用できません。');
+      return;
+    }
     const inputField = document.getElementById("user-input");
     const sendBtn = document.getElementById("send-btn");
     const powerToggle = document.getElementById("power-mode-toggle");
@@ -1071,6 +1138,17 @@ footer { display: none; }
 
   const sendBtn = document.getElementById("send-btn");
   const inputField = document.getElementById("user-input");
+  document.addEventListener('ai-use-restriction-change', function(e){
+    const locked=!!e.detail?.restricted;
+    inputField.disabled=locked;
+    sendBtn.disabled=locked;
+    const p=document.getElementById('power-mode-toggle');
+    if(p) p.disabled=locked;
+  });
+  inputField.disabled=!!(window.__isAIUseRestricted&&window.__isAIUseRestricted());
+  sendBtn.disabled=!!(window.__isAIUseRestricted&&window.__isAIUseRestricted());
+  const initialPowerToggle=document.getElementById('power-mode-toggle');
+  if(initialPowerToggle) initialPowerToggle.disabled=!!(window.__isAIUseRestricted&&window.__isAIUseRestricted());
   sendBtn.addEventListener('click', sendMessage);
   inputField.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') sendMessage();
