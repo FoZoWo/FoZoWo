@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>おいさしAI 電話</title>
-<meta name="description" content="おいさしAIと電話で会話できます。">
+<title>フォゾウォ(FoZoWo)AI 電話</title>
+<meta name="description" content="フォゾウォ(FoZoWo)AIと電話で会話できます。">
 <meta name="theme-color" content="#0c0f14">
 <link rel="icon" type="image/png" sizes="512x512" href="favicon-512AI.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -189,14 +189,77 @@ html, body {
   margin-top: 20px; font-size: 13px; color: #ff8a9a; font-weight: 700; text-align: center;
 }
 </style>
+
+<style id="ai-use-restriction-style">
+#ai-use-restriction{position:fixed;left:50%;top:78px;transform:translateX(-50%);z-index:99999;width:min(92vw,680px);padding:12px 16px;border:1px solid rgba(255,145,82,.38);border-radius:16px;background:rgba(20,24,30,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 12px 35px rgba(0,0,0,.28);color:#fff;text-align:center;font:700 13px/1.55 system-ui,sans-serif;letter-spacing:.01em}
+#ai-use-restriction[hidden]{display:none!important}
+#ai-use-restriction strong{display:block;font-size:14px;margin-bottom:2px}
+#ai-use-restriction .ai-restriction-time{opacity:.82;font-weight:600;font-size:12px}
+[data-theme="light"] #ai-use-restriction{background:rgba(255,255,255,.96);color:#222;border-color:rgba(200,110,40,.25);box-shadow:0 12px 35px rgba(0,0,0,.12)}
+@media(max-width:600px){#ai-use-restriction{top:70px;width:calc(100vw - 20px);padding:10px 12px;font-size:12px}.ai-restriction-time{font-size:11px!important}}
+</style>
+
 </head>
 <body>
+<div id="ai-use-restriction" hidden aria-live="polite">
+  <strong id="ai-use-restriction-title">AI利用を一時制限中</strong>
+  <span id="ai-use-restriction-text">ブログAIの自動投稿準備のため、8:45〜9:30（日本時間）はAIを利用できません。</span>
+  <span class="ai-restriction-time" id="ai-use-restriction-time"></span>
+</div>
+
+<script id="ai-use-restriction-script">
+(function(){
+  const startMin=8*60+45;
+  const endMin=9*60+30;
+  const notice=document.getElementById('ai-use-restriction');
+  const title=document.getElementById('ai-use-restriction-title');
+  const text=document.getElementById('ai-use-restriction-text');
+  const time=document.getElementById('ai-use-restriction-time');
+  function jst(){
+    const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hour12:false,hourCycle:'h23'}).formatToParts(new Date());
+    const h=Number((parts.find(p=>p.type==='hour')||{}).value||0);
+    const m=Number((parts.find(p=>p.type==='minute')||{}).value||0);
+    return h*60+m;
+  }
+  function restricted(){
+    const m=jst();
+    return m>=startMin && m<endMin;
+  }
+  function update(){
+    const locked=restricted();
+    const en=(document.documentElement.lang||'ja').toLowerCase().startsWith('en');
+    if(notice){
+      notice.hidden=!locked;
+      if(locked){
+        title.textContent=en?'AI use temporarily limited':'AI利用を一時制限中';
+        text.textContent=en
+          ?'AI use is paused from 8:45 to 9:30 JST for the daily blog AI run.'
+          :'ブログAIの自動投稿準備のため、8:45〜9:30（日本時間）はAIを利用できません。';
+        const remain=Math.max(0,endMin-jst());
+        const rm=Math.floor(remain/60), rs=remain%60;
+        time.textContent=en
+          ?`Resumes at 09:30 JST (about ${rm}m ${String(rs).padStart(2,'0')}s remaining)`
+          :`9:30（日本時間）に再開します（あと${rm}分${String(rs).padStart(2,'0')}秒）`;
+      }else{
+        time.textContent='';
+      }
+    }
+    document.dispatchEvent(new CustomEvent('ai-use-restriction-change',{detail:{restricted:locked}}));
+  }
+  window.__isAIUseRestricted=restricted;
+  window.__updateAIUseRestriction=update;
+  update();
+  setInterval(update,1000);
+  document.addEventListener('languagechange',update);
+})();
+</script>
+
 
 <!-- 発信前 -->
 <div class="dial-screen" id="dialScreen">
   <a class="back-link" href="ai.html">← チャットへ</a>
-  <img class="dial-avatar" src="favicon-512AI.png" alt="おいさしAI" width="120" height="120">
-  <div class="dial-name">おいさしAI</div>
+  <img class="dial-avatar" src="favicon-512AI.png" alt="フォゾウォ(FoZoWo)AI" width="120" height="120">
+  <div class="dial-name">フォゾウォ(FoZoWo)AI</div>
   <div class="dial-sub">音声で会話できます</div>
   <button type="button" class="call-btn" id="startCallBtn" aria-label="発信">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -210,16 +273,16 @@ html, body {
 <!-- 通話中 -->
 <div class="phone-call-screen" id="phoneCallScreen" aria-hidden="true">
   <div class="phone-call-top">
-    <div class="phone-call-label">おいさしAI</div>
+    <div class="phone-call-label">フォゾウォ(FoZoWo)AI</div>
     <div class="phone-call-timer" id="phoneCallTimer">00:00</div>
   </div>
   <div class="phone-call-center">
     <div class="phone-avatar-wrap">
       <div class="phone-avatar-ring" aria-hidden="true"></div>
       <div class="phone-avatar-ring r2" aria-hidden="true"></div>
-      <img class="phone-avatar" src="favicon-512AI.png" alt="おいさしAI" width="148" height="148">
+      <img class="phone-avatar" src="favicon-512AI.png" alt="フォゾウォ(FoZoWo)AI" width="148" height="148">
     </div>
-    <div class="phone-call-name">おいさしAI</div>
+    <div class="phone-call-name">フォゾウォ(FoZoWo)AI</div>
     <div class="phone-call-status" id="phoneCallStatus">接続中…</div>
     <div class="phone-wave" aria-hidden="true">
       <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
@@ -242,34 +305,38 @@ html, body {
 <script>
 (function () {
   const API_SERVER_URL = "https://oijii-majo-api.oisasioisasi.workers.dev";
-  const SYSTEM_PROMPT = `あなたは「おいさしAI」という、おいさし公式サイトのAIアシスタントです。
+  const SYSTEM_PROMPT = ``あなたは「FoZoWoAI」という、FoZoWo公式サイトのAIアシスタントです。
 ・丁寧で親しみやすい、自然な日本語（敬体）で簡潔に答えてください。特定のキャラクター口調や方言は使わないでください。
-・電話での会話なので、短く聞き取りやすい口語で答えてください。一度に長く話しすぎないでください。
-・おいさし関連のSNSやサイトについて聞かれたら、以下の情報をもとに正確に案内してください。
+・FoZoWoの読み方はフォゾウォ
+・FoZoWoのキャラクターは、おいさしとおいじぃ魔女の2人
+・おいさしは、FoZoWoのメインキャラクター　動画編集が大好きなキャラクター
+・おいじぃ魔女は、雑学動画を作るキャラクター　詳しくはおいじぃ魔女雑学SNS
+・FoZoWo関連のSNSやサイトについて聞かれたら、以下の情報をもとに正確に案内してください。
 ・おいじぃ魔女のSNS
   https://www.instagram.com/oijiiw （Instagram）
   https://www.youtube.com/@oijiiw （YouTube）
   https://www.facebook.com/oijiiw （Facebook）
   https://x.com/oijiiw （X）
   https://www.tiktok.com/@oijiiw （TikTok）
-  おいじぃ魔女のホームページ： https://oisasi.f5.si/oijiiw
+  おいじぃ魔女のホームページ： https://www.fozowo.f5.si/oijiiw
 ・おいじぃ魔女雑学のSNS
   https://www.instagram.com/oijiizatu （Instagram）
   https://www.youtube.com/@oijiizatu （YouTube）
   https://www.facebook.com/oijiizatu （Facebook）
   https://x.com/oijiizatu （X）
   https://www.tiktok.com/@oijiizatu （TikTok）
-  雑学ホームページ： https://oisasi.f5.si/oijiizatu
-・おいさしのSNS
-  https://www.youtube.com/@oisasiofficial （YouTube）
-  https://www.facebook.com/oisasiofficial （Facebook）
-  https://x.com/oisasiofficial （X）
-  https://www.tiktok.com/@oisasiofficial （TikTok）
-・おいさしAIのSNS（@oisasiai）について聞かれた場合のみ案内：
-  https://www.instagram.com/oisasiai
-  https://www.facebook.com/oisasiai
-  https://www.youtube.com/@oisasiai
-・おいさし公式ホームページ： https://oisasi.f5.si`;
+  雑学ホームページ： https://www.fozowo.f5.si/oijiizatu
+・FoZoWoのSNS
+  https://www.youtube.com/@fozowo （YouTube）
+  https://www.facebook.com/fozowo （Facebook）
+  https://x.com/fozowo （X）
+  https://www.tiktok.com/@fozowo （TikTok）
+・FoZoWoAI（このチャット自身）のSNSについて聞かれた場合、または「@fozowoai」と指定された場合のみ、以下を案内してください（それ以外では案内しない）。
+  FoZoWoAIのSNS（@fozowoai）
+  https://www.instagram.com/fozowoai （Instagram）
+  https://www.facebook.com/fozowoai （Facebook）
+  https://www.youtube.com/@fozowoai （YouTube）
+・FoZoWo公式ホームページ： https://www.fozowo.f5.si;
 
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const dialScreen = document.getElementById('dialScreen');
@@ -430,6 +497,10 @@ html, body {
   }
 
   async function askAI(userText) {
+    if (window.__isAIUseRestricted && window.__isAIUseRestricted()) {
+      setPhoneState('thinking', isJa() ? 'AI利用は9:30まで制限中です' : 'AI use is limited until 09:30 JST', isJa() ? 'ブログAIの自動投稿準備のため一時停止しています。' : 'Temporarily paused for the daily blog AI run.');
+      return null;
+    }
     isSending = true;
     conversationMessages.push({ role: 'user', content: userText });
     try {
@@ -492,11 +563,11 @@ html, body {
     const hour = Number(new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo', hour: 'numeric', hour12: false }));
     let greet;
     if (isJa()) {
-      if (hour >= 5 && hour < 11) greet = 'お電話ありがとうございます。おいさしAIです。おはようございます。ご用件をお話しください。';
-      else if (hour >= 18 || hour < 5) greet = 'お電話ありがとうございます。おいさしAIです。こんばんは。ご用件をお話しください。';
-      else greet = 'お電話ありがとうございます。おいさしAIです。こんにちは。ご用件をお話しください。';
+      if (hour >= 5 && hour < 11) greet = 'お電話ありがとうございます。フォゾウォAIです。おはようございます。ご用件をお話しください。';
+      else if (hour >= 18 || hour < 5) greet = 'お電話ありがとうございます。フォゾウォAIです。こんばんは。ご用件をお話しください。';
+      else greet = 'お電話ありがとうございます。フォゾウォAIです。こんにちは。ご用件をお話しください。';
     } else {
-      greet = 'Thank you for calling. This is Oisasi AI. How can I help you?';
+      greet = 'Thank you for calling. This is FoZoWo AI. How can I help you?';
     }
     setPhoneState('speaking', isJa() ? '話しています…' : 'Speaking…', greet);
     speak(greet);
@@ -578,6 +649,10 @@ html, body {
 
   async function startCall() {
     if (talkActive || !SpeechRecognition) return;
+    if (window.__isAIUseRestricted && window.__isAIUseRestricted()) {
+      setPhoneState(null, isJa() ? '9:30まで利用できません' : 'Unavailable until 09:30 JST', '');
+      return;
+    }
     conversationMessages = [{ role: 'system', content: SYSTEM_PROMPT }];
     setCallUI(true);
     talkBusy = true;
@@ -590,6 +665,12 @@ html, body {
     listenOnce();
   }
 
+  document.addEventListener('ai-use-restriction-change', function(e){
+    const locked=!!e.detail?.restricted;
+    startCallBtn.disabled=locked || !SpeechRecognition;
+    if (locked && talkActive) { try { endCall(); } catch(e) {} }
+  });
+  startCallBtn.disabled=(window.__isAIUseRestricted&&window.__isAIUseRestricted()) || !SpeechRecognition;
   startCallBtn.addEventListener('click', startCall);
   endCallBtn.addEventListener('click', endCall);
 })();
