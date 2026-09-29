@@ -568,6 +568,36 @@ article.post-full {
   border-bottom: 1px solid transparent;
 }
 .blog-footer a:hover { border-bottom-color: var(--accent); }
+.footer-sns {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+}
+.footer-sns a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  font-size: 0.82rem;
+  line-height: 1;
+}
+.footer-sns a:hover { border-color: var(--accent); background: var(--accent-soft); }
+.hero-sns { margin: 0.9rem 0 0.2rem; }
+.blog-hero .blog-age {
+  display: inline-block;
+  margin-top: 0.6rem;
+  padding: 0.25rem 0.85rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.footer-sns svg { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
 
 .clear-link {
   color: var(--accent-ink);
@@ -765,6 +795,17 @@ article.post-full {
   <span class="mark" aria-hidden="true"></span>
   <h1><a href="https://www.fozowo.f5.si/blog">FoZoWoブログ</a></h1>
   <p>毎日届けるトレンドノート</p>
+  <p class="blog-age" id="blog-age" aria-live="polite">2026年9月15日スタート</p>
+  <div class="footer-sns hero-sns">
+    <a href="https://www.instagram.com/fozowoblog/" target="_blank" rel="noopener noreferrer" aria-label="Instagram @fozowoblog">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8.2A3.2 3.2 0 1 1 12 8.8a3.2 3.2 0 0 1 0 6.4zM17.3 5.5a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4zM12 2.2c-3.2 0-3.6 0-4.8.1-1.3.1-2.1.3-2.9.6a5.8 5.8 0 0 0-2.1 1.4A5.8 5.8 0 0 0 1.8 6.4c-.3.8-.5 1.6-.6 2.9C1.1 10.4 1.1 10.8 1.1 12s0 3.6.1 4.8c.1 1.3.3 2.1.6 2.9.3.8.7 1.5 1.4 2.1.7.7 1.3 1.1 2.1 1.4.8.3 1.6.5 2.9.6 1.2.1 1.6.1 4.8.1s3.6 0 4.8-.1c1.3-.1 2.1-.3 2.9-.6a5.8 5.8 0 0 0 2.1-1.4c.7-.7 1.1-1.3 1.4-2.1.3-.8.5-1.6.6-2.9.1-1.2.1-1.6.1-4.8s0-3.6-.1-4.8c-.1-1.3-.3-2.1-.6-2.9a5.8 5.8 0 0 0-1.4-2.1 5.8 5.8 0 0 0-2.1-1.4c-.8-.3-1.6-.5-2.9-.6-1.2-.1-1.6-.1-4.8-.1zm0 1.8c3.1 0 3.5 0 4.7.1 1.1.1 1.7.2 2.1.4.5.2.9.5 1.3.9.4.4.7.8.9 1.3.2.4.3 1 .4 2.1.1 1.2.1 1.6.1 4.7s0 3.5-.1 4.7c-.1 1.1-.2 1.7-.4 2.1-.2.5-.5.9-.9 1.3-.4.4-.8.7-1.3.9-.4.2-1 .3-2.1.4-1.2.1-1.6.1-4.7.1s-3.5 0-4.7-.1c-1.1-.1-1.7-.2-2.1-.4a3.5 3.5 0 0 1-1.3-.9 3.5 3.5 0 0 1-.9-1.3c-.2-.4-.3-1-.4-2.1C3.9 15.5 3.9 15.1 3.9 12s0-3.5.1-4.7c.1-1.1.2-1.7.4-2.1.2-.5.5-.9.9-1.3.4-.4.8-.7 1.3-.9.4-.2 1-.3 2.1-.4C8.5 4 8.9 4 12 4z"/></svg>
+      <span>Instagram</span>
+    </a>
+    <a href="https://www.facebook.com/fozowoblog" target="_blank" rel="noopener noreferrer" aria-label="Facebook @fozowoblog">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12a12 12 0 1 0-13.9 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.7 4.5-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9V12h3.4l-.5 3.5h-2.9v8.4A12 12 0 0 0 24 12z"/></svg>
+      <span>Facebook</span>
+    </a>
+  </div>
   <button type="button" id="notif-toggle" class="notif-toggle" data-state="default">
     <span id="notif-toggle-label">通知を有効にする</span>
   </button>
@@ -786,9 +827,35 @@ article.post-full {
 </div>
 
 <footer class="blog-footer">
+  <div class="footer-sns">
+    <a href="https://www.instagram.com/fozowoblog/" target="_blank" rel="noopener noreferrer" aria-label="Instagram @fozowoblog">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8.2A3.2 3.2 0 1 1 12 8.8a3.2 3.2 0 0 1 0 6.4zM17.3 5.5a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4zM12 2.2c-3.2 0-3.6 0-4.8.1-1.3.1-2.1.3-2.9.6a5.8 5.8 0 0 0-2.1 1.4A5.8 5.8 0 0 0 1.8 6.4c-.3.8-.5 1.6-.6 2.9C1.1 10.4 1.1 10.8 1.1 12s0 3.6.1 4.8c.1 1.3.3 2.1.6 2.9.3.8.7 1.5 1.4 2.1.7.7 1.3 1.1 2.1 1.4.8.3 1.6.5 2.9.6 1.2.1 1.6.1 4.8.1s3.6 0 4.8-.1c1.3-.1 2.1-.3 2.9-.6a5.8 5.8 0 0 0 2.1-1.4c.7-.7 1.1-1.3 1.4-2.1.3-.8.5-1.6.6-2.9.1-1.2.1-1.6.1-4.8s0-3.6-.1-4.8c-.1-1.3-.3-2.1-.6-2.9a5.8 5.8 0 0 0-1.4-2.1 5.8 5.8 0 0 0-2.1-1.4c-.8-.3-1.6-.5-2.9-.6-1.2-.1-1.6-.1-4.8-.1zm0 1.8c3.1 0 3.5 0 4.7.1 1.1.1 1.7.2 2.1.4.5.2.9.5 1.3.9.4.4.7.8.9 1.3.2.4.3 1 .4 2.1.1 1.2.1 1.6.1 4.7s0 3.5-.1 4.7c-.1 1.1-.2 1.7-.4 2.1-.2.5-.5.9-.9 1.3-.4.4-.8.7-1.3.9-.4.2-1 .3-2.1.4-1.2.1-1.6.1-4.7.1s-3.5 0-4.7-.1c-1.1-.1-1.7-.2-2.1-.4a3.5 3.5 0 0 1-1.3-.9 3.5 3.5 0 0 1-.9-1.3c-.2-.4-.3-1-.4-2.1C3.9 15.5 3.9 15.1 3.9 12s0-3.5.1-4.7c.1-1.1.2-1.7.4-2.1.2-.5.5-.9.9-1.3.4-.4.8-.7 1.3-.9.4-.2 1-.3 2.1-.4C8.5 4 8.9 4 12 4z"/></svg>
+      <span>Instagram</span>
+    </a>
+    <a href="https://www.facebook.com/fozowoblog" target="_blank" rel="noopener noreferrer" aria-label="Facebook @fozowoblog">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12a12 12 0 1 0-13.9 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.7 4.5-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9V12h3.4l-.5 3.5h-2.9v8.4A12 12 0 0 0 24 12z"/></svg>
+      <span>Facebook</span>
+    </a>
+  </div>
   <p>© FoZoWo — <a href="https://www.fozowo.f5.si/blog">ブログトップ</a></p>
 </footer>
 
+<script>
+/* ブログ開設日(2026-09-15)からの経過を「N年M日」で表示 */
+(function () {
+  var el = document.getElementById('blog-age');
+  if (!el) return;
+  var start = new Date(2026, 8, 15);
+  var now = new Date();
+  var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if (today < start) return;
+  var years = today.getFullYear() - start.getFullYear();
+  var anniv = new Date(start.getFullYear() + years, 8, 15);
+  if (anniv > today) { years--; anniv = new Date(start.getFullYear() + years, 8, 15); }
+  var days = Math.round((today - anniv) / 86400000);
+  el.textContent = '2026年9月15日スタート ・ 開設から ' + years + '年' + days + '日';
+})();
+</script>
 <script>
 /* data-theme の変化に theme-color メタタグを追従させる */
 (function () {
