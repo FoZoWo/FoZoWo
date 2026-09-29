@@ -872,25 +872,64 @@ article.post-full {
     try { localStorage.setItem(NOTIFIED_IDS_KEY, JSON.stringify(Array.from(set))); } catch (e) { /* ignore */ }
   }
 
-  function fireNotification(post) {
-    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  // Service Worker（sw.js）を登録しておく。Android の Chrome などは
+  // new Notification() が使えず、registration.showNotification() 経由でしか表示できない。
+  async function registerSW() {
+    if (!('serviceWorker' in navigator)) return;
+    try { await navigator.serviceWorker.register('sw.js'); }
+    catch (e) { console.warn('Service Worker の登録に失敗しました（sw.js が無い場合は通常の通知にフォールバック）:', e); }
+  }
+
+  // 表示に成功したら true を返す（失敗を握りつぶして「通知済み」にしてしまわないため）
+  async function fireNotification(post) {
+    if (!('Notification' in window) || Notification.permission !== 'granted') return false;
+    const title = 'FoZoWoブログ — 新着記事';
+    const options = {
+      body: post.title,
+      tag: 'fozowo-post-' + post.id,
+      data: { url: `${BLOG_HOME}?id=${encodeURIComponent(post.id)}` },
+    };
     try {
-      const n = new Notification('FoZoWoブログ — 新着記事', {
-        body: post.title,
-        tag: 'fozowo-post-' + post.id,
-      });
+      if ('serviceWorker' in navigator) {
+        const reg = await navigator.serviceWorker.getRegistration();
+        if (reg && reg.active) { await reg.showNotification(title, options); return true; }
+      }
+    } catch (e) { console.warn('SW経由の通知に失敗:', e); }
+    try {
+      const n = new Notification(title, options);
       n.onclick = function () {
         window.focus();
-        window.location.href = `?id=${post.id}`;
+        window.location.href = `?id=${encodeURIComponent(post.id)}`;
       };
-    } catch (e) { /* ignore */ }
+      return true;
+    } catch (e) {
+      console.warn('通知の表示に失敗しました:', e);
+      return false;
+    }
+  }
+
+  // 現在サーバーにある記事をすべて「通知済み」にする（有効化時に使用）
+  async function markAllAsNotified() {
+    const ids = new Set(allPosts.map(p => String(p.id)));
+    try {
+      const res = await fetch(API_URL, { cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success) (data.posts || []).forEach(p => ids.add(String(p.id)));
+      }
+    } catch (e) { /* allPosts だけで続行 */ }
+    saveNotifiedIds(new Set([...loadNotifiedIds(), ...ids]));
   }
 
   let pollTimerId = null;
+  let polling = false;
   async function pollForNewPosts() {
+    if (polling) return; // visibilitychange と定期実行の同時発火で二重通知しないため
     if (!('Notification' in window) || Notification.permission !== 'granted' || !notifEnabled) return;
+    polling = true;
     try {
-      const response = await fetch(API_URL);
+      // ブラウザのHTTPキャッシュに古い一覧を返されないよう no-store を指定
+      const response = await fetch(API_URL, { cache: 'no-store' });
       if (!response.ok) return;
       const data = await response.json();
       if (!data.success) return;
@@ -902,15 +941,15 @@ article.post-full {
 
       newOnes.forEach(p => {
         if (!existingIds.has(String(p.id))) allPosts.push(p);
-        notifiedIds.add(String(p.id));
       });
       allPosts.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-      saveNotifiedIds(notifiedIds);
 
-      newOnes
-        .slice()
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-        .forEach(fireNotification);
+      // 通知の表示に成功した記事だけ「通知済み」にする（失敗分は次回リトライ）
+      const sorted = newOnes.slice().sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      for (const p of sorted) {
+        if (await fireNotification(p)) notifiedIds.add(String(p.id));
+      }
+      saveNotifiedIds(notifiedIds);
 
       // 開いているリスト表示があれば更新（NEWバッジ・件数を反映）
       const listBody = document.getElementById('list-body');
@@ -918,6 +957,8 @@ article.post-full {
       renderArchive();
     } catch (e) {
       console.warn('新着記事の確認に失敗しました:', e);
+    } finally {
+      polling = false;
     }
   }
 
@@ -943,7 +984,9 @@ article.post-full {
   function initNotifToggle() {
     const btn = document.getElementById('notif-toggle');
     const label = document.getElementById('notif-toggle-label');
-    if (!btn) return;
+    if (!btn || btn.dataset.ready) return; // 二重初期化防止
+    btn.dataset.ready = '1';
+    registerSW();
 
     function refresh() {
       if (!('Notification' in window)) {
@@ -978,7 +1021,7 @@ article.post-full {
           notifEnabled = true;
           saveNotifEnabled(true);
           // 有効化した時点までの記事は通知済み扱いにし、これ以降の新着だけ通知する
-          saveNotifiedIds(new Set(allPosts.map(p => String(p.id))));
+          await markAllAsNotified();
         }
       } else {
         // 許可済みなら ON / OFF を切り替えるだけ（ブラウザの許可自体は取り消せないため）
@@ -986,7 +1029,7 @@ article.post-full {
         saveNotifEnabled(notifEnabled);
         if (notifEnabled) {
           // 再度ONにした時点までの新着はまとめて通知済み扱いにする
-          saveNotifiedIds(new Set(allPosts.map(p => String(p.id))));
+          await markAllAsNotified();
         }
       }
       refresh();
@@ -1030,6 +1073,7 @@ article.post-full {
       loading.style.display = 'none';
       container.innerHTML = `<div class="error-message">エラーが発生しました: ${escapeHTML(error.message)}</div>`;
       console.error(error);
+      initNotifToggle(); // 読み込み失敗時もボタンが無反応にならないようにする
     }
   }
 
