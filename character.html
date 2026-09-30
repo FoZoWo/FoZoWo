@@ -1,17 +1,36 @@
 <!DOCTYPE html>
-<html lang="ja" data-theme="auto">
+<html lang="ja" data-theme="auto" data-site-lang="ja" data-page-key="character">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <script>
-(function(){var r=document.documentElement,t='auto',l='ja';
-try{t=localStorage.getItem('FoZoWo-theme')||'auto';l=localStorage.getItem('FoZoWo-language')==='en'?'en':'ja';}catch(e){}
-if(t==='auto')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
-r.setAttribute('data-theme',t==='light'?'light':'dark');r.lang=l;})();
+(function(){
+  var r=document.documentElement,t='auto',l=r.dataset.siteLang||'ja';
+  try{
+    t=localStorage.getItem('FoZoWo-theme')||'auto';
+    var saved=localStorage.getItem('FoZoWo-language');
+    if(saved) l=saved;
+  }catch(e){}
+  if(t==='auto')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  r.setAttribute('data-theme',t==='light'?'light':'dark');
+  r.lang=l==='hiragana'?'ja-JP-x-hiragana':(l==='zh-cn'?'zh-CN':(l==='zh-tw'?'zh-TW':l));
+})();
 </script>
-<title>キャラクター紹介 | ZOJEZU Official</title>
-<meta name="description" content="ゾジェズ公式キャラクター紹介ページ。おいさし・おいじぃ魔女のプロフィールを掲載。">
+<title>キャラクター紹介 | FoZoWo Official</title>
+<meta name="description" content="FoZoWo公式キャラクター紹介ページ。おいさし・おいじぃ魔女のプロフィールを掲載。">
+<meta property="og:url" content="https://www.fozowo.f5.si/character.html?lang=ja">
 <meta name="theme-color" content="#0a0a12">
+<link rel="canonical" href="https://www.fozowo.f5.si/character.html?lang=ja">
+<link rel="alternate" hreflang="ja" href="https://www.fozowo.f5.si/character.html?lang=ja" data-lang-alt="ja">
+<link rel="alternate" hreflang="en" href="https://www.fozowo.f5.si/character.html?lang=en" data-lang-alt="en">
+<link rel="alternate" hreflang="ja-JP-x-hiragana" href="https://www.fozowo.f5.si/character.html?lang=hiragana" data-lang-alt="hiragana">
+<link rel="alternate" hreflang="ko" href="https://www.fozowo.f5.si/character.html?lang=ko" data-lang-alt="ko">
+<link rel="alternate" hreflang="zh-CN" href="https://www.fozowo.f5.si/character.html?lang=zh-cn" data-lang-alt="zh-cn">
+<link rel="alternate" hreflang="zh-TW" href="https://www.fozowo.f5.si/character.html?lang=zh-tw" data-lang-alt="zh-tw">
+<link rel="alternate" hreflang="es" href="https://www.fozowo.f5.si/character.html?lang=es" data-lang-alt="es">
+<link rel="alternate" hreflang="fr" href="https://www.fozowo.f5.si/character.html?lang=fr" data-lang-alt="fr">
+<link rel="alternate" hreflang="de" href="https://www.fozowo.f5.si/character.html?lang=de" data-lang-alt="de">
+<link rel="alternate" hreflang="pt" href="https://www.fozowo.f5.si/character.html?lang=pt" data-lang-alt="pt">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
@@ -232,6 +251,7 @@ footer { margin-top: 52px; text-align: center; }
   .section { opacity: 1; transform: none; }
 }
 </style>
+<script src="language.js"></script>
 </head>
 <body>
 
@@ -258,25 +278,25 @@ footer { margin-top: 52px; text-align: center; }
 
 <div class="shell">
   <div class="hero">
-    <div class="badge">Character</div>
+    <div class="badge" data-i18n="badge">Character</div>
     <h1 data-i18n-html="hero_title">キャラクター<span>紹介</span></h1>
     <p class="subtitle" data-i18n="hero_sub">CHARACTER PROFILE</p>
-    <p class="lead" data-i18n="hero_lead">ゾジェズ公式の仲間たちをご紹介します。</p>
+    <p class="lead" data-i18n="hero_lead">フォゾウォ公式の仲間たちをご紹介します。</p>
   </div>
 
   <section class="section" id="oisasi">
     <div class="sec-title" data-i18n="sec_oisasi">おいさし</div>
     <div class="profile-card oisasi">
       <div class="profile-avatar">
-        <img src="おいさし写真.png" alt="おいさし">
+        <img src="おいさし写真.png" alt="おいさし" data-i18n-alt="oisasi_alt">
       </div>
       <div class="profile-main">
         <div class="profile-name">
-          <h2>おいさし</h2>
+          <h2 data-i18n="oisasi_name">おいさし</h2>
           <span class="profile-role" data-i18n="oisasi_role">看板キャラクター</span>
         </div>
         <p class="profile-desc" data-i18n="oisasi_desc">
-          ZOJEZU Officialの看板キャラクター。持ち前の明るさと好奇心で、音楽・AI・SNSなど、あらゆるコンテンツを元気に飛び回っている。新しいものが大好きで、思いついたらすぐ行動するタイプ。
+          FoZoWo Officialの看板キャラクター。持ち前の明るさと好奇心で、音楽・AI・SNSなど、あらゆるコンテンツを元気に飛び回っている。新しいものが大好きで、思いついたらすぐ行動するタイプ。
         </p>
         <div class="tag-grid">
           <span class="tag" data-i18n="oisasi_tag1">🎵 音楽好き</span>
@@ -295,13 +315,13 @@ footer { margin-top: 52px; text-align: center; }
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
             <span data-i18n="oisasi_link_home">おいさし公式ホームページ</span>
           </a>
-          <a class="link-pill" href="https://oisasi.f5.si/ai">
+          <a class="link-pill" href="https://fozowo.f5.si/ai">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v1a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M6 10v1a6 6 0 0 0 12 0v-1"/><path d="M9 18h6"/><path d="M10 21h4"/></svg>
-            <span data-i18n="oisasi_link_ai">ゾジェズAIと話す</span>
+            <span data-i18n="oisasi_link_ai">フォゾウォAIと話す</span>
           </a>
-          <a class="link-pill" href="https://oisasi.f5.si/oisasi-music">
+          <a class="link-pill" href="https://fozowo.f5.si/music">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-            <span data-i18n="oisasi_link_music">ゾジェズミュージック</span>
+            <span data-i18n="oisasi_link_music">フォゾウォミュージック</span>
           </a>
           <a class="link-pill" href="https://www.youtube.com/@fozowo">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.5 31.5 0 0 0 0 12a31.5 31.5 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.5 31.5 0 0 0 24 12a31.5 31.5 0 0 0-.5-5.8zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>
@@ -320,11 +340,11 @@ footer { margin-top: 52px; text-align: center; }
     <div class="sec-title" data-i18n="sec_oijii">おいじぃ魔女</div>
     <div class="profile-card oijii">
       <div class="profile-avatar">
-        <img src="おいじぃ魔女.png" alt="おいじぃ魔女">
+        <img src="おいじぃ魔女.png" alt="おいじぃ魔女" data-i18n-alt="oijii_alt">
       </div>
       <div class="profile-main">
         <div class="profile-name">
-          <h2>おいじぃ魔女</h2>
+          <h2 data-i18n="oijii_name">おいじぃ魔女</h2>
           <span class="profile-role" data-i18n="oijii_role">謎の魔女</span>
         </div>
         <p class="profile-desc" data-i18n="oijii_desc">
@@ -363,7 +383,7 @@ footer { margin-top: 52px; text-align: center; }
   <footer>
     <div class="footer-pill">
       <span>✦</span>
-      <span data-i18n="footer">ZOJEZU Official — 設定からテーマ・言語を変更できます</span>
+      <span data-i18n="footer">FoZoWo Official — 設定からテーマ・言語を変更できます</span>
     </div>
   </footer>
 </div>
@@ -372,77 +392,8 @@ footer { margin-top: 52px; text-align: center; }
 (function () {
   const html = document.documentElement;
 
-  const i18n = {
-    ja: {
-      settings: '設定', theme: 'テーマ', language: '言語',
-      navWitchHome: 'おいじぃ魔女のホームページ', navLogo: 'フォゾウォのロゴページ', navFaq: 'FAQ', navCharacter: 'キャラクター', navBlog: 'ブログ', navAI: 'フォゾウォAI',
-      navAIPage: 'フォゾウォAIページ', navCharacterPage: 'キャラクターページ', navFaqPage: 'FAQページ',
-      search: '検索', share: 'サイトをシェア', menuOpen: 'メニューを開く', shareTitle: 'FoZoWoをシェア', close: '閉じる', shareQrAlt: 'FoZoWoの二次元コード',
-      officialUrlLabel: '公式URL', shortUrlLabel: '短縮URL', nativeShare: '共有する', copyShort: '短縮URLをコピー', copyFull: '公式URLをコピー', downloadQr: '二次元コードをダウンロード',
-      searchPlaceholder: 'ページを検索…', clear: 'クリア', searchHint: 'キーワードを入力してください', mobileFooter: 'FoZoWo · OFFICIAL',
-      pageTitle: 'キャラクター紹介 | ZOJEZU Official', oisasi_link_home: 'おいさし公式ホームページ',
-      auto: '自動', dark: 'ダーク', light: 'ライト',
-      hero_title: 'キャラクター<span>紹介</span>',
-      hero_sub: 'CHARACTER PROFILE',
-      hero_lead: 'ゾジェズ公式の仲間たちをご紹介します。',
-      sec_oisasi: 'おいさし', sec_oijii: 'おいじぃ魔女',
-      oisasi_role: '看板キャラクター',
-      oisasi_desc: 'ZOJEZU Officialの看板キャラクター。持ち前の明るさと好奇心で、音楽・AI・SNSなど、あらゆるコンテンツを元気に飛び回っている。新しいものが大好きで、思いついたらすぐ行動するタイプ。',
-      oisasi_tag1: '🎵 音楽好き', oisasi_tag2: '✨ 元気いっぱい', oisasi_tag3: '📱 SNS担当', oisasi_tag4: '🤖 AIとも仲良し',
-      oijii_role: '謎の魔女',
-      oijii_desc: '古い魔法書を片手に、衝撃的な雑学と不思議な魔法を操る謎めいた魔女。物知りで少しミステリアスだが、おいさしの世界に彩りを添える頼れる存在。夜な夜な知識を集めているらしい。',
-      oijii_tag1: '🔮 魔法使い', oijii_tag2: '📚 雑学王', oijii_tag3: '🌙 夜行性', oijii_tag4: '🧙 ミステリアス',
-      stat_role: '担当', stat_like: '好きなもの', stat_personality: '性格', stat_relation: '相方',
-      oisasi_stat_role: '看板・進行役', oisasi_stat_like: '新しい音楽', oisasi_stat_personality: '明るく元気', oisasi_stat_relation: 'おいじぃ魔女',
-      oijii_stat_role: '雑学・魔法', oijii_stat_like: '古い魔法書', oijii_stat_personality: '物知り・マイペース', oijii_stat_relation: 'おいさし',
-      oisasi_link_ai: 'ゾジェズAIと話す', oisasi_link_music: 'ゾジェズミュージック', oisasi_link_yt: 'YouTube', oisasi_link_x: 'X',
-      oijii_link_home: 'おいじぃ魔女のホームページ', oijii_link_trivia: 'ヤバい雑学', oijii_link_sns: 'SNSまとめ',
-      footer: 'ZOJEZU Official — 設定からテーマ・言語を変更できます'
-    },
-    en: {
-      settings: 'Settings', theme: 'Theme', language: 'Language',
-      navWitchHome: "Oijii Witch's Homepage", navLogo: 'FoZoWo Logo Page', navFaq: 'FAQ', navCharacter: 'Characters', navBlog: 'Blog', navAI: 'FoZoWo AI',
-      navAIPage: 'FoZoWo AI Page', navCharacterPage: 'Characters Page', navFaqPage: 'FAQ Page',
-      search: 'Search', share: 'Share this site', menuOpen: 'Open menu', shareTitle: 'Share FoZoWo', close: 'Close', shareQrAlt: 'FoZoWo QR code',
-      officialUrlLabel: 'Official URL', shortUrlLabel: 'Short URL', nativeShare: 'Share', copyShort: 'Copy short URL', copyFull: 'Copy official URL', downloadQr: 'Download QR code',
-      searchPlaceholder: 'Search pages…', clear: 'Clear', searchHint: 'Type a keyword', mobileFooter: 'FoZoWo · OFFICIAL',
-      pageTitle: 'Characters | ZOJEZU Official', oisasi_link_home: 'Oisasi Official Homepage',
-      auto: 'Auto', dark: 'Dark', light: 'Light',
-      hero_title: 'Character<span>s</span>',
-      hero_sub: 'CHARACTER PROFILE',
-      hero_lead: 'Meet the official ZOJEZU cast.',
-      sec_oisasi: 'Oisasi', sec_oijii: 'Oijii Witch',
-      oisasi_role: 'Main Mascot',
-      oisasi_desc: 'The main mascot of ZOJEZU Official. Cheerful and endlessly curious, always jumping into music, AI, and social media content. Loves anything new and acts on ideas right away.',
-      oisasi_tag1: '🎵 Loves music', oisasi_tag2: '✨ Full of energy', oisasi_tag3: '📱 Runs the socials', oisasi_tag4: '🤖 Gets along with AI',
-      oijii_role: 'Mysterious Witch',
-      oijii_desc: 'A mysterious witch who wields shocking trivia and strange magic, old spellbook always in hand. Knowledgeable and a little enigmatic, she adds color to the ZOJEZU world — rumor has it she gathers knowledge every night.',
-      oijii_tag1: '🔮 Spellcaster', oijii_tag2: '📚 Trivia master', oijii_tag3: '🌙 Nocturnal', oijii_tag4: '🧙 Enigmatic',
-      stat_role: 'Role', stat_like: 'Likes', stat_personality: 'Personality', stat_relation: 'Partner',
-      oisasi_stat_role: 'Mascot & host', oisasi_stat_like: 'New music', oisasi_stat_personality: 'Bright & energetic', oisasi_stat_relation: 'Oijii Witch',
-      oijii_stat_role: 'Trivia & magic', oijii_stat_like: 'Old spellbooks', oijii_stat_personality: 'Knowledgeable, laid-back', oijii_stat_relation: 'Oisasi',
-      oisasi_link_ai: 'Chat with ZOJEZU AI', oisasi_link_music: 'ZOJEZU Music', oisasi_link_yt: 'YouTube', oisasi_link_x: 'X',
-      oijii_link_home: 'Oijii Witch Homepage', oijii_link_trivia: 'Shocking Trivia', oijii_link_sns: 'All Socials',
-      footer: 'ZOJEZU Official — Change theme & language in Settings'
-    }
-  };
-
-
-  // ===== 言語（ヘッダーの言語設定と連動） =====
-  let currentLang = html.lang === 'en' ? 'en' : 'ja';
-  const ATTRS = [['data-i18n-label', 'aria-label'], ['data-i18n-title', 'title'], ['data-i18n-alt', 'alt'], ['data-i18n-placeholder', 'placeholder']];
-  function applyLang(lang) {
-    currentLang = lang === 'en' ? 'en' : 'ja';
-    html.lang = currentLang;
-    const t = i18n[currentLang];
-    document.querySelectorAll('[data-i18n]').forEach(el => { const v = t[el.getAttribute('data-i18n')]; if (v != null) el.textContent = v; });
-    document.querySelectorAll('[data-i18n-html]').forEach(el => { const v = t[el.getAttribute('data-i18n-html')]; if (v != null) el.innerHTML = v; });
-    ATTRS.forEach(([data, attr]) => {
-      document.querySelectorAll('[' + data + ']').forEach(el => { const v = t[el.getAttribute(data)]; if (v != null) el.setAttribute(attr, v); });
-    });
-    if (t.pageTitle) document.title = t.pageTitle;
-  }
-  window.addEventListener('fozowo-language-change', e => applyLang(e.detail && e.detail.lang));
+  // Shared language.js handles all 10 languages and language persistence.
+  if (window.FoZoWoLang) window.FoZoWoLang.refresh();
 
   // ===== テーマ（ヘッダーが <html data-theme> を更新 → theme-color を追従） =====
   const themeMeta = document.querySelector('meta[name="theme-color"]');
@@ -483,6 +434,8 @@ footer { margin-top: 52px; text-align: center; }
     }
   }
   loadHeader();
+
+  if (window.FoZoWoLang) window.FoZoWoLang.refresh();
 
   // ===== セクションのフェードイン =====
   const observer = new IntersectionObserver(entries => {

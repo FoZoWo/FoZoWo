@@ -332,7 +332,7 @@
 
 <header class="header" id="header">
   <div class="header-inner">
-    <a href="https://www.fozowo.f5.si/ja.html" class="logo" data-localized-page="home" onclick="typeof closeAll==='function'&&closeAll()">
+    <a href="index.html?lang=ja" class="logo" data-localized-page="home" onclick="typeof closeAll==='function'&&closeAll()">
       <img class="logo-img" src="おいさしロゴ.png" alt="FoZoWo（読み方：フォゾウォ）" width="40" height="40" onerror="this.style.display='none'">
       <div class="logo-text"><span>FoZoWo</span></div>
     </a>
@@ -340,7 +340,7 @@
       <a href="https://www.fozowo.f5.si/oijiiw" data-i18n="navWitchHome">おいじぃ魔女のホームページ</a>
       <a href="https://www.fozowo.f5.si/logo" data-i18n="navLogo">フォゾウォのロゴページ</a>
       <a href="https://www.fozowo.f5.si/faq" data-i18n="navFaq">FAQ</a>
-      <a href="https://www.fozowo.f5.si/character_ja.html" data-i18n="navCharacter" data-localized-page="character">キャラクター</a>
+      <a href="character.html?lang=ja" data-i18n="navCharacter" data-localized-page="character">キャラクター</a>
       <a href="https://www.fozowo.f5.si/blog" data-i18n="navBlog">ブログ</a>
       <a class="accent" href="https://www.fozowo.f5.si/ai" data-i18n="navAI">フォゾウォAI</a>
     </nav>
@@ -436,7 +436,7 @@
   <a href="https://www.fozowo.f5.si/oijiiw" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🔮</span> <span data-i18n="navWitchHome">おいじぃ魔女のホームページ</span></a>
   <a href="https://www.fozowo.f5.si/logo" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🎀</span> <span data-i18n="navLogo">フォゾウォのロゴページ</span></a>
   <a href="https://www.fozowo.f5.si/ai" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🤖</span> <span data-i18n="navAIPage">フォゾウォAIページ</span></a>
-  <a href="https://www.fozowo.f5.si/character_ja.html" data-localized-page="character" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">👤</span> <span data-i18n="navCharacterPage">キャラクターページ</span></a>
+  <a href="character.html?lang=ja" data-localized-page="character" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">👤</span> <span data-i18n="navCharacterPage">キャラクターページ</span></a>
   <a href="https://www.fozowo.f5.si/faq" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">💬</span> <span data-i18n="navFaqPage">FAQページ</span></a>
   <a href="https://www.fozowo.f5.si/blog" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">📝</span> <span data-i18n="navBlog">ブログ</span></a>
   <div class="nav-mobile-footer" data-i18n="mobileFooter">FoZoWo · OFFICIAL</div>
@@ -448,7 +448,7 @@
     { title: "おいじぃ魔女のホームページ", url: "https://www.fozowo.f5.si/oijiiw", icon: "🔮", keywords: "おいじい おいじぃ 魔女 witch home ホーム" },
     { title: "フォゾウォのロゴページ", url: "https://www.fozowo.f5.si/logo", icon: "🎀", keywords: "ロゴ logo デザイン" },
     { title: "FAQ", url: "https://www.fozowo.f5.si/faq", icon: "💬", keywords: "faq よくある質問 question ヘルプ help" },
-    { title: "キャラクター", url: "https://www.fozowo.f5.si/character_ja.html", icon: "👤", keywords: "キャラクター character 人物 プロフィール" },
+    { title: "キャラクター", url: "https://www.fozowo.f5.si/character.html?lang=ja", icon: "👤", keywords: "キャラクター character 人物 プロフィール" },
     { title: "フォゾウォAI", url: "https://www.fozowo.f5.si/ai", icon: "🤖", keywords: "ai チャット bot ボット 人工知能" },
     { title: "ブログ", url: "https://www.fozowo.f5.si/blog", icon: "📝", keywords: "ブログ blog 記事 トレンド ノート" }
   ];
@@ -526,60 +526,17 @@
       });
     }
 
-    // ===== 10言語 =====
-    var HEADER_I18N={"ja":{"navWitchHome":"おいじぃ魔女のホームページ","navLogo":"フォゾウォのロゴページ","navFaq":"FAQ","navCharacter":"キャラクター","navBlog":"ブログ","navAI":"フォゾウォAI","navAIPage":"フォゾウォAIページ","navCharacterPage":"キャラクターページ","navFaqPage":"FAQページ","settings":"設定","language":"言語","theme":"テーマ","auto":"自動","dark":"ダーク","light":"ライト","close":"閉じる","menuOpen":"メニューを開く","search":"検索","clear":"クリア","searchPlaceholder":"ページを検索…","searchHint":"キーワードを入力してください","mobileFooter":"FoZoWo · OFFICIAL","shareTitle":"FoZoWoをシェア","officialUrlLabel":"公式URL","shortUrlLabel":"短縮URL","nativeShare":"共有する","copyShort":"短縮URLをコピー","copyFull":"公式URLをコピー","downloadQr":"二次元コードをダウンロード","shareQrAlt":"FoZoWoの二次元コード"},"en":{"navWitchHome":"Oijii Witch Homepage","navLogo":"FoZoWo Logo","navFaq":"FAQ","navCharacter":"Characters","navBlog":"Blog","navAI":"FoZoWo AI","navAIPage":"FoZoWo AI page","navCharacterPage":"Characters page","navFaqPage":"FAQ page","settings":"Settings","language":"Language","theme":"Theme","auto":"Auto","dark":"Dark","light":"Light","close":"Close","menuOpen":"Open menu","search":"Search","clear":"Clear","searchPlaceholder":"Search pages…","searchHint":"Enter a keyword","mobileFooter":"FoZoWo · OFFICIAL","shareTitle":"Share FoZoWo","officialUrlLabel":"Official URL","nativeShare":"Share now","copyShort":"Copy short URL","copyFull":"Copy official URL","downloadQr":"Download QR code","shareQrAlt":"FoZoWo QR code"},"hiragana":{"navWitchHome":"おいじぃまじょ ほーむぺーじ","navLogo":"ふぉぞうぉの ろごぺーじ","navFaq":"FAQ","navCharacter":"きゃらくたー","navBlog":"ぶろぐ","navAI":"ふぉぞうぉAI","navAIPage":"ふぉぞうぉAIぺーじ","navCharacterPage":"きゃらくたーぺーじ","navFaqPage":"FAQぺーじ","settings":"せってい","language":"ことば","theme":"てーま","auto":"じどう","dark":"だーく","light":"らいと","close":"とじる","menuOpen":"めにゅーをひらく","search":"けんさく","clear":"くりあ","searchPlaceholder":"ぺーじをけんさく…","searchHint":"ことばをいれてください","mobileFooter":"FoZoWo · OFFICIAL","shareTitle":"FoZoWoをしぇあ","officialUrlLabel":"こうしきURL","shortUrlLabel":"みじかいURL","nativeShare":"きょうゆうする","copyShort":"みじかいURLをこぴー","copyFull":"こうしきURLをこぴー","downloadQr":"にじげんこーどをだうんろーど","shareQrAlt":"FoZoWoのにじげんこーど"},"ko":{"navWitchHome":"오이지 마녀 홈페이지","navLogo":"FoZoWo 로고","navFaq":"FAQ","navCharacter":"캐릭터","navBlog":"블로그","navAI":"FoZoWo AI","navAIPage":"FoZoWo AI 페이지","navCharacterPage":"캐릭터 페이지","navFaqPage":"FAQ 페이지","settings":"설정","language":"언어","theme":"테마","auto":"자동","dark":"다크","light":"라이트","close":"닫기","menuOpen":"메뉴 열기","search":"검색","clear":"지우기","searchPlaceholder":"페이지 검색…","searchHint":"키워드를 입력하세요","mobileFooter":"FoZoWo · OFFICIAL","shareTitle":"FoZoWo 공유","officialUrlLabel":"공식 URL","shortUrlLabel":"단축 URL","nativeShare":"공유하기","copyShort":"단축 URL 복사","copyFull":"공식 URL 복사","downloadQr":"QR 코드 다운로드","shareQrAlt":"FoZoWo QR 코드"},"zh-cn":{"navWitchHome":"Oijii 魔女主页","navLogo":"FoZoWo Logo","navFaq":"FAQ","navCharacter":"角色","navBlog":"博客","navAI":"FoZoWo AI","navAIPage":"FoZoWo AI 页面","navCharacterPage":"角色页面","navFaqPage":"FAQ 页面","settings":"设置","language":"语言","theme":"主题","auto":"自动","dark":"深色","light":"浅色","close":"关闭","menuOpen":"打开菜单","search":"搜索","clear":"清除","searchPlaceholder":"搜索页面…","searchHint":"请输入关键词","mobileFooter":"FoZoWo · OFFICIAL","shareTitle":"分享 FoZoWo","officialUrlLabel":"官方 URL","shortUrlLabel":"短网址","nativeShare":"立即分享","copyShort":"复制短网址","copyFull":"复制官方 URL","downloadQr":"下载二维码","shareQrAlt":"FoZoWo 二维码"},"zh-tw":{"navWitchHome":"Oijii 魔女首頁","navLogo":"FoZoWo Logo","navFaq":"FAQ","navCharacter":"角色","navBlog":"部落格","navAI":"FoZoWo AI","navAIPage":"FoZoWo AI 頁面","navCharacterPage":"角色頁面","navFaqPage":"FAQ 頁面","settings":"設定","language":"語言","theme":"主題","auto":"自動","dark":"深色","light":"淺色","close":"關閉","menuOpen":"開啟選單","search":"搜尋","clear":"清除","searchPlaceholder":"搜尋頁面…","searchHint":"請輸入關鍵字","mobileFooter":"FoZoWo · OFFICIAL","shareTitle":"分享 FoZoWo","officialUrlLabel":"官方 URL","shortUrlLabel":"短網址","nativeShare":"立即分享","copyShort":"複製短網址","copyFull":"複製官方 URL","downloadQr":"下載二維碼","shareQrAlt":"FoZoWo 二維碼"},"es":{"navWitchHome":"Página de la Bruja Oijii","navLogo":"Logo de FoZoWo","navFaq":"FAQ","navCharacter":"Personajes","navBlog":"Blog","navAI":"FoZoWo AI","navAIPage":"Página de FoZoWo AI","navCharacterPage":"Página de personajes","navFaqPage":"Página FAQ","settings":"Ajustes","language":"Idioma","theme":"Tema","auto":"Automático","dark":"Oscuro","light":"Claro","close":"Cerrar","menuOpen":"Abrir menú","search":"Buscar","clear":"Borrar","searchPlaceholder":"Buscar páginas…","searchHint":"Escribe una palabra clave","mobileFooter":"FoZoWo · OFFICIAL","shareTitle":"Compartir FoZoWo","officialUrlLabel":"URL oficial","shortUrlLabel":"URL corta","nativeShare":"Compartir ahora","copyShort":"Copiar URL corta","copyFull":"Copiar URL oficial","downloadQr":"Descargar código QR","shareQrAlt":"Código QR de FoZoWo"},"fr":{"navWitchHome":"Page de la Sorcière Oijii","navLogo":"Logo FoZoWo","navFaq":"FAQ","navCharacter":"Personnages","navBlog":"Blog","navAI":"FoZoWo AI","navAIPage":"Page FoZoWo AI","navCharacterPage":"Page personnages","navFaqPage":"Page FAQ","settings":"Paramètres","language":"Langue","theme":"Thème","auto":"Auto","dark":"Sombre","light":"Clair","close":"Fermer","menuOpen":"Ouvrir le menu","search":"Rechercher","clear":"Effacer","searchPlaceholder":"Rechercher des pages…","searchHint":"Saisissez un mot-clé","mobileFooter":"FoZoWo · OFFICIAL","shareTitle":"Partager FoZoWo","officialUrlLabel":"URL officielle","shortUrlLabel":"URL courte","nativeShare":"Partager maintenant","copyShort":"Copier l’URL courte","copyFull":"Copier l’URL officielle","downloadQr":"Télécharger le QR code","shareQrAlt":"QR code FoZoWo"},"de":{"navWitchHome":"Oijii-Hexen-Homepage","navLogo":"FoZoWo-Logo","navFaq":"FAQ","navCharacter":"Charaktere","navBlog":"Blog","navAI":"FoZoWo AI","navAIPage":"FoZoWo-AI-Seite","navCharacterPage":"Charakterseite","navFaqPage":"FAQ-Seite","settings":"Einstellungen","language":"Sprache","theme":"Design","auto":"Auto","dark":"Dunkel","light":"Hell","close":"Schließen","menuOpen":"Menü öffnen","search":"Suche","clear":"Löschen","searchPlaceholder":"Seiten durchsuchen…","searchHint":"Suchbegriff eingeben","mobileFooter":"FoZoWo · OFFICIAL","shareTitle":"FoZoWo teilen","officialUrlLabel":"Offizielle URL","shortUrlLabel":"Kurz-URL","nativeShare":"Jetzt teilen","copyShort":"Kurz-URL kopieren","copyFull":"Offizielle URL kopieren","downloadQr":"QR-Code herunterladen","shareQrAlt":"FoZoWo QR-Code"},"pt":{"navWitchHome":"Página da Bruxa Oijii","navLogo":"Logo FoZoWo","navFaq":"FAQ","navCharacter":"Personagens","navBlog":"Blog","navAI":"FoZoWo AI","navAIPage":"Página FoZoWo AI","navCharacterPage":"Página de personagens","navFaqPage":"Página FAQ","settings":"Configurações","language":"Idioma","theme":"Tema","auto":"Automático","dark":"Escuro","light":"Claro","close":"Fechar","menuOpen":"Abrir menu","search":"Pesquisar","clear":"Limpar","searchPlaceholder":"Pesquisar páginas…","searchHint":"Digite uma palavra-chave","mobileFooter":"FoZoWo · OFFICIAL","shareTitle":"Compartilhar FoZoWo","officialUrlLabel":"URL oficial","shortUrlLabel":"URL curta","nativeShare":"Compartilhar agora","copyShort":"Copiar URL curta","copyFull":"Copiar URL oficial","downloadQr":"Baixar código QR","shareQrAlt":"Código QR da FoZoWo"}};
-    var LANG_PAGES={
-      home:{ja:'ja.html',en:'en.html',hiragana:'hiragana.html',ko:'ko.html','zh-cn':'zh-cn.html','zh-tw':'zh-tw.html',es:'es.html',fr:'fr.html',de:'de.html',pt:'pt.html'},
-      character:{ja:'character_ja.html',en:'character_en.html',hiragana:'character_hiragana.html',ko:'character_ko.html','zh-cn':'character_zh-cn.html','zh-tw':'character_zh-tw.html',es:'character_es.html',fr:'character_fr.html',de:'character_de.html',pt:'character_pt.html'}
-    };
-    var SUPPORTED_LANGS=['ja','en','hiragana','ko','zh-cn','zh-tw','es','fr','de','pt'];
-    var fileName=(location.pathname.split('/').pop()||'').toLowerCase();
-    var fileLangMatch=fileName.match(/^(?:character_)?(ja|en|hiragana|ko|zh-cn|zh-tw|es|fr|de|pt)\.html$/);
-    var currentPageLang=(fileLangMatch?fileLangMatch[1]:(document.documentElement.dataset.siteLang||document.documentElement.lang||'ja')).toLowerCase();
-    if(currentPageLang==='ja-jp-x-hiragana') currentPageLang='hiragana';
-    if(!SUPPORTED_LANGS.includes(currentPageLang)) currentPageLang='ja';
-
-    function currentPageKey(){
-      var key=document.documentElement.dataset.pageKey;
-      if(key) return key;
-      if(/^character_/.test(fileName) || fileName==='character.html' || /\/character\/?$/.test(location.pathname)) return 'character';
-      return 'home';
-    }
-    function localizedHref(key,lang){
-      var table=LANG_PAGES[key]||LANG_PAGES.home;
-      var file=table[lang]||table.ja;
-      return new URL(file,location.href).href;
-    }
-    function updateLocalizedLinks(lang){
-      document.querySelectorAll('[data-localized-page]').forEach(function(a){
-        var pageKey=a.getAttribute('data-localized-page')||'home';
-        a.href=localizedHref(pageKey,lang);
-      });
-    }
-    function applyHeaderLanguage(lang){
-      var dict=HEADER_I18N[lang]||HEADER_I18N.ja;
-      document.documentElement.lang=lang==='hiragana'?'ja-JP-x-hiragana':(lang==='zh-cn'?'zh-CN':(lang==='zh-tw'?'zh-TW':lang));
-      document.documentElement.dataset.siteLang=lang;
-      document.querySelectorAll('[data-i18n]').forEach(function(el){var k=el.getAttribute('data-i18n'); if(dict[k]!=null) el.innerHTML=dict[k];});
-      document.querySelectorAll('[data-i18n-label]').forEach(function(el){var k=el.getAttribute('data-i18n-label'); if(dict[k]!=null) el.setAttribute('aria-label',dict[k]);});
-      document.querySelectorAll('[data-i18n-title]').forEach(function(el){var k=el.getAttribute('data-i18n-title'); if(dict[k]!=null) el.setAttribute('title',dict[k]);});
-      document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){var k=el.getAttribute('data-i18n-placeholder'); if(dict[k]!=null) el.setAttribute('placeholder',dict[k]);});
-      document.querySelectorAll('[data-i18n-alt]').forEach(function(el){var k=el.getAttribute('data-i18n-alt'); if(dict[k]!=null) el.setAttribute('alt',dict[k]);});
-      if(langOptions) langOptions.querySelectorAll('button[data-value]').forEach(function(btn){btn.classList.toggle('active',btn.getAttribute('data-value')===lang);});
-      if(navMobile) navMobile.setAttribute('aria-label',dict.menuOpen||'Menu');
-      if(searchResults && !searchInput.value.trim()) searchResults.innerHTML='<div class="search-empty">'+(dict.searchHint||'')+'</div>';
-      updateLocalizedLinks(lang);
-      try{localStorage.setItem('FoZoWo-language',lang);}catch(e){}
-    }
+    // ===== 共通言語システム =====
+    var langOptions = document.getElementById('langOptions');
     if (langOptions) {
-      langOptions.addEventListener('click',function(e){
-        var btn=e.target.closest('button[data-value]'); if(!btn) return; e.stopPropagation();
-        var target=btn.getAttribute('data-value');
-        try{localStorage.setItem('FoZoWo-language',target);}catch(e){}
-        location.href=localizedHref(currentPageKey(),target);
+      langOptions.addEventListener('click', function (e) {
+        var btn = e.target.closest('button[data-value]');
+        if (!btn || !window.FoZoWoLang) return;
+        e.stopPropagation();
+        window.FoZoWoLang.change(btn.getAttribute('data-value'), true);
       });
-      applyHeaderLanguage(currentPageLang);
     }
+    if (window.FoZoWoLang) window.FoZoWoLang.refreshHeader();
     // ===== テーマ =====
     function applyTheme(value) {
       var root = document.documentElement;
