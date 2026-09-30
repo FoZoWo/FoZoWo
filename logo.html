@@ -11,6 +11,27 @@
   r.setAttribute('data-theme',t==='light'?'light':'dark');
   r.dataset.siteLang=l;
   r.lang=l==='hiragana'?'ja-JP-x-hiragana':(l==='zh-cn'?'zh-CN':(l==='zh-tw'?'zh-TW':l));
+
+  var copyBtn=document.getElementById('copyBtn');
+  if(copyBtn){
+    copyBtn.addEventListener('click',async function(){
+      var msg=document.getElementById('copyMsg');
+      var lang=(window.FoZoWoLang&&window.FoZoWoLang.current)?window.FoZoWoLang.current():'ja';
+      var dict=(window.FoZoWoLang&&window.FoZoWoLang.data&&window.FoZoWoLang.data.logo&&window.FoZoWoLang.data.logo[lang])||{};
+      try{
+        var img=document.getElementById('logoImg');
+        var res=await fetch(img.src,{cache:'no-cache'});
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        var blob=await res.blob();
+        if(!navigator.clipboard || !window.ClipboardItem) throw new Error('clipboard');
+        await navigator.clipboard.write([new ClipboardItem({[blob.type]:blob})]);
+        msg.textContent=dict.copySuccess||'ロゴ画像をコピーしました';
+      }catch(e){
+        msg.textContent=dict.copyFail||'コピーに失敗しました';
+      }
+      setTimeout(function(){msg.textContent='';},3000);
+    });
+  }
 })();
 </script>
 <title>FoZoWoのロゴ | FoZoWo公式</title>
@@ -40,7 +61,7 @@
 [data-theme="light"]{--bg:#f4f0ff;--panel:#fff;--line:rgba(90,60,200,.16);--line-strong:rgba(90,60,200,.38);--text:#1c1230;--muted:#645892;--pink:#d63d94;--violet:#6a3fe0;--cyan:#0092b3;--gold:#af7a12;--glass:rgba(90,60,200,.05);--shadow:0 18px 44px rgba(70,40,140,.16)}
 @media(prefers-color-scheme:light){[data-theme="auto"]{--bg:#f4f0ff;--panel:#fff;--line:rgba(90,60,200,.16);--line-strong:rgba(90,60,200,.38);--text:#1c1230;--muted:#645892;--pink:#d63d94;--violet:#6a3fe0;--cyan:#0092b3;--gold:#af7a12;--glass:rgba(90,60,200,.05);--shadow:0 18px 44px rgba(70,40,140,.16)}}
 *{box-sizing:border-box}html{scroll-behavior:smooth;background:var(--bg)}body{margin:0;min-height:100dvh;padding-top:var(--header-h);font-family:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Yu Gothic",system-ui,sans-serif;color:var(--text);background:radial-gradient(ellipse 80% 60% at 15% -10%,color-mix(in srgb,var(--violet) 30%,transparent),transparent 55%),radial-gradient(ellipse 70% 50% at 90% 5%,color-mix(in srgb,var(--pink) 24%,transparent),transparent 50%),var(--bg);overflow-x:hidden}
-a,button{cursor:pointer}.shell{width:min(900px,calc(100% - 28px));margin:0 auto;padding:44px 0 80px}.hero{text-align:center;padding:10px 0 34px}.badge{display:inline-flex;align-items:center;padding:7px 15px;border-radius:999px;color:var(--gold);background:color-mix(in srgb,var(--gold) 10%,transparent);border:1px solid color-mix(in srgb,var(--gold) 28%,transparent);font-size:11px;font-weight:800;letter-spacing:.12em}.hero h1{margin:18px 0 0;font-family:Cinzel,serif;font-size:clamp(32px,7vw,54px);line-height:1.15}.hero h1 span{background:linear-gradient(120deg,var(--text),var(--pink),var(--violet),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}.section-title{display:flex;align-items:center;gap:12px;margin:0 0 16px;font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--muted)}.section-title:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--line),transparent)}.logo-card{padding:clamp(24px,5vw,44px);border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);box-shadow:var(--shadow);text-align:center}.preview-frame{min-height:300px;display:grid;place-items:center;padding:clamp(18px,5vw,40px);border-radius:20px;background:var(--glass);border:1px solid var(--line)}.brand-img{width:min(100%,440px);height:auto;display:block;filter:drop-shadow(0 12px 35px color-mix(in srgb,var(--pink) 25%,transparent))}.actions{display:flex;justify-content:center;margin-top:22px}.download{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:14px 24px;border-radius:999px;border:1px solid transparent;background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff;text-decoration:none;font-size:15px;font-weight:800;box-shadow:0 12px 30px color-mix(in srgb,var(--pink) 32%,transparent);transition:.25s}.download:hover{transform:translateY(-3px);background:linear-gradient(135deg,var(--violet),var(--cyan))}.download svg{width:18px;height:18px}footer{margin-top:34px;text-align:center;color:var(--muted);font-size:12px}@media(max-width:600px){.shell{padding-top:28px}.logo-card{padding:18px}.preview-frame{min-height:220px}.download{width:100%}}
+a,button{cursor:pointer}.shell{width:min(900px,calc(100% - 28px));margin:0 auto;padding:44px 0 80px}.hero{text-align:center;padding:10px 0 34px}.badge{display:inline-flex;align-items:center;padding:7px 15px;border-radius:999px;color:var(--gold);background:color-mix(in srgb,var(--gold) 10%,transparent);border:1px solid color-mix(in srgb,var(--gold) 28%,transparent);font-size:11px;font-weight:800;letter-spacing:.12em}.hero h1{margin:18px 0 0;font-family:Cinzel,serif;font-size:clamp(32px,7vw,54px);line-height:1.15}.hero h1 span{background:linear-gradient(120deg,var(--text),var(--pink),var(--violet),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}.section-title{display:flex;align-items:center;gap:12px;margin:0 0 16px;font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--muted)}.section-title:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--line),transparent)}.logo-card{padding:clamp(24px,5vw,44px);border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);box-shadow:var(--shadow);text-align:center}.preview-frame{min-height:300px;display:grid;place-items:center;padding:clamp(18px,5vw,40px);border-radius:20px;background:var(--glass);border:1px solid var(--line)}.brand-img{width:min(100%,440px);height:auto;display:block;filter:drop-shadow(0 12px 35px color-mix(in srgb,var(--pink) 25%,transparent))}.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:22px}.download,.copy{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:14px 24px;border-radius:999px;border:1px solid transparent;background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff;text-decoration:none;font-size:15px;font-weight:800;box-shadow:0 12px 30px color-mix(in srgb,var(--pink) 32%,transparent);transition:.25s}.download:hover,.copy:hover{transform:translateY(-3px);background:linear-gradient(135deg,var(--violet),var(--cyan))}.download svg,.copy svg{width:18px;height:18px}.copy{border:1px solid var(--line);background:var(--glass);color:var(--text)}.copy-msg{width:100%;min-height:1.4em;margin-top:8px;color:var(--pink);font-size:12px;font-weight:700}footer{margin-top:34px;text-align:center;color:var(--muted);font-size:12px}@media(max-width:600px){.shell{padding-top:28px}.logo-card{padding:18px}.preview-frame{min-height:220px}.download{width:100%}}
 </style>
 </head>
 <body>
@@ -61,6 +82,11 @@ a,button{cursor:pointer}.shell{width:min(900px,calc(100% - 28px));margin:0 auto;
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 21h16"/></svg>
           <span data-i18n="btn_download">ロゴをダウンロード</span>
         </a>
+        <button class="copy" id="copyBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          <span data-i18n="btn_copy">ロゴをコピー</span>
+        </button>
+        <div class="copy-msg" id="copyMsg" aria-live="polite"></div>
       </div>
     </div>
   </section>
@@ -90,6 +116,27 @@ a,button{cursor:pointer}.shell{width:min(900px,calc(100% - 28px));margin:0 auto;
     });
     if(window.FoZoWoLang){window.FoZoWoLang.refresh();window.FoZoWoLang.refreshHeader();}
   }).catch(function(err){console.warn('[header]',err)});
+
+  var copyBtn=document.getElementById('copyBtn');
+  if(copyBtn){
+    copyBtn.addEventListener('click',async function(){
+      var msg=document.getElementById('copyMsg');
+      var lang=(window.FoZoWoLang&&window.FoZoWoLang.current)?window.FoZoWoLang.current():'ja';
+      var dict=(window.FoZoWoLang&&window.FoZoWoLang.data&&window.FoZoWoLang.data.logo&&window.FoZoWoLang.data.logo[lang])||{};
+      try{
+        var img=document.getElementById('logoImg');
+        var res=await fetch(img.src,{cache:'no-cache'});
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        var blob=await res.blob();
+        if(!navigator.clipboard || !window.ClipboardItem) throw new Error('clipboard');
+        await navigator.clipboard.write([new ClipboardItem({[blob.type]:blob})]);
+        msg.textContent=dict.copySuccess||'ロゴ画像をコピーしました';
+      }catch(e){
+        msg.textContent=dict.copyFail||'コピーに失敗しました';
+      }
+      setTimeout(function(){msg.textContent='';},3000);
+    });
+  }
 })();
 </script>
 </body>
