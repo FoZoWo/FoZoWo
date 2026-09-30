@@ -338,7 +338,7 @@
     </a>
     <nav class="nav-desktop" aria-label="メインナビゲーション">
       <a href="https://www.fozowo.f5.si/oijiiw" data-i18n="navWitchHome">おいじぃ魔女のホームページ</a>
-      <a href="https://www.fozowo.f5.si/logo" data-i18n="navLogo">フォゾウォのロゴページ</a>
+      <a href="logo.html?lang=ja" data-localized-page="logo" data-i18n="navLogo">フォゾウォのロゴページ</a>
       <a href="https://www.fozowo.f5.si/faq" data-i18n="navFaq">FAQ</a>
       <a href="character.html?lang=ja" data-i18n="navCharacter" data-localized-page="character">キャラクター</a>
       <a href="https://www.fozowo.f5.si/blog" data-i18n="navBlog">ブログ</a>
@@ -434,7 +434,7 @@
 
 <nav class="nav-mobile" id="navMobile" aria-label="モバイルメニュー">
   <a href="https://www.fozowo.f5.si/oijiiw" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🔮</span> <span data-i18n="navWitchHome">おいじぃ魔女のホームページ</span></a>
-  <a href="https://www.fozowo.f5.si/logo" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🎀</span> <span data-i18n="navLogo">フォゾウォのロゴページ</span></a>
+  <a href="logo.html?lang=ja" data-localized-page="logo" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🎀</span> <span data-i18n="navLogo">フォゾウォのロゴページ</span></a>
   <a href="https://www.fozowo.f5.si/ai" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">🤖</span> <span data-i18n="navAIPage">フォゾウォAIページ</span></a>
   <a href="character.html?lang=ja" data-localized-page="character" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">👤</span> <span data-i18n="navCharacterPage">キャラクターページ</span></a>
   <a href="https://www.fozowo.f5.si/faq" onclick="typeof closeAll==='function'&&closeAll()"><span class="icon">💬</span> <span data-i18n="navFaqPage">FAQページ</span></a>
@@ -452,7 +452,7 @@
 
   var FoZoWo_SEARCH_INDEX = [
     { title: "おいじぃ魔女のホームページ", url: "https://www.fozowo.f5.si/oijiiw", icon: "🔮", keywords: "おいじい おいじぃ 魔女 witch home ホーム" },
-    { title: "フォゾウォのロゴページ", url: "https://www.fozowo.f5.si/logo", icon: "🎀", keywords: "ロゴ logo デザイン" },
+    { title: "フォゾウォのロゴページ", url: "logo.html?lang=ja", page: "logo", icon: "🎀", keywords: "ロゴ logo デザイン" },
     { title: "FAQ", url: "https://www.fozowo.f5.si/faq", icon: "💬", keywords: "faq よくある質問 question ヘルプ help" },
     { title: "キャラクター", url: "https://www.fozowo.f5.si/character.html?lang=ja", icon: "👤", keywords: "キャラクター character 人物 プロフィール" },
     { title: "フォゾウォAI", url: "https://www.fozowo.f5.si/ai", icon: "🤖", keywords: "ai チャット bot ボット 人工知能" },
@@ -649,7 +649,9 @@
         return;
       }
       searchResults.innerHTML = matches.map(function (item) {
-        return '<a class="search-result" href="' + item.url + '">' +
+        var itemUrl = item.url;
+        if (item.page && window.FoZoWoLang && window.FoZoWoLang.translatedUrl) itemUrl = window.FoZoWoLang.translatedUrl(item.page, currentPageLang || 'ja');
+        return '<a class="search-result" href="' + itemUrl + '">' +
                  '<span class="icon">' + item.icon + '</span>' +
                  '<span class="label">' + escapeHtml(item.title) + '</span>' +
                '</a>';
