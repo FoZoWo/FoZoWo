@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="auto" data-site-lang="ja" data-page-key="character">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<script>
+(function(){
+  var r=document.documentElement,t='auto',l=r.dataset.siteLang||'ja';
+  try{
+    t=localStorage.getItem('FoZoWo-theme')||'auto';
+    var saved=localStorage.getItem('FoZoWo-language');
+    if(saved) l=saved;
+  }catch(e){}
+  if(t==='auto')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  r.setAttribute('data-theme',t==='light'?'light':'dark');
+  r.lang=l==='hiragana'?'ja-JP-x-hiragana':(l==='zh-cn'?'zh-CN':(l==='zh-tw'?'zh-TW':l));
+})();
+</script>
+<title>キャラクター紹介 | FoZoWo Official</title>
+<meta name="description" content="FoZoWo公式キャラクター紹介ページ。おいさし・おいじぃ魔女のプロフィールを掲載。">
+<meta property="og:url" content="https://www.fozowo.f5.si/character_ja.html">
+<meta name="theme-color" content="#0a0a12">
+<link rel="canonical" href="https://www.fozowo.f5.si/character_ja.html">
+<link rel="alternate" hreflang="ja" href="https://www.fozowo.f5.si/character_ja.html">
+<link rel="alternate" hreflang="en" href="https://www.fozowo.f5.si/character_en.html">
+<link rel="alternate" hreflang="ja-JP-x-hiragana" href="https://www.fozowo.f5.si/character_hiragana.html">
+<link rel="alternate" hreflang="ko" href="https://www.fozowo.f5.si/character_ko.html">
+<link rel="alternate" hreflang="zh-CN" href="https://www.fozowo.f5.si/character_zh-cn.html">
+<link rel="alternate" hreflang="zh-TW" href="https://www.fozowo.f5.si/character_zh-tw.html">
+<link rel="alternate" hreflang="es" href="https://www.fozowo.f5.si/character_es.html">
+<link rel="alternate" hreflang="fr" href="https://www.fozowo.f5.si/character_fr.html">
+<link rel="alternate" hreflang="de" href="https://www.fozowo.f5.si/character_de.html">
+<link rel="alternate" hreflang="pt" href="https://www.fozowo.f5.si/character_pt.html">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root, [data-theme="dark"] {
+  --bg: #07070f;
+  --bg-elevated: #0e0e1a;
+  --surface: rgba(255,255,255,0.055);
+  --surface-hover: rgba(255,255,255,0.11);
+  --border: rgba(255,255,255,0.12);
+  --border-strong: rgba(255,255,255,0.26);
+  --text: #f4f4fc;
+  --muted: #9b9bb8;
+  --pink: #ff6bcb;
+  --purple: #8b6cff;
+  --cyan: #00e5ff;
+  --gold: #ffd166;
+  --header-bg: rgba(7,7,15,0.78);
+  --header-bg-scrolled: rgba(7,7,15,0.94);
+  --menu-bg: rgba(7,7,15,0.97);
+  --card-glow: 0 0 32px rgba(255,107,203,0.4);
+  --shadow: 0 22px 55px rgba(0,0,0,0.5);
+  --radius: 18px;
+}
+[data-theme="light"] {
+  --bg: #f3f0f8;
+  --bg-elevated: #ffffff;
+  --surface: rgba(0,0,0,0.04);
+  --surface-hover: rgba(0,0,0,0.075);
+  --border: rgba(0,0,0,0.09);
+  --border-strong: rgba(0,0,0,0.2);
+  --text: #1a1a2e;
+  --muted: #5c5c78;
+  --pink: #e84a9a;
+  --purple: #6b4ce0;
+  --cyan: #0099b8;
+  --gold: #c99200;
+  --header-bg: rgba(255,255,255,0.82);
+  --header-bg-scrolled: rgba(255,255,255,0.96);
+  --menu-bg: rgba(255,255,255,0.97);
+  --card-glow: 0 0 28px rgba(232,74,154,0.28);
+  --shadow: 0 18px 45px rgba(0,0,0,0.13);
+}
+@media (prefers-color-scheme: light) {
+  [data-theme="auto"] {
+    --bg: #f3f0f8; --bg-elevated: #ffffff; --surface: rgba(0,0,0,0.04);
+    --surface-hover: rgba(0,0,0,0.075); --border: rgba(0,0,0,0.09); --border-strong: rgba(0,0,0,0.2);
+    --text: #1a1a2e; --muted: #5c5c78; --pink: #e84a9a; --purple: #6b4ce0;
+    --cyan: #0099b8; --gold: #c99200; --header-bg: rgba(255,255,255,0.82);
+    --header-bg-scrolled: rgba(255,255,255,0.96); --menu-bg: rgba(255,255,255,0.97);
+    --card-glow: 0 0 28px rgba(232,74,154,0.28); --shadow: 0 18px 45px rgba(0,0,0,0.13);
+  }
+}
+@media (prefers-color-scheme: dark) {
+  [data-theme="auto"] {
+    --bg: #07070f; --bg-elevated: #0e0e1a; --surface: rgba(255,255,255,0.055);
+    --surface-hover: rgba(255,255,255,0.11); --border: rgba(255,255,255,0.12); --border-strong: rgba(255,255,255,0.26);
+    --text: #f4f4fc; --muted: #9b9bb8; --pink: #ff6bcb; --purple: #8b6cff;
+    --cyan: #00e5ff; --gold: #ffd166; --header-bg: rgba(7,7,15,0.78);
+    --header-bg-scrolled: rgba(7,7,15,0.94); --menu-bg: rgba(7,7,15,0.97);
+    --card-glow: 0 0 32px rgba(255,107,203,0.4); --shadow: 0 22px 55px rgba(0,0,0,0.5);
+  }
+}
+
+:root {
+  --cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath fill='%23ff6bcb' stroke='%23ffffff' stroke-width='1.8' stroke-linejoin='round' d='M4 2 L4 22 L10 16 L14 25 L17.5 23.5 L13.5 14.5 L21 14.5 Z'/%3E%3C/svg%3E") 4 2, auto;
+  --cursor-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath fill='%238b6cff' stroke='%23ffffff' stroke-width='1.8' stroke-linejoin='round' d='M4 2 L4 22 L10 16 L14 25 L17.5 23.5 L13.5 14.5 L21 14.5 Z'/%3E%3C/svg%3E") 4 2, pointer;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Yu Gothic", system-ui, sans-serif;
+  font-size: 15px; line-height: 1.7; color: var(--text); background: var(--bg);
+  min-height: 100dvh; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+  padding-top: var(--header-h, 68px); cursor: var(--cursor); transition: background 0.45s, color 0.35s;
+}
+a, button, .profile-card, .link-pill { cursor: var(--cursor-hover); }
+#site-header a, #site-header button, #site-header .share-download { cursor: var(--cursor-hover); }
+#site-header input { cursor: text; }
+
+.bg {
+  position: fixed; inset: 0; z-index: -2;
+  background:
+    radial-gradient(ellipse 90% 60% at 15% -10%, color-mix(in srgb, var(--purple) 40%, transparent), transparent 55%),
+    radial-gradient(ellipse 70% 50% at 90% 5%, color-mix(in srgb, var(--pink) 30%, transparent), transparent 50%),
+    radial-gradient(ellipse 60% 40% at 50% 110%, color-mix(in srgb, var(--cyan) 14%, transparent), transparent 50%),
+    var(--bg);
+  transition: background 0.5s; animation: bgShift 16s ease-in-out infinite alternate;
+}
+@keyframes bgShift { 0% { filter: hue-rotate(0deg) brightness(1); } 100% { filter: hue-rotate(14deg) brightness(1.06); } }
+.orb { position: fixed; border-radius: 50%; filter: blur(70px); opacity: 0.32; pointer-events: none; z-index: -1; animation: orbFloat 20s ease-in-out infinite; transition: opacity 0.4s; }
+[data-theme="light"] .orb, [data-theme="auto"] .orb { opacity: 0.16; }
+@media (prefers-color-scheme: dark) { [data-theme="auto"] .orb { opacity: 0.32; } }
+.orb-1 { width: 300px; height: 300px; background: var(--pink); top: -90px; left: -70px; }
+.orb-2 { width: 240px; height: 240px; background: var(--purple); bottom: 8%; right: -50px; animation-delay: -6s; }
+.orb-3 { width: 180px; height: 180px; background: var(--cyan); top: 42%; left: 58%; animation-delay: -12s; opacity: 0.2; }
+@keyframes orbFloat { 0%, 100% { transform: translate(0,0) scale(1); } 33% { transform: translate(40px,-50px) scale(1.1); } 66% { transform: translate(-30px,30px) scale(0.92); } }
+
+.particles { position: fixed; inset: 0; pointer-events: none; z-index: -1; overflow: hidden; }
+.p { position: absolute; bottom: -12px; width: 4px; height: 4px; border-radius: 50%; background: #fff; opacity: 0; animation: rise linear infinite; }
+[data-theme="light"] .p { background: var(--purple); }
+@keyframes rise { 0% { transform: translateY(0) scale(0) rotate(0deg); opacity: 0; } 12% { opacity: 0.55; } 80% { opacity: 0.2; } 100% { transform: translateY(-110vh) scale(1.2) rotate(180deg); opacity: 0; } }
+
+.sparkle { position: fixed; pointer-events: none; z-index: -1; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px var(--gold); animation: sparkle 3.5s ease-in-out infinite; opacity: 0; }
+@keyframes sparkle { 0%, 100% { opacity: 0; transform: scale(0.3); } 50% { opacity: 0.8; transform: scale(1.2); } }
+
+/* ===== 外部ヘッダー（header.html）連携 ===== */
+#site-header .nav-desktop a[aria-current="page"] { background: var(--surface-hover); color: var(--pink); }
+#site-header .nav-mobile a[aria-current="page"] { background: var(--surface-hover); border-color: var(--border-strong); }
+.header-fallback { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h, 68px); z-index: 100; display: flex; align-items: center; padding: 0 20px; background: var(--header-bg); border-bottom: 1px solid var(--border); }
+.header-fallback a { color: var(--text); text-decoration: none; font-weight: 900; letter-spacing: 0.06em; }
+
+.shell { max-width: 560px; margin: 0 auto; padding: 28px 18px 100px; position: relative; }
+
+.hero { text-align: center; padding: 32px 0 48px; animation: heroIn 1s cubic-bezier(0.22,1,0.36,1) both; }
+@keyframes heroIn { from { opacity: 0; transform: translateY(40px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.badge { display: inline-flex; align-items: center; gap: 7px; padding: 7px 18px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); background: color-mix(in srgb, var(--gold) 12%, transparent); border: 1px solid color-mix(in srgb, var(--gold) 30%, transparent); margin-bottom: 22px; animation: badgePulse 3s ease-in-out infinite; }
+@keyframes badgePulse { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--gold) 30%, transparent); } 50% { box-shadow: 0 0 0 10px transparent; } }
+.badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px var(--gold); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.8); } }
+h1 { font-size: clamp(30px, 8vw, 42px); font-weight: 900; line-height: 1.18; letter-spacing: -0.035em; margin-bottom: 12px; }
+h1 span { background: linear-gradient(120deg, var(--text) 8%, var(--pink) 35%, var(--purple) 60%, var(--cyan) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: textShine 7s linear infinite; }
+.subtitle { font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 14px; }
+.lead { font-size: 15.5px; color: var(--muted); max-width: 360px; margin: 0 auto; line-height: 1.65; }
+
+.section { margin-bottom: 44px; opacity: 0; transform: translateY(36px); transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1); }
+.section.visible { opacity: 1; transform: translateY(0); }
+.sec-title { display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+.sec-title::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+
+/* PROFILE CARD */
+.profile-card {
+  position: relative; overflow: hidden; border-radius: var(--radius);
+  background: var(--surface); border: 1px solid var(--border); backdrop-filter: blur(8px);
+  padding: 30px 22px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 18px;
+  transition: all 0.45s cubic-bezier(0.22,1,0.36,1);
+}
+.profile-card::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%);
+  opacity: 0.7; pointer-events: none; transition: opacity 0.4s;
+}
+.profile-card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--accent) 45%, transparent); box-shadow: 0 0 36px color-mix(in srgb, var(--accent) 30%, transparent), var(--shadow); }
+.profile-card.oisasi { --accent: var(--pink); }
+.profile-card.oijii { --accent: var(--purple); }
+
+.profile-avatar {
+  position: relative; z-index: 1; width: 128px; height: 128px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(150deg, color-mix(in srgb, var(--accent) 32%, transparent), color-mix(in srgb, var(--cyan) 14%, transparent));
+  padding: 4px; box-shadow: 0 8px 26px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+.profile-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background: var(--bg-elevated); }
+
+.profile-name { position: relative; z-index: 1; }
+.profile-name h2 { font-size: 22px; font-weight: 900; letter-spacing: -0.01em; margin-bottom: 6px; }
+.profile-role {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 999px;
+  font-size: 11.5px; font-weight: 700; color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+}
+
+.profile-desc { position: relative; z-index: 1; font-size: 14px; color: var(--muted); line-height: 1.75; max-width: 420px; }
+
+.tag-grid { position: relative; z-index: 1; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.tag { padding: 7px 14px; border-radius: 999px; font-size: 12.5px; font-weight: 700; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+
+.stat-list { position: relative; z-index: 1; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; text-align: left; }
+.stat-item { background: color-mix(in srgb, var(--text) 4%, transparent); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; }
+.stat-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 3px; }
+.stat-value { font-size: 13.5px; font-weight: 700; }
+
+.link-row { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+.link-pill {
+  display: inline-flex; align-items: center; gap: 7px; padding: 10px 16px; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text);
+  text-decoration: none; font-size: 13px; font-weight: 700;
+  transition: all 0.35s cubic-bezier(0.22,1,0.36,1); position: relative; overflow: hidden;
+}
+.link-pill::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 40%, var(--cyan)));
+  opacity: 0; transition: opacity 0.35s;
+}
+.link-pill:hover { transform: translateY(-3px) scale(1.03); border-color: transparent; color: #fff; box-shadow: 0 10px 24px color-mix(in srgb, var(--accent) 40%, transparent); }
+.link-pill:hover::before { opacity: 1; }
+.link-pill svg, .link-pill span { position: relative; z-index: 1; }
+.link-pill svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+footer { margin-top: 52px; text-align: center; }
+.footer-pill { display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 999px; font-size: 12px; color: var(--muted); background: var(--surface); border: 1px solid var(--border); transition: all 0.3s; }
+.footer-pill:hover { border-color: color-mix(in srgb, var(--pink) 30%, transparent); transform: translateY(-2px); }
+
+@media (min-width: 768px) {
+  .shell { max-width: 900px; }
+  h1 { font-size: 44px; }
+  .hero { padding: 48px 0 64px; }
+
+  .profile-card { flex-direction: row; text-align: left; align-items: center; padding: 34px; gap: 30px; }
+  .profile-card .profile-avatar { width: 156px; height: 156px; }
+  .profile-name, .profile-desc, .tag-grid { text-align: left; }
+  .tag-grid { justify-content: flex-start; }
+  .profile-main { flex: 1; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+  .stat-list { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 420px) {
+  .stat-list { grid-template-columns: 1fr 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .section { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div class="particles" aria-hidden="true">
+  <div class="p" style="left:6%;animation-duration:12s;animation-delay:0s;background:var(--pink)"></div>
+  <div class="p" style="left:18%;animation-duration:16s;animation-delay:1.5s;background:var(--purple)"></div>
+  <div class="p" style="left:32%;animation-duration:11s;animation-delay:3.2s;background:#fff"></div>
+  <div class="p" style="left:48%;animation-duration:15s;animation-delay:0.8s;background:var(--cyan)"></div>
+  <div class="p" style="left:63%;animation-duration:18s;animation-delay:2.8s;background:var(--pink)"></div>
+  <div class="p" style="left:78%;animation-duration:13s;animation-delay:4.1s;background:var(--gold)"></div>
+  <div class="p" style="left:90%;animation-duration:14s;animation-delay:1.2s;background:var(--purple)"></div>
+</div>
+<div class="sparkle" style="top:18%;left:12%;animation-delay:0s"></div>
+<div class="sparkle" style="top:35%;left:85%;animation-delay:1.2s"></div>
+<div class="sparkle" style="top:62%;left:8%;animation-delay:2.1s"></div>
+<div class="sparkle" style="top:78%;left:72%;animation-delay:0.6s"></div>
+
+<!-- 外部ヘッダー: header.html を読み込み（テーマ・言語は FoZoWo-theme / FoZoWo-language で共有） -->
+<div id="site-header" data-src="header.html" data-current="character"></div>
+
+<div class="shell">
+  <div class="hero">
+    <div class="badge" data-i18n="badge">Character</div>
+    <h1 data-i18n-html="hero_title">キャラクター<span>紹介</span></h1>
+    <p class="subtitle" data-i18n="hero_sub">CHARACTER PROFILE</p>
+    <p class="lead" data-i18n="hero_lead">フォゾウォ公式の仲間たちをご紹介します。</p>
+  </div>
+
+  <section class="section" id="oisasi">
+    <div class="sec-title" data-i18n="sec_oisasi">おいさし</div>
+    <div class="profile-card oisasi">
+      <div class="profile-avatar">
+        <img src="おいさし写真.png" alt="おいさし" data-i18n-alt="oisasi_alt">
+      </div>
+      <div class="profile-main">
+        <div class="profile-name">
+          <h2 data-i18n="oisasi_name">おいさし</h2>
+          <span class="profile-role" data-i18n="oisasi_role">看板キャラクター</span>
+        </div>
+        <p class="profile-desc" data-i18n="oisasi_desc">
+          FoZoWo Officialの看板キャラクター。持ち前の明るさと好奇心で、音楽・AI・SNSなど、あらゆるコンテンツを元気に飛び回っている。新しいものが大好きで、思いついたらすぐ行動するタイプ。
+        </p>
+        <div class="tag-grid">
+          <span class="tag" data-i18n="oisasi_tag1">🎵 音楽好き</span>
+          <span class="tag" data-i18n="oisasi_tag2">✨ 元気いっぱい</span>
+          <span class="tag" data-i18n="oisasi_tag3">📱 SNS担当</span>
+          <span class="tag" data-i18n="oisasi_tag4">🤖 AIとも仲良し</span>
+        </div>
+        <div class="stat-list">
+          <div class="stat-item"><div class="stat-label" data-i18n="stat_role">担当</div><div class="stat-value" data-i18n="oisasi_stat_role">看板・進行役</div></div>
+          <div class="stat-item"><div class="stat-label" data-i18n="stat_like">好きなもの</div><div class="stat-value" data-i18n="oisasi_stat_like">新しい音楽</div></div>
+          <div class="stat-item"><div class="stat-label" data-i18n="stat_personality">性格</div><div class="stat-value" data-i18n="oisasi_stat_personality">明るく元気</div></div>
+          <div class="stat-item"><div class="stat-label" data-i18n="stat_relation">相方</div><div class="stat-value" data-i18n="oisasi_stat_relation">おいじぃ魔女</div></div>
+        </div>
+        <div class="link-row">
+          <a class="link-pill" href="https://www.fozowo.f5.si/oisasi">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+            <span data-i18n="oisasi_link_home">おいさし公式ホームページ</span>
+          </a>
+          <a class="link-pill" href="https://oisasi.f5.si/ai">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v1a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M6 10v1a6 6 0 0 0 12 0v-1"/><path d="M9 18h6"/><path d="M10 21h4"/></svg>
+            <span data-i18n="oisasi_link_ai">フォゾウォAIと話す</span>
+          </a>
+          <a class="link-pill" href="https://oisasi.f5.si/oisasi-music">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+            <span data-i18n="oisasi_link_music">フォゾウォミュージック</span>
+          </a>
+          <a class="link-pill" href="https://www.youtube.com/@fozowo">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.5 31.5 0 0 0 0 12a31.5 31.5 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.5 31.5 0 0 0 24 12a31.5 31.5 0 0 0-.5-5.8zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>
+            <span data-i18n="oisasi_link_yt">YouTube</span>
+          </a>
+          <a class="link-pill" href="https://x.com/fozowo">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.24 2.25h3.31l-7.23 8.26 8.5 11.24h-6.66l-5.21-6.82-5.97 6.82H1.67l7.73-8.84L1.25 2.25h6.83l4.71 6.23 5.45-6.23zm-1.16 17.52h1.83L7.03 4.13H5.05l12.03 15.64z"/></svg>
+            <span data-i18n="oisasi_link_x">X</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="oijii">
+    <div class="sec-title" data-i18n="sec_oijii">おいじぃ魔女</div>
+    <div class="profile-card oijii">
+      <div class="profile-avatar">
+        <img src="おいじぃ魔女.png" alt="おいじぃ魔女" data-i18n-alt="oijii_alt">
+      </div>
+      <div class="profile-main">
+        <div class="profile-name">
+          <h2 data-i18n="oijii_name">おいじぃ魔女</h2>
+          <span class="profile-role" data-i18n="oijii_role">謎の魔女</span>
+        </div>
+        <p class="profile-desc" data-i18n="oijii_desc">
+          古い魔法書を片手に、衝撃的な雑学と不思議な魔法を操る謎めいた魔女。物知りで少しミステリアスだが、おいさしの世界に彩りを添える頼れる存在。夜な夜な知識を集めているらしい。
+        </p>
+        <div class="tag-grid">
+          <span class="tag" data-i18n="oijii_tag1">🔮 魔法使い</span>
+          <span class="tag" data-i18n="oijii_tag2">📚 雑学王</span>
+          <span class="tag" data-i18n="oijii_tag3">🌙 夜行性</span>
+          <span class="tag" data-i18n="oijii_tag4">🧙 ミステリアス</span>
+        </div>
+        <div class="stat-list">
+          <div class="stat-item"><div class="stat-label" data-i18n="stat_role">担当</div><div class="stat-value" data-i18n="oijii_stat_role">雑学・魔法</div></div>
+          <div class="stat-item"><div class="stat-label" data-i18n="stat_like">好きなもの</div><div class="stat-value" data-i18n="oijii_stat_like">古い魔法書</div></div>
+          <div class="stat-item"><div class="stat-label" data-i18n="stat_personality">性格</div><div class="stat-value" data-i18n="oijii_stat_personality">物知り・マイペース</div></div>
+          <div class="stat-item"><div class="stat-label" data-i18n="stat_relation">相方</div><div class="stat-value" data-i18n="oijii_stat_relation">おいさし</div></div>
+        </div>
+        <div class="link-row">
+          <a class="link-pill" href="oijiiw.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+            <span data-i18n="oijii_link_home">おいじぃ魔女のホームページ</span>
+          </a>
+          <a class="link-pill" href="oijiizatu.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <span data-i18n="oijii_link_trivia">ヤバい雑学</span>
+          </a>
+          <a class="link-pill" href="https://lit.link/fozowo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            <span data-i18n="oijii_link_sns">SNSまとめ</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-pill">
+      <span>✦</span>
+      <span data-i18n="footer">FoZoWo Official — 設定からテーマ・言語を変更できます</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  const html = document.documentElement;
+
+  const i18n = {"ja":{"badge":"キャラクター","hero_title":"キャラクター<span>紹介</span>","hero_sub":"CHARACTER PROFILE","hero_lead":"FoZoWo公式の仲間たちをご紹介します。","oisasi_name":"おいさし","oisasi_alt":"おいさし","sec_oisasi":"おいさし","oisasi_role":"看板キャラクター","oisasi_desc":"FoZoWo公式の看板キャラクター。持ち前の明るさと好奇心で、音楽・AI・SNSなど、あらゆるコンテンツを元気に飛び回っている。新しいものが大好きで、思いついたらすぐ行動するタイプ。","oisasi_tag1":"🎵 音楽好き","oisasi_tag2":"✨ 元気いっぱい","oisasi_tag3":"📱 SNS担当","oisasi_tag4":"🤖 AIとも仲良し","stat_role":"担当","stat_like":"好きなもの","stat_personality":"性格","stat_relation":"相方","oisasi_stat_role":"看板・進行役","oisasi_stat_like":"新しい音楽","oisasi_stat_personality":"明るく元気","oisasi_stat_relation":"おいじぃ魔女","oisasi_link_home":"おいさし公式ホームページ","oisasi_link_ai":"FoZoWo AIと話す","oisasi_link_music":"FoZoWoミュージック","oisasi_link_yt":"YouTube","oisasi_link_x":"X","oijii_name":"おいじぃ魔女","oijii_alt":"おいじぃ魔女","sec_oijii":"おいじぃ魔女","oijii_role":"謎の魔女","oijii_desc":"古い魔法書を片手に、衝撃的な雑学と不思議な魔法を操る謎めいた魔女。物知りで少しミステリアスだが、FoZoWoの世界に彩りを添える頼れる存在。夜な夜な知識を集めているらしい。","oijii_tag1":"🔮 魔法使い","oijii_tag2":"📚 雑学王","oijii_tag3":"🌙 夜行性","oijii_tag4":"🧙 ミステリアス","oijii_stat_role":"雑学・魔法","oijii_stat_like":"古い魔法書","oijii_stat_personality":"物知り・マイペース","oijii_stat_relation":"おいさし","oijii_link_home":"おいじぃ魔女のホームページ","oijii_link_trivia":"ヤバい雑学","oijii_link_sns":"SNSまとめ","footer":"FoZoWo Official — 設定からテーマ・言語を変更できます"},"en":{"badge":"Characters","hero_title":"Character<span>s</span>","hero_sub":"CHARACTER PROFILE","hero_lead":"Meet the official characters of FoZoWo.","oisasi_name":"Oisasi","oisasi_alt":"Oisasi","sec_oisasi":"Oisasi","oisasi_role":"Main Mascot","oisasi_desc":"The main mascot of FoZoWo. Bright and endlessly curious, Oisasi jumps into music, AI, social media, and all kinds of content with energy. Loves anything new and acts on ideas right away.","oisasi_tag1":"🎵 Loves music","oisasi_tag2":"✨ Full of energy","oisasi_tag3":"📱 Socials","oisasi_tag4":"🤖 AI friendly","stat_role":"Role","stat_like":"Likes","stat_personality":"Personality","stat_relation":"Partner","oisasi_stat_role":"Mascot & host","oisasi_stat_like":"New music","oisasi_stat_personality":"Bright & energetic","oisasi_stat_relation":"Oijii Witch","oisasi_link_home":"Oisasi Official Homepage","oisasi_link_ai":"Chat with FoZoWo AI","oisasi_link_music":"FoZoWo Music","oisasi_link_yt":"YouTube","oisasi_link_x":"X","oijii_name":"Oijii Witch","oijii_alt":"Oijii Witch","sec_oijii":"Oijii Witch","oijii_role":"Mysterious Witch","oijii_desc":"A mysterious witch who wields shocking trivia and strange magic, always carrying an old spellbook. Knowledgeable and a little enigmatic, she adds color to the FoZoWo world and seems to gather knowledge every night.","oijii_tag1":"🔮 Spellcaster","oijii_tag2":"📚 Trivia master","oijii_tag3":"🌙 Nocturnal","oijii_tag4":"🧙 Enigmatic","oijii_stat_role":"Trivia & magic","oijii_stat_like":"Old spellbooks","oijii_stat_personality":"Knowledgeable, laid-back","oijii_stat_relation":"Oisasi","oijii_link_home":"Oijii Witch Homepage","oijii_link_trivia":"Crazy Trivia","oijii_link_sns":"All Socials","footer":"FoZoWo Official — Change theme & language in Settings"},"hiragana":{"badge":"きゃらくたー","hero_title":"きゃらくたー<span>しょうかい</span>","hero_sub":"CHARACTER PROFILE","hero_lead":"FoZoWoこうしきの なかまたちを ごしょうかいします。","oisasi_name":"おいさし","oisasi_alt":"おいさし","sec_oisasi":"おいさし","oisasi_role":"かんばんきゃらくたー","oisasi_desc":"FoZoWoこうしきの かんばんきゃらくたー。あかるさと こうきしんで、おんがく・AI・SNSなど、いろいろな こんてんつを げんきに とびまわっています。あたらしいものが だいすきで、おもいついたら すぐこうどうする たいぷです。","oisasi_tag1":"🎵 おんがくずき","oisasi_tag2":"✨ げんきいっぱい","oisasi_tag3":"📱 SNSたんとう","oisasi_tag4":"🤖 AIとなかよし","stat_role":"たんとう","stat_like":"すきなもの","stat_personality":"せいかく","stat_relation":"あいかた","oisasi_stat_role":"かんばん・しんこうやく","oisasi_stat_like":"あたらしいおんがく","oisasi_stat_personality":"あかるくげんき","oisasi_stat_relation":"おいじぃまじょ","oisasi_link_home":"おいさしこうしきほーむぺーじ","oisasi_link_ai":"FoZoWo AIと はなす","oisasi_link_music":"FoZoWoみゅーじっく","oisasi_link_yt":"YouTube","oisasi_link_x":"X","oijii_name":"おいじぃまじょ","oijii_alt":"おいじぃまじょ","sec_oijii":"おいじぃまじょ","oijii_role":"なぞのまじょ","oijii_desc":"ふるい まほうしょを かたてに、しょうげきてきな ざつがくと ふしぎな まほうを あやつる なぞめいた まじょ。ものしりで すこし みすてりあすですが、FoZoWoの せかいに いろどりを そえる たよりになる そんざいです。よなよな ちしきを あつめているらしいです。","oijii_tag1":"🔮 まほうつかい","oijii_tag2":"📚 ざつがくおう","oijii_tag3":"🌙 やこうせい","oijii_tag4":"🧙 みすてりあす","oijii_stat_role":"ざつがく・まほう","oijii_stat_like":"ふるい まほうしょ","oijii_stat_personality":"ものしり・まいぺーす","oijii_stat_relation":"おいさし","oijii_link_home":"おいじぃまじょの ほーむぺーじ","oijii_link_trivia":"やばい ざつがく","oijii_link_sns":"SNSまとめ","footer":"FoZoWoこうしき — せっていから てーまと ことばを かえられます"},"ko":{"badge":"캐릭터","hero_title":"캐릭터<span>소개</span>","hero_sub":"CHARACTER PROFILE","hero_lead":"FoZoWo의 공식 캐릭터들을 만나보세요.","oisasi_name":"오이사시","oisasi_alt":"오이사시","sec_oisasi":"오이사시","oisasi_role":"대표 캐릭터","oisasi_desc":"FoZoWo의 대표 캐릭터입니다. 밝고 호기심이 많으며 음악, AI, SNS 등 다양한 콘텐츠를 활기차게 누빕니다. 새로운 것을 좋아하고 떠오른 아이디어는 바로 행동으로 옮기는 타입입니다.","oisasi_tag1":"🎵 음악을 좋아함","oisasi_tag2":"✨ 에너지 가득","oisasi_tag3":"📱 SNS 담당","oisasi_tag4":"🤖 AI와 친함","stat_role":"역할","stat_like":"좋아하는 것","stat_personality":"성격","stat_relation":"파트너","oisasi_stat_role":"대표·진행","oisasi_stat_like":"새로운 음악","oisasi_stat_personality":"밝고 활기참","oisasi_stat_relation":"오이지 마녀","oisasi_link_home":"오이사시 공식 홈페이지","oisasi_link_ai":"FoZoWo AI와 대화","oisasi_link_music":"FoZoWo 뮤직","oisasi_link_yt":"YouTube","oisasi_link_x":"X","oijii_name":"오이지 마녀","oijii_alt":"오이지 마녀","sec_oijii":"오이지 마녀","oijii_role":"수수께끼의 마녀","oijii_desc":"오래된 마법책을 들고 충격적인 잡학과 신비한 마법을 다루는 수수께끼의 마녀입니다. 지식이 많고 조금 신비롭지만 FoZoWo 세계를 풍성하게 만드는 든든한 존재이며, 매일 밤 지식을 모은다고 합니다.","oijii_tag1":"🔮 마법사","oijii_tag2":"📚 잡학왕","oijii_tag3":"🌙 야행성","oijii_tag4":"🧙 신비로움","oijii_stat_role":"잡학·마법","oijii_stat_like":"오래된 마법책","oijii_stat_personality":"박식하고 느긋함","oijii_stat_relation":"오이사시","oijii_link_home":"오이지 마녀 홈페이지","oijii_link_trivia":"놀라운 잡학","oijii_link_sns":"SNS 모음","footer":"FoZoWo 공식 — 설정에서 테마와 언어를 변경할 수 있습니다"},"zh-cn":{"badge":"角色","hero_title":"角色<span>介绍</span>","hero_sub":"CHARACTER PROFILE","hero_lead":"认识 FoZoWo 的官方角色。","oisasi_name":"Oisasi","oisasi_alt":"Oisasi","sec_oisasi":"Oisasi","oisasi_role":"代表角色","oisasi_desc":"FoZoWo 的代表角色。开朗又充满好奇心，活跃于音乐、AI、社交媒体等各种内容之中。喜欢新事物，想到点子就会马上行动。","oisasi_tag1":"🎵 喜欢音乐","oisasi_tag2":"✨ 活力满满","oisasi_tag3":"📱 SNS 负责人","oisasi_tag4":"🤖 和 AI 很合得来","stat_role":"职责","stat_like":"喜欢","stat_personality":"性格","stat_relation":"搭档","oisasi_stat_role":"代表·主持","oisasi_stat_like":"新音乐","oisasi_stat_personality":"开朗活泼","oisasi_stat_relation":"Oijii 魔女","oisasi_link_home":"Oisasi 官方主页","oisasi_link_ai":"与 FoZoWo AI 对话","oisasi_link_music":"FoZoWo 音乐","oisasi_link_yt":"YouTube","oisasi_link_x":"X","oijii_name":"Oijii 魔女","oijii_alt":"Oijii 魔女","sec_oijii":"Oijii 魔女","oijii_role":"神秘魔女","oijii_desc":"手持古老魔法书、掌握惊人杂学与奇妙魔法的神秘魔女。知识丰富又带着一点神秘，为 FoZoWo 世界增添色彩，传说她每晚都会收集知识。","oijii_tag1":"🔮 魔法师","oijii_tag2":"📚 杂学达人","oijii_tag3":"🌙 夜行性","oijii_tag4":"🧙 神秘","oijii_stat_role":"杂学·魔法","oijii_stat_like":"古老魔法书","oijii_stat_personality":"博学·随性","oijii_stat_relation":"Oisasi","oijii_link_home":"Oijii 魔女主页","oijii_link_trivia":"惊人杂学","oijii_link_sns":"SNS 汇总","footer":"FoZoWo 官方 — 可在设置中更改主题和语言"},"zh-tw":{"badge":"角色","hero_title":"角色<span>介紹</span>","hero_sub":"CHARACTER PROFILE","hero_lead":"認識 FoZoWo 的官方角色。","oisasi_name":"Oisasi","oisasi_alt":"Oisasi","sec_oisasi":"Oisasi","oisasi_role":"代表角色","oisasi_desc":"FoZoWo 的代表角色。開朗又充滿好奇心，活躍於音樂、AI、社群媒體等各種內容之中。喜歡新事物，想到點子就會立刻行動。","oisasi_tag1":"🎵 喜歡音樂","oisasi_tag2":"✨ 活力滿滿","oisasi_tag3":"📱 SNS 負責人","oisasi_tag4":"🤖 和 AI 很合得來","stat_role":"職責","stat_like":"喜歡","stat_personality":"個性","stat_relation":"搭檔","oisasi_stat_role":"代表·主持","oisasi_stat_like":"新音樂","oisasi_stat_personality":"開朗有活力","oisasi_stat_relation":"Oijii 魔女","oisasi_link_home":"Oisasi 官方首頁","oisasi_link_ai":"與 FoZoWo AI 對話","oisasi_link_music":"FoZoWo 音樂","oisasi_link_yt":"YouTube","oisasi_link_x":"X","oijii_name":"Oijii 魔女","oijii_alt":"Oijii 魔女","sec_oijii":"Oijii 魔女","oijii_role":"神秘魔女","oijii_desc":"手持古老魔法書、掌握驚人雜學與奇妙魔法的神秘魔女。知識豐富又帶著一點神秘，為 FoZoWo 世界增添色彩，據說她每晚都會收集知識。","oijii_tag1":"🔮 魔法師","oijii_tag2":"📚 雜學達人","oijii_tag3":"🌙 夜行性","oijii_tag4":"🧙 神秘","oijii_stat_role":"雜學·魔法","oijii_stat_like":"古老魔法書","oijii_stat_personality":"博學·隨性","oijii_stat_relation":"Oisasi","oijii_link_home":"Oijii 魔女首頁","oijii_link_trivia":"驚人雜學","oijii_link_sns":"SNS 總覽","footer":"FoZoWo 官方 — 可在設定中變更主題與語言"},"es":{"badge":"Personajes","hero_title":"Personaje<span>s</span>","hero_sub":"CHARACTER PROFILE","hero_lead":"Conoce a los personajes oficiales de FoZoWo.","oisasi_name":"Oisasi","oisasi_alt":"Oisasi","sec_oisasi":"Oisasi","oisasi_role":"Mascota principal","oisasi_desc":"La mascota principal de FoZoWo. Alegre y muy curiosa, participa con energía en la música, la IA, las redes sociales y todo tipo de contenidos. Le encanta lo nuevo y actúa en cuanto se le ocurre una idea.","oisasi_tag1":"🎵 Le encanta la música","oisasi_tag2":"✨ Mucha energía","oisasi_tag3":"📱 Redes sociales","oisasi_tag4":"🤖 Amiga de la IA","stat_role":"Función","stat_like":"Le gusta","stat_personality":"Personalidad","stat_relation":"Compañera","oisasi_stat_role":"Mascota y anfitriona","oisasi_stat_like":"Música nueva","oisasi_stat_personality":"Alegre y enérgica","oisasi_stat_relation":"Bruja Oijii","oisasi_link_home":"Página oficial de Oisasi","oisasi_link_ai":"Hablar con FoZoWo AI","oisasi_link_music":"FoZoWo Música","oisasi_link_yt":"YouTube","oisasi_link_x":"X","oijii_name":"Bruja Oijii","oijii_alt":"Bruja Oijii","sec_oijii":"Bruja Oijii","oijii_role":"Bruja misteriosa","oijii_desc":"Una bruja misteriosa que domina datos sorprendentes y magia extraña, siempre con un viejo libro de hechizos. Es sabia y algo enigmática, aporta color al mundo de FoZoWo y, según dicen, reúne conocimientos cada noche.","oijii_tag1":"🔮 Hechicera","oijii_tag2":"📚 Maestra de curiosidades","oijii_tag3":"🌙 Nocturna","oijii_tag4":"🧙 Enigmática","oijii_stat_role":"Curiosidades y magia","oijii_stat_like":"Libros de hechizos antiguos","oijii_stat_personality":"Sabia y tranquila","oijii_stat_relation":"Oisasi","oijii_link_home":"Página de la Bruja Oijii","oijii_link_trivia":"Curiosidades increíbles","oijii_link_sns":"Todas las redes","footer":"FoZoWo Official — Cambia el tema y el idioma en Ajustes"},"fr":{"badge":"Personnages","hero_title":"Personnage<span>s</span>","hero_sub":"CHARACTER PROFILE","hero_lead":"Découvrez les personnages officiels de FoZoWo.","oisasi_name":"Oisasi","oisasi_alt":"Oisasi","sec_oisasi":"Oisasi","oisasi_role":"Mascotte principale","oisasi_desc":"La mascotte principale de FoZoWo. Joyeuse et très curieuse, elle participe avec énergie à la musique, à l’IA, aux réseaux sociaux et à toutes sortes de contenus. Elle adore les nouveautés et agit dès qu’une idée lui vient.","oisasi_tag1":"🎵 Aime la musique","oisasi_tag2":"✨ Pleine d’énergie","oisasi_tag3":"📱 Réseaux sociaux","oisasi_tag4":"🤖 Amie de l’IA","stat_role":"Rôle","stat_like":"Aime","stat_personality":"Personnalité","stat_relation":"Partenaire","oisasi_stat_role":"Mascotte & animatrice","oisasi_stat_like":"Nouvelle musique","oisasi_stat_personality":"Joyeuse et dynamique","oisasi_stat_relation":"Sorcière Oijii","oisasi_link_home":"Page officielle d’Oisasi","oisasi_link_ai":"Parler avec FoZoWo AI","oisasi_link_music":"FoZoWo Musique","oisasi_link_yt":"YouTube","oisasi_link_x":"X","oijii_name":"Sorcière Oijii","oijii_alt":"Sorcière Oijii","sec_oijii":"Sorcière Oijii","oijii_role":"Sorcière mystérieuse","oijii_desc":"Une sorcière mystérieuse qui maîtrise des anecdotes étonnantes et une magie étrange, toujours accompagnée d’un vieux grimoire. Savante et un peu énigmatique, elle donne de la couleur à l’univers FoZoWo et recueillerait des connaissances chaque nuit.","oijii_tag1":"🔮 Magicienne","oijii_tag2":"📚 Reine des anecdotes","oijii_tag3":"🌙 Nocturne","oijii_tag4":"🧙 Énigmatique","oijii_stat_role":"Anecdotes & magie","oijii_stat_like":"Vieux grimoires","oijii_stat_personality":"Savante et tranquille","oijii_stat_relation":"Oisasi","oijii_link_home":"Page de la Sorcière Oijii","oijii_link_trivia":"Anecdotes folles","oijii_link_sns":"Tous les réseaux","footer":"FoZoWo Official — Modifiez le thème et la langue dans Paramètres"},"de":{"badge":"Charaktere","hero_title":"Charakter<span>e</span>","hero_sub":"CHARACTER PROFILE","hero_lead":"Lerne die offiziellen Charaktere von FoZoWo kennen.","oisasi_name":"Oisasi","oisasi_alt":"Oisasi","sec_oisasi":"Oisasi","oisasi_role":"Hauptfigur","oisasi_desc":"Die Hauptfigur von FoZoWo. Fröhlich und neugierig bewegt sich Oisasi voller Energie durch Musik, KI, soziale Medien und alle möglichen Inhalte. Neues wird geliebt, und Ideen werden sofort umgesetzt.","oisasi_tag1":"🎵 Liebt Musik","oisasi_tag2":"✨ Voller Energie","oisasi_tag3":"📱 Social Media","oisasi_tag4":"🤖 KI-Freund","stat_role":"Rolle","stat_like":"Mag","stat_personality":"Persönlichkeit","stat_relation":"Partner","oisasi_stat_role":"Maskottchen & Host","oisasi_stat_like":"Neue Musik","oisasi_stat_personality":"Fröhlich & energiegeladen","oisasi_stat_relation":"Oijii-Hexe","oisasi_link_home":"Oisasi Offizielle Homepage","oisasi_link_ai":"Mit FoZoWo AI chatten","oisasi_link_music":"FoZoWo Musik","oisasi_link_yt":"YouTube","oisasi_link_x":"X","oijii_name":"Oijii-Hexe","oijii_alt":"Oijii-Hexe","sec_oijii":"Oijii-Hexe","oijii_role":"Mysteriöse Hexe","oijii_desc":"Eine geheimnisvolle Hexe mit einem alten Zauberbuch, die erstaunliche Fakten und seltsame Magie beherrscht. Sie ist wissend und etwas rätselhaft, bringt Farbe in die Welt von FoZoWo und sammelt angeblich jede Nacht neues Wissen.","oijii_tag1":"🔮 Zauberin","oijii_tag2":"📚 Trivia-Meisterin","oijii_tag3":"🌙 Nachtaktiv","oijii_tag4":"🧙 Geheimnisvoll","oijii_stat_role":"Trivia & Magie","oijii_stat_like":"Alte Zauberbücher","oijii_stat_personality":"Wissend & gelassen","oijii_stat_relation":"Oisasi","oijii_link_home":"Oijii-Hexen-Homepage","oijii_link_trivia":"Verrücktes Wissen","oijii_link_sns":"Alle Socials","footer":"FoZoWo Official — Thema und Sprache in den Einstellungen ändern"},"pt":{"badge":"Personagens","hero_title":"Personagen<span>s</span>","hero_sub":"CHARACTER PROFILE","hero_lead":"Conheça os personagens oficiais da FoZoWo.","oisasi_name":"Oisasi","oisasi_alt":"Oisasi","sec_oisasi":"Oisasi","oisasi_role":"Personagem principal","oisasi_desc":"O personagem principal da FoZoWo. Alegre e muito curiosa, Oisasi participa com energia de música, IA, redes sociais e diversos conteúdos. Adora novidades e age assim que surge uma ideia.","oisasi_tag1":"🎵 Gosta de música","oisasi_tag2":"✨ Cheia de energia","oisasi_tag3":"📱 Redes sociais","oisasi_tag4":"🤖 Amiga da IA","stat_role":"Função","stat_like":"Gosta de","stat_personality":"Personalidade","stat_relation":"Parceira","oisasi_stat_role":"Mascote e apresentadora","oisasi_stat_like":"Música nova","oisasi_stat_personality":"Alegre e energética","oisasi_stat_relation":"Bruxa Oijii","oisasi_link_home":"Página oficial de Oisasi","oisasi_link_ai":"Falar com a FoZoWo AI","oisasi_link_music":"FoZoWo Música","oisasi_link_yt":"YouTube","oisasi_link_x":"X","oijii_name":"Bruxa Oijii","oijii_alt":"Bruxa Oijii","sec_oijii":"Bruxa Oijii","oijii_role":"Bruxa misteriosa","oijii_desc":"Uma bruxa misteriosa que domina curiosidades surpreendentes e uma magia estranha, sempre com um velho livro de feitiços. Sábia e um pouco enigmática, ela dá mais cor ao universo da FoZoWo e, dizem, reúne conhecimento todas as noites.","oijii_tag1":"🔮 Feiticeira","oijii_tag2":"📚 Mestra das curiosidades","oijii_tag3":"🌙 Noturna","oijii_tag4":"🧙 Enigmática","oijii_stat_role":"Curiosidades e magia","oijii_stat_like":"Livros de feitiços antigos","oijii_stat_personality":"Sábia e tranquila","oijii_stat_relation":"Oisasi","oijii_link_home":"Página da Bruxa Oijii","oijii_link_trivia":"Curiosidades incríveis","oijii_link_sns":"Todas as redes","footer":"FoZoWo Official — Altere tema e idioma em Configurações"}};
+  // ===== 言語（10言語・トップページの選択を維持） =====
+  const SUPPORTED_LANGS = ["ja","en","hiragana","ko","zh-cn","zh-tw","es","fr","de","pt"];
+  const fileName = (location.pathname.split('/').pop() || '').toLowerCase();
+  const fileMatch = fileName.match(/^character_(ja|en|hiragana|ko|zh-cn|zh-tw|es|fr|de|pt)\.html$/);
+  let currentLang = fileMatch ? fileMatch[1] : (document.documentElement.dataset.siteLang || 'ja').toLowerCase();
+  try {
+    const saved = localStorage.getItem('FoZoWo-language');
+    if (!fileMatch && SUPPORTED_LANGS.includes(saved)) currentLang = saved;
+  } catch (e) {}
+  if (!SUPPORTED_LANGS.includes(currentLang)) currentLang = 'ja';
+
+  const ATTRS = [
+    ['data-i18n-label', 'aria-label'],
+    ['data-i18n-title', 'title'],
+    ['data-i18n-alt', 'alt'],
+    ['data-i18n-placeholder', 'placeholder']
+  ];
+
+  function applyLang(lang) {
+    currentLang = SUPPORTED_LANGS.includes(lang) ? lang : 'ja';
+    document.documentElement.lang =
+      currentLang === 'hiragana' ? 'ja-JP-x-hiragana' :
+      currentLang === 'zh-cn' ? 'zh-CN' :
+      currentLang === 'zh-tw' ? 'zh-TW' : currentLang;
+    document.documentElement.dataset.siteLang = currentLang;
+
+    const t = i18n[currentLang] || i18n.ja;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const v = t[el.getAttribute('data-i18n')];
+      if (v != null) el.innerHTML = v;
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const v = t[el.getAttribute('data-i18n-html')];
+      if (v != null) el.innerHTML = v;
+    });
+    ATTRS.forEach(([data, attr]) => {
+      document.querySelectorAll('[' + data + ']').forEach(el => {
+        const v = t[el.getAttribute(data)];
+        if (v != null) el.setAttribute(attr, v);
+      });
+    });
+
+    document.title = t.title;
+    const desc = document.querySelector('meta[name="description"]');
+    if (desc) desc.setAttribute('content', t.description);
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute('content', t.title);
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute('content', t.description);
+
+    try { localStorage.setItem('FoZoWo-language', currentLang); } catch (e) {}
+  }
+
+  window.addEventListener('fozowo-language-change', e => {
+    if (e.detail && e.detail.lang) applyLang(e.detail.lang);
+  });
+
+  // ===== テーマ（ヘッダーが <html data-theme> を更新 → theme-color を追従） =====
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  function updateThemeColor() {
+    if (themeMeta) themeMeta.content = html.getAttribute('data-theme') === 'light' ? '#f3f0f8' : '#0a0a12';
+  }
+  new MutationObserver(updateThemeColor).observe(html, { attributes: true, attributeFilter: ['data-theme'] });
+  updateThemeColor();
+
+  // ===== 外部ヘッダーの読み込み =====
+  async function loadHeader() {
+    const host = document.getElementById('site-header');
+    if (!host) return;
+    try {
+      const res = await fetch(host.dataset.src || 'header.html', { cache: 'no-cache' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const tpl = document.createElement('template');
+      tpl.innerHTML = await res.text();
+      const scripts = Array.from(tpl.content.querySelectorAll('script'));
+      scripts.forEach(sc => sc.remove());
+      host.appendChild(tpl.content);
+      // innerHTML 経由の <script> は実行されないため作り直して実行
+      scripts.forEach(old => {
+        const sc = document.createElement('script');
+        Array.from(old.attributes).forEach(a => sc.setAttribute(a.name, a.value));
+        sc.textContent = old.textContent;
+        host.appendChild(sc);
+      });
+      // 現在ページのナビ強調
+      const cur = host.dataset.current;
+      if (cur) host.querySelectorAll('a[href]').forEach(a => {
+        try { if (new URL(a.href).pathname.replace(/\/$/, '') === '/' + cur) a.setAttribute('aria-current', 'page'); } catch (e) {}
+      });
+      applyLang(currentLang);
+    } catch (err) {
+      console.warn('[header] 読み込みに失敗しました:', err);
+      host.innerHTML = '<div class="header-fallback"><a href="https://www.fozowo.f5.si/">FoZoWo</a></div>';
+    }
+  }
+  loadHeader();
+
+  // ===== セクションのフェードイン =====
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.section').forEach(sec => observer.observe(sec));
+
+  applyLang(currentLang);
+})();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
