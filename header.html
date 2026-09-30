@@ -444,6 +444,12 @@
 
 <script>
 (function () {
+  var currentPageLang = (window.FoZoWoLang && window.FoZoWoLang.current) ? window.FoZoWoLang.current() : (document.documentElement.dataset.siteLang || 'ja');
+  window.addEventListener('fozowo-language-change', function (e) {
+    currentPageLang = (e.detail && e.detail.lang) || currentPageLang || 'ja';
+    if (window.FoZoWoLang) window.FoZoWoLang.refreshHeader();
+  });
+
   var FoZoWo_SEARCH_INDEX = [
     { title: "おいじぃ魔女のホームページ", url: "https://www.fozowo.f5.si/oijiiw", icon: "🔮", keywords: "おいじい おいじぃ 魔女 witch home ホーム" },
     { title: "フォゾウォのロゴページ", url: "https://www.fozowo.f5.si/logo", icon: "🎀", keywords: "ロゴ logo デザイン" },

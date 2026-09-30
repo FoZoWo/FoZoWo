@@ -427,7 +427,7 @@ footer { margin-top: 52px; text-align: center; }
       if (cur) host.querySelectorAll('a[href]').forEach(a => {
         try { if (new URL(a.href).pathname.replace(/\/$/, '') === '/' + cur) a.setAttribute('aria-current', 'page'); } catch (e) {}
       });
-      applyLang(currentLang);
+      if (window.FoZoWoLang) window.FoZoWoLang.refreshHeader();
     } catch (err) {
       console.warn('[header] 読み込みに失敗しました:', err);
       host.innerHTML = '<div class="header-fallback"><a href="https://www.fozowo.f5.si/">FoZoWo</a></div>';
@@ -443,7 +443,7 @@ footer { margin-top: 52px; text-align: center; }
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.section').forEach(sec => observer.observe(sec));
 
-  applyLang(currentLang);
+  if (window.FoZoWoLang) window.FoZoWoLang.refreshHeader();
 })();
 
 if ('serviceWorker' in navigator) {
