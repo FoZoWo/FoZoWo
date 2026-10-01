@@ -6106,6 +6106,189 @@ body.startup-user-gate #userswitch-overlay #userswitch-startup-exit-btn { displa
 #magic-cursor { z-index: 2147483647 !important; }
 </style>
 
+
+<style id="ojwga-special-settings-style">
+/* ===== Shift+E+B+O 特殊設定：黒＋白のみの超シンプルUI ===== */
+#ojwga-special-settings-overlay{
+  position:fixed;inset:0;z-index:2147483646;display:none;
+  align-items:stretch;justify-content:center;
+  background:#000;color:#fff;font-family:Arial,"Yu Gothic UI",sans-serif;
+}
+#ojwga-special-settings-overlay.show{display:flex;}
+.ojwga-special-shell{
+  width:100%;height:100%;overflow:auto;background:#000;color:#fff;
+  padding:32px 24px;display:flex;flex-direction:column;
+}
+.ojwga-special-top{
+  width:min(620px,100%);margin:0 auto 24px;
+  display:flex;justify-content:space-between;align-items:center;gap:16px;
+}
+.ojwga-special-kicker{display:none;}
+.ojwga-special-title{margin:0;font-size:1.55rem;font-weight:800;letter-spacing:.04em;color:#fff;}
+.ojwga-special-sub{display:none;}
+.ojwga-special-close{
+  border:1px solid #fff;background:#000;color:#fff;border-radius:0;
+  padding:9px 16px;font:inherit;font-weight:700;cursor:pointer;
+}
+.ojwga-special-close:hover{background:#fff;color:#000;}
+.ojwga-special-grid{
+  width:min(620px,100%);margin:0 auto;
+  display:flex;flex-direction:column;gap:10px;
+}
+.ojwga-special-card{
+  width:100%;min-height:54px;text-align:left;cursor:pointer;
+  border:1px solid #fff;border-radius:0;padding:14px 16px;
+  background:#000;color:#fff;box-shadow:none;
+  transition:background .1s,color .1s;
+}
+.ojwga-special-card:hover{transform:none;border-color:#fff;background:#fff;color:#000;}
+.ojwga-special-card:active{transform:none;background:#fff;color:#000;}
+.ojwga-special-card.danger{border-color:#fff;background:#000;color:#fff;}
+.ojwga-special-card.danger:hover{border-color:#fff;background:#fff;color:#000;}
+.ojwga-special-icon{display:none;}
+.ojwga-special-card b{display:block;font-size:.95rem;margin:0;font-weight:800;}
+.ojwga-special-card small{display:none;}
+.ojwga-special-status{
+  width:min(620px,100%);margin:18px auto 0;padding:0;
+  border:0;border-radius:0;color:#fff;font-size:.72rem;line-height:1.5;
+  background:#000;min-height:0;
+}
+#ojwga-special-log{
+  width:min(620px,100%);margin:10px auto 0;min-height:20px;
+  color:#fff;font-size:.74rem;white-space:pre-line;
+}
+
+/* ===== 削除系フォールバック確認UI：黒背景＋白文字＋青ボタン ===== */
+#ojwga-cleanup-confirm{
+  position:fixed;inset:0;z-index:2147483647;display:none;
+  background:#000;color:#fff;
+  align-items:center;justify-content:center;padding:24px;
+  font-family:Arial,"Yu Gothic UI",sans-serif;
+}
+#ojwga-cleanup-confirm.show{display:flex;}
+.ojwga-cleanup-card{
+  width:min(560px,94vw);max-width:560px;text-align:center;
+  padding:28px 24px;box-sizing:border-box;
+}
+.ojwga-cleanup-card h2{
+  margin:0 0 16px;font-size:1.45rem;font-weight:800;color:#fff;
+}
+.ojwga-cleanup-card p{
+  margin:0 auto 28px;max-width:500px;font-size:.95rem;
+  line-height:1.75;color:#e8e8e8;white-space:pre-line;
+}
+.ojwga-cleanup-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.ojwga-cleanup-actions button{
+  min-width:150px;padding:12px 18px;border-radius:6px;
+  border:2px solid #1677ff;background:#1677ff;color:#fff;
+  font:inherit;font-weight:900;cursor:pointer;
+  box-shadow:0 4px 0 #0b4ea2;
+}
+.ojwga-cleanup-actions button.secondary{background:#0b4ea2;color:#fff;border-color:#1677ff;}
+.ojwga-cleanup-actions button:hover{filter:brightness(1.08);}
+.ojwga-cleanup-actions button.kb-focused{outline:3px solid #fff;outline-offset:3px;}
+
+/* ===== 保護者パスワード復旧：黒＋白の超シンプルUI ===== */
+#ojwga-special-recovery{
+  display:none;position:fixed;inset:0;z-index:2147483647;
+  align-items:center;justify-content:center;padding:24px;background:#000;color:#fff;
+}
+#ojwga-special-recovery.show{display:flex}
+.ojwga-recovery-card{
+  width:min(560px,94vw);max-height:92vh;overflow:auto;
+  border:1px solid #fff;border-radius:0;padding:20px;
+  background:#000;box-shadow:none;color:#fff;
+}
+.ojwga-recovery-card h3{margin:0 0 10px;font-size:1.12rem;color:#fff}
+.ojwga-recovery-card p{color:#fff;font-size:.78rem;line-height:1.55}
+.ojwga-math-q{
+  padding:14px;border-radius:0;background:#000;border:1px solid #fff;
+  color:#fff;font-size:1.08rem;font-weight:900;text-align:center;
+  letter-spacing:.03em;margin:12px 0
+}
+.ojwga-recovery-card input{
+  width:100%;box-sizing:border-box;padding:11px 12px;margin-top:6px;
+  border-radius:0;border:1px solid #fff;background:#000;color:#fff;font:inherit;
+}
+.ojwga-recovery-card label{color:#fff!important}
+.ojwga-recovery-actions{display:flex;gap:10px;margin-top:14px}
+.ojwga-recovery-actions button{
+  flex:1;padding:11px 12px;border-radius:0;border:1px solid #fff;
+  background:#000;color:#fff;font:inherit;font-weight:800;cursor:pointer
+}
+.ojwga-recovery-actions button:hover{background:#fff;color:#000}
+.ojwga-recovery-actions .primary{background:#fff;color:#000;border-color:#fff}
+.ojwga-recovery-error{display:none;color:#fff;font-size:.76rem;line-height:1.4;margin-top:8px}
+
+/* ===== 緊急初期化：完全ブロック最終警告と同系統の全画面UI ===== */
+#ojwga-special-emergency-final{
+  position:fixed!important;inset:0!important;z-index:2147483647!important;
+  display:none;align-items:center;justify-content:center;
+  width:100vw!important;height:100dvh!important;min-height:100dvh!important;
+  padding:24px!important;box-sizing:border-box!important;overflow:auto;
+  text-align:center;background:#000;color:#fff;
+}
+#ojwga-special-emergency-final.show{display:flex;}
+#ojwga-special-emergency-final .block-final-resetlike{
+  width:100%;max-width:520px;margin:0;padding:0;box-sizing:border-box;
+  background:#000;border:0;text-align:center;
+}
+#ojwga-special-emergency-final .warn-icon{
+  font-size:70px;margin-bottom:14px;line-height:1;
+  animation:shakeWarn .5s infinite;filter:drop-shadow(0 0 20px #ff3333);
+}
+#ojwga-special-emergency-final h2{
+  color:#ff4444!important;font-size:1.6rem!important;margin:0 0 10px!important;
+  text-shadow:0 0 15px rgba(255,0,0,.6);letter-spacing:2px;
+}
+#ojwga-special-emergency-final .block-wizard-text{
+  color:#ffd0d0!important;font-size:.95rem!important;line-height:1.7!important;
+  width:100%;margin:0 0 22px!important;text-align:center;
+  white-space:pre-line;max-height:calc(100dvh - 250px);overflow:auto;
+}
+#ojwga-special-emergency-final .reset-btns{
+  display:flex;gap:14px;flex-wrap:wrap;justify-content:center;width:100%;
+}
+#ojwga-special-emergency-final .reset-btns>button{min-width:150px;}
+@media(max-width:520px){
+  #ojwga-special-settings-overlay .ojwga-special-shell{padding:22px 16px;}
+  #ojwga-special-settings-overlay .ojwga-special-top{align-items:center;}
+  #ojwga-special-settings-overlay .ojwga-special-title{font-size:1.35rem;}
+  #ojwga-special-emergency-final{padding:18px!important;}
+  #ojwga-special-emergency-final h2{font-size:1.3rem!important;}
+  #ojwga-special-emergency-final .block-wizard-text{font-size:.88rem!important;}
+  #ojwga-special-emergency-final .warn-icon{font-size:60px;}
+  #ojwga-special-emergency-final .reset-btns{gap:8px;}
+}
+
+/* ===== 特殊設定の削除確認：通常の初期化UIと同じ黒背景・青ボタン ===== */
+#reset-overlay.special-cleanup-mode{
+  background:#000 !important;
+  color:#fff !important;
+}
+#reset-overlay.special-cleanup-mode .reset-btn-danger{
+  background:linear-gradient(135deg,#1677ff,#0f5dcc) !important;
+  border-color:#69a7ff !important;
+  box-shadow:0 5px 0 #0b4ea2 !important;
+  color:#fff !important;
+}
+#reset-overlay.special-cleanup-mode .reset-btn-cancel{
+  background:linear-gradient(135deg,#0b4ea2,#07356d) !important;
+  border-color:#69a7ff !important;
+  box-shadow:0 5px 0 #041f40 !important;
+  color:#fff !important;
+}
+#reset-overlay.special-cleanup-mode .kb-focused{
+  outline:3px solid #69a7ff !important;
+  outline-offset:4px !important;
+}
+#reset-overlay.special-cleanup-mode .warn-icon{display:none !important;}
+#reset-overlay.special-cleanup-mode #reset-title{color:#fff !important;text-shadow:none !important;}
+#reset-overlay.special-cleanup-mode #reset-text{color:#e8e8e8 !important;}
+#reset-overlay.special-cleanup-mode #reset-final-check,
+#reset-overlay.special-cleanup-mode #reset-final-typed{display:none !important;}
+</style>
+
 </head>
 <body>
 
@@ -6312,153 +6495,156 @@ function __notifySplashDone(){
 })();
 </script>
 
-<!-- ===== 隠しコマンド：[PC] Shift+E+B+O を 1.5秒長押し / [スマホ] 画面右上を5回連打 → 緊急初期化（普通の初期化画面をパスワードなしで開く・最後の手段・起動中のみ有効） ===== -->
+<!-- ===== 隠しコマンド：[PC] Shift+E+B+O / [スマホ] 右上5回 → 特殊設定画面 ===== -->
 <script>
 (function(){
-    /* 緊急時初期化：パスワードを忘れた・ゲームが遊べなくなった等の最後の手段。
-       起動中（6秒間）のみ有効。
-       [PC]     Shift+E+B+O を同時に 1.5秒間「長押し」で起動。
-       [スマホ] 画面の右上隅を素早く5回「連打」で起動（キーボード不要）。
-       普通の初期化画面（#reset-overlay）をパスワード認証・事前説明なしで直接開く。
-       専用スコープ 'emergency' を使うので、専用のセリフ・文字・2回の確認、
-       そして「くるくるは文字なし」になる。showResetOverlay が #reset-overlay に
-       .show を付けるので BGMコントローラが自動的に音楽を止め、警告音が鳴り、
-       executeReset（中央にくるくる＋消去 → 初期設定ウィザードへ）へ続く。 */
+    /* 起動直後のみ有効。Shift+E+B+O は緊急初期化へ直行せず、
+       黒い「特殊設定」画面を開く。 */
     var REQUIRED = ['shift','e','b','o'];
     var HOLD_MS = 1500;
-    /* 起動中（6秒間）のみ長押し受付。起動画面が出ている間に長押しで緊急時初期化画面へ。 */
     var LAUNCH_WINDOW = 6000;
     var launchActive = true;
-    setTimeout(function(){ launchActive = false; }, LAUNCH_WINDOW);
     var held = new Set();
     var triggered = false;
     var holdTimer = null;
 
+    setTimeout(function(){ launchActive = false; }, LAUNCH_WINDOW);
     function allPressed(){ return REQUIRED.every(function(k){ return held.has(k); }); }
+    function clearHold(){ if(holdTimer){ clearTimeout(holdTimer); holdTimer=null; } }
 
     function stopAllAudio(){
         try { if(typeof stopExitSavingSound === 'function') stopExitSavingSound(); }catch(e){}
         try { if('speechSynthesis' in window) window.speechSynthesis.cancel(); }catch(e){}
-        try { var a = document.getElementById('main-bgm'); if(a){ a.pause(); } }catch(e){}
-        try { document.querySelectorAll('audio,video').forEach(function(m){ try{ m.pause(); }catch(e){} }); }catch(e){}
+        try { var a = document.getElementById('main-bgm'); if(a) a.pause(); }catch(e){}
+        try { document.querySelectorAll('audio,video').forEach(function(m){ try{m.pause();}catch(e){} }); }catch(e){}
     }
 
-    /* 普通の初期化画面（完全初期化）をパスワードなしで直接開く。
-       showResetOverlay は #reset-overlay に .show を付けるので、BGMコントローラが
-       自動的に音楽を止め、警告音が鳴り、2段階＋最終チェック確認 → executeReset
-       （中央にくるくる＋消去 → 初期設定ウィザードへ）のいつもの流れになる。 */
-    function openRegularInit(){
-        resetScope = 'emergency';
-        resetStep = 0;
-        /* 念のためオーバーレイ表示状態をリセット */
-        var ov = document.getElementById('reset-overlay');
-        if(ov){
-            ov.classList.remove('dark','flash-red');
-            var sp = document.getElementById('reset-spinner');
-            var wn = document.getElementById('reset-warning');
-            if(sp) sp.classList.remove('show');
-            if(wn) wn.style.display = 'block';
-        }
-        showResetOverlay();
-    }
-
-    function openEmergency(){
-        if(triggered) return; triggered = true;
-        if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; }
-        held.clear();
-        var sp = document.getElementById('launch-splash');
-        if(sp){ sp.classList.add('hidden','off'); sp.style.display='none'; }
+    function openSpecialSettings(){
+        try{
+            var splash=document.getElementById('launch-splash');
+            if(splash){ splash.classList.add('hidden','off'); splash.style.display='none'; }
+        }catch(e){}
         stopAllAudio();
-
-        /* 通常は普通の初期化画面へ委譲。
-           関数群が未定義の超初期（本体JSがまだ読み込めていない）場合は、
-           準備できるまで短間隔でリトライする。 */
-        var tries = 0;
-        function tryOpen(){
-            try {
-                if (typeof showResetOverlay === 'function' &&
-                    typeof resetScope !== 'undefined' &&
-                    document.getElementById('reset-overlay')) {
-                    openRegularInit();
-                    return;
-                }
-            } catch(e){ /* まだ準備未完了 */ }
-            tries++;
-            if(tries < 120){ setTimeout(tryOpen, 100); }
-            else {
-                /* フォールバック（本体が壊れて初期化画面すら出せない最後の最後）：
-                   全データを消去してリロード → 初期設定へ。 */
-                try {
-                    ['oijii_root_v2','oijii_game_data_v1','oijii_user_profile_v1',
-                     'oijii_break_lock_until_v1','oijii_autobackup_v1','oijii_autobackup_settings_v1',
-                     '__shop__','pending_block_warn']
-                        .forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
-                    try{ localStorage.clear(); }catch(e){}
-                } catch(e){}
-                setTimeout(function(){ try{ location.reload(); }catch(e){ location.href = location.href; } }, 400);
-            }
-        }
-        tryOpen();
+        var ov=document.getElementById('ojwga-special-settings-overlay');
+        if(!ov) return;
+        ov.classList.add('show');
+        ov.setAttribute('aria-hidden','false');
+        try{ if(typeof applyLanguage==='function') applyLanguage(); }catch(e){}
+        try{ if(typeof ojwgaRefreshSpecialStorageStatus==='function') ojwgaRefreshSpecialStorageStatus(); }catch(e){}
+        try{ if(typeof ojwgaSpecialLog==='function') ojwgaSpecialLog('特殊設定を開きました。'); }catch(e){}
     }
 
-    /* ===== コード検出：Shift+E+B+O 同時長押し（1.5秒） ===== */
-    function clearHold(){ if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; } }
+    function trigger(){
+        if(triggered || !launchActive) return;
+        triggered=true; clearHold(); held.clear(); openSpecialSettings();
+    }
     function checkHold(){
         if(launchActive && allPressed() && !triggered && !holdTimer){
-            holdTimer = setTimeout(function(){
-                holdTimer = null;
-                if(allPressed() && !triggered){ openEmergency(); }
-            }, HOLD_MS);
+            holdTimer=setTimeout(function(){ holdTimer=null; if(allPressed()) trigger(); },HOLD_MS);
         }
     }
-    window.addEventListener('keydown', function(e){
-        var k = (e.key||'').toLowerCase();
-        if(k==='shift'){ held.add('shift'); }
-        else if(k==='e'){ held.add('e'); }
-        else if(k==='b'){ held.add('b'); }
-        else if(k==='o'){ held.add('o'); }
-        else return;
-        checkHold();
-    }, true);
-    window.addEventListener('keyup', function(e){
-        var k = (e.key||'').toLowerCase();
-        if(k==='shift'||k==='e'||k==='b'||k==='o'){
-            held.delete(k);
-            if(!allPressed()) clearHold();
-        }
-    }, true);
-    window.addEventListener('blur', function(){ held.clear(); clearHold(); });
+    window.addEventListener('keydown',function(e){
+        var k=(e.key||'').toLowerCase();
+        if(k==='shift'||k==='e'||k==='b'||k==='o'){ held.add(k); checkHold(); }
+    },true);
+    window.addEventListener('keyup',function(e){
+        var k=(e.key||'').toLowerCase();
+        if(k==='shift'||k==='e'||k==='b'||k==='o'){ held.delete(k); if(!allPressed()) clearHold(); }
+    },true);
+    window.addEventListener('blur',function(){held.clear();clearHold();});
 
-    /* ===== スマホ対応：画面の右上隅を素早く連打で起動（起動中のみ） =====
-       キーボードが使えないスマホ等のために、画面右上隅を素早く5回タップ（連打）
-       でも緊急時初期化を起動できる。pointerdown でマウス/タッチ/ペンを統合し、
-       キャプチャフェーズで受信するのでスプラッシュ等の上からでも確実に反応する。 */
-    var TAP_THRESHOLD = 5;
-    var TAP_DECAY_MS = 1000; /* 連打の間隔がこれ以上空いたらカウントリセット */
-    var tapCount = 0;
-    var tapDecayTimer = null;
-    function isTopRightCorner(x, y){
-        var w = window.innerWidth, h = window.innerHeight;
-        return (typeof x === 'number') && (typeof y === 'number') && x > w - 90 && y < 90;
-    }
-    function onCornerTap(){
-        if(triggered) return;
-        if(!launchActive){ tapCount = 0; if(tapDecayTimer){ clearTimeout(tapDecayTimer); tapDecayTimer = null; } return; }
+    /* スマホ：起動直後に右上を5回タップ */
+    var TAP_THRESHOLD=5, TAP_DECAY_MS=1000, tapCount=0, tapDecayTimer=null;
+    function isTopRightCorner(x,y){ return typeof x==='number'&&typeof y==='number'&&x>window.innerWidth-90&&y<90; }
+    document.addEventListener('pointerdown',function(e){
+        if(triggered||!launchActive||!isTopRightCorner(e.clientX,e.clientY)) return;
         tapCount++;
-        if(tapDecayTimer){ clearTimeout(tapDecayTimer); }
-        tapDecayTimer = setTimeout(function(){ tapCount = 0; tapDecayTimer = null; }, TAP_DECAY_MS);
-        if(tapCount >= TAP_THRESHOLD){
-            tapCount = 0;
-            if(tapDecayTimer){ clearTimeout(tapDecayTimer); tapDecayTimer = null; }
-            try { if(navigator.vibrate) navigator.vibrate(150); }catch(e){}
-            openEmergency();
+        if(tapDecayTimer) clearTimeout(tapDecayTimer);
+        tapDecayTimer=setTimeout(function(){tapCount=0;tapDecayTimer=null;},TAP_DECAY_MS);
+        if(tapCount>=TAP_THRESHOLD){
+            tapCount=0; if(tapDecayTimer) clearTimeout(tapDecayTimer);
+            try{if(navigator.vibrate) navigator.vibrate(120);}catch(err){}
+            trigger();
         }
-    }
-    document.addEventListener('pointerdown', function(e){
-        try { if(isTopRightCorner(e.clientX, e.clientY)) onCornerTap(); } catch(err){}
-    }, true);
+    },true);
 })();
 </script>
+
+
+<!-- ===== Shift+E+B+O 特殊設定画面 ===== -->
+<div id="ojwga-special-settings-overlay" aria-hidden="true">
+  <div class="ojwga-special-shell">
+    <div class="ojwga-special-top">
+      <h2 class="ojwga-special-title">特殊設定</h2>
+      <button class="ojwga-special-close" type="button" onclick="ojwgaCloseSpecialSettings()">閉じる</button>
+    </div>
+
+    <div class="ojwga-special-grid">
+      <button class="ojwga-special-card" type="button" onclick="ojwgaClearAppCache()"><b>キャッシュの削除</b></button>
+      <button class="ojwga-special-card" type="button" onclick="ojwgaClearTemporaryData()"><b>一時データの削除</b></button>
+      <button class="ojwga-special-card" type="button" onclick="ojwgaClearLegacyStorage()"><b>古いストレージの削除</b></button>
+      <button class="ojwga-special-card" type="button" onclick="ojwgaStorageDiagnostics()"><b>ストレージ診断</b></button>
+      <button class="ojwga-special-card" type="button" onclick="ojwgaForgotParentalPassword()"><b>保護者パスワードを忘れた</b></button>
+      <button class="ojwga-special-card" type="button" onclick="ojwgaChangeParentalPassword()"><b>保護者パスワードを変更</b></button>
+      <button class="ojwga-special-card" type="button" onclick="ojwgaExportBackup()"><b>緊急バックアップ</b></button>
+      <button class="ojwga-special-card" type="button" onclick="ojwgaOpenNormalBackup()"><b>バックアップ</b></button>
+      <button class="ojwga-special-card" type="button" onclick="ojwgaReloadApp()"><b>再読み込み</b></button>
+      <button class="ojwga-special-card danger" type="button" onclick="ojwgaEmergencyReset()"><b>緊急時初期化</b></button>
+    </div>
+    <div class="ojwga-special-status" id="ojwga-special-status"></div>
+    <div id="ojwga-special-log"></div>
+  </div>
+</div>
+
+<!-- ===== 削除系・黄色の全画面確認 ===== -->
+<div id="ojwga-cleanup-confirm" aria-hidden="true">
+  <div class="ojwga-cleanup-card">
+    <h2 id="ojwga-cleanup-title">確認</h2>
+    <p id="ojwga-cleanup-text">この操作を実行します。</p>
+    <div class="ojwga-cleanup-actions">
+      <button type="button" class="secondary" onclick="ojwgaCancelCleanupConfirm()">キャンセル</button>
+      <button type="button" onclick="ojwgaConfirmCleanup()">実行する</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 緊急初期化・完全ブロック最終警告と同系統 ===== -->
+<div id="ojwga-special-emergency-final" aria-hidden="true">
+  <div class="block-final-resetlike">
+    <div class="warn-icon" aria-hidden="true">⚠️</div>
+    <h2>最終警告じゃ</h2>
+    <p class="block-wizard-text">これが最後の確認じゃ。
+「緊急時初期化する」を押すと、ゲームのデータ・設定・ユーザー情報などが初期化されます。
+あとから元に戻せんぞい。
+本当に緊急時初期化してよいかい？</p>
+    <div class="reset-btns">
+      <button type="button" class="reset-btn-danger" onclick="ojwgaConfirmEmergencyReset()">緊急時初期化する</button>
+      <button type="button" class="reset-btn-cancel" onclick="ojwgaCancelEmergencyReset()">やめておく</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== 保護者パスワード忘れ：超難しい計算認証 ===== -->
+<div id="ojwga-special-recovery" aria-hidden="true">
+  <div class="ojwga-recovery-card">
+    <h3>🧮 保護者パスワード復旧</h3>
+    <p>現在の保護者パスワードは表示・復元せず、別の復旧認証を行います。下の超難しい計算を解き、正解した場合だけ新しいパスワードを設定できます。</p>
+    <div class="ojwga-math-q" id="ojwga-recovery-question">計算問題を準備中…</div>
+    <input id="ojwga-recovery-answer" type="text" inputmode="numeric" autocomplete="off" placeholder="答え">
+    <div id="ojwga-recovery-error" class="ojwga-recovery-error"></div>
+    <div style="margin-top:12px;">
+      <label style="display:block;font-size:.76rem;color:#8fa493;">新しい保護者パスワード</label>
+      <input id="ojwga-recovery-pass1" type="password" autocomplete="new-password" placeholder="3文字以上">
+      <label style="display:block;font-size:.76rem;color:#8fa493;margin-top:9px;">新しいパスワード（確認）</label>
+      <input id="ojwga-recovery-pass2" type="password" autocomplete="new-password" placeholder="もう一度入力">
+    </div>
+    <div class="ojwga-recovery-actions">
+      <button type="button" onclick="ojwgaCloseRecovery()">キャンセル</button>
+      <button type="button" class="primary" onclick="ojwgaCompleteRecovery()">認証して変更</button>
+    </div>
+  </div>
+</div>
 
 <div id="app">
 
@@ -15976,10 +16162,25 @@ const RESET_MESSAGES = {
         { title: '最終確認', text: 'GoogleユーザのデータとGoogleログイン連携を消去するぞい。\n一度消したら元には戻せん。本当によいかい？', speak: 'これが最後の確認じゃ。消去するを押すと、オンラインユーザーのデータとGoogleログイン連携が消えるぞい。本当によいかい。' }
     ],
     all: [
-        { title: '⚠️ 完全初期化', text: '<span style="color:#ff2222;font-weight:bold;font-size:1.15em;">☠️☠️ 最も危険な操作じゃ！ ☠️☠️</span>\nお前、本気かのぅ…？\n<span style="color:#ff8888;font-weight:bold;">すべてのユーザー、ぜーんぶのポイント、チャレンジ記録、ショップ履歴、保護者設定、音設定、表示設定、自動バックアップ、その他あらゆるデータ</span>がこの世から消え去ってしまうんじゃぞ。\n<span style="color:#ff4444;font-weight:bold;">工場出荷状態に戻り、絶対に復元できん</span>ぞい！', speak: '最も危険な操作じゃ。すべてのデータがこの世から消え去り、絶対に復元できんぞ。本当にやるのかい。', html: true },
-        { title: '本当に？', text: 'まだ続けるのかい…フォッフォッフォ。\nこれは<span style="color:#ff4444;font-weight:bold;">取り返しがつかん最終手段</span>じゃぞ。\n家族全員の思い出、努力、すべてが<span style="color:#ff8888;font-weight:bold;">永遠に失われる</span>。後悔せんかのぅ？', speak: 'まだ続けるかい。これは取り返しがつかん最終手段じゃ。後悔せんかのぅ。', html: true },
-        { title: 'もう一度確認じゃ', text: '<span style="color:#ff8888;font-weight:bold;">お主のすべての思い出が消える</span>ぞい…！\nポイントも、ユーザーも、設定も、バックアップも、ぜーんぶ<span style="color:#ff4444;font-weight:bold;">ゼロからのスタート</span>になるんじゃ。\n本当に、それでも進むのかい？', speak: 'もう一度確認じゃ。お主のすべての思い出が消えるぞ。それでも進むのかい。', html: true },
-        { title: '🚨🚨 最終確認 🚨🚨', text: '<span style="color:#ff2222;font-weight:bold;font-size:1.2em;">🚨🚨 これが最後の確認じゃ！！ 🚨🚨</span>\n本当に、本当に、本当に、<span style="color:#ff8888;font-weight:bold;">すべて消去してしまうのかい？</span>\n下のチェックと入力欄に記入したら、<span style="color:#ff4444;font-weight:bold;font-size:1.05em;">もう戻れん、絶対にじゃ！！</span>\nワシは止めたぞい…！', speak: 'これが最後の確認じゃ。本当に本当にすべて消去してしまうのかい。消去するを押したらもう戻れん絶対にじゃ。ワシは止めたぞ。', html: true }
+        { title: '完全初期化の確認', text: 'すべてのユーザー、ポイント、記録、設定、保護者設定、バックアップなどを初期化します。\nこの操作は取り消せません。\n本当に完全初期化を開始しますか？', speak: '' },
+        { title: '完全初期化・再確認', text: '現在保存されているユーザー情報・ゲーム記録・設定・バックアップなどがすべて初期状態へ戻ります。\nこの操作は元に戻せません。\n本当に続行しますか？', speak: '' },
+        { title: '完全初期化・最終確認', text: 'これが最後の確認です。\n完全初期化を実行すると、このアプリの保存データはすべて削除され、初期設定からやり直しになります。\n本当に実行しますか？', speak: '' }
+    ],
+    legacyStorage: [
+        { title: '古いストレージの削除', text: '古い保存領域だけを削除します。\n現在の設定・ユーザーデータ・ゲーム記録には影響しません。\n実行してよいですか？', speak: '' },
+        { title: '古いストレージの削除・最終確認', text: '古い保存領域を削除します。\n現在のデータはそのまま残ります。\n実行してよいですか？', speak: '' }
+    ],
+    specialCacheCleanup: [
+        { title: 'キャッシュの削除', text: 'キャッシュだけを削除します。\n設定・ユーザーデータ・ゲーム記録には影響しません。\n実行してよいですか？', speak: '' },
+        { title: 'キャッシュの削除・最終確認', text: 'キャッシュを削除します。\n現在のデータはそのまま残ります。\n実行してよいですか？', speak: '' }
+    ],
+    specialTemporaryCleanup: [
+        { title: '一時データの削除', text: '一時データだけを削除します。\n設定・ゲーム記録には影響しません。\n実行してよいですか？', speak: '' },
+        { title: '一時データの削除・最終確認', text: '一時データを削除します。\n現在の設定と記録はそのまま残ります。\n実行してよいですか？', speak: '' }
+    ],
+    specialLegacyCleanup: [
+        { title: '古いストレージの削除', text: '古い保存領域だけを削除します。\n現在の設定・ユーザーデータ・ゲーム記録には影響しません。\n実行してよいですか？', speak: '' },
+        { title: '古いストレージの削除・最終確認', text: '古い保存領域を削除します。\n現在のデータはそのまま残ります。\n実行してよいですか？', speak: '' }
     ],
     /* 緊急時初期化：パスワード認証も事前説明も無しで開ける最後の手段のため、3段階の確認にしてあるぞい。
        「緊急時以外は使うな・通常は設定から初期化すること」を1段階目で明示。
@@ -15997,10 +16198,6 @@ const RESET_MESSAGES = {
     /* 自動バックアップ全削除：初期化と同じ警告画面で1回確認 */
     clearAutoBackups: [
         { title: '自動バックアップ全削除', text: '保管されている自動バックアップを\n<span style="color:#ff8888;font-weight:bold;">すべて削除</span>するぞい！\n一度消したら戻せんが、本当によい？', speak: '自動バックアップを全て削除するぞい。一度消したら戻せんが、本当によいかい。', html: true }
-    ],
-    /* 古いストレージ（legacy）のクリア：影響が小さいので1段階のやさしい確認のみ */
-    legacyStorage: [
-        { title: '🗃️ 古いストレージをクリア', text: '使われなくなった古い保存領域を、そっと片付けるぞい。\n今使っているユーザーやポイント、設定にはいっさい影響しないから、安心しておくれ。\nきれいにしてよいかい？', speak: '使われなくなった古い保存領域を、そっと片付けるぞい。今のデータには影響しないから安心しておくれ。きれいにしてよいかい。' }
     ],
     /* 全ユーザーのポイント・記録のみ一斉ゼロ（ユーザーは残る）：3段階確認 */
     allUsersDataOnly: [
@@ -16083,10 +16280,24 @@ const RESET_MESSAGES_EN = {
         { title: '🚨 Final confirmation', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.1em;">🚨 This is the last check!</span>\nPress Erase and selected users <span style="color:#ff8888;font-weight:bold;">vanish from this world</span>!\n<span style="color:#ff4444;font-weight:bold;">It cannot be undone!</span>', speak: 'This is the last check. Press Erase and selected users vanish forever. It cannot be undone.', html: true }
     ],
     all: [
-        { title: '⚠️ Full reset', text: '<span style="color:#ff2222;font-weight:bold;font-size:1.15em;">☠️☠️ Most dangerous operation! ☠️☠️</span>\nAre you serious…?\n<span style="color:#ff8888;font-weight:bold;">All users, all points, challenges, shop history, parental settings, sound, display, auto-backups — everything</span> will vanish.\n<span style="color:#ff4444;font-weight:bold;">Factory reset. Cannot be restored!</span>', speak: 'Most dangerous operation. All data will vanish and cannot be restored. Do you really want this?', html: true },
-        { title: 'Really?', text: 'Still going… Ho ho ho.\nThis is a <span style="color:#ff4444;font-weight:bold;">last resort with no undo</span>.\nEveryone\'s memories and effort will be <span style="color:#ff8888;font-weight:bold;">lost forever</span>. No regrets?', speak: 'Still going? This is a last resort with no undo. No regrets?', html: true },
-        { title: 'Check once more', text: '<span style="color:#ff8888;font-weight:bold;">All of your memories will disappear</span>…!\nPoints, users, settings, backups — everything becomes a <span style="color:#ff4444;font-weight:bold;">fresh start from zero</span>.\nStill proceed?', speak: 'Check once more. All of your memories will disappear. Still proceed?', html: true },
-        { title: '🚨🚨 Final confirmation 🚨🚨', text: '<span style="color:#ff2222;font-weight:bold;font-size:1.2em;">🚨🚨 This is the last check!! 🚨🚨</span>\nReally, truly, absolutely <span style="color:#ff8888;font-weight:bold;">erase everything?</span>\nAfter the check and typed phrase below, <span style="color:#ff4444;font-weight:bold;font-size:1.05em;">there is no going back!!</span>\nI warned you…!', speak: 'This is the last check. Really, truly erase everything? Press Erase and there is no going back. I warned you.', html: true }
+        { title: 'Full reset confirmation', text: 'All users, points, records, settings, parental settings, backups, and other saved data will be reset.\nThis operation cannot be undone.\nContinue?', speak: '' },
+        { title: 'Full reset — final confirmation', text: 'This is the final confirmation.\nThe app will return to its initial state and all saved data will be deleted.\nRun the full reset?', speak: '' }
+    ],
+    legacyStorage: [
+        { title: 'Delete legacy storage', text: 'Only old unused storage will be removed.\nCurrent settings, user data, and game records are not affected.\nContinue?', speak: '' },
+        { title: 'Delete legacy storage — final confirmation', text: 'The old unused storage will be removed.\nCurrent data will remain.\nContinue?', speak: '' }
+    ],
+    specialCacheCleanup: [
+        { title: 'Clear cache', text: 'Only cache data will be removed.\nSettings, user data, and game records are not affected.\nContinue?', speak: '' },
+        { title: 'Clear cache — final confirmation', text: 'Cache data will be removed.\nCurrent data will remain.\nContinue?', speak: '' }
+    ],
+    specialTemporaryCleanup: [
+        { title: 'Clear temporary data', text: 'Only temporary data will be removed.\nSettings and game records are not affected.\nContinue?', speak: '' },
+        { title: 'Clear temporary data — final confirmation', text: 'Temporary data will be removed.\nCurrent settings and records will remain.\nContinue?', speak: '' }
+    ],
+    specialLegacyCleanup: [
+        { title: 'Delete legacy storage', text: 'Only old unused storage will be removed.\nCurrent settings, user data, and game records are not affected.\nContinue?', speak: '' },
+        { title: 'Delete legacy storage — final confirmation', text: 'The old unused storage will be removed.\nCurrent data will remain.\nContinue?', speak: '' }
     ],
     emergency: [
         { title: '🚨 Emergency reset', text: '<span style="color:#ff2222;font-weight:bold;">🚨 Emergency wipe!</span>\nThis is the last resort when passwords are forgotten.\n<span style="color:#ff8888;font-weight:bold;">Everything will be erased</span> and cannot be restored.', speak: 'Emergency wipe. Everything will be erased and cannot be restored. Are you sure?', html: true },
@@ -16648,6 +16859,10 @@ function showResetOverlay() {
     overlay.classList.remove('dark', 'flash-red');
     void overlay.offsetWidth;
 
+    const specialCleanup = (resetScope === 'specialCacheCleanup' || resetScope === 'specialTemporaryCleanup' || resetScope === 'specialLegacyCleanup');
+    overlay.classList.toggle('special-cleanup-mode', specialCleanup);
+    overlay.classList.toggle('silent-all-mode', resetScope === 'all');
+
     const list = (function(){
         const pack = (typeof getAppLang==='function' && getAppLang()==='en' && typeof RESET_MESSAGES_EN!=='undefined')
             ? (RESET_MESSAGES_EN[resetScope] || RESET_MESSAGES_EN.all || RESET_MESSAGES[resetScope] || RESET_MESSAGES.all)
@@ -16662,7 +16877,7 @@ function showResetOverlay() {
         textEl.innerText = msg.text;
     }
     // アイコン（復元は別アイコン）
-    iconEl.innerHTML = (resetScope === 'restore') ? '⚠️📥⚠️' : (resetScope === 'emergency') ? '🚨⚠️🚨' : '<span class="witch-img" role="img" aria-label="魔女"></span>⚠️<span class="witch-img" role="img" aria-label="魔女"></span>';
+    iconEl.innerHTML = specialCleanup ? '' : ((resetScope === 'restore') ? '⚠️📥⚠️' : (resetScope === 'emergency') ? '🚨⚠️🚨' : '<span class="witch-img" role="img" aria-label="魔女"></span>⚠️<span class="witch-img" role="img" aria-label="魔女"></span>');
 
     // ステップドットは廃止（表示しない）
     dotsEl.innerHTML = '';
@@ -16727,10 +16942,17 @@ function showResetOverlay() {
         else btnsContainer.classList.remove('swapped');
     }
 
-    // 警告音（フラッシュ点滅は安全のため常にOFF）
-    overlay.classList.add('dark');
-    playAlarmSound();
-    witchSpeak(msg.speak);
+    // 完全初期化と特殊設定の削除3項目は、警告音・魔女音声なし。
+    // 緊急時初期化など従来の警告フローだけ警告音を使う。
+    const silentConfirm = (resetScope === 'all' || specialCleanup);
+    if (!silentConfirm) {
+        overlay.classList.add('dark');
+        playAlarmSound();
+        if (msg.speak) witchSpeak(msg.speak);
+    } else {
+        overlay.classList.remove('dark','flash-red');
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    }
     try {
         if (typeof getAppLang==='function' && getAppLang()==='en' && typeof t==='function') {
             var rfc = document.querySelector('#reset-final-check .rfc-label');
@@ -16757,7 +16979,7 @@ function showResetOverlay() {
     const finalTypedEl = document.getElementById('reset-final-typed');
     const finalTypedInput = document.getElementById('reset-final-typed-input');
     if (finalCheckEl && finalCheckInput) {
-        const isAllFinal = ((resetScope === 'all' || resetScope === 'emergency') && resetStep === lastStep);
+        const isAllFinal = (resetScope === 'all' && resetStep === lastStep);
         if (isAllFinal) {
             finalCheckEl.style.display = 'flex';
             finalCheckInput.checked = false;
@@ -16848,7 +17070,7 @@ document.getElementById('reset-cancel-btn').addEventListener('click', () => {
     if (resetScope === 'restore') {
         witchSpeak((typeof getAppLang==='function'&&getAppLang()==='en')?'Canceled. That is fine.':'やっぱりやめるのかい。それでいいんじゃよ。');
         pendingRestoreData = null;
-    } else {
+    } else if (resetScope !== 'all' && resetScope !== 'specialCacheCleanup' && resetScope !== 'specialTemporaryCleanup' && resetScope !== 'specialLegacyCleanup') {
         witchSpeak((typeof getAppLang==='function'&&getAppLang()==='en')?'Canceled. That is fine.':'やっぱりやめるのかい。それでいいんじゃよ。');
     }
     hideResetOverlay();
@@ -16880,7 +17102,7 @@ document.getElementById('reset-confirm-btn').addEventListener('click', () => {
     const list = (typeof getAppLang==='function' && getAppLang()==='en' && typeof RESET_MESSAGES_EN!=='undefined')
         ? (RESET_MESSAGES_EN[resetScope] || RESET_MESSAGES[resetScope] || RESET_MESSAGES.all)
         : (RESET_MESSAGES[resetScope] || RESET_MESSAGES.all);
-    const isAllFinal = ((resetScope === 'all' || resetScope === 'emergency') && resetStep === list.length - 1);
+    const isAllFinal = (resetScope === 'all' && resetStep === list.length - 1);
     if (isAllFinal) {
         const cb = document.getElementById('reset-final-check-input');
         if (cb && !cb.checked) {
@@ -16913,7 +17135,9 @@ document.getElementById('reset-confirm-btn').addEventListener('click', () => {
 });
 
 function executeReset() {
-    if (!requireManagerUser('初期化は管理ユーザーだけができます。', 'Reset is available only to a management user.')) return;
+    /* 緊急時初期化だけは、管理ユーザーでなくても実行可能。
+       通常の初期化・設定初期化などは従来どおり管理ユーザー限定。 */
+    if (resetScope !== 'emergency' && !requireManagerUser('初期化は管理ユーザーだけができます。', 'Reset is available only to a management user.')) return;
     /* 保護者設定オフ（警告画面経由） */
     if (resetScope === 'disableParental') {
         try {
@@ -16946,7 +17170,7 @@ function executeReset() {
         witchSpeak('ヒッヒッヒ…自動バックアップを全て消してしまうぞい。');
     } else if (resetScope === 'emergency') {
         spinnerText.innerText = ''; /* 緊急時初期化：くるくるは文字なし */
-        witchSpeak('ヒッヒッヒ…さらばじゃ…すべて消えてしまえぃ……');
+        if (!window.__ojwgaEmergencySilent) witchSpeak('ヒッヒッヒ…さらばじゃ…すべて消えてしまえぃ……');
     } else {
         spinnerText.innerText = (typeof getAppLang==='function'&&getAppLang()==='en') ? 'Deleting… Do not turn off the power.' : '消去しています。電源を切らないでください。';
         witchSpeak('ヒッヒッヒ…さらばじゃ…すべて消えてしまえぃ……');
@@ -17223,17 +17447,27 @@ function executeReset() {
             }
         } catch (e) { console.warn(e); }
 
+        /* 緊急時初期化は、通常初期化と同じWindows風スピナーを10秒表示した後、
+           ホームや初期設定を経由せず、そのまま再読み込みする。
+           executeResetの先頭で spinner を表示しているため、ここでは画面を隠さない。 */
+        if (resetScope === 'emergency') {
+            window.__ojwgaEmergencySilent = false;
+            try {
+                location.reload();
+            } catch (reloadError) {
+                try { location.href = location.href; } catch (fallbackError) {}
+            }
+            return;
+        }
+
         hideResetOverlay();
         refreshHome();
-        if (resetScope === 'emergency') {
-            witchSpeak('フォッフォッフォ。緊急初期化が終わったぞい。まっさらからやり直すのじゃ。');
-        } else {
+        if (resetScope !== 'all') {
             witchSpeak('フォッフォッフォ。すべて、まっさらになったぞい。');
         }
 
         if (!getCurrentUser()) {
-            /* 🌟 完全初期化・全ユーザー削除・緊急初期化の場合は初期設定ウィザードからやり直し */
-            if (resetScope === 'all' || resetScope === 'emergency') {
+            if (resetScope === 'all') {
                 startOnboarding();
             } else {
                 openUserSwitcher();
@@ -31088,3 +31322,417 @@ html.cursor-custom.cursor-custom-ready #magic-cursor{z-index:2147483647 !importa
 })();
 </script>
 </html>
+
+
+<script id="ojwga-special-settings-js">
+(function(){
+  "use strict";
+
+  function el(id){ return document.getElementById(id); }
+  function isEn(){ try{return typeof getAppLang==='function'&&getAppLang()==='en';}catch(e){return false;} }
+  function log(msg){
+    var box=el('ojwga-special-log'); if(box) box.textContent=String(msg||'');
+  }
+  window.ojwgaSpecialLog=log;
+
+  window.ojwgaCloseSpecialSettings=function(){
+    try{ var ov=el('ojwga-special-settings-overlay'); if(ov){ov.classList.remove('show');ov.setAttribute('aria-hidden','true');} }catch(e){}
+    try{ if(typeof resumeMusic==='function') resumeMusic(); }catch(e){}
+    log('');
+  };
+  document.addEventListener('keydown',function(e){
+    var ov=el('ojwga-special-settings-overlay');
+    var rec=el('ojwga-special-recovery');
+    if(e.key==='Escape'){
+      if(rec && rec.classList.contains('show')) { ojwgaCloseRecovery(); e.preventDefault(); return; }
+      var cc=el('ojwga-cleanup-confirm');
+      if(cc && cc.classList.contains('show')) { ojwgaCancelCleanupConfirm(); e.preventDefault(); return; }
+      var ef=el('ojwga-special-emergency-final');
+      if(ef && ef.classList.contains('show')) { ojwgaCancelEmergencyReset(); e.preventDefault(); return; }
+      if(ov && ov.classList.contains('show')) { ojwgaCloseSpecialSettings(); e.preventDefault(); }
+    }
+  },true);
+
+  window.ojwgaRefreshSpecialStorageStatus=async function(){
+    var out=el('ojwga-special-status'); if(!out) return;
+    try{
+      var ls=localStorage.length, ss=sessionStorage.length;
+      var cachesCount='-';
+      if('caches' in window){ try{ cachesCount=(await caches.keys()).length; }catch(e){cachesCount='?';} }
+      var estimate='';
+      if(navigator.storage && navigator.storage.estimate){
+        try{
+          var st=await navigator.storage.estimate();
+          if(typeof st.usage==='number' && typeof st.quota==='number'){
+            estimate=' / 使用 '+Math.round(st.usage/1024/1024)+'MB・上限 '+Math.round(st.quota/1024/1024)+'MB';
+          }
+        }catch(e){}
+      }
+      out.textContent='localStorage: '+ls+'件 / sessionStorage: '+ss+'件 / Cache Storage: '+cachesCount+'個'+estimate;
+    }catch(e){ out.textContent='ストレージ状態を取得できませんでした。'; }
+  };
+
+  async function refresh(){
+    try{ await window.ojwgaRefreshSpecialStorageStatus(); }catch(e){}
+  }
+
+  var __ojwgaPendingCleanup = null;
+
+  function openCleanupConfirm(kind){
+    var ov=el('ojwga-cleanup-confirm');
+    if(!ov) return;
+    var title=el('ojwga-cleanup-title'), textEl=el('ojwga-cleanup-text');
+    var defs={
+      cache:{title:'キャッシュの削除',text:'アプリが利用するキャッシュを削除します。\n設定・ユーザーデータ・ゲーム記録には影響しません。\n実行しますか？'},
+      temporary:{title:'一時データの削除',text:'設定やゲーム記録に影響しない一時データだけを削除します。\n実行しますか？'},
+      legacy:{title:'古いストレージの削除',text:'古いバージョンで使われた保存領域だけを削除します。\n現在の設定・ユーザーデータ・ゲーム記録には影響しません。\n実行しますか？'}
+    };
+    var d=defs[kind]||defs.temporary;
+    __ojwgaPendingCleanup=kind;
+    if(title) title.textContent=d.title;
+    if(textEl) textEl.textContent=d.text;
+    ov.classList.add('show'); ov.setAttribute('aria-hidden','false');
+  }
+
+  window.ojwgaCancelCleanupConfirm=function(){
+    __ojwgaPendingCleanup=null;
+    resetScope='all'; resetStep=0;
+    var ov=el('ojwga-cleanup-confirm');
+    if(ov){ov.classList.remove('show');ov.setAttribute('aria-hidden','true');}
+    var sp=el('ojwga-special-settings-overlay');
+    if(sp){sp.classList.add('show');sp.setAttribute('aria-hidden','false');}
+  };
+
+  async function performCacheCleanup(){
+    if(!('caches' in window)){ log('Cache Storage は利用されていません。'); return; }
+    try{
+      var keys=await caches.keys(), removed=0;
+      for(var i=0;i<keys.length;i++){ try{ if(await caches.delete(keys[i])) removed++; }catch(e){} }
+      log('キャッシュを削除しました。設定・ユーザーデータは変更していません。');
+    }catch(e){ log('キャッシュ削除に失敗しました。'); }
+    refresh();
+  }
+
+  function performLegacyCleanup(){
+    var keys=[
+      'oijii_root_v1','oijii_root_v0','oijii_game_data_v1','oijii_user_profile_v1',
+      'oijii_break_lock_until_v1','oijii_autobackup_v0','oijii_autobackup_settings_v0',
+      '__shop_old__','pending_block_warn'
+    ];
+    try{ if(typeof LEGACY_STORAGE_KEY!=='undefined') keys.push(LEGACY_STORAGE_KEY); }catch(e){}
+    try{ if(typeof LEGACY_USER_KEY!=='undefined') keys.push(LEGACY_USER_KEY); }catch(e){}
+    var removed=0;
+    keys.forEach(function(k){if(!k)return;try{if(localStorage.getItem(k)!==null){localStorage.removeItem(k);removed++;}}catch(e){}});
+    log('古いストレージを削除しました。現在の設定・ユーザーデータは保持しています。');
+    refresh();
+  }
+
+  function performTemporaryCleanup(){
+    var removed=0;
+    try{ removed=sessionStorage.length; sessionStorage.clear(); }catch(e){}
+    try{
+      var tempKeys=[];
+      for(var i=0;i<localStorage.length;i++){
+        var k=localStorage.key(i)||'';
+        if(/^ojwga_tmp_/i.test(k)||/^oijiiw_tmp_/i.test(k)) tempKeys.push(k);
+      }
+      tempKeys.forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});
+      removed+=tempKeys.length;
+    }catch(e){}
+    log('一時データを削除しました。設定・ゲーム記録は保持しています。');
+    refresh();
+  }
+
+  function openSpecialCleanupScope(scope){
+    try{
+      var sp=el('ojwga-special-settings-overlay');
+      var cc=el('ojwga-cleanup-confirm');
+      if(sp){sp.classList.remove('show');sp.setAttribute('aria-hidden','true');}
+      var map={specialCacheCleanup:'cache',specialTemporaryCleanup:'temporary',specialLegacyCleanup:'legacy'};
+      var kind=map[scope]||'temporary';
+      __ojwgaPendingCleanup=kind;
+      var defs={
+        cache:{title:'キャッシュの削除',text:'キャッシュだけを削除します。\n設定・ユーザーデータ・ゲーム記録には影響しません。\n削除しますか？'},
+        temporary:{title:'一時データの削除',text:'設定やゲーム記録に影響しない一時データだけを削除します。\n削除しますか？'},
+        legacy:{title:'古いストレージの削除',text:'古いバージョンで使われた保存領域だけを削除します。\n現在の設定・ユーザーデータ・ゲーム記録には影響しません。\n削除しますか？'}
+      };
+      var d=defs[kind];
+      var title=el('ojwga-cleanup-title'), textEl=el('ojwga-cleanup-text');
+      if(title) title.textContent=d.title;
+      if(textEl) textEl.textContent=d.text;
+      resetScope=scope; resetStep=0;
+      if(cc){cc.classList.add('show');cc.setAttribute('aria-hidden','false');}
+      window.__ojwgaCleanupKbFocus=0;
+      refreshCleanupKbFocus();
+    }catch(e){ log('確認画面を開けませんでした。'); }
+  }
+  window.ojwgaClearAppCache=function(){ openSpecialCleanupScope('specialCacheCleanup'); };
+  window.ojwgaClearLegacyStorage=function(){ openSpecialCleanupScope('specialLegacyCleanup'); };
+  window.ojwgaClearTemporaryData=function(){ openSpecialCleanupScope('specialTemporaryCleanup'); };
+
+  window.ojwgaConfirmCleanup=async function(){
+    var kind=__ojwgaPendingCleanup;
+    __ojwgaPendingCleanup=null;
+    var ov=el('ojwga-cleanup-confirm');
+    if(ov){ov.classList.remove('show');ov.setAttribute('aria-hidden','true');}
+    try{
+      if(kind==='cache') await performCacheCleanup();
+      else if(kind==='legacy') performLegacyCleanup();
+      else if(kind==='temporary') performTemporaryCleanup();
+      log('削除が完了しました。');
+    }catch(e){ log('処理に失敗しました。'); }
+    resetScope='all'; resetStep=0;
+    var sp=el('ojwga-special-settings-overlay');
+    if(sp){sp.classList.add('show');sp.setAttribute('aria-hidden','false');}
+    refresh();
+  };
+
+  function specialCleanupActive(){
+    return resetScope==='specialCacheCleanup' || resetScope==='specialTemporaryCleanup' || resetScope==='specialLegacyCleanup';
+  }
+
+  window.__ojwgaCleanupKbFocus=0; // 0:キャンセル 1:実行
+  function refreshCleanupKbFocus(){
+    var ov=el('ojwga-cleanup-confirm');
+    if(!ov || !ov.classList.contains('show')) return;
+    var buttons=ov.querySelectorAll('.ojwga-cleanup-actions button');
+    buttons.forEach(function(b,i){ b.classList.toggle('kb-focused', i===window.__ojwgaCleanupKbFocus); });
+  }
+
+  window.addEventListener('keydown',function(e){
+    var ov=el('ojwga-cleanup-confirm');
+    if(!ov || !ov.classList.contains('show')) return;
+    if(e.key==='Escape'){
+      e.preventDefault();e.stopImmediatePropagation();
+      ojwgaCancelCleanupConfirm();
+      return;
+    }
+    if(e.key==='ArrowLeft'||e.key==='ArrowRight'||e.key==='ArrowUp'||e.key==='ArrowDown'||e.key==='Tab'){
+      e.preventDefault();e.stopImmediatePropagation();
+      window.__ojwgaCleanupKbFocus=1-window.__ojwgaCleanupKbFocus;
+      refreshCleanupKbFocus();
+      return;
+    }
+    if(e.key==='Enter'){
+      e.preventDefault();e.stopImmediatePropagation();
+      var buttons=ov.querySelectorAll('.ojwga-cleanup-actions button');
+      if(buttons[window.__ojwgaCleanupKbFocus]) buttons[window.__ojwgaCleanupKbFocus].click();
+    }
+  },true);
+
+  document.addEventListener('click',function(e){
+    if(!specialCleanupActive()) return;
+    var t=e.target;
+    if(!t || !t.closest) return;
+    if(t.closest('#reset-confirm-btn') || t.closest('#reset-cancel-btn')){
+      e.preventDefault();e.stopImmediatePropagation();
+    }
+  },true);
+
+  window.__ojwgaEmergencyKbFocus=1; // 0:緊急時初期化する 1:やめておく
+  function refreshEmergencyKbFocus(){
+    var ov=el('ojwga-special-emergency-final');
+    if(!ov || !ov.classList.contains('show')) return;
+    var buttons=ov.querySelectorAll('.reset-btn-danger,.reset-btn-cancel');
+    buttons.forEach(function(b,i){ b.classList.toggle('kb-focused', i===window.__ojwgaEmergencyKbFocus); });
+  }
+  window.addEventListener('keydown',function(e){
+    var ov=el('ojwga-special-emergency-final');
+    if(!ov || !ov.classList.contains('show')) return;
+    if(e.key==='Escape'){
+      e.preventDefault();e.stopImmediatePropagation();
+      ojwgaCancelEmergencyReset();
+      return;
+    }
+    if(e.key==='ArrowLeft'||e.key==='ArrowRight'||e.key==='ArrowUp'||e.key==='ArrowDown'||e.key==='Tab'){
+      e.preventDefault();e.stopImmediatePropagation();
+      window.__ojwgaEmergencyKbFocus=1-window.__ojwgaEmergencyKbFocus;
+      refreshEmergencyKbFocus();
+      return;
+    }
+    if(e.key==='Enter'){
+      e.preventDefault();e.stopImmediatePropagation();
+      var buttons=ov.querySelectorAll('.reset-btn-danger,.reset-btn-cancel');
+      if(buttons[window.__ojwgaEmergencyKbFocus]) buttons[window.__ojwgaEmergencyKbFocus].click();
+    }
+  },true);
+
+  window.ojwgaStorageDiagnostics=async function(){
+    var lines=[];
+    try{
+      lines.push('現在の保存状態');
+      lines.push('localStorage: '+localStorage.length+'件');
+      lines.push('sessionStorage: '+sessionStorage.length+'件');
+      if(navigator.storage && navigator.storage.estimate){
+        var st=await navigator.storage.estimate();
+        if(typeof st.usage==='number') lines.push('使用量: '+Math.round(st.usage/1024/1024*10)/10+' MB');
+        if(typeof st.quota==='number') lines.push('割当上限: '+Math.round(st.quota/1024/1024*10)/10+' MB');
+      }
+      if('caches' in window) lines.push('Cache Storage: '+(await caches.keys()).length+'個');
+    }catch(e){ lines.push('一部の診断情報を取得できませんでした。'); }
+    log(lines.join('\n'));
+  };
+
+  window.ojwgaExportBackup=function(){
+    try{
+      if(typeof exportBackup==='function'){ exportBackup(); log('緊急バックアップの書き出しを開始しました。'); return; }
+      log('バックアップ書き出し機能を見つけられませんでした。');
+    }catch(e){ log('バックアップ書き出しに失敗しました: '+e.message); }
+  };
+
+  window.ojwgaOpenNormalBackup=function(){
+    try{
+      ojwgaCloseSpecialSettings();
+      if(typeof openBackup==='function') openBackup();
+      else log('通常のバックアップ画面を開けませんでした。');
+    }catch(e){ log('バックアップ画面の起動に失敗しました。'); }
+  };
+
+  window.ojwgaReloadApp=function(){
+    try{ window.location.reload(); }catch(e){ location.href=location.href; }
+  };
+
+  var __ojwgaEmergencyStep=0;
+  window.ojwgaEmergencyReset=function(){
+    try{
+      ojwgaCloseSpecialSettings();
+      var ov=el('ojwga-special-emergency-final');
+      if(!ov) return;
+      __ojwgaEmergencyStep=0;
+      var h=ov.querySelector('h2'), p=ov.querySelector('.block-wizard-text'), go=ov.querySelector('.reset-btn-danger');
+      if(h) h.textContent='緊急時初期化の確認';
+      if(p) p.textContent='緊急時初期化を実行すると、このゲームの保存データ・設定・ユーザー情報などが初期化されます。\n通常の初期化ができない場合に使用してください。\n本当に続行しますか？';
+      if(go) go.textContent='続行する';
+      window.__ojwgaEmergencyKbFocus=1;
+      ov.classList.add('show');
+      refreshEmergencyKbFocus();
+      ov.setAttribute('aria-hidden','false');
+      try{ if(typeof stopMusic==='function') stopMusic(); }catch(e){}
+      try{ if(typeof playAlarmSound==='function') playAlarmSound('alert'); }catch(e){}
+    }catch(e){ log('緊急初期化の確認画面を開けませんでした。'); }
+  };
+
+  window.ojwgaCancelEmergencyReset=function(){
+    __ojwgaEmergencyStep=0;
+    var ov=el('ojwga-special-emergency-final');
+    if(ov){ov.classList.remove('show');ov.setAttribute('aria-hidden','true');}
+    try{ if(typeof resumeMusic==='function') resumeMusic(); }catch(e){}
+  };
+
+  window.ojwgaConfirmEmergencyReset=function(){
+    var ov=el('ojwga-special-emergency-final');
+    if(!ov) return;
+    if(__ojwgaEmergencyStep===0){
+      __ojwgaEmergencyStep=1;
+      var h=ov.querySelector('h2'), p=ov.querySelector('.block-wizard-text'), go=ov.querySelector('.reset-btn-danger');
+      if(h) h.textContent='緊急時初期化・最終確認';
+      if(p) p.textContent='これが2回目で最後の確認です。\nこの端末のユーザー・ポイント・ゲーム記録・設定・バックアップなどが初期化されます。\nこの操作は元に戻せません。\n本当に緊急時初期化を実行しますか？';
+      if(go) go.textContent='緊急時初期化する';
+      window.__ojwgaEmergencyKbFocus=1;
+      refreshEmergencyKbFocus();
+      try{ if(typeof playAlarmSound==='function') playAlarmSound('alert'); }catch(e){}
+      return;
+    }
+    ov.classList.remove('show');
+    ov.setAttribute('aria-hidden','true');
+    try{
+      resetScope='emergency';
+      resetStep=0;
+      window.__ojwgaEmergencySilent=true;
+      if(typeof executeReset==='function') executeReset();
+      else log('緊急初期化の処理を起動できませんでした。');
+    }catch(e){ log('緊急初期化に失敗しました。'); }
+  };
+
+  function makeVeryHardMath(){
+    /* 毎回ランダム。整数のみで、四則演算のうち加減乗を多段で使用 */
+    var a=47+Math.floor(Math.random()*53);
+    var b=18+Math.floor(Math.random()*32);
+    var c=63+Math.floor(Math.random()*37);
+    var d=14+Math.floor(Math.random()*26);
+    var e=22+Math.floor(Math.random()*29);
+    var f=31+Math.floor(Math.random()*24);
+    var g=7+Math.floor(Math.random()*9);
+    var answer=((a*b)+(c*d))-((e*f)-g);
+    return {
+      q:'('+a+' × '+b+') + ('+c+' × '+d+') − (('+e+' × '+f+') − '+g+') = ?',
+      a:answer
+    };
+  }
+  var recoveryAnswer=null;
+  window.ojwgaForgotParentalPassword=function(){
+    var ov=el('ojwga-special-recovery');
+    if(!ov) return;
+    var mq=makeVeryHardMath(); recoveryAnswer=mq.a;
+    el('ojwga-recovery-question').textContent=mq.q;
+    el('ojwga-recovery-answer').value='';
+    el('ojwga-recovery-pass1').value='';
+    el('ojwga-recovery-pass2').value='';
+    el('ojwga-recovery-error').style.display='none';
+    ov.classList.add('show'); ov.setAttribute('aria-hidden','false');
+    setTimeout(function(){try{el('ojwga-recovery-answer').focus();}catch(e){}},100);
+  };
+  window.ojwgaCloseRecovery=function(){
+    var ov=el('ojwga-special-recovery'); if(ov){ov.classList.remove('show');ov.setAttribute('aria-hidden','true');}
+    recoveryAnswer=null;
+  };
+  window.ojwgaCompleteRecovery=function(){
+    var err=el('ojwga-recovery-error');
+    function fail(msg){ if(err){err.textContent=msg;err.style.display='block';} }
+    var ans=parseInt(String(el('ojwga-recovery-answer').value||'').trim(),10);
+    if(!Number.isFinite(ans) || ans!==recoveryAnswer){ fail('計算が正しくありません。もう一度問題を解いてください。'); return; }
+    var p1=String(el('ojwga-recovery-pass1').value||'');
+    var p2=String(el('ojwga-recovery-pass2').value||'');
+    if(p1.length<3){ fail('新しいパスワードは3文字以上にしてください。'); return; }
+    if(p1!==p2){ fail('新しいパスワードが一致していません。'); return; }
+    try{
+      if(!root.parental) root.parental=(typeof defaultParental==='function')?defaultParental():{};
+      root.parental.password=p1;
+      root.parental.hint='';
+      root.parental.authWrongCount=0;
+      root.parental.authLockUntil=0;
+      root.parental.enabled=true;
+      saveRoot();
+      try{syncParentalUI();}catch(e){}
+      ojwgaCloseRecovery();
+      log('計算認証に成功しました。新しい保護者パスワードを保存しました。');
+      try{if(typeof showSafetyToast==='function') showSafetyToast('保護者パスワードを変更しました');}catch(e){}
+    }catch(e){ fail('保存に失敗しました: '+e.message); }
+  };
+
+  window.ojwgaChangeParentalPassword=function(){
+    try{
+      var current=root.parental && root.parental.password;
+      if(!current){
+        window.ojwgaForgotParentalPassword();
+        return;
+      }
+      if(typeof requireParentalAuth==='function'){
+        requireParentalAuth({
+          title:'パスワード変更',
+          message:'現在の保護者パスワードを入力してください',
+          strictPasswordOnly:true,
+          onSuccess:function(){
+            try{
+              var p1=prompt('新しい保護者パスワードを入力してください（3文字以上）','');
+              if(p1===null) return;
+              if(String(p1).length<3){alert('3文字以上にしてください。');return;}
+              var p2=prompt('新しいパスワードをもう一度入力してください','');
+              if(String(p1)!==String(p2)){alert('パスワードが一致しません。');return;}
+              root.parental.password=String(p1);
+              root.parental.hint='';
+              root.parental.authWrongCount=0;
+              root.parental.authLockUntil=0;
+              saveRoot(); try{syncParentalUI();}catch(e){}
+              log('現在のパスワードを認証し、新しい保護者パスワードを保存しました。');
+            }catch(e){log('パスワード変更に失敗しました。');}
+          }
+        });
+      }
+    }catch(e){log('パスワード変更を開始できませんでした: '+e.message);}
+  };
+
+  /* 画面表示時の小さな初期化 */
+  window.addEventListener('load',function(){setTimeout(refresh,300);});
+})();
+</script>
