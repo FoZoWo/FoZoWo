@@ -475,12 +475,16 @@
   function syncLanguageButtons(lang) {
     var opts = document.getElementById('langOptions');
     if (!opts) return;
+    var normalized = validLangs.indexOf(lang) !== -1 ? lang : 'ja';
     opts.querySelectorAll('button[data-value]').forEach(function (btn) {
-      var active = btn.getAttribute('data-value') === lang;
-      btn.classList.toggle('active', active);
+      var active = btn.getAttribute('data-value') === normalized;
+      btn.classList.remove('active');
       btn.setAttribute('aria-selected', active ? 'true' : 'false');
+      if (active) btn.classList.add('active');
     });
+    opts.setAttribute('data-current-lang', normalized);
   }
+
 
   window.addEventListener('fozowo-language-change', function (e) {
     currentPageLang = (e.detail && e.detail.lang) || getStoredLang() || currentPageLang || 'ja';
@@ -583,10 +587,29 @@
         currentPageLang = nextLang;
         syncLanguageButtons(nextLang);
         window.FoZoWoLang.change(nextLang, true);
+        window.setTimeout(function(){
+          var actual = (window.FoZoWoLang && window.FoZoWoLang.current) ? window.FoZoWoLang.current() : nextLang;
+          syncLanguageButtons(actual);
+        }, 0);
       });
     }
     if (window.FoZoWoLang && window.FoZoWoLang.refreshHeader) window.FoZoWoLang.refreshHeader();
     syncLanguageButtons(currentPageLang);
+
+    // 言語ボタンの表示状態を常に言語状態と同期。ページ側の翻訳処理が
+    // DOMを書き換えた場合でも、選択中のボタンだけをactiveに戻す。
+    var langButtonObserver = new MutationObserver(function () {
+      var actual = (window.FoZoWoLang && window.FoZoWoLang.current) ? window.FoZoWoLang.current() : currentPageLang;
+      if (validLangs.indexOf(actual) === -1) actual = currentPageLang || 'ja';
+      var opts = document.getElementById('langOptions');
+      if (opts) {
+        var active = opts.querySelector('button.active');
+        if (!active || active.getAttribute('data-value') !== actual) syncLanguageButtons(actual);
+      }
+    });
+    var langContainer = document.getElementById('langOptions');
+    if (langContainer) langButtonObserver.observe(langContainer, {subtree:true, attributes:true, attributeFilter:['class','data-value']});
+
     // ===== テーマ =====
     function applyTheme(value) {
       var root = document.documentElement;
