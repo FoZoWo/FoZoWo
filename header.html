@@ -417,16 +417,16 @@
   <div class="settings-group">
     <span class="settings-label" data-i18n="language">言語</span>
     <div class="settings-options" id="langOptions">
-      <button data-value="ja" class="active">日本語</button>
-      <button data-value="en">English</button>
-      <button data-value="hiragana">ひらがな</button>
-      <button data-value="ko">한국어</button>
-      <button data-value="zh-cn">简体中文</button>
-      <button data-value="zh-tw">繁體中文</button>
-      <button data-value="es">Español</button>
-      <button data-value="fr">Français</button>
-      <button data-value="de">Deutsch</button>
-      <button data-value="pt">Português</button>
+      <button data-value="ja" aria-selected="false">日本語</button>
+      <button data-value="en" aria-selected="false">English</button>
+      <button data-value="hiragana" aria-selected="false">ひらがな</button>
+      <button data-value="ko" aria-selected="false">한국어</button>
+      <button data-value="zh-cn" aria-selected="false">简体中文</button>
+      <button data-value="zh-tw" aria-selected="false">繁體中文</button>
+      <button data-value="es" aria-selected="false">Español</button>
+      <button data-value="fr" aria-selected="false">Français</button>
+      <button data-value="de" aria-selected="false">Deutsch</button>
+      <button data-value="pt" aria-selected="false">Português</button>
     </div>
   </div>
 </div>
@@ -458,10 +458,35 @@
 
 <script>
 (function () {
-  var currentPageLang = (window.FoZoWoLang && window.FoZoWoLang.current) ? window.FoZoWoLang.current() : (document.documentElement.dataset.siteLang || 'ja');
+  function getStoredLang() {
+    try {
+      var urlLang = new URLSearchParams(window.location.search).get('lang');
+      if (urlLang) return urlLang;
+      return localStorage.getItem('FoZoWo-language') || localStorage.getItem('zojezu-lang') || document.documentElement.dataset.siteLang || 'ja';
+    } catch (e) {
+      return document.documentElement.dataset.siteLang || 'ja';
+    }
+  }
+
+  var currentPageLang = (window.FoZoWoLang && window.FoZoWoLang.current) ? window.FoZoWoLang.current() : getStoredLang();
+  var validLangs = ['ja','en','hiragana','ko','zh-cn','zh-tw','es','fr','de','pt'];
+  if (validLangs.indexOf(currentPageLang) === -1) currentPageLang = 'ja';
+
+  function syncLanguageButtons(lang) {
+    var opts = document.getElementById('langOptions');
+    if (!opts) return;
+    opts.querySelectorAll('button[data-value]').forEach(function (btn) {
+      var active = btn.getAttribute('data-value') === lang;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+  }
+
   window.addEventListener('fozowo-language-change', function (e) {
-    currentPageLang = (e.detail && e.detail.lang) || currentPageLang || 'ja';
-    if (window.FoZoWoLang) window.FoZoWoLang.refreshHeader();
+    currentPageLang = (e.detail && e.detail.lang) || getStoredLang() || currentPageLang || 'ja';
+    if (validLangs.indexOf(currentPageLang) === -1) currentPageLang = 'ja';
+    syncLanguageButtons(currentPageLang);
+    if (window.FoZoWoLang && window.FoZoWoLang.refreshHeader) window.FoZoWoLang.refreshHeader();
   });
 
   var FoZoWo_SEARCH_INDEX = [
@@ -554,10 +579,14 @@
         var btn = e.target.closest('button[data-value]');
         if (!btn || !window.FoZoWoLang) return;
         e.stopPropagation();
-        window.FoZoWoLang.change(btn.getAttribute('data-value'), true);
+        var nextLang = btn.getAttribute('data-value');
+        currentPageLang = nextLang;
+        syncLanguageButtons(nextLang);
+        window.FoZoWoLang.change(nextLang, true);
       });
     }
-    if (window.FoZoWoLang) window.FoZoWoLang.refreshHeader();
+    if (window.FoZoWoLang && window.FoZoWoLang.refreshHeader) window.FoZoWoLang.refreshHeader();
+    syncLanguageButtons(currentPageLang);
     // ===== テーマ =====
     function applyTheme(value) {
       var root = document.documentElement;
