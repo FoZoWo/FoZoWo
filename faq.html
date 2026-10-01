@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>FAQ・よくある質問 | ZoJeZu公式</title>
-<meta name="description" content="ZoJeZu公式FAQ・よくある質問">
-<meta name="theme-color" content="#0a0a12">
+<title>FAQ・よくある質問 | FoZoWo公式</title>
+<meta name="description" content="FoZoWo公式FAQ・よくある質問。FoZoWoの日、活動開始日、言語設定、ロゴ、キャラクター、SNSなどについて紹介します。">
+<meta name="theme-color" content="#0a0a12" id="themeColorMeta">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
@@ -13,410 +13,143 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
-
 <style>
-:root, [data-theme="dark"] {
-  --bg: #07070f;
-  --bg-elevated: #0e0e1a;
-  --surface: rgba(255,255,255,0.055);
-  --surface-hover: rgba(255,255,255,0.11);
-  --border: rgba(255,255,255,0.12);
-  --text: #f4f4fc;
-  --muted: #9b9bb8;
-  --pink: #ff6bcb;
-  --purple: #8b6cff;
-  --cyan: #00e5ff;
-  --gold: #ffd166;
-  --header-bg: rgba(7,7,15,0.78);
-  --header-bg-scrolled: rgba(7,7,15,0.94);
-  --menu-bg: rgba(7,7,15,0.97);
-  --card-glow: 0 0 32px rgba(255,107,203,0.4);
-  --shadow: 0 22px 55px rgba(0,0,0,0.5);
-  --radius: 18px;
-  --header-h: 68px;
-  --nav-max: 1100px;
-}
-[data-theme="light"] {
-  --bg: #f3f0f8;
-  --bg-elevated: #ffffff;
-  --surface: rgba(0,0,0,0.04);
-  --surface-hover: rgba(0,0,0,0.075);
-  --border: rgba(0,0,0,0.09);
-  --text: #1a1a2e;
-  --muted: #5c5c78;
-  --pink: #e84a9a;
-  --purple: #6b4ce0;
-  --cyan: #0099b8;
-  --gold: #c99200;
-  --header-bg: rgba(255,255,255,0.82);
-  --header-bg-scrolled: rgba(255,255,255,0.96);
-  --menu-bg: rgba(255,255,255,0.97);
-  --card-glow: 0 0 28px rgba(232,74,154,0.28);
-  --shadow: 0 18px 45px rgba(0,0,0,0.13);
-}
-@media (prefers-color-scheme: light) {
-  [data-theme="auto"] {
-    --bg: #f3f0f8;
-    --bg-elevated: #ffffff;
-    --surface: rgba(0,0,0,0.04);
-    --surface-hover: rgba(0,0,0,0.075);
-    --border: rgba(0,0,0,0.09);
-    --text: #1a1a2e;
-    --muted: #5c5c78;
-    --pink: #e84a9a;
-    --purple: #6b4ce0;
-    --cyan: #0099b8;
-    --gold: #c99200;
-    --header-bg: rgba(255,255,255,0.82);
-    --header-bg-scrolled: rgba(255,255,255,0.96);
-    --menu-bg: rgba(255,255,255,0.97);
-    --card-glow: 0 0 28px rgba(232,74,154,0.28);
-    --shadow: 0 18px 45px rgba(0,0,0,0.13);
-  }
-}
-@media (prefers-color-scheme: dark) {
-  [data-theme="auto"] {
-    --bg: #07070f;
-    --bg-elevated: #0e0e1a;
-    --surface: rgba(255,255,255,0.055);
-    --surface-hover: rgba(255,255,255,0.11);
-    --border: rgba(255,255,255,0.12);
-    --text: #f4f4fc;
-    --muted: #9b9bb8;
-    --pink: #ff6bcb;
-    --purple: #8b6cff;
-    --cyan: #00e5ff;
-    --gold: #ffd166;
-    --header-bg: rgba(7,7,15,0.78);
-    --header-bg-scrolled: rgba(7,7,15,0.94);
-    --menu-bg: rgba(7,7,15,0.97);
-    --card-glow: 0 0 32px rgba(255,107,203,0.4);
-    --shadow: 0 22px 55px rgba(0,0,0,0.5);
-  }
-}
-
-:root {
-  --cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath fill='%23ff6bcb' stroke='%23ffffff' stroke-width='1.8' stroke-linejoin='round' d='M4 2 L4 22 L10 16 L14 25 L17.5 23.5 L13.5 14.5 L21 14.5 Z'/%3E%3C/svg%3E") 4 2, auto;
-  --cursor-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath fill='%238b6cff' stroke='%23ffffff' stroke-width='1.8' stroke-linejoin='round' d='M4 2 L4 22 L10 16 L14 25 L17.5 23.5 L13.5 14.5 L21 14.5 Z'/%3E%3C/svg%3E") 4 2, pointer;
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Yu Gothic", system-ui, sans-serif;
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--text);
-  background: var(--bg);
-  min-height: 100dvh;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  padding-top: var(--header-h);
-  cursor: var(--cursor);
-  transition: background 0.45s, color 0.35s;
-}
-a, button, .card, .pill, .sns, .icon-btn, .hamburger, .settings-options button, .faq-item, .back-btn, .action-btn {
-  cursor: var(--cursor-hover);
-}
-
-/* Background Elements */
-.bg {
-  position: fixed; inset: 0; z-index: -2;
-  background:
-    radial-gradient(ellipse 90% 60% at 15% -10%, color-mix(in srgb, var(--purple) 40%, transparent), transparent 55%),
-    radial-gradient(ellipse 70% 50% at 90% 5%, color-mix(in srgb, var(--pink) 30%, transparent), transparent 50%),
-    radial-gradient(ellipse 60% 40% at 50% 110%, color-mix(in srgb, var(--cyan) 14%, transparent), transparent 50%),
-    var(--bg);
-  transition: background 0.5s;
-  animation: bgShift 16s ease-in-out infinite alternate;
-}
-@keyframes bgShift {
-  0% { filter: hue-rotate(0deg) brightness(1); }
-  100% { filter: hue-rotate(14deg) brightness(1.06); }
-}
-.orb {
-  position: fixed; border-radius: 50%; filter: blur(70px); opacity: 0.32;
-  pointer-events: none; z-index: -1; animation: orbFloat 20s ease-in-out infinite; transition: opacity 0.4s;
-}
-[data-theme="light"] .orb, [data-theme="auto"] .orb { opacity: 0.16; }
-@media (prefers-color-scheme: dark) {
-  [data-theme="auto"] .orb { opacity: 0.32; }
-}
-.orb-1 { width: 300px; height: 300px; background: var(--pink); top: -90px; left: -70px; }
-.orb-2 { width: 240px; height: 240px; background: var(--purple); bottom: 8%; right: -50px; animation-delay: -6s; }
-.orb-3 { width: 180px; height: 180px; background: var(--cyan); top: 42%; left: 58%; animation-delay: -12s; opacity: 0.2; }
-@keyframes orbFloat {
-  0%, 100% { transform: translate(0,0) scale(1); }
-  33% { transform: translate(40px,-50px) scale(1.1); }
-  66% { transform: translate(-30px,30px) scale(0.92); }
-}
-
-.particles { position: fixed; inset: 0; pointer-events: none; z-index: -1; overflow: hidden; }
-.p {
-  position: absolute; bottom: -12px; width: 4px; height: 4px; border-radius: 50%;
-  background: #fff; opacity: 0; animation: rise linear infinite;
-}
-[data-theme="light"] .p { background: var(--purple); }
-@keyframes rise {
-  0% { transform: translateY(0) scale(0) rotate(0deg); opacity: 0; }
-  12% { opacity: 0.55; }
-  80% { opacity: 0.2; }
-  100% { transform: translateY(-110vh) scale(1.2) rotate(180deg); opacity: 0; }
-}
-.sparkle {
-  position: fixed; pointer-events: none; z-index: -1;
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--gold);
-  box-shadow: 0 0 10px var(--gold);
-  animation: sparkle 3.5s ease-in-out infinite;
-  opacity: 0;
-}
-@keyframes sparkle {
-  0%, 100% { opacity: 0; transform: scale(0.3); }
-  50% { opacity: 0.8; transform: scale(1.2); }
-}
-
-/* Content Base */
-.shell { max-width: 540px; margin: 0 auto; padding: 28px 18px 90px; position: relative; }
-.hero { text-align: center; padding: 24px 0 36px; animation: heroIn 1s cubic-bezier(0.22,1,0.36,1) both; }
-@keyframes heroIn { from { opacity: 0; transform: translateY(40px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-.badge { display: inline-flex; align-items: center; gap: 7px; padding: 6px 16px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); background: color-mix(in srgb, var(--gold) 12%, transparent); border: 1px solid color-mix(in srgb, var(--gold) 30%, transparent); margin-bottom: 20px; animation: badgePulse 3s ease-in-out infinite; }
-@keyframes badgePulse { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--gold) 30%, transparent); } 50% { box-shadow: 0 0 0 8px transparent; } }
-.badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px var(--gold); animation: pulse 2s ease-in-out infinite; }
-@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.8); } }
-h1 { font-size: clamp(28px, 7.5vw, 36px); font-weight: 900; line-height: 1.2; letter-spacing: -0.03em; margin-bottom: 10px; }
-h1 span { background: linear-gradient(120deg, var(--text) 8%, var(--pink) 40%, var(--purple) 70%, var(--cyan) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: textShine 7s linear infinite; }
-@keyframes textShine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
-.lead { font-size: 15px; color: var(--muted); max-width: 340px; margin: 0 auto; }
-.section { margin-bottom: 44px; opacity: 0; transform: translateY(36px); transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1); }
-.section.visible { opacity: 1; transform: translateY(0); }
-.sec-title { display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
-.sec-title::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
-.back-btn { display: inline-flex; align-items: center; gap: 10px; margin-top: 8px; padding: 14px 24px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); color: var(--text); text-decoration: none; font-size: 14px; font-weight: 700; transition: all 0.4s cubic-bezier(0.22,1,0.36,1); }
-.back-btn:hover { transform: translateY(-4px) scale(1.03); border-color: transparent; background: linear-gradient(135deg, var(--pink), var(--purple)); color: #fff; box-shadow: 0 12px 28px color-mix(in srgb, var(--pink) 40%, transparent); }
-.back-btn svg { width: 16px; height: 16px; transition: transform 0.3s; }
-.back-btn:hover svg { transform: translateX(-3px); }
-footer { margin-top: 52px; text-align: center; }
-.footer-pill { display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 999px; font-size: 12px; color: var(--muted); background: var(--surface); border: 1px solid var(--border); transition: all 0.3s; }
-.footer-pill:hover { border-color: color-mix(in srgb, var(--pink) 30%, transparent); transform: translateY(-2px); }
-
-@media (min-width: 768px) {
-  .shell { max-width: 700px; padding: 40px 28px 100px; }
-  .hero { padding: 36px 0 44px; }
-  h1 { font-size: 40px; }
-  .lead { font-size: 16px; max-width: 420px; }
-}
-@media (min-width: 1024px) {
-  .shell { max-width: 760px; padding: 48px 32px 110px; }
-  h1 { font-size: 44px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-  .section { opacity: 1; transform: none; }
-}
-</style>
-
-<style>
-/* FAQ specific styles */
-.faq-list { display: flex; flex-direction: column; gap: 12px; }
-.faq-item { border-radius: var(--radius); background: var(--surface); border: 1px solid var(--border); overflow: hidden; transition: all 0.4s cubic-bezier(0.22,1,0.36,1); }
-.faq-item:hover { border-color: color-mix(in srgb, var(--pink) 40%, transparent); box-shadow: 0 8px 28px color-mix(in srgb, var(--pink) 12%, transparent); }
-.faq-item[open] { border-color: color-mix(in srgb, var(--pink) 50%, transparent); box-shadow: var(--card-glow), var(--shadow); }
-.faq-item summary { display: flex; align-items: center; gap: 14px; padding: 18px 20px; font-size: 15px; font-weight: 700; list-style: none; cursor: var(--cursor-hover); transition: background 0.3s; user-select: none; }
-.faq-item summary::-webkit-details-marker { display: none; }
-.faq-item summary::marker { content: ""; }
-.faq-icon { flex-shrink: 0; width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; font-size: 16px; font-weight: 900; background: linear-gradient(145deg, color-mix(in srgb, var(--pink) 22%, transparent), color-mix(in srgb, var(--purple) 16%, transparent)); border: 1px solid color-mix(in srgb, var(--text) 8%, transparent); color: var(--pink); transition: all 0.35s cubic-bezier(0.22,1,0.36,1); }
-.faq-item[open] .faq-icon { background: linear-gradient(135deg, var(--pink), var(--purple)); color: #fff; transform: rotate(45deg); }
-.faq-item summary:hover { background: var(--surface-hover); }
-.faq-q { flex: 1; min-width: 0; }
-.faq-body { padding: 0 20px 20px 70px; color: var(--muted); font-size: 14.5px; line-height: 1.75; animation: faqOpen 0.35s cubic-bezier(0.22,1,0.36,1) both; }
-@keyframes faqOpen { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-@media (min-width: 768px) {
-  .faq-item summary { padding: 20px 24px; font-size: 16px; }
-  .faq-body { padding: 0 24px 22px 74px; font-size: 15px; }
-  .faq-icon { width: 40px; height: 40px; font-size: 18px; }
-}
+:root,[data-theme="dark"]{--bg:#07070f;--bg2:#0e0e1a;--surface:rgba(255,255,255,.055);--surface2:rgba(255,255,255,.09);--border:rgba(255,255,255,.12);--border2:rgba(255,255,255,.26);--text:#f4f4fc;--muted:#9b9bb8;--pink:#ff6bcb;--purple:#8b6cff;--cyan:#00e5ff;--gold:#ffd166;--shadow:0 22px 55px rgba(0,0,0,.5);--radius:18px;--header-h:68px}
+[data-theme="light"]{--bg:#f3f0f8;--bg2:#fff;--surface:rgba(0,0,0,.04);--surface2:rgba(0,0,0,.075);--border:rgba(0,0,0,.09);--border2:rgba(0,0,0,.2);--text:#1a1a2e;--muted:#5c5c78;--pink:#e84a9a;--purple:#6b4ce0;--cyan:#0099b8;--gold:#c99200;--shadow:0 18px 45px rgba(0,0,0,.13)}
+@media(prefers-color-scheme:light){[data-theme="auto"]{--bg:#f3f0f8;--bg2:#fff;--surface:rgba(0,0,0,.04);--surface2:rgba(0,0,0,.075);--border:rgba(0,0,0,.09);--border2:rgba(0,0,0,.2);--text:#1a1a2e;--muted:#5c5c78;--pink:#e84a9a;--purple:#6b4ce0;--cyan:#0099b8;--gold:#c99200;--shadow:0 18px 45px rgba(0,0,0,.13)}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100dvh;padding-top:var(--header-h);font-family:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Yu Gothic",system-ui,sans-serif;color:var(--text);background:var(--bg);line-height:1.72;overflow-x:hidden}a,button,summary{cursor:pointer;color:inherit}body::before{content:"";position:fixed;inset:0;z-index:-3;background:radial-gradient(ellipse 90% 60% at 15% -10%,color-mix(in srgb,var(--purple) 34%,transparent),transparent 55%),radial-gradient(ellipse 70% 50% at 90% 5%,color-mix(in srgb,var(--pink) 24%,transparent),transparent 50%),radial-gradient(ellipse 60% 40% at 50% 110%,color-mix(in srgb,var(--cyan) 10%,transparent),transparent 50%),linear-gradient(180deg,var(--bg),var(--bg2));}.wrap{width:min(860px,calc(100% - 28px));margin:auto}.hero{text-align:center;padding:44px 0 28px}.badge{display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border-radius:999px;font-size:11px;font-weight:900;letter-spacing:.12em;color:var(--gold);background:color-mix(in srgb,var(--gold) 12%,transparent);border:1px solid color-mix(in srgb,var(--gold) 30%,transparent)}.badge::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold)}h1{font-size:clamp(31px,6vw,48px);line-height:1.15;margin:18px 0 10px;font-weight:900;background:linear-gradient(120deg,var(--text),var(--pink),var(--purple),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}.lead{margin:0 auto;color:var(--muted);max-width:620px}.section{padding:10px 0 30px}.sec-title{display:flex;align-items:center;gap:12px;font-size:12px;font-weight:900;letter-spacing:.14em;color:var(--muted);margin:0 0 16px;text-transform:uppercase}.sec-title::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--border),transparent)}.faq-list{display:grid;gap:12px}.faq-item{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);backdrop-filter:blur(10px);overflow:hidden;transition:.3s}.faq-item:hover{border-color:color-mix(in srgb,var(--pink) 45%,transparent);box-shadow:0 10px 30px color-mix(in srgb,var(--pink) 10%,transparent)}.faq-item[open]{border-color:color-mix(in srgb,var(--pink) 55%,transparent);box-shadow:0 20px 55px rgba(0,0,0,.16)}summary{display:flex;align-items:center;gap:13px;padding:17px 18px;font-size:15px;font-weight:900;list-style:none;user-select:none}.faq-item summary::-webkit-details-marker{display:none}.qdot{width:34px;height:34px;flex:0 0 34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(145deg,color-mix(in srgb,var(--pink) 22%,transparent),color-mix(in srgb,var(--purple) 16%,transparent));border:1px solid var(--border);color:var(--pink);font-size:14px;font-weight:900}.faq-item[open] .qdot{background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff}.answer{padding:0 18px 19px 65px;color:var(--muted);font-size:14.5px;line-height:1.8}.back{display:flex;justify-content:center;padding:22px 0 12px}.back a{display:inline-flex;align-items:center;gap:9px;padding:13px 20px;border-radius:999px;text-decoration:none;font-weight:900;border:1px solid var(--border);background:var(--surface);transition:.3s}.back a:hover{transform:translateY(-2px);background:linear-gradient(135deg,var(--pink),var(--purple));border-color:transparent;color:#fff}.back svg{width:17px;height:17px}footer{text-align:center;padding:24px 0 48px;color:var(--muted);font-size:12px}.footer-pill{display:inline-flex;gap:8px;align-items:center;padding:9px 16px;border-radius:999px;background:var(--surface);border:1px solid var(--border)}
+@media(min-width:720px){.wrap{width:min(920px,calc(100% - 56px))}.hero{padding-top:56px}.answer{padding-right:28px}}
 </style>
 </head>
 <body>
-
-<div id="external-header-container"></div>
-
-<div class="shell">
+<div id="external-header-container" data-current="faq"></div>
+<main class="wrap">
   <header class="hero">
     <div class="badge">FAQ</div>
-    <h1><span data-i18n-html="hero_title">よくある質問</span></h1>
-    <p class="lead" data-i18n="hero_lead">疑問をサクッと解決</p>
+    <h1 data-i18n="hero_title">よくある質問</h1>
+    <p class="lead" data-i18n="hero_lead">FoZoWoについてのよくある質問です。</p>
   </header>
-
-  <section class="section visible" id="faq">
-    <div class="sec-title" data-i18n="sec_faq">QUESTION & ANSWER</div>
-    <div class="faq-list">
-      <details class="faq-item">
-        <summary>
-          <span class="faq-icon">＋</span>
-          <span class="faq-q" data-i18n="q1">「ZoJeZu」は以前から？</span>
-        </summary>
-        <div class="faq-body" data-i18n="a1">旧名「おいさし」。2026年9月7日15時に改名。</div>
-      </details>
-      <details class="faq-item">
-        <summary>
-          <span class="faq-icon">＋</span>
-          <span class="faq-q" data-i18n="q2">このホームページの特徴は？</span>
-        </summary>
-        <div class="faq-body" data-i18n="a2">超軽量設計（128kbpsの通信制限下でも爆速表示）。</div>
-      </details>
-      <details class="faq-item">
-        <summary>
-          <span class="faq-icon">＋</span>
-          <span class="faq-q" data-i18n="q3">名前の由来は？</span>
-        </summary>
-        <div class="faq-body" data-i18n="a3">「美味しさ」より。お：美味しい／い：いつでも／さ：最後まで／し：しっかり。「おいさ」と「し」の入れ替え＝美味しさ。</div>
-      </details>
-    </div>
+  <section class="section" id="faq">
+    <div class="sec-title" data-i18n="sec_faq">QUESTION &amp; ANSWER</div>
+    <div class="faq-list" id="faqList"></div>
   </section>
-
-  <div style="text-align:center">
-    <a class="back-btn" href="index.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+  <div class="back">
+    <a id="backHome" href="index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
       <span data-i18n="back">トップに戻る</span>
     </a>
   </div>
-
-  <footer>
-    <div class="footer-pill">
-      <span>✦</span>
-      <span data-i18n="footer">ZoJeZu Official — 設定からテーマ・言語を変更できます</span>
-    </div>
-  </footer>
-</div>
-
+  <footer><div class="footer-pill"><span>✦</span><span data-i18n="footer">FoZoWo Official — 設定からテーマ・言語を変更できます</span></div></footer>
+</main>
 <script>
-(function () {
-  const html = document.documentElement;
+(function(){
+  const html=document.documentElement;
+  const SUPPORTED=['ja','en','hiragana','ko','zh-cn','zh-tw','es','fr','de','pt'];
+  const params=new URLSearchParams(location.search);
+  function normalize(v){v=String(v||'').toLowerCase(); if(v==='zh_cn')v='zh-cn'; if(v==='zh_tw')v='zh-tw'; return SUPPORTED.includes(v)?v:null}
+  let currentLang=normalize(params.get('lang'));
+  if(!currentLang){try{currentLang=normalize(localStorage.getItem('FoZoWo-language'))}catch(e){}}
+  if(!currentLang) currentLang='ja';
 
-  const i18n = {
-    ja: {
-      hero_title: 'よくある質問',
-      hero_lead: '疑問をサクッと解決',
-      sec_faq: 'QUESTION & ANSWER',
-      q1: '「ZoJeZu」は以前から？',
-      a1: '旧名「おいさし」。2026年9月7日15時に改名。',
-      q2: 'このホームページの特徴は？',
-      a2: '超軽量設計（128kbpsの通信制限下でも爆速表示）。',
-      q3: '名前の由来は？',
-      a3: '「美味しさ」より。お：美味しい／い：いつでも／さ：最後まで／し：しっかり。「おいさ」と「し」の入れ替え＝美味しさ。',
-      back: 'トップに戻る',
-      footer: 'ZoJeZu Official — 設定からテーマ・言語を変更できます'
+  const data={
+    ja:{
+      hero_title:'よくある質問',hero_lead:'FoZoWoについてのよくある質問です。',sec_faq:'QUESTION & ANSWER',back:'トップに戻る',footer:'FoZoWo Official — 設定からテーマ・言語を変更できます',
+      qs:[
+        ['FoZoWoの日はいつですか？','FoZoWoの日は4月30日です。'],
+        ['FoZoWoは、いつからやっていますか？','SNS自体は2025年3月26日から。名前やロゴなどの現在のFoZoWoブランドは2026年9月20日からです。'],
+        ['FoZoWoは何をしているサイトですか？','FoZoWoの音楽、AI、ゲーム、ブログ、キャラクターなどをまとめて楽しめる公式サイトです。'],
+        ['FoZoWoはどの言語に対応していますか？','日本語、英語、ひらがな、한국어、简体中文、繁體中文、Español、Français、Deutsch、Portuguêsの10言語に対応しています。'],
+        ['言語を切り替えると、別のページでも言語は維持されますか？','はい。選択した言語は保存され、ページを移動しても同じ言語が引き継がれます。'],
+        ['スマートフォンでも利用できますか？','はい。PCだけでなくスマートフォンやタブレットでも利用しやすいレスポンシブ設計です。'],
+        ['テーマは自動で変わりますか？','はい。設定で自動を選ぶと、端末のライト・ダーク設定に合わせて表示が変わります。'],
+        ['FoZoWoのロゴはどこで見られますか？','ロゴページでロゴ画像をプレビューできます。ダウンロードと画像コピーにも対応しています。'],
+        ['キャラクターの情報はどこで見られますか？','「キャラクター」ページで、おいさしやおいじぃ魔女などの情報を確認できます。'],
+        ['FoZoWoのSNSはどこから確認できますか？','トップページには主要SNSを掲載しており、「SNS」ページではさらに多くの公式SNSを一覧で確認できます。'],
+        ['FoZoWoの音楽ページはありますか？','はい。音楽ページからFoZoWoの音楽コンテンツへアクセスできます。'],
+        ['FoZoWo AIはありますか？','はい。ヘッダーやトップページからFoZoWo AIへアクセスできます。']
+      ]
     },
-    en: {
-      hero_title: 'FAQ',
-      hero_lead: 'Quick answers to common questions',
-      sec_faq: 'QUESTION & ANSWER',
-      q1: 'Has "ZoJeZu" been around for a while?',
-      a1: 'Formerly known as "Oisasi". Renamed on Sep 7, 2026 at 15:00.',
-      q2: 'What are the features of this website?',
-      a2: 'Ultra-lightweight design (loads blazing fast even under 128kbps restrictions).',
-      q3: 'What is the origin of the name?',
-      a3: 'From "oishisa" (deliciousness). O: delicious / I: anytime / Sa: to the end / Shi: solidly. Rearranging "oisa" + "shi" = oishisa.',
-      back: 'Back to Top',
-      footer: 'ZoJeZu Official — Change theme & language in Settings'
-    }
+    en:{
+      hero_title:'Frequently Asked Questions',hero_lead:'Common questions about FoZoWo.',sec_faq:'QUESTION & ANSWER',back:'Back to Home',footer:'FoZoWo Official — Change theme & language in Settings',
+      qs:[
+        ['When is FoZoWo Day?','FoZoWo Day is April 30.'],
+        ['When did FoZoWo start?','The social media activity itself started on March 26, 2025. The current FoZoWo brand, including the name and logo, started on September 20, 2026.'],
+        ['What is FoZoWo?','FoZoWo is the official site for exploring FoZoWo content such as music, AI, games, blogs, and characters.'],
+        ['Which languages are supported?','FoZoWo supports 10 languages: Japanese, English, Hiragana, Korean, Simplified Chinese, Traditional Chinese, Spanish, French, German, and Portuguese.'],
+        ['Does the selected language stay when I move to another page?','Yes. Your selected language is saved and carried across pages.'],
+        ['Can I use FoZoWo on a smartphone?','Yes. The site is responsive for PCs, smartphones, and tablets.'],
+        ['Does the theme change automatically?','Yes. With Auto selected, the site follows your device light/dark preference.'],
+        ['Where can I see the FoZoWo logo?','The Logo page provides a logo preview, download button, and image copy function.'],
+        ['Where can I find character information?','The Characters page features Oisasi, Oijii Witch, and other FoZoWo character information.'],
+        ['Where can I find FoZoWo social media?','The homepage shows the main social networks, while the SNS page lists more official social accounts.'],
+        ['Is there a FoZoWo music page?','Yes. The Music page provides access to FoZoWo music content.'],
+        ['Is FoZoWo AI available?','Yes. You can access FoZoWo AI from the header or homepage.']
+      ]
+    },
+    hiragana:{
+      hero_title:'よくある しつもん',hero_lead:'FoZoWoについての よくある しつもんです。',sec_faq:'しつもん と こたえ',back:'とっぷへ もどる',footer:'FoZoWo Official — せっていから てーま と げんごを かえられます',
+      qs:[
+        ['★ FoZoWoのひは いつですか？','FoZoWoのひは 4がつ30にちです。'],
+        ['★ FoZoWoは、いつから やっていますか？','SNSじたいは 2025ねん3がつ26にちから。なまえや ろごなどの いまのFoZoWoぶらんどは 2026ねん9がつ20にちからです。'],
+        ['FoZoWoは なにを している さいとですか？','FoZoWoの おんがく、AI、げーむ、ぶろぐ、きゃらくたーなどを まとめて たのしめる こうしきさいとです。'],
+        ['どの げんごに たいおうしていますか？','にほんご、えいご、ひらがな、かんこくご、かんたいじ、はんたいじ、すぺいんご、ふらんすご、どいつご、ぽるとがるごの 10げんごです。'],
+        ['ぺーじを うつっても えらんだ げんごは つづきますか？','はい。えらんだ げんごは ほぞんされ、ほかの ぺーじでも つづきます。'],
+        ['すまーとふぉんでも つかえますか？','はい。PCだけでなく すまーとふぉんや たぶれっとでも つかいやすい せっけいです。'],
+        ['てーまは じどうで かわりますか？','はい。じどうを えらぶと、ききの らいと・だーくせっていに あわせて かわります。'],
+        ['FoZoWoの ろごは どこで みられますか？','ろごぺーじで ろごを ぷれびゅーできます。だうんろーどと がぞうこぴーも できます。'],
+        ['きゃらくたーの じょうほうは どこですか？','「きゃらくたー」ぺーじで おいさしや おいじぃまじょなどを みられます。'],
+        ['FoZoWoの SNSは どこですか？','とっぷには おもな SNSがあり、「SNS」ぺーじでは もっと おおくの こうしきSNSを みられます。'],
+        ['FoZoWoの おんがくぺーじは ありますか？','はい。おんがくぺーじから FoZoWoの おんがくを みられます。'],
+        ['FoZoWo AIは ありますか？','はい。へっだーや とっぷぺーじから FoZoWo AIへ いけます。']
+      ]
+    },
+    ko:{hero_title:'자주 묻는 질문',hero_lead:'FoZoWo에 대한 자주 묻는 질문입니다.',sec_faq:'질문과 답변',back:'홈으로 돌아가기',footer:'FoZoWo Official — 설정에서 테마와 언어를 변경할 수 있습니다',qs:[['FoZoWo Day는 언제인가요?','FoZoWo Day는 4월 30일입니다.'],['FoZoWo는 언제부터 시작했나요?','SNS 자체는 2025년 3월 26일부터 시작했습니다. 이름과 로고를 포함한 현재의 FoZoWo 브랜드는 2026년 9월 20일부터입니다.'],['FoZoWo는 어떤 사이트인가요?','음악, AI, 게임, 블로그, 캐릭터 등 FoZoWo의 다양한 콘텐츠를 한곳에서 즐길 수 있는 공식 사이트입니다.'],['지원 언어는 몇 개인가요?','일본어, 영어, 히라가나, 한국어, 중국어 간체, 중국어 번체, 스페인어, 프랑스어, 독일어, 포르투갈어의 10개 언어를 지원합니다.'],['페이지를 이동해도 언어가 유지되나요?','네. 선택한 언어가 저장되어 다른 페이지에서도 유지됩니다.'],['스마트폰에서도 사용할 수 있나요?','네. PC, 스마트폰, 태블릿에 맞게 반응형으로 제공됩니다.'],['테마는 자동으로 바뀌나요?','네. 자동을 선택하면 기기의 라이트/다크 설정에 맞춰 표시됩니다.'],['FoZoWo 로고는 어디에서 볼 수 있나요?','로고 페이지에서 미리보기, 다운로드, 이미지 복사를 할 수 있습니다.'],['캐릭터 정보는 어디에서 볼 수 있나요?','캐릭터 페이지에서 오이사시와 오이지이 마녀 등의 정보를 볼 수 있습니다.'],['SNS는 어디에서 확인하나요?','홈페이지에는 주요 SNS가 있고, SNS 페이지에서는 더 많은 공식 SNS를 확인할 수 있습니다.'],['음악 페이지가 있나요?','네. 음악 페이지에서 FoZoWo의 음악 콘텐츠로 이동할 수 있습니다.'],['FoZoWo AI가 있나요?','네. 헤더 또는 홈페이지에서 FoZoWo AI로 이동할 수 있습니다.']]},
+    'zh-cn':{hero_title:'常见问题',hero_lead:'关于FoZoWo的常见问题。',sec_faq:'问题与回答',back:'返回首页',footer:'FoZoWo Official — 可在设置中更改主题和语言',qs:[['FoZoWo日是什么时候？','FoZoWo日是4月30日。'],['FoZoWo从什么时候开始？','SNS活动本身从2025年3月26日开始。包括名称和Logo在内的现FoZoWo品牌从2026年9月20日开始。'],['FoZoWo是什么网站？','这是一个集中展示FoZoWo音乐、AI、游戏、博客、角色等内容的官方网站。'],['支持哪些语言？','支持日语、英语、平假名、韩语、简体中文、繁体中文、西班牙语、法语、德语和葡萄牙语，共10种语言。'],['换页后语言会保持吗？','会。选择的语言会保存，并在其他页面继续使用。'],['手机可以使用吗？','可以。网站采用响应式设计，适用于电脑、手机和平板。'],['主题会自动变化吗？','会。选择自动后，会跟随设备的浅色/深色设置。'],['在哪里可以查看FoZoWo Logo？','Logo页面提供预览、下载和复制图片功能。'],['在哪里可以查看角色信息？','可以在角色页面查看Oisasi、Oijii Witch等角色信息。'],['在哪里可以查看FoZoWo的SNS？','首页展示主要SNS，SNS页面则汇总更多官方SNS账号。'],['有FoZoWo音乐页面吗？','有，可以从音乐页面访问FoZoWo音乐内容。'],['有FoZoWo AI吗？','有，可以从页眉或首页进入FoZoWo AI。']]},
+    'zh-tw':{hero_title:'常見問題',hero_lead:'關於FoZoWo的常見問題。',sec_faq:'問題與回答',back:'返回首頁',footer:'FoZoWo Official — 可在設定中更改主題與語言',qs:[['FoZoWo日是什麼時候？','FoZoWo日是4月30日。'],['FoZoWo從什麼時候開始？','SNS活動本身從2025年3月26日開始。包括名稱和Logo在內的現FoZoWo品牌從2026年9月20日開始。'],['FoZoWo是什麼網站？','這是一個集中展示FoZoWo音樂、AI、遊戲、部落格、角色等內容的官方網站。'],['支援哪些語言？','支援日語、英語、平假名、韓語、簡體中文、繁體中文、西班牙語、法語、德語和葡萄牙語，共10種語言。'],['換頁後語言會保持嗎？','會。選擇的語言會保存，並在其他頁面繼續使用。'],['手機可以使用嗎？','可以。網站採用響應式設計，適用於電腦、手機和平板。'],['主題會自動變化嗎？','會。選擇自動後，會跟隨裝置的淺色/深色設定。'],['在哪裡可以查看FoZoWo Logo？','Logo頁面提供預覽、下載和複製圖片功能。'],['在哪裡可以查看角色資訊？','可以在角色頁面查看Oisasi、Oijii Witch等角色資訊。'],['在哪裡可以查看FoZoWo的SNS？','首頁展示主要SNS，SNS頁面則彙總更多官方SNS帳號。'],['有FoZoWo音樂頁面嗎？','有，可以從音樂頁面訪問FoZoWo音樂內容。'],['有FoZoWo AI嗎？','有，可以從頁眉或首頁進入FoZoWo AI。']]},
+    es:{hero_title:'Preguntas frecuentes',hero_lead:'Preguntas frecuentes sobre FoZoWo.',sec_faq:'PREGUNTA Y RESPUESTA',back:'Volver al inicio',footer:'FoZoWo Official — Cambia el tema y el idioma en Ajustes',qs:[['¿Cuándo es el Día de FoZoWo?','El Día de FoZoWo es el 30 de abril.'],['¿Cuándo comenzó FoZoWo?','La actividad en redes sociales comenzó el 26 de marzo de 2025. La marca FoZoWo actual, incluido el nombre y el logotipo, comenzó el 20 de septiembre de 2026.'],['¿Qué es FoZoWo?','Es el sitio oficial que reúne contenidos de FoZoWo como música, IA, juegos, blog y personajes.'],['¿Qué idiomas admite?','Admite 10 idiomas: japonés, inglés, hiragana, coreano, chino simplificado, chino tradicional, español, francés, alemán y portugués.'],['¿El idioma se mantiene al cambiar de página?','Sí. El idioma seleccionado se guarda y se mantiene en las demás páginas.'],['¿Se puede usar en un smartphone?','Sí. El sitio es adaptable para PC, smartphones y tabletas.'],['¿El tema cambia automáticamente?','Sí. Con Automático, sigue la preferencia de modo claro u oscuro del dispositivo.'],['¿Dónde puedo ver el logotipo de FoZoWo?','En la página del logotipo puedes previsualizarlo, descargarlo y copiar la imagen.'],['¿Dónde puedo ver la información de los personajes?','En la página de Personajes puedes consultar información sobre Oisasi, Oijii Witch y otros personajes.'],['¿Dónde puedo ver las redes sociales?','La página principal muestra las redes principales y la página SNS reúne más cuentas oficiales.'],['¿Hay una página de música?','Sí. La página de Música da acceso al contenido musical de FoZoWo.'],['¿Existe FoZoWo AI?','Sí. Puedes acceder a FoZoWo AI desde el encabezado o la página principal.']]},
+    fr:{hero_title:'Questions fréquentes',hero_lead:'Questions fréquentes sur FoZoWo.',sec_faq:'QUESTION ET RÉPONSE',back:"Retour à l'accueil",footer:'FoZoWo Official — Changez le thème et la langue dans les paramètres',qs:[['Quand a lieu le jour de FoZoWo ?','Le jour de FoZoWo est le 30 avril.'],['Quand FoZoWo a-t-il commencé ?','L’activité sur les réseaux sociaux a commencé le 26 mars 2025. La marque FoZoWo actuelle, avec son nom et son logo, a commencé le 20 septembre 2026.'],['Qu’est-ce que FoZoWo ?','C’est le site officiel qui rassemble la musique, l’IA, les jeux, le blog et les personnages de FoZoWo.'],['Quelles langues sont prises en charge ?','10 langues sont prises en charge : japonais, anglais, hiragana, coréen, chinois simplifié, chinois traditionnel, espagnol, français, allemand et portugais.'],['La langue reste-t-elle après un changement de page ?','Oui. La langue sélectionnée est enregistrée et conservée sur les autres pages.'],['Le site est-il disponible sur smartphone ?','Oui. Le site est responsive pour les PC, smartphones et tablettes.'],['Le thème change-t-il automatiquement ?','Oui. En mode automatique, le site suit le réglage clair/sombre de votre appareil.'],['Où voir le logo FoZoWo ?','La page Logo permet de prévisualiser, télécharger et copier l’image.'],['Où trouver les informations sur les personnages ?','La page Personnages présente notamment Oisasi, Oijii Witch et d’autres personnages.'],['Où trouver les réseaux sociaux FoZoWo ?','La page d’accueil affiche les principaux réseaux et la page SNS réunit davantage de comptes officiels.'],['Existe-t-il une page Musique ?','Oui. La page Musique donne accès aux contenus musicaux de FoZoWo.'],['FoZoWo AI est-il disponible ?','Oui. Vous pouvez accéder à FoZoWo AI depuis l’en-tête ou la page d’accueil.']]},
+    de:{hero_title:'Häufige Fragen',hero_lead:'Häufige Fragen zu FoZoWo.',sec_faq:'FRAGE & ANTWORT',back:'Zur Startseite',footer:'FoZoWo Official — Thema und Sprache in den Einstellungen ändern',qs:[['Wann ist der FoZoWo-Tag?','Der FoZoWo-Tag ist am 30. April.'],['Seit wann gibt es FoZoWo?','Die SNS-Aktivitäten selbst begannen am 26. März 2025. Die aktuelle Marke FoZoWo mit Name und Logo begann am 20. September 2026.'],['Was ist FoZoWo?','Die offizielle Website bündelt FoZoWo-Inhalte wie Musik, KI, Spiele, Blog und Charaktere.'],['Welche Sprachen werden unterstützt?','Unterstützt werden 10 Sprachen: Japanisch, Englisch, Hiragana, Koreanisch, vereinfachtes Chinesisch, traditionelles Chinesisch, Spanisch, Französisch, Deutsch und Portugiesisch.'],['Bleibt die Sprache beim Seitenwechsel erhalten?','Ja. Die gewählte Sprache wird gespeichert und auf weiteren Seiten beibehalten.'],['Kann ich FoZoWo auf dem Smartphone nutzen?','Ja. Die Website ist für PC, Smartphone und Tablet responsiv gestaltet.'],['Ändert sich das Thema automatisch?','Ja. Im automatischen Modus folgt die Website der Hell-/Dunkel-Einstellung des Geräts.'],['Wo kann ich das FoZoWo-Logo sehen?','Auf der Logo-Seite gibt es Vorschau, Download und Bildkopie.'],['Wo finde ich Informationen zu den Charakteren?','Auf der Charakter-Seite finden sich Informationen zu Oisasi, Oijii Witch und weiteren Figuren.'],['Wo finde ich die FoZoWo-SNS?','Die Startseite zeigt die wichtigsten Netzwerke, die SNS-Seite weitere offizielle Accounts.'],['Gibt es eine Musik-Seite?','Ja. Über die Musik-Seite gelangt man zu den Musik-Inhalten von FoZoWo.'],['Gibt es FoZoWo AI?','Ja. FoZoWo AI ist über den Header oder die Startseite erreichbar.']]},
+    pt:{hero_title:'Perguntas frequentes',hero_lead:'Perguntas frequentes sobre a FoZoWo.',sec_faq:'PERGUNTA E RESPOSTA',back:'Voltar ao início',footer:'FoZoWo Official — Altere o tema e o idioma nas definições',qs:[['Quando é o Dia FoZoWo?','O Dia FoZoWo é 30 de abril.'],['Quando a FoZoWo começou?','A atividade nas redes sociais começou em 26 de março de 2025. A marca FoZoWo atual, incluindo o nome e o logótipo, começou em 20 de setembro de 2026.'],['O que é a FoZoWo?','É o site oficial que reúne conteúdos como música, IA, jogos, blogue e personagens da FoZoWo.'],['Que idiomas são suportados?','São suportados 10 idiomas: japonês, inglês, hiragana, coreano, chinês simplificado, chinês tradicional, espanhol, francês, alemão e português.'],['O idioma mantém-se ao mudar de página?','Sim. O idioma escolhido é guardado e mantido nas outras páginas.'],['Posso usar o site num smartphone?','Sim. O site é responsivo para computador, smartphone e tablet.'],['O tema muda automaticamente?','Sim. No modo automático, segue a preferência de modo claro/escuro do dispositivo.'],['Onde posso ver o logótipo FoZoWo?','A página do logótipo permite pré-visualizar, descarregar e copiar a imagem.'],['Onde posso ver informações sobre as personagens?','Na página Personagens pode consultar informações sobre Oisasi, Oijii Witch e outras personagens.'],['Onde posso encontrar as redes sociais?','A página inicial mostra as principais redes e a página SNS reúne mais contas oficiais.'],['Existe uma página de música?','Sim. A página Música dá acesso aos conteúdos musicais da FoZoWo.'],['Existe a FoZoWo AI?','Sim. Pode aceder à FoZoWo AI pelo cabeçalho ou pela página inicial.']]}
   };
 
-  function resolveLang(pref) {
-    if (pref === 'ja' || pref === 'en') return pref;
-    return (navigator.language || 'ja').toLowerCase().startsWith('ja') ? 'ja' : 'en';
+  function deepFallback(lang){return data[lang]||data.ja}
+  function setLang(lang,{updateUrl=true}={}){
+    lang=normalize(lang)||'ja'; currentLang=lang;
+    try{localStorage.setItem('FoZoWo-language',lang)}catch(e){}
+    html.lang=lang==='zh-cn'?'zh-CN':lang==='zh-tw'?'zh-TW':lang;
+    const t=deepFallback(lang);
+    document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(t[k]!=null)el.textContent=t[k]});
+    const list=document.getElementById('faqList');
+    list.innerHTML=t.qs.map((q,i)=>`<details class="faq-item"><summary><span class="qdot">＋</span><span>${escapeHtml(q[0])}</span></summary><div class="answer">${escapeHtml(q[1])}</div></details>`).join('');
+    if(updateUrl){const u=new URL(location.href);u.searchParams.set('lang',lang);history.replaceState(null,'',u)}
+    const home=document.getElementById('backHome'); if(home){const u=new URL('index.html',location.href);u.searchParams.set('lang',lang);home.href=u.href}
+    rewriteHeaderLinks(lang);
   }
-
-  function applyLang(pref) {
-    try { localStorage.setItem('zojezu-lang', pref); } catch (e) {}
-    const lang = resolveLang(pref);
-    html.setAttribute('lang', lang);
-    const t = i18n[lang];
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      if (t[key] != null) el.textContent = t[key];
-    });
-    document.querySelectorAll('[data-i18n-html]').forEach(el => {
-      const key = el.getAttribute('data-i18n-html');
-      if (t[key] != null) el.innerHTML = t[key];
-    });
+  function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+  function rewriteHeaderLinks(lang){
+    const root=document.getElementById('external-header-container'); if(!root)return;
+    root.querySelectorAll('a[href]').forEach(a=>{try{const u=new URL(a.getAttribute('href'),location.href);if(u.origin!==location.origin)return;if(!/^https?:$/.test(u.protocol))return; if(u.pathname.endsWith('.html')||u.pathname==='/' ){u.searchParams.set('lang',lang);a.href=u.toString()}}catch(e){}})
   }
+  function applyTheme(pref){pref=['auto','dark','light'].includes(pref)?pref:'auto'; html.dataset.theme=pref; try{localStorage.setItem('FoZoWo-theme',pref)}catch(e){} const meta=document.getElementById('themeColorMeta'); if(meta)meta.content=pref==='light'?'#f3f0f8':'#0a0a12'}
+  try{applyTheme(localStorage.getItem('FoZoWo-theme')||'auto')}catch(e){applyTheme('auto')}
+  setLang(currentLang,{updateUrl:true});
+  window.addEventListener('fozowo-language-change',e=>setLang(e.detail&&e.detail.lang,{updateUrl:true}));
 
-  function applyTheme(theme) {
-    html.setAttribute('data-theme', theme);
-    try { localStorage.setItem('zojezu-theme', theme); } catch (e) {}
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) {
-      if (theme === 'light') meta.content = '#f3f0f8';
-      else if (theme === 'dark') meta.content = '#0a0a12';
-      else meta.content = window.matchMedia('(prefers-color-scheme: light)').matches ? '#f3f0f8' : '#0a0a12';
-    }
+  async function loadHeader(){
+    const host=document.getElementById('external-header-container');
+    try{
+      const res=await fetch('header.html',{cache:'no-cache'}); if(!res.ok)throw new Error('HTTP '+res.status);
+      const tpl=document.createElement('template'); tpl.innerHTML=await res.text(); const scripts=[...tpl.content.querySelectorAll('script')]; scripts.forEach(s=>s.remove()); host.appendChild(tpl.content);
+      scripts.forEach(old=>{const s=document.createElement('script'); [...old.attributes].forEach(a=>s.setAttribute(a.name,a.value)); s.textContent=old.textContent; host.appendChild(s)});
+      rewriteHeaderLinks(currentLang);
+      const langOptions=host.querySelector('#langOptions');
+      if(langOptions){langOptions.addEventListener('click',e=>{const b=e.target.closest('button[data-value]');if(b)setLang(b.dataset.value)});}
+      const themeOptions=host.querySelector('#themeOptions');
+      if(themeOptions){themeOptions.addEventListener('click',e=>{const b=e.target.closest('button[data-value]');if(b)applyTheme(b.dataset.value)});}
+      setLang(currentLang,{updateUrl:false});
+    }catch(err){console.warn('header.html の読み込みに失敗しました:',err)}
   }
-
-  // 初期適用（ヘッダー読み込み前でもテーマを反映）
-  let savedTheme = 'auto', savedLang = 'auto';
-  try {
-    savedTheme = localStorage.getItem('zojezu-theme') || 'auto';
-    savedLang = localStorage.getItem('zojezu-lang') || 'auto';
-  } catch (e) {}
-  applyTheme(savedTheme);
-  applyLang(savedLang);
-
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-    if (html.getAttribute('data-theme') === 'auto') applyTheme('auto');
-  });
-
-  // ヘッダー読み込み
-  fetch('header.html')
-    .then(r => r.text())
-    .then(htmlText => {
-      const container = document.getElementById('external-header-container');
-      container.innerHTML = htmlText;
-
-      // script実行
-      container.querySelectorAll('script').forEach(oldScript => {
-        const newScript = document.createElement('script');
-        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-        newScript.textContent = oldScript.textContent;
-        oldScript.parentNode.replaceChild(newScript, oldScript);
-      });
-
-      // ヘッダー側のテーマ・言語ボタンにページ側のi18nも連動させる
-      const themeOpts = document.getElementById('themeOptions');
-      const langOpts = document.getElementById('langOptions');
-      if (themeOpts) {
-        themeOpts.addEventListener('click', e => {
-          const btn = e.target.closest('button[data-value]');
-          if (btn) applyTheme(btn.getAttribute('data-value'));
-        });
-      }
-      if (langOpts) {
-        langOpts.addEventListener('click', e => {
-          const btn = e.target.closest('button[data-value]');
-          if (btn) applyLang(btn.getAttribute('data-value'));
-        });
-      }
-
-      // FAQ開閉アイコン
-      document.querySelectorAll('.faq-item').forEach(item => {
-        item.addEventListener('toggle', () => {
-          const icon = item.querySelector('.faq-icon');
-          if (icon) icon.textContent = item.open ? '×' : '＋';
-        });
-      });
-
-      // セクション表示
-      const sections = document.querySelectorAll('.section');
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) entry.target.classList.add('visible');
-        });
-      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-      sections.forEach(s => observer.observe(s));
-    })
-    .catch(err => console.error('Failed to load header:', err));
+  loadHeader();
 })();
 </script>
 </body>
