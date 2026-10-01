@@ -578,37 +578,42 @@
 
     // ===== 共通言語システム =====
     var langOptions = document.getElementById('langOptions');
+
+    // 現在選択中の言語表示だけを担当する。言語切替APIの内部状態を
+    // 読み直してactiveを上書きしないことが重要。
+    function setSelectedLanguage(lang) {
+      var normalized = validLangs.indexOf(lang) !== -1 ? lang : 'ja';
+      currentPageLang = normalized;
+      syncLanguageButtons(normalized);
+      try { localStorage.setItem('FoZoWo-language', normalized); } catch (e) {}
+    }
+
     if (langOptions) {
       langOptions.addEventListener('click', function (e) {
         var btn = e.target.closest('button[data-value]');
-        if (!btn || !window.FoZoWoLang) return;
+        if (!btn) return;
         e.stopPropagation();
         var nextLang = btn.getAttribute('data-value');
-        currentPageLang = nextLang;
-        syncLanguageButtons(nextLang);
-        window.FoZoWoLang.change(nextLang, true);
-        window.setTimeout(function(){
-          var actual = (window.FoZoWoLang && window.FoZoWoLang.current) ? window.FoZoWoLang.current() : nextLang;
-          syncLanguageButtons(actual);
-        }, 0);
+        if (validLangs.indexOf(nextLang) === -1) return;
+
+        // 先に見た目を確定させる。change()後にcurrent()を読み直して
+        // 古い言語へ戻す処理は行わない。
+        setSelectedLanguage(nextLang);
+
+        if (window.FoZoWoLang && typeof window.FoZoWoLang.change === 'function') {
+          try { window.FoZoWoLang.change(nextLang, true); } catch (err) { console.warn('[FoZoWo] language change failed:', err); }
+        }
       });
     }
-    if (window.FoZoWoLang && window.FoZoWoLang.refreshHeader) window.FoZoWoLang.refreshHeader();
-    syncLanguageButtons(currentPageLang);
 
-    // 言語ボタンの表示状態を常に言語状態と同期。ページ側の翻訳処理が
-    // DOMを書き換えた場合でも、選択中のボタンだけをactiveに戻す。
-    var langButtonObserver = new MutationObserver(function () {
-      var actual = (window.FoZoWoLang && window.FoZoWoLang.current) ? window.FoZoWoLang.current() : currentPageLang;
-      if (validLangs.indexOf(actual) === -1) actual = currentPageLang || 'ja';
-      var opts = document.getElementById('langOptions');
-      if (opts) {
-        var active = opts.querySelector('button.active');
-        if (!active || active.getAttribute('data-value') !== actual) syncLanguageButtons(actual);
-      }
+    // ページ側の言語システムから通知された値だけを反映。
+    window.addEventListener('fozowo-language-change', function (e) {
+      var lang = e && e.detail ? e.detail.lang : null;
+      if (validLangs.indexOf(lang) !== -1) setSelectedLanguage(lang);
     });
-    var langContainer = document.getElementById('langOptions');
-    if (langContainer) langButtonObserver.observe(langContainer, {subtree:true, attributes:true, attributeFilter:['class','data-value']});
+
+    // 初期表示時はURL → 保存値 → documentの順で決定。
+    setSelectedLanguage(currentPageLang);
 
     // ===== テーマ =====
     function applyTheme(value) {
