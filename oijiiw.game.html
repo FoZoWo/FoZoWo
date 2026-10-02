@@ -16942,16 +16942,16 @@ function showResetOverlay() {
         else btnsContainer.classList.remove('swapped');
     }
 
-    // 完全初期化と特殊設定の削除3項目は、警告音・魔女音声なし。
-    // 緊急時初期化など従来の警告フローだけ警告音を使う。
-    const silentConfirm = (resetScope === 'all' || specialCleanup);
-    if (!silentConfirm) {
+    // 特殊設定の削除3項目だけ警告音・魔女音声なし。
+    // 完全初期化も他の危険操作と同じく警告音＋おいじぃ魔女の発言を再生する。
+    const silentConfirm = specialCleanup;
+    if (specialCleanup) {
+        overlay.classList.remove('dark','flash-red');
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    } else {
         overlay.classList.add('dark');
         playAlarmSound();
         if (msg.speak) witchSpeak(msg.speak);
-    } else {
-        overlay.classList.remove('dark','flash-red');
-        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     }
     try {
         if (typeof getAppLang==='function' && getAppLang()==='en' && typeof t==='function') {
