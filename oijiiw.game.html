@@ -16162,9 +16162,9 @@ const RESET_MESSAGES = {
         { title: '最終確認', text: 'GoogleユーザのデータとGoogleログイン連携を消去するぞい。\n一度消したら元には戻せん。本当によいかい？', speak: 'これが最後の確認じゃ。消去するを押すと、オンラインユーザーのデータとGoogleログイン連携が消えるぞい。本当によいかい。' }
     ],
     all: [
-        { title: '完全初期化の確認', text: 'すべてのユーザー、ポイント、記録、設定、保護者設定、バックアップなどを初期化します。\nこの操作は取り消せません。\n本当に完全初期化を開始しますか？', speak: '' },
-        { title: '完全初期化・再確認', text: '現在保存されているユーザー情報・ゲーム記録・設定・バックアップなどがすべて初期状態へ戻ります。\nこの操作は元に戻せません。\n本当に続行しますか？', speak: '' },
-        { title: '完全初期化・最終確認', text: 'これが最後の確認です。\n完全初期化を実行すると、このアプリの保存データはすべて削除され、初期設定からやり直しになります。\n本当に実行しますか？', speak: '' }
+        { title: '⚠️ 完全初期化じゃぞ', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.05em;">⚠️ 危険じゃぞ！</span>\nすべてのユーザー、ポイント、記録、設定、保護者設定、バックアップまで、<span style="color:#ff8888;font-weight:bold;">ぜーんぶ初期化</span>するぞい！\n<span style="color:#ff4444;font-weight:bold;">一度やったら絶対に戻せん。</span>\n本当に完全初期化を始めるのかい？', speak: '危険じゃぞ。すべてを初期化するぞい。一度やったら絶対に戻せん。本当に始めるのかい。', html: true },
+        { title: 'まだ続けるのかい？', text: 'フォッフォッフォ…まだ進むのかい。\nユーザーも記録も設定もバックアップも、<span style="color:#ff8888;font-weight:bold;">すべて初期状態へ戻る</span>ぞい。\n<span style="color:#ff4444;font-weight:bold;">この操作は元に戻せん。</span>\n本当に続行するのかい？', speak: 'まだ続けるのかい。すべて初期状態へ戻るぞ。元に戻せんが、本当によいかい。', html: true },
+        { title: '🚨 最終確認じゃ！', text: '<span style="color:#ff2222;font-weight:bold;font-size:1.15em;">🚨 これが最後の確認じゃ！！</span>\n「消去する」を押した瞬間、このアプリの保存データは<span style="color:#ff8888;font-weight:bold;">すべて消えて</span>、初期設定からやり直しになるぞい！\n<span style="color:#ff4444;font-weight:bold;">もう戻せん、絶対にじゃ！</span>\n本当に実行するのかい？', speak: 'これが最後の確認じゃ。消去するを押したらすべて消えて初期設定からやり直しじゃ。もう戻せん絶対にじゃ。本当によいかい。', html: true }
     ],
     legacyStorage: [
         { title: '古いストレージの削除', text: '古い保存領域だけを削除します。\n現在の設定・ユーザーデータ・ゲーム記録には影響しません。\n実行してよいですか？', speak: '' },
@@ -16280,8 +16280,9 @@ const RESET_MESSAGES_EN = {
         { title: '🚨 Final confirmation', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.1em;">🚨 This is the last check!</span>\nPress Erase and selected users <span style="color:#ff8888;font-weight:bold;">vanish from this world</span>!\n<span style="color:#ff4444;font-weight:bold;">It cannot be undone!</span>', speak: 'This is the last check. Press Erase and selected users vanish forever. It cannot be undone.', html: true }
     ],
     all: [
-        { title: 'Full reset confirmation', text: 'All users, points, records, settings, parental settings, backups, and other saved data will be reset.\nThis operation cannot be undone.\nContinue?', speak: '' },
-        { title: 'Full reset — final confirmation', text: 'This is the final confirmation.\nThe app will return to its initial state and all saved data will be deleted.\nRun the full reset?', speak: '' }
+        { title: '⚠️ Full factory reset', text: '<span style="color:#ff4444;font-weight:bold;font-size:1.05em;">⚠️ Danger!</span>\nAll users, points, records, settings, parental controls, and backups will be <span style="color:#ff8888;font-weight:bold;">completely wiped</span>!\n<span style="color:#ff4444;font-weight:bold;">It cannot be undone.</span>\nReally start the full factory reset?', speak: 'Danger. Everything will be wiped. It cannot be undone. Really start?', html: true },
+        { title: 'Still going…?', text: 'Ho ho ho… still continuing?\nUsers, records, settings, and backups all return to <span style="color:#ff8888;font-weight:bold;">a clean slate</span>.\n<span style="color:#ff4444;font-weight:bold;">There is no going back.</span>\nReally continue?', speak: 'Still going? Everything returns to a clean slate. No going back. Really continue?', html: true },
+        { title: '🚨 Final confirmation!', text: '<span style="color:#ff2222;font-weight:bold;font-size:1.15em;">🚨 This is the last check!!</span>\nThe moment you press Erase, all saved data in this app <span style="color:#ff8888;font-weight:bold;">vanishes</span> and you start from setup again!\n<span style="color:#ff4444;font-weight:bold;">It can never be restored!</span>\nReally execute it?', speak: 'This is the last check. Press Erase and everything vanishes. It can never be restored. Really OK?', html: true }
     ],
     legacyStorage: [
         { title: 'Delete legacy storage', text: 'Only old unused storage will be removed.\nCurrent settings, user data, and game records are not affected.\nContinue?', speak: '' },
@@ -16374,67 +16375,125 @@ const RESET_INFO = {
         icon: '☠️',
         title: '【ヒッヒッヒ……Googleオンラインユーザーを完全に消すぞい】',
         lead: 'このGoogleアカウントに結びついたOJWGAオンラインユーザーを、OJWGA側のオンライン記録ごとぜーんぶ消し去って、この端末だけログアウトするぞい。Googleアカウント本体は消えんぞい。よーく読んでから進むのじゃ。',
-        deletes: [
-            '🌐 Google連携したOJWGAオンラインユーザー本体',
-            '💎 Firestoreのポイント・実績・プレイ記録・オンライン設定',
-            '🖼️ OJWGAに保存した専用プロフィール画像・オンライン名',
-            '📱 この端末に残っている同じGoogle UIDのOJWGAユーザー情報'
-        ],
-        keeps: [
-            '👤 このGoogleユーザーとは別のオフラインユーザー',
-            '📧 Googleアカウント本体（Gmail・Driveなど）は消えんぞい',
-            '🔐 Firebase AuthenticationのGoogleログインは残るぞい',
-            '🎮 ゲーム本体や外部画像ファイルは消えんぞい'
-        ]
+        deletes: ['🌐 Google連携したOJWGAオンラインユーザー本体', '💎 Firestoreのポイント・実績・プレイ記録・オンライン設定', '🖼️ OJWGAに保存した専用プロフィール画像・オンライン名', '📱 この端末に残っている同じGoogle UIDのOJWGAユーザー情報'],
+        keeps: ['👤 このGoogleユーザーとは別のオフラインユーザー', '📧 Googleアカウント本体（Gmail・Driveなど）は消えんぞい', '🔐 Firebase AuthenticationのGoogleログインは残るぞい', '🎮 ゲーム本体や外部画像ファイルは消えんぞい']
     },
     records: {
-        icon: '🎮',
-        title: '【ユーザー記録のみ初期化】',
+        icon: '🎮', title: '【ユーザー記録のみ初期化】',
         lead: '今のユーザーのポイントやプレイ記録だけをゼロに戻すぞい。',
-        deletes: [
-            '獲得ポイント（合計・ゲーム別）',
-            '最高順位・チャレンジ記録',
-            'プレイ回数・最近の記録'
-        ],
-        keeps: [
-            'ユーザー名・アバター',
-            'パスワード',
-            '他のユーザーのデータ',
-            '音・表示などの設定',
-            'バックアップ'
-        ]
+        deletes: ['獲得ポイント（合計・ゲーム別）', '最高順位・チャレンジ記録', 'プレイ回数・最近の記録'],
+        keeps: ['ユーザー名・アバター', 'パスワード', '他のユーザーのデータ', '音・表示などの設定', 'バックアップ']
     },
     settings: {
-        icon: '⚙️',
-        title: '【設定のみ初期化】',
+        icon: '⚙️', title: '【設定のみ初期化】',
         lead: 'アプリ全体の設定を初期値に戻すぞい。ユーザーの記録は残るぞ。',
-        deletes: [
-            '音設定（音量・声色・警告音）',
-            '表示設定（テーマ・文字サイズ・アニメ）',
-            'ゲームプレイ設定',
-            '自動バックアップ（すべて消える）'
-        ],
-        keeps: [
-            'すべてのユーザー',
-            'ポイント・プレイ記録',
-            'パスワード',
-            '手動で書き出したJSONファイル'
-        ]
+        deletes: ['音設定（音量・声色・警告音）', '表示設定（テーマ・文字サイズ・アニメ）', 'ゲームプレイ設定', '自動バックアップ（すべて消える）'],
+        keeps: ['すべてのユーザー', 'ポイント・プレイ記録', 'パスワード', '手動で書き出したJSONファイル']
     },
     user: {
-        icon: '👤',
-        title: '【このユーザーを初期化】',
+        icon: '👤', title: '【このユーザーを初期化】',
         lead: '今使っているユーザーを丸ごと消去するぞい。他のユーザーは残るぞ。',
-        deletes: [
-            'ユーザー名・アバター',
-            'パスワード',
-            'このユーザーの全ポイント・記録'
-        ],
-        keeps: [
-            '他のユーザー',
-            'アプリ設定（音・表示など）',
-            'バックアップ'
-        ]
+        deletes: ['ユーザー名・アバター', 'パスワード', 'このユーザーの全ポイント・記録'],
+        keeps: ['他のユーザー', 'アプリ設定（音・表示など）', 'バックアップ']
+    },
+    selectiveUsers: {
+        icon: '🎯', title: '【選択したユーザーを消去】',
+        lead: 'チェックしたユーザーを丸ごと消去するぞい。取り消せんぞ、気をつけるのじゃ！',
+        deletes: ['選択したユーザーの名前・アバター・パスワード', '選択したユーザーのポイント・プレイ記録', '選択したユーザーのチャレンジ・購入履歴'],
+        keeps: ['チェックしていない他のユーザー', 'アプリ設定（音・表示・保護者など）', '自動バックアップ']
+    },
+    all: {
+        icon: '⚠️', title: '【ヒッヒッヒ……完全初期化じゃぞ】',
+        lead: 'アプリの保存データをぜーんぶ消し飛ばして、初めて起動した状態に戻すぞい。一度やったら絶対に元には戻せんぞ！よーく考えてから進むのじゃ。',
+        deletes: ['すべてのユーザーとそのデータ', 'すべてのポイント・プレイ記録', '音・表示・ゲームプレイ設定', '保護者設定とパスワード', 'チャレンジ・実績・すべての設定', '自動バックアップ（すべて消える）'],
+        keeps: ['（何も残らん…アプリ本体だけ）']
+    },
+    legacyStorage: {
+        icon: '🗃️', title: '【古いストレージの掃除】',
+        lead: '使われなくなった古い保存領域だけを片付けるぞい。今のデータには影響せんぞ。',
+        deletes: ['古い形式の残りデータ（今は使っていないもの）'],
+        keeps: ['すべてのユーザー・ポイント・記録', 'すべての設定', '自動バックアップ']
+    },
+    allUsersDataOnly: {
+        icon: '📦', title: '【全ユーザーのポイント・記録をゼロに】',
+        lead: 'ユーザーは残したまま、全員のポイントとプレイ記録だけをゼロにするぞい。取り消せんぞ！',
+        deletes: ['全ユーザーの合計ポイント', '全ユーザーのプレイ記録・統計'],
+        keeps: ['ユーザー名・アバター・パスワード', 'アプリ設定', 'バックアップ']
+    },
+    clearAutoBackups: {
+        icon: '🗑️', title: '【自動バックアップの削除】',
+        lead: '保存されている自動バックアップだけをすべて消すぞい。ユーザーや設定は残るぞ。',
+        deletes: ['自動バックアップ（すべて）'],
+        keeps: ['すべてのユーザー', 'ポイント・記録', '設定']
+    },
+    shopHistory: {
+        icon: '🛒', title: '【ショップ履歴のみリセット】',
+        lead: '購入アイテムと装備だけをリセットするぞい。ポイントは残るぞ。',
+        deletes: ['購入したアイテム', '装備中のアイテム'],
+        keeps: ['ポイント', 'プレイ記録', '設定']
+    },
+    challengeOnly: {
+        icon: '🎯', title: '【チャレンジ記録のみリセット】',
+        lead: 'チャレンジの記録だけを消すぞい。',
+        deletes: ['デイリーチャレンジの記録', 'チャレンジ履歴'],
+        keeps: ['ポイント', 'ユーザー', '設定']
+    },
+    statsOnly: {
+        icon: '📊', title: '【統計のみリセット】',
+        lead: 'プレイ回数や統計だけをリセットするぞい。',
+        deletes: ['プレイ回数', '統計データ'],
+        keeps: ['ポイント', 'ユーザー', '設定']
+    },
+    pointsOnly: {
+        icon: '💎', title: '【ポイントのみゼロに】',
+        lead: 'このユーザーの合計ポイントだけを0にするぞい。他の記録は残るぞ。',
+        deletes: ['合計ポイント'],
+        keeps: ['プレイ記録', 'ユーザー名・パスワード', '設定']
+    },
+    soundOnly: {
+        icon: '🔊', title: '【音設定のみリセット】',
+        lead: '音量・声色・話す速さ・警告音などを初期値に戻すぞい。',
+        deletes: ['音量・声の高さ・話す速さ', '警告音の音量設定'],
+        keeps: ['ユーザー', 'ポイント', '表示設定']
+    },
+    displayOnly: {
+        icon: '🖼', title: '【表示設定のみリセット】',
+        lead: 'テーマ・文字サイズ・時計・アニメなどを初期値に戻すぞい。',
+        deletes: ['テーマ', '文字サイズ', '時計・アニメーション設定'],
+        keeps: ['ユーザー', 'ポイント', '音設定']
+    },
+    gameplayOnly: {
+        icon: '🎮', title: '【ゲームプレイ設定のみリセット】',
+        lead: '振動・トースト・チャレンジ表示・キーボードなどを初期値に戻すぞい。',
+        deletes: ['振動', 'トースト・チャレンジ・統計の表示設定', 'キーボード操作設定'],
+        keeps: ['ユーザー', 'ポイント', '音・表示設定']
+    },
+    parentalOnly: {
+        icon: '🛡', title: '【保護者設定のリセット】',
+        lead: 'パスワード・制限・休憩・夜間ロックを初期値に戻すぞい。プレイ時間履歴は残るぞ。',
+        deletes: ['保護者パスワードとヒント', '1日のプレイ時間制限', '休憩・夜間ロック設定'],
+        keeps: ['プレイ時間履歴', 'ユーザー', 'ポイント']
+    },
+    parentalFull: {
+        icon: '🛑', title: '【保護者設定の完全リセット】',
+        lead: 'プレイ時間履歴も含めて、保護者関連のデータをすべてリセットするぞい。',
+        deletes: ['保護者パスワードとヒント', '1日の制限', '休憩・夜間ロック設定', '今日のプレイ時間', '累計プレイ時間と履歴', '初回プレイ日'],
+        keeps: ['ユーザーとポイント', '音・表示・ゲームプレイ設定', '自動バックアップ']
+    },
+    custom: {
+        icon: '🛠️', title: '【カスタム初期化】',
+        lead: 'チェックした項目をまとめて初期化するぞい。内容は合っておるかのぅ？',
+        deletes: [],
+        keeps: []
+    }
+};
+
+const RESET_INFO_EN = {
+    all: {
+        icon: '⚠️', title: '[Full factory reset]',
+        lead: 'Erase all app data and return to a fresh install. Cannot be undone at all!',
+        deletes: ['All users and data', 'All points & records', 'Sound, display, gameplay settings', 'Parental settings & password', 'Challenges, achievements, every setting', 'Auto-backups (all deleted)'],
+        keeps: ['(Nothing… only the app itself)']
     },
     records: {
         icon: '🎮', title: '[Reset user records only]',
@@ -16460,90 +16519,6 @@ const RESET_INFO = {
         deletes: ['Selected users\' names, avatars, passwords', 'Selected users\' points & play records', 'Selected users\' challenges & purchase history'],
         keeps: ['Unchecked other users', 'App settings (sound, display, parental, etc.)', 'Auto-backups']
     },
-    all: {
-        icon: '⚠️', title: '[Full factory reset]',
-        lead: 'Erase all app data and return to a fresh install. Cannot be undone at all!',
-        deletes: ['All users and data', 'All points & records', 'Sound, display, gameplay settings', 'Parental settings & password', 'Challenges, achievements, every setting', 'Auto-backups (all deleted)'],
-        keeps: ['(Nothing… only the app itself)']
-    },
-    legacyStorage: {
-        icon: '🗃️', title: '[Clear legacy storage]',
-        lead: 'Gently clean old unused save areas. Current data is not affected.',
-        deletes: ['Old-format leftover save data (unused now)'],
-        keeps: ['All users, points & records', 'All settings', 'Auto-backups']
-    },
-    allUsersDataOnly: {
-        icon: '📦', title: '[Zero all users\' points/records]',
-        lead: 'Keep users, but set every user\'s points and play records to zero. Cannot undo!',
-        deletes: ['All users\' total points', 'All users\' play records, best ranks, stats', 'All users\' challenge history & purchased items'],
-        keeps: ['All users (name, avatar, password)', 'App settings (sound, display, parental, etc.)', 'Auto-backups']
-    },
-    allOtherUsersDelete: {
-        icon: '👥', title: '[Delete all other users]',
-        lead: 'Keep the current user; erase everyone else. Cannot undo!',
-        deletes: ['All other users\' info (name, avatar, password)', 'All other users\' points & play records', 'All other users\' challenge history'],
-        keeps: ['Current user and all their data', 'App settings (sound, display, parental, etc.)', 'Backups']
-    },
-    clearAutoBackups: {
-        icon: '🗑️', title: '[Delete all auto-backups]',
-        lead: 'Delete every stored auto-backup. User data and settings remain.',
-        deletes: ['Launch auto-backups', 'Exit auto-backups', 'Interval auto-backups', 'Manually created auto-backups'],
-        keeps: ['All users and points', 'Play & challenge records', 'All settings', 'Manually exported JSON files']
-    },
-    shopHistory: {
-        icon: '🛒', title: '[Reset shop history only]',
-        lead: 'Reset this user\'s shop items and equipment. Points stay.',
-        deletes: ['Purchased items', 'Equipped items'],
-        keeps: ['Points', 'Play records', 'User name & password']
-    },
-    challengeOnly: {
-        icon: '🎯', title: '[Reset challenges only]',
-        lead: 'Clear challenge records only.',
-        deletes: ['Daily challenge records', 'Challenge history'],
-        keeps: ['Points', 'Users', 'Settings']
-    },
-    statsOnly: {
-        icon: '📊', title: '[Reset stats only]',
-        lead: 'Reset play counts and statistics.',
-        deletes: ['Play counts', 'Statistics'],
-        keeps: ['Points', 'Users', 'Settings']
-    },
-    pointsOnly: {
-        icon: '💎', title: '[Zero points only]',
-        lead: 'Set this user\'s total points to 0. Other records stay.',
-        deletes: ['Total points'],
-        keeps: ['Play records', 'User name & password', 'Settings']
-    },
-    soundOnly: {
-        icon: '🔊', title: '[Reset sound settings only]',
-        lead: 'Volume, pitch, rate, and alerts return to defaults.',
-        deletes: ['Sound volume / pitch / rate', 'Alert volume settings'],
-        keeps: ['Users', 'Points', 'Display settings']
-    },
-    displayOnly: {
-        icon: '🖼', title: '[Reset display settings only]',
-        lead: 'Theme, font size, clock, and animations return to defaults.',
-        deletes: ['Theme', 'Font size', 'Clock & animation settings'],
-        keeps: ['Users', 'Points', 'Sound settings']
-    },
-    gameplayOnly: {
-        icon: '🎮', title: '[Reset gameplay settings only]',
-        lead: 'Vibration, toasts, challenge display, keyboard return to defaults.',
-        deletes: ['Vibration', 'Toast / challenge / stats display', 'Keyboard navigation setting'],
-        keeps: ['Users', 'Points', 'Sound & display']
-    },
-    parentalOnly: {
-        icon: '🛡', title: '[Reset parental settings]',
-        lead: 'Password, limits, breaks, bedtime return to defaults. Play history stays.',
-        deletes: ['Parental password & hint', 'Daily limit', 'Break & bedtime settings'],
-        keeps: ['Play time history', 'Users', 'Points']
-    },
-    parentalFull: {
-        icon: '🛑', title: '[Full parental reset]',
-        lead: 'Fully reset parental data including play history.',
-        deletes: ['Parental password & hint', 'Daily limit', 'Break & bedtime settings', 'Today\'s play time', 'Total play time & history', 'First play date'],
-        keeps: ['Users and points', 'Sound / display / gameplay settings', 'Auto-backups']
-    },
     custom: {
         icon: '🛠️', title: '[Custom reset]',
         lead: 'Reset the checked items together. Does this look right?',
@@ -16551,6 +16526,7 @@ const RESET_INFO = {
         keeps: []
     }
 };
+
 /* =========================================================
    カスタム初期化 項目定義
 ========================================================= */
@@ -16943,15 +16919,15 @@ function showResetOverlay() {
     }
 
     // 特殊設定の削除3項目だけ警告音・魔女音声なし。
-    // 完全初期化も他の危険操作と同じく警告音＋おいじぃ魔女の発言を再生する。
+    // 完全初期化は緊急時初期化と同様に警告音と魔女の声を出す。
     const silentConfirm = specialCleanup;
-    if (specialCleanup) {
-        overlay.classList.remove('dark','flash-red');
-        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-    } else {
+    if (!silentConfirm) {
         overlay.classList.add('dark');
         playAlarmSound();
         if (msg.speak) witchSpeak(msg.speak);
+    } else {
+        overlay.classList.remove('dark','flash-red');
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     }
     try {
         if (typeof getAppLang==='function' && getAppLang()==='en' && typeof t==='function') {
