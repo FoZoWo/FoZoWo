@@ -1,434 +1,819 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#111318">
-  <title>FoZoWo Tools - タイマー / ストップウォッチ</title>
-  <meta name="description" content="FoZoWo Tools のタイマー・ストップウォッチ。">
-  <style>
-    :root{
-      color-scheme: light dark;
-      --bg:#f5f7fb;
-      --panel:rgba(255,255,255,.82);
-      --panel-solid:#fff;
-      --text:#111318;
-      --muted:#69707d;
-      --line:rgba(20,25,35,.12);
-      --accent:#4d67ff;
-      --accent-2:#7658ff;
-      --shadow:0 18px 50px rgba(20,25,40,.12);
-      --danger:#e5484d;
-      --success:#16a37a;
-    }
-    @media (prefers-color-scheme: dark){
-      :root{
-        --bg:#0d0f13;
-        --panel:rgba(23,26,33,.84);
-        --panel-solid:#171a21;
-        --text:#f4f6fa;
-        --muted:#a3aab6;
-        --line:rgba(255,255,255,.10);
-        --shadow:0 18px 50px rgba(0,0,0,.28);
-      }
-    }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      min-height:100vh;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;
-      background:
-        radial-gradient(circle at 10% 0%, rgba(77,103,255,.14), transparent 30rem),
-        radial-gradient(circle at 100% 20%, rgba(118,88,255,.11), transparent 28rem),
-        var(--bg);
-      color:var(--text);
-    }
-    button,input{font:inherit}
-    button{cursor:pointer}
-    .wrap{width:min(1100px, calc(100% - 32px)); margin:0 auto}
-    .topbar{
-      position:sticky; top:0; z-index:20;
-      backdrop-filter:blur(18px);
-      background:color-mix(in srgb, var(--bg) 78%, transparent);
-      border-bottom:1px solid var(--line);
-    }
-    .topbar-inner{
-      min-height:70px; display:flex; align-items:center; gap:18px;
-      justify-content:space-between;
-    }
-    .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.02em}
-    .logo{
-      width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
-      color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent-2));
-      box-shadow:0 10px 25px rgba(77,103,255,.25);
-      font-weight:900;
-    }
-    .brand small{display:block;color:var(--muted);font-weight:600;font-size:11px;margin-top:2px}
-    main{padding:34px 0 60px}
-    .hero{
-      display:grid;grid-template-columns:1.3fr .7fr;gap:18px;align-items:stretch;
-      margin-bottom:20px;
-    }
-    .hero-card,.tool-card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      box-shadow:var(--shadow);
-      border-radius:24px;
-      backdrop-filter:blur(18px);
-    }
-    .hero-card{padding:30px}
-    h1{font-size:clamp(30px,5vw,54px);line-height:1.02;margin:0 0 12px;letter-spacing:-.045em}
-    .hero p{margin:0;color:var(--muted);line-height:1.7}
-    .hero-badge{
-      display:inline-flex;align-items:center;gap:7px;
-      padding:8px 11px;border-radius:999px;background:rgba(77,103,255,.11);
-      color:var(--accent);font-weight:800;font-size:12px;margin-bottom:14px
-    }
-    .mini-card{padding:24px;display:flex;flex-direction:column;justify-content:space-between}
-    .mini-card .num{font-size:46px;line-height:1;font-weight:900}
-    .mini-card .label{color:var(--muted);font-size:13px;margin-top:8px}
-    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-    .tab{
-      border:1px solid var(--line);background:var(--panel);color:var(--text);
-      border-radius:14px;padding:11px 16px;font-weight:800;
-    }
-    .tab.active{background:var(--text);color:var(--bg);border-color:transparent}
-    .tool-card{padding:24px}
-    .panel{display:none}
-    .panel.active{display:block}
-    .display{
-      min-height:170px;display:grid;place-items:center;text-align:center;
-      padding:24px;border:1px solid var(--line);border-radius:20px;
-      background:var(--panel-solid);margin-bottom:18px
-    }
-    .display-time{
-      font-variant-numeric:tabular-nums;
-      font-size:clamp(52px,10vw,94px);
-      line-height:1;font-weight:900;letter-spacing:.03em
-    }
-    .display-sub{margin-top:10px;color:var(--muted);font-size:13px}
-    .controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
-    .btn{
-      border:1px solid var(--line);background:var(--panel-solid);color:var(--text);
-      min-width:118px;padding:13px 18px;border-radius:14px;font-weight:800;
-    }
-    .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border:0}
-    .btn.danger{color:var(--danger)}
-    .btn:disabled{opacity:.48;cursor:not-allowed}
-    .timer-settings{
-      display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:700px;margin:0 auto 18px
-    }
-    .field label{display:block;color:var(--muted);font-size:12px;font-weight:800;margin-bottom:7px}
-    .field input{
-      width:100%;padding:13px 12px;border-radius:13px;border:1px solid var(--line);
-      background:var(--panel-solid);color:var(--text);outline:none
-    }
-    .field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(77,103,255,.12)}
-    .laps{margin-top:18px;border:1px solid var(--line);border-radius:18px;overflow:hidden}
-    .laps-head,.lap{
-      display:grid;grid-template-columns:70px 1fr 1fr;gap:10px;padding:12px 15px;
-      font-variant-numeric:tabular-nums
-    }
-    .laps-head{background:rgba(127,127,127,.07);color:var(--muted);font-size:12px;font-weight:800}
-    .lap{border-top:1px solid var(--line)}
-    .lap span:nth-child(2){text-align:center}
-    .lap span:last-child{text-align:right}
-    .hint{margin-top:14px;text-align:center;color:var(--muted);font-size:12px}
-    footer{color:var(--muted);text-align:center;padding:30px 0 8px;font-size:12px}
-    @media (max-width:760px){
-      .hero{grid-template-columns:1fr}
-      .timer-settings{grid-template-columns:1fr}
-      .tool-card{padding:16px}
-      .hero-card{padding:22px}
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5f6f8">
+<title>FoZoWo Tools | タイマー</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:#f5f6f8;
+  --card:#fff;
+  --text:#15171b;
+  --muted:#747a84;
+  --line:#e3e6ea;
+  --accent:#4f67ff;
+  --danger:#e5535d;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#0f1115;
+    --card:#181b21;
+    --text:#f6f7f9;
+    --muted:#9ca3af;
+    --line:#2a2f38;
+  }
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+.top{
+  height:64px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+  border-bottom:1px solid var(--line);
+  background:color-mix(in srgb,var(--bg) 92%,transparent);
+}
+.brand{font-weight:900;font-size:16px}
+.brand span{display:block;color:var(--muted);font-size:10px;font-weight:700;margin-top:1px}
+.top-actions{display:flex;gap:7px}
+.top-btn{
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--text);
+  border-radius:10px;
+  padding:8px 11px;
+  font-size:12px;
+  font-weight:800;
+}
+main{
+  width:min(760px,calc(100% - 24px));
+  margin:0 auto;
+  padding:28px 0 42px;
+}
+.tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:5px;
+  padding:4px;
+  border:1px solid var(--line);
+  background:color-mix(in srgb,var(--card) 72%,transparent);
+  border-radius:13px;
+}
+.tab{
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  padding:11px;
+  border-radius:9px;
+  font-weight:900;
+}
+.tab.active{
+  background:var(--card);
+  color:var(--text);
+}
+.panel{
+  margin-top:12px;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:22px;
+  overflow:hidden;
+}
+.display{
+  padding:34px 16px 28px;
+  text-align:center;
+}
+.status{
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+}
+.time{
+  margin:13px 0 3px;
+  font-size:clamp(56px,12vw,104px);
+  line-height:1;
+  font-weight:1000;
+  letter-spacing:.02em;
+  font-variant-numeric:tabular-nums;
+}
+.preview{
+  color:var(--muted);
+  font-size:12px;
+}
+.progress{
+  width:min(520px,90%);
+  height:4px;
+  margin:19px auto 0;
+  background:var(--line);
+  border-radius:999px;
+  overflow:hidden;
+}
+.progress > div{
+  width:0;
+  height:100%;
+  background:linear-gradient(90deg,var(--accent),#8059ff);
+}
+.controls{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:20px;
+}
+.btn{
+  min-width:112px;
+  min-height:46px;
+  padding:10px 16px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  background:var(--card);
+  color:var(--text);
+  font-weight:900;
+}
+.btn.primary{
+  min-width:150px;
+  color:#fff;
+  border:0;
+  background:var(--accent);
+}
+.btn.danger{color:var(--danger)}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+.settings{
+  border-top:1px solid var(--line);
+  padding:15px;
+}
+.inputs{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+.field{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:8px;
+}
+.field label{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  font-weight:800;
+  margin-bottom:3px;
+}
+.number{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:var(--text);
+  text-align:center;
+  outline:0;
+  font-size:23px;
+  font-weight:950;
+}
+.presets{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:7px;
+  margin-top:9px;
+}
+.preset{
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--text);
+  border-radius:10px;
+  padding:8px 4px;
+  font-size:12px;
+  font-weight:850;
+}
+.switch-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:10px;
+  padding:10px 2px 0;
+}
+.switch-row span{font-size:12px;font-weight:800}
+.switch{
+  position:relative;
+  width:45px;
+  height:26px;
+}
+.switch input{display:none}
+.slider{
+  position:absolute;
+  inset:0;
+  border-radius:99px;
+  background:#858b96;
+}
+.slider:before{
+  content:"";
+  position:absolute;
+  width:20px;
+  height:20px;
+  left:3px;
+  top:3px;
+  border-radius:50%;
+  background:#fff;
+  transition:.18s;
+}
+.switch input:checked + .slider{background:var(--accent)}
+.switch input:checked + .slider:before{transform:translateX(19px)}
+.sound-box{
+  margin-top:10px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+}
+.sound-title{
+  color:var(--muted);
+  font-size:10px;
+  font-weight:900;
+  margin-bottom:6px;
+}
+.sound-controls{
+  display:flex;
+  gap:7px;
+}
+.sound-select{
+  min-width:0;
+  flex:1;
+  height:40px;
+  padding:0 10px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--card);
+  color:var(--text);
+  font-weight:800;
+  outline:none;
+}
+.sound-test{
+  flex:none;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--card);
+  color:var(--text);
+  padding:0 13px;
+  height:40px;
+  font-weight:900;
+}
+.file-pick{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:39px;
+  margin-top:7px;
+  padding:6px 10px;
+  border:1px dashed var(--line);
+  border-radius:10px;
+  background:color-mix(in srgb,var(--bg) 35%,var(--card));
+  color:var(--muted);
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer;
+}
+.file-pick input{display:none}
+.file-pick.has-file{
+  border-style:solid;
+  color:var(--text);
+}
+.sound-note{
+  color:var(--muted);
+  font-size:10px;
+  margin-top:5px;
+}
+.laps{
+  border-top:1px solid var(--line);
+  max-height:280px;
+  overflow:auto;
+}
+.laps-head,.lap{
+  display:grid;
+  grid-template-columns:42px 1fr 1fr;
+  gap:8px;
+  padding:10px 14px;
+  font-variant-numeric:tabular-nums;
+}
+.laps-head{
+  color:var(--muted);
+  font-size:10px;
+  font-weight:900;
+  background:color-mix(in srgb,var(--bg) 45%,var(--card));
+  position:sticky;
+  top:0;
+}
+.lap{
+  border-top:1px solid var(--line);
+  font-size:12px;
+}
+.lap:nth-child(odd){background:color-mix(in srgb,var(--bg) 25%,var(--card))}
+.lap span:nth-child(2){text-align:center}
+.lap span:last-child{text-align:right}
+.empty{
+  padding:24px 12px;
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+}
+.footer{
+  text-align:center;
+  color:var(--muted);
+  font-size:10px;
+  padding-top:18px;
+}
+@media(max-width:540px){
+  .top{padding:0 12px}
+  .top-btn:first-child{display:none}
+  main{padding-top:17px}
+  .display{padding-top:28px}
+  .inputs{grid-template-columns:1fr}
+  .presets{grid-template-columns:repeat(3,1fr)}
+  .time{font-size:56px}
+  .btn{min-width:100px}
+}
+</style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="wrap topbar-inner">
-      <div class="brand">
-        <div class="logo">F</div>
-        <div>
-          <div>FoZoWo Tools</div>
-          <small>フォゾツール</small>
-        </div>
-      </div>
-      <button class="btn" id="fullscreenBtn" type="button">全画面</button>
-    </div>
-  </header>
+<header class="top">
+  <a class="brand" href="https://fozowo.f5.si">
+    FoZoWo Tools
+    <span>タイマー・ストップウォッチ</span>
+  </a>
+  <div class="top-actions">
+    <a class="top-btn" href="https://fozowo.f5.si">FoZoWoへ</a>
+    <button class="top-btn" id="fullscreen">全画面</button>
+  </div>
+</header>
 
-  <main class="wrap">
-    <section class="hero">
-      <div class="hero-card">
-        <div class="hero-badge">FOZOWO TOOL BASE</div>
-        <h1>タイマー &<br>ストップウォッチ</h1>
-        <p>フォゾツールの第1弾。シンプルに使えて、あとから電卓・メモ・単位変換などを追加できる土台になっています。</p>
-      </div>
-      <div class="hero-card mini-card">
-        <div>
-          <div class="num">01</div>
-          <div class="label">現在のツール</div>
-        </div>
-        <div class="label">URL想定：<b>/Toul.timer</b></div>
-      </div>
-    </section>
+<main>
+  <div class="tabs">
+    <button class="tab active" data-mode="timer">タイマー</button>
+    <button class="tab" data-mode="stopwatch">ストップウォッチ</button>
+  </div>
 
-    <div class="tabs" role="tablist" aria-label="ツール切り替え">
-      <button class="tab active" data-tab="timer" type="button">⏱ タイマー</button>
-      <button class="tab" data-tab="stopwatch" type="button">◷ ストップウォッチ</button>
+  <section class="panel" id="timerPanel">
+    <div class="display">
+      <div class="status" id="timerStatus">待機中</div>
+      <div class="time" id="timerDisplay">00:05:00</div>
+      <div class="preview" id="timerPreview">5分</div>
+      <div class="progress"><div id="progressBar"></div></div>
+
+      <div class="controls">
+        <button class="btn primary" id="timerStart">開始</button>
+        <button class="btn" id="timerPause" disabled>一時停止</button>
+        <button class="btn danger" id="timerReset">リセット</button>
+      </div>
     </div>
 
-    <section class="tool-card">
-      <div class="panel active" id="timer" role="tabpanel">
-        <div class="timer-settings">
-          <div class="field">
-            <label for="hours">時</label>
-            <input id="hours" type="number" min="0" max="99" value="0" inputmode="numeric">
-          </div>
-          <div class="field">
-            <label for="minutes">分</label>
-            <input id="minutes" type="number" min="0" max="59" value="5" inputmode="numeric">
-          </div>
-          <div class="field">
-            <label for="seconds">秒</label>
-            <input id="seconds" type="number" min="0" max="59" value="0" inputmode="numeric">
-          </div>
+    <div class="settings">
+      <div class="inputs">
+        <div class="field">
+          <label>時</label>
+          <input class="number" id="hours" type="number" min="0" max="99" value="0">
         </div>
-
-        <div class="display">
-          <div>
-            <div class="display-time" id="timerDisplay">00:05:00</div>
-            <div class="display-sub" id="timerStatus">待機中</div>
-          </div>
+        <div class="field">
+          <label>分</label>
+          <input class="number" id="minutes" type="number" min="0" max="59" value="5">
         </div>
-
-        <div class="controls">
-          <button class="btn primary" id="timerStart" type="button">開始</button>
-          <button class="btn" id="timerPause" type="button" disabled>一時停止</button>
-          <button class="btn danger" id="timerReset" type="button">リセット</button>
-        </div>
-        <div class="hint">入力を変更してから「開始」を押してください。</div>
-      </div>
-
-      <div class="panel" id="stopwatch" role="tabpanel">
-        <div class="display">
-          <div>
-            <div class="display-time" id="stopwatchDisplay">00:00:00.000</div>
-            <div class="display-sub" id="stopwatchStatus">停止中</div>
-          </div>
-        </div>
-
-        <div class="controls">
-          <button class="btn primary" id="swStart" type="button">開始</button>
-          <button class="btn" id="swLap" type="button" disabled>ラップ</button>
-          <button class="btn danger" id="swReset" type="button">リセット</button>
-        </div>
-
-        <div class="laps" id="lapsBox" hidden>
-          <div class="laps-head"><span>#</span><span>ラップ</span><span>経過時間</span></div>
-          <div id="laps"></div>
+        <div class="field">
+          <label>秒</label>
+          <input class="number" id="seconds" type="number" min="0" max="59" value="0">
         </div>
       </div>
-    </section>
 
-    <footer>FoZoWo Tools · これからツールを追加できる共通土台</footer>
-  </main>
+      <div class="presets">
+        <button class="preset" data-sec="30">30秒</button>
+        <button class="preset" data-sec="60">1分</button>
+        <button class="preset" data-sec="180">3分</button>
+        <button class="preset" data-sec="300">5分</button>
+        <button class="preset" data-sec="600">10分</button>
+        <button class="preset" data-sec="1800">30分</button>
+      </div>
+
+      <div class="switch-row">
+        <span>自動リピート</span>
+        <label class="switch">
+          <input type="checkbox" id="repeat">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="sound-box">
+        <div class="sound-title">終了音</div>
+        <div class="sound-controls">
+          <select id="soundSelect" class="sound-select" aria-label="終了音">
+            <option value="soft">01 やさしいベル</option>
+            <option value="digital">02 デジタル</option>
+            <option value="alarm">03 アラーム</option>
+            <option value="chime">04 チャイム</option>
+            <option value="bell">05 ベル</option>
+            <option value="double">06 ダブルベル</option>
+            <option value="ping">07 ピン</option>
+            <option value="pop">08 ポップ</option>
+            <option value="sparkle">09 キラキラ</option>
+            <option value="wood">10 ウッド</option>
+            <option value="marimba">11 マリンバ</option>
+            <option value="clock">12 時計</option>
+            <option value="gong">13 ゴング</option>
+            <option value="rise">14 上昇音</option>
+            <option value="fall">15 下降音</option>
+            <option value="pulse">16 パルス</option>
+            <option value="radio">17 ラジオ</option>
+            <option value="game">18 ゲーム</option>
+            <option value="bright">19 ブライト</option>
+            <option value="classic">20 クラシック</option>
+            <option value="custom">自分の音楽ファイル</option>
+          </select>
+          <button class="sound-test" id="soundTest" type="button">試聴</button>
+        </div>
+        <label class="file-pick" id="filePick">
+          <input id="soundFile" type="file" accept="audio/*">
+          <span id="fileName">音楽ファイルを選択</span>
+        </label>
+        <div class="sound-note" id="soundNote">MP3 / WAV / M4A / OGG などに対応</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="stopwatchPanel" hidden>
+    <div class="display">
+      <div class="status" id="swStatus">停止中</div>
+      <div class="time" id="swDisplay">00:00:00.000</div>
+
+      <div class="controls">
+        <button class="btn primary" id="swStart">開始</button>
+        <button class="btn" id="lap" disabled>ラップ</button>
+        <button class="btn danger" id="swReset">リセット</button>
+      </div>
+    </div>
+
+    <div class="laps">
+      <div class="laps-head"><span>#</span><span>ラップ</span><span>経過時間</span></div>
+      <div id="laps"><div class="empty">ラップなし</div></div>
+    </div>
+  </section>
+
+  <div class="footer">FoZoWo Tools · /Toul.timer</div>
+</main>
 
 <script>
 (() => {
-  "use strict";
+"use strict";
+const $ = id => document.getElementById(id);
 
-  const $ = (id) => document.getElementById(id);
-  const tabs = [...document.querySelectorAll(".tab")];
-  const panels = [...document.querySelectorAll(".panel")];
+let mode = "timer";
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    mode = tab.dataset.mode;
+    document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t === tab));
+    $("timerPanel").hidden = mode !== "timer";
+    $("stopwatchPanel").hidden = mode !== "stopwatch";
+  });
+});
 
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      const key = tab.dataset.tab;
-      tabs.forEach(t => t.classList.toggle("active", t === tab));
-      panels.forEach(p => p.classList.toggle("active", p.id === key));
+// Timer
+let timerRemaining = 300000;
+let timerTotal = 300000;
+let timerEnd = 0;
+let timerRunning = false;
+let timerLoop = null;
+
+function clamp(v,min,max){
+  const n = Number(v);
+  return Math.max(min, Math.min(max, Number.isFinite(n) ? Math.floor(n) : 0));
+}
+function getInputMs(){
+  const h = clamp($("hours").value,0,99);
+  const m = clamp($("minutes").value,0,59);
+  const s = clamp($("seconds").value,0,59);
+  $("hours").value=h;
+  $("minutes").value=m;
+  $("seconds").value=s;
+  return (h*3600+m*60+s)*1000;
+}
+function clock(ms){
+  const t = Math.max(0,Math.floor(ms/1000));
+  const h = Math.floor(t/3600);
+  const m = Math.floor(t/60)%60;
+  const s = t%60;
+  return [h,m,s].map(v=>String(v).padStart(2,"0")).join(":");
+}
+function simpleTime(ms){
+  const sec = Math.ceil(Math.max(0,ms)/1000);
+  const h = Math.floor(sec/3600);
+  const m = Math.floor(sec/60)%60;
+  const s = sec%60;
+  if(h) return `${h}時間 ${m}分 ${s}秒`;
+  if(m) return `${m}分 ${s}秒`;
+  return `${s}秒`;
+}
+function renderTimer(){
+  $("timerDisplay").textContent = clock(timerRemaining);
+  $("timerPreview").textContent = simpleTime(timerRemaining);
+  const p = timerTotal ? (1 - timerRemaining/timerTotal)*100 : 0;
+  $("progressBar").style.width = Math.max(0,Math.min(100,p))+"%";
+}
+function stopTimerLoop(){
+  if(timerLoop !== null){
+    clearInterval(timerLoop);
+    timerLoop = null;
+  }
+}
+let audioCtx = null;
+let customAudio = null;
+let customAudioUrl = null;
+
+function tonePattern(type){
+  const patterns = {
+    soft:[{f:660,d:.18,g:.13},{f:880,d:.28,g:.14}],
+    digital:[{f:740,d:.09,g:.13},{f:740,d:.09,g:.13},{f:1100,d:.18,g:.14}],
+    alarm:[{f:900,d:.18,g:.14},{f:620,d:.18,g:.14},{f:900,d:.18,g:.14},{f:620,d:.24,g:.14}],
+    chime:[{f:523,d:.25,g:.13},{f:659,d:.25,g:.13},{f:784,d:.42,g:.14}],
+    bell:[{f:880,d:.42,g:.16}],
+    double:[{f:880,d:.18,g:.15},{f:880,d:.18,g:.15}],
+    ping:[{f:1175,d:.16,g:.16}],
+    pop:[{f:520,d:.07,g:.15},{f:760,d:.12,g:.12}],
+    sparkle:[{f:784,d:.10,g:.12},{f:988,d:.10,g:.12},{f:1319,d:.18,g:.14}],
+    wood:[{f:330,d:.08,g:.14},{f:245,d:.12,g:.13},{f:330,d:.16,g:.12}],
+    marimba:[{f:523,d:.13,g:.13},{f:659,d:.13,g:.13},{f:784,d:.20,g:.13}],
+    clock:[{f:880,d:.09,g:.15},{f:880,d:.09,g:.15},{f:660,d:.18,g:.12}],
+    gong:[{f:196,d:.58,g:.17},{f:147,d:.50,g:.10}],
+    rise:[{f:392,d:.10,g:.10},{f:494,d:.10,g:.11},{f:587,d:.10,g:.12},{f:784,d:.24,g:.14}],
+    fall:[{f:784,d:.10,g:.14},{f:587,d:.10,g:.12},{f:494,d:.10,g:.11},{f:392,d:.24,g:.10}],
+    pulse:[{f:620,d:.09,g:.14},{f:620,d:.09,g:.14},{f:620,d:.09,g:.14},{f:930,d:.18,g:.14}],
+    radio:[{f:440,d:.07,g:.11},{f:660,d:.07,g:.12},{f:990,d:.13,g:.14}],
+    game:[{f:523,d:.09,g:.12},{f:659,d:.09,g:.12},{f:784,d:.09,g:.13},{f:1047,d:.20,g:.14}],
+    bright:[{f:784,d:.12,g:.12},{f:988,d:.12,g:.13},{f:1175,d:.12,g:.14},{f:1568,d:.25,g:.15}],
+    classic:[{f:523,d:.15,g:.11},{f:659,d:.15,g:.11},{f:784,d:.15,g:.12},{f:1047,d:.30,g:.14}]
+  };
+  return patterns[type] || patterns.soft;
+}
+
+async function playBuiltInSound(type){
+  try{
+    audioCtx ||= new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === "suspended") await audioCtx.resume();
+    const now = audioCtx.currentTime;
+    let offset = 0;
+    tonePattern(type).forEach(item=>{
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = item.f;
+      const start = now + offset;
+      gain.gain.setValueAtTime(.0001, start);
+      gain.gain.exponentialRampToValueAtTime(item.g, start + .015);
+      gain.gain.exponentialRampToValueAtTime(.0001, start + item.d);
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start(start);
+      osc.stop(start + item.d + .02);
+      offset += item.d + .06;
     });
-  });
+  }catch{}
+}
 
-  // Timer
-  let timerId = null;
-  let timerRemaining = 300000;
-  let timerRunning = false;
-  let timerEndAt = 0;
-
-  function pad(n, width = 2) { return String(n).padStart(width, "0"); }
-  function renderTimer() {
-    const ms = Math.max(0, timerRemaining);
-    const totalSeconds = Math.floor(ms / 1000);
-    const h = Math.floor(totalSeconds / 3600);
-    const m = Math.floor((totalSeconds % 3600) / 60);
-    const s = totalSeconds % 60;
-    $("timerDisplay").textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+function playSelectedSound(){
+  const selected = $("soundSelect").value;
+  if(selected === "custom"){
+    if(customAudio){
+      customAudio.currentTime = 0;
+      customAudio.play().catch(()=>{});
+    }else{
+      playBuiltInSound("soft");
+    }
+  }else{
+    playBuiltInSound(selected);
   }
-  function readTimerInputs() {
-    const h = Math.max(0, Math.min(99, Number($("hours").value) || 0));
-    const m = Math.max(0, Math.min(59, Number($("minutes").value) || 0));
-    const s = Math.max(0, Math.min(59, Number($("seconds").value) || 0));
-    $("hours").value = h; $("minutes").value = m; $("seconds").value = s;
-    timerRemaining = ((h * 3600) + (m * 60) + s) * 1000;
+}
+
+function alarm(){
+  playSelectedSound();
+  try{ navigator.vibrate?.([180,90,180]); }catch{}
+  try{
+    if("Notification" in window && Notification.permission === "granted"){
+      new Notification("FoZoWoタイマー",{body:$("repeat").checked?"タイマー終了。再スタートします。":"タイマー終了"});
+    }
+  }catch{}
+}
+$("soundSelect").addEventListener("change",()=>{
+  const custom = $("soundSelect").value === "custom";
+  $("filePick").style.display = custom ? "flex" : "none";
+  $("soundNote").textContent = custom
+    ? (customAudio ? "選択した音楽ファイルを使用します" : "音楽ファイルを選択してください")
+    : "内蔵音から選べます";
+  try{ localStorage.setItem("fzwTimerSound", $("soundSelect").value); }catch{}
+});
+
+$("soundFile").addEventListener("change",()=>{
+  const file = $("soundFile").files?.[0];
+  if(!file) return;
+  if(customAudioUrl) URL.revokeObjectURL(customAudioUrl);
+  customAudioUrl = URL.createObjectURL(file);
+  customAudio = new Audio(customAudioUrl);
+  customAudio.preload = "auto";
+  $("fileName").textContent = file.name;
+  $("filePick").classList.add("has-file");
+  $("soundNote").textContent = "このファイルをタイマー終了音に使用します";
+  $("soundSelect").value = "custom";
+  try{ localStorage.setItem("fzwTimerSound", "custom"); }catch{}
+});
+
+$("soundTest").addEventListener("click",()=>{
+  playSelectedSound();
+});
+
+$("filePick").style.display = "none";
+try{
+  const savedSound = localStorage.getItem("fzwTimerSound");
+  if(savedSound && [
+  "soft","digital","alarm","chime","bell","double","ping","pop","sparkle","wood",
+  "marimba","clock","gong","rise","fall","pulse","radio","game","bright","classic","custom"
+].includes(savedSound)){
+    $("soundSelect").value = savedSound;
+    $("soundSelect").dispatchEvent(new Event("change"));
+  }
+}catch{}
+
+async function askNotification(){
+  if("Notification" in window && Notification.permission === "default"){
+    try{ await Notification.requestPermission(); }catch{}
+  }
+}
+function resetTimer(){
+  stopTimerLoop();
+  timerRunning = false;
+  timerRemaining = getInputMs();
+  timerTotal = timerRemaining;
+  renderTimer();
+  $("timerStatus").textContent = "待機中";
+  $("timerStart").disabled = false;
+  $("timerPause").disabled = true;
+}
+function tickTimer(){
+  timerRemaining = Math.max(0,timerEnd-Date.now());
+  renderTimer();
+  if(timerRemaining > 0) return;
+  stopTimerLoop();
+  timerRunning = false;
+  alarm();
+  if($("repeat").checked && timerTotal > 0){
+    timerRemaining = timerTotal;
+    timerEnd = Date.now()+timerRemaining;
+    timerRunning = true;
+    $("timerStatus").textContent = "リピート中";
+    $("timerStart").disabled = true;
+    $("timerPause").disabled = false;
+    timerLoop = setInterval(tickTimer,50);
     renderTimer();
+    return;
   }
-  function setTimerState(status) {
-    $("timerStatus").textContent = status;
+  $("timerStatus").textContent = "完了";
+  $("timerStart").disabled = false;
+  $("timerPause").disabled = true;
+}
+$("timerStart").addEventListener("click",async()=>{
+  await askNotification();
+  if(timerRunning) return;
+  if(timerRemaining <= 0){
+    timerRemaining = getInputMs();
+    timerTotal = timerRemaining;
   }
-  function stopTimerLoop() {
-    if (timerId !== null) {
-      clearInterval(timerId);
-      timerId = null;
-    }
-  }
-  function finishTimer() {
-    stopTimerLoop();
-    timerRunning = false;
-    timerRemaining = 0;
-    renderTimer();
-    setTimerState("完了");
-    $("timerStart").disabled = false;
-    $("timerPause").disabled = true;
-    try { navigator.vibrate?.([180, 120, 180]); } catch {}
-    window.setTimeout(() => alert("タイマーが終了しました。"), 20);
-  }
-  $("timerStart").addEventListener("click", () => {
-    if (!timerRunning) {
-      if (timerRemaining <= 0) readTimerInputs();
-      if (timerRemaining <= 0) return;
-      timerEndAt = Date.now() + timerRemaining;
-      timerRunning = true;
-      setTimerState("実行中");
-      $("timerStart").disabled = true;
-      $("timerPause").disabled = false;
-      stopTimerLoop();
-      timerId = setInterval(() => {
-        timerRemaining = timerEndAt - Date.now();
-        if (timerRemaining <= 0) finishTimer();
-        else renderTimer();
-      }, 50);
-    }
-  });
-  $("timerPause").addEventListener("click", () => {
-    if (!timerRunning) return;
-    timerRemaining = Math.max(0, timerEndAt - Date.now());
-    timerRunning = false;
-    stopTimerLoop();
-    renderTimer();
-    setTimerState("一時停止");
-    $("timerStart").disabled = false;
-    $("timerPause").disabled = true;
-  });
-  $("timerReset").addEventListener("click", () => {
-    timerRunning = false;
-    stopTimerLoop();
-    readTimerInputs();
-    setTimerState("待機中");
-    $("timerStart").disabled = false;
-    $("timerPause").disabled = true;
-  });
-  ["hours","minutes","seconds"].forEach(id => {
-    $(id).addEventListener("change", () => {
-      if (!timerRunning) readTimerInputs();
-    });
-  });
-  readTimerInputs();
+  if(timerRemaining <= 0) return;
+  timerEnd = Date.now()+timerRemaining;
+  timerRunning = true;
+  $("timerStatus").textContent = "計測中";
+  $("timerStart").disabled = true;
+  $("timerPause").disabled = false;
+  stopTimerLoop();
+  timerLoop = setInterval(tickTimer,50);
+});
+$("timerPause").addEventListener("click",()=>{
+  if(!timerRunning) return;
+  timerRemaining = Math.max(0,timerEnd-Date.now());
+  timerRunning = false;
+  stopTimerLoop();
+  renderTimer();
+  $("timerStatus").textContent = "一時停止";
+  $("timerStart").disabled = false;
+  $("timerPause").disabled = true;
+});
+$("timerReset").addEventListener("click",resetTimer);
 
-  // Stopwatch
-  let swId = null;
-  let swRunning = false;
-  let swStartedAt = 0;
-  let swElapsed = 0;
-  let lapLast = 0;
-  let lapCount = 0;
+["hours","minutes","seconds"].forEach(id=>{
+  $(id).addEventListener("input",()=>{
+    if(!timerRunning){
+      timerRemaining = getInputMs();
+      timerTotal = timerRemaining;
+      renderTimer();
+    }
+  });
+});
+document.querySelectorAll(".preset").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const sec=Number(btn.dataset.sec);
+    $("hours").value=Math.floor(sec/3600);
+    $("minutes").value=Math.floor(sec/60)%60;
+    $("seconds").value=sec%60;
+    resetTimer();
+  });
+});
+renderTimer();
 
-  function renderStopwatch() {
-    const ms = Math.max(0, swElapsed);
-    const totalSeconds = Math.floor(ms / 1000);
-    const h = Math.floor(totalSeconds / 3600);
-    const m = Math.floor((totalSeconds % 3600) / 60);
-    const s = totalSeconds % 60;
-    const milli = ms % 1000;
-    $("stopwatchDisplay").textContent = `${pad(h)}:${pad(m)}:${pad(s)}.${pad(milli, 3)}`;
+// Stopwatch
+let swRunning=false,swElapsed=0,swStart=0,swLoop=null,lapNo=0,lapBase=0;
+function swClock(ms){
+  ms=Math.max(0,Math.floor(ms));
+  const h=Math.floor(ms/3600000);
+  const m=Math.floor(ms/60000)%60;
+  const s=Math.floor(ms/1000)%60;
+  const x=ms%1000;
+  return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}.${String(x).padStart(3,"0")}`;
+}
+function swRender(){
+  $("swDisplay").textContent=swClock(swElapsed);
+}
+function swStopLoop(){
+  if(swLoop!==null){clearInterval(swLoop);swLoop=null}
+}
+function swTick(){swElapsed=Date.now()-swStart;swRender()}
+$("swStart").addEventListener("click",()=>{
+  if(!swRunning){
+    swRunning=true;
+    swStart=Date.now()-swElapsed;
+    swStopLoop();
+    swLoop=setInterval(swTick,20);
+    $("swStart").textContent="停止";
+    $("swStatus").textContent="計測中";
+    $("lap").disabled=false;
+  }else{
+    swElapsed=Date.now()-swStart;
+    swRunning=false;
+    swStopLoop();
+    swRender();
+    $("swStart").textContent="再開";
+    $("swStatus").textContent="停止中";
+    $("lap").disabled=true;
   }
-  function renderSwButtons() {
-    $("swStart").textContent = swRunning ? "停止" : (swElapsed > 0 ? "再開" : "開始");
-    $("swLap").disabled = !swRunning;
-  }
-  function stopSwLoop() {
-    if (swId !== null) {
-      clearInterval(swId);
-      swId = null;
-    }
-  }
-  $("swStart").addEventListener("click", () => {
-    if (!swRunning) {
-      swRunning = true;
-      swStartedAt = Date.now() - swElapsed;
-      $("stopwatchStatus").textContent = "計測中";
-      stopSwLoop();
-      swId = setInterval(() => {
-        swElapsed = Date.now() - swStartedAt;
-        renderStopwatch();
-      }, 20);
-    } else {
-      swRunning = false;
-      swElapsed = Date.now() - swStartedAt;
-      stopSwLoop();
-      $("stopwatchStatus").textContent = "停止中";
-    }
-    renderSwButtons();
-  });
-  $("swLap").addEventListener("click", () => {
-    if (!swRunning) return;
-    const current = swElapsed;
-    const diff = current - lapLast;
-    lapLast = current;
-    lapCount++;
-    $("lapsBox").hidden = false;
-    const row = document.createElement("div");
-    row.className = "lap";
-    row.innerHTML = `<span>${lapCount}</span><span>${formatMs(diff)}</span><span>${formatMs(current)}</span>`;
-    $("laps").prepend(row);
-  });
-  $("swReset").addEventListener("click", () => {
-    swRunning = false;
-    stopSwLoop();
-    swElapsed = 0;
-    swStartedAt = 0;
-    lapLast = 0;
-    lapCount = 0;
-    $("laps").replaceChildren();
-    $("lapsBox").hidden = true;
-    $("stopwatchStatus").textContent = "停止中";
-    renderStopwatch();
-    renderSwButtons();
-  });
-  function formatMs(ms) {
-    const totalSeconds = Math.floor(ms / 1000);
-    const h = Math.floor(totalSeconds / 3600);
-    const m = Math.floor((totalSeconds % 3600) / 60);
-    const s = Math.floor(totalSeconds % 60);
-    const milli = ms % 1000;
-    return `${pad(h)}:${pad(m)}:${pad(s)}.${pad(milli, 3)}`;
-  }
-  renderStopwatch();
-  renderSwButtons();
+});
+$("lap").addEventListener("click",()=>{
+  if(!swRunning) return;
+  lapNo++;
+  const diff=swElapsed-lapBase;
+  lapBase=swElapsed;
+  if(lapNo===1) $("laps").replaceChildren();
+  const row=document.createElement("div");
+  row.className="lap";
+  row.innerHTML=`<span>${lapNo}</span><span>${swClock(diff)}</span><span>${swClock(swElapsed)}</span>`;
+  $("laps").prepend(row);
+});
+$("swReset").addEventListener("click",()=>{
+  swRunning=false;swStopLoop();
+  swElapsed=0;swStart=0;lapNo=0;lapBase=0;
+  $("laps").innerHTML='<div class="empty">ラップなし</div>';
+  $("swStart").textContent="開始";
+  $("swStatus").textContent="停止中";
+  $("lap").disabled=true;
+  swRender();
+});
+swRender();
 
-  // Fullscreen
-  $("fullscreenBtn").addEventListener("click", async () => {
-    try {
-      if (!document.fullscreenElement) {
-        await document.documentElement.requestFullscreen();
-      } else {
-        await document.exitFullscreen();
-      }
-    } catch {
-      // Fullscreen may be blocked by browser policy.
-    }
-  });
+// fullscreen
+$("fullscreen").addEventListener("click",async()=>{
+  try{
+    if(!document.fullscreenElement) await document.documentElement.requestFullscreen();
+    else await document.exitFullscreen();
+  }catch{}
+});
+
+// keyboard
+document.addEventListener("keydown",e=>{
+  if(e.target.matches("input,textarea,select")) return;
+  if(e.code==="Space"){
+    e.preventDefault();
+    (mode==="timer"?$("timerStart"):$("swStart")).click();
+  }else if(e.key.toLowerCase()==="r"){
+    (mode==="timer"?$("timerReset"):$("swReset")).click();
+  }else if(e.key.toLowerCase()==="l" && mode==="stopwatch"){
+    $("lap").click();
+  }else if(e.key==="Tab"){
+    e.preventDefault();
+    document.querySelector(`[data-mode="${mode==="timer"?"stopwatch":"timer"}"]`).click();
+  }
+});
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="visible"){
+    if(timerRunning) tickTimer();
+    if(swRunning){swElapsed=Date.now()-swStart;swRender()}
+  }
+});
 })();
 </script>
 </body>
