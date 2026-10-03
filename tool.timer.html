@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111318">
+  <title>FoZoWo Tools - タイマー / ストップウォッチ</title>
+  <meta name="description" content="FoZoWo Tools のタイマー・ストップウォッチ。">
+  <style>
+    :root{
+      color-scheme: light dark;
+      --bg:#f5f7fb;
+      --panel:rgba(255,255,255,.82);
+      --panel-solid:#fff;
+      --text:#111318;
+      --muted:#69707d;
+      --line:rgba(20,25,35,.12);
+      --accent:#4d67ff;
+      --accent-2:#7658ff;
+      --shadow:0 18px 50px rgba(20,25,40,.12);
+      --danger:#e5484d;
+      --success:#16a37a;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0d0f13;
+        --panel:rgba(23,26,33,.84);
+        --panel-solid:#171a21;
+        --text:#f4f6fa;
+        --muted:#a3aab6;
+        --line:rgba(255,255,255,.10);
+        --shadow:0 18px 50px rgba(0,0,0,.28);
+      }
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(77,103,255,.14), transparent 30rem),
+        radial-gradient(circle at 100% 20%, rgba(118,88,255,.11), transparent 28rem),
+        var(--bg);
+      color:var(--text);
+    }
+    button,input{font:inherit}
+    button{cursor:pointer}
+    .wrap{width:min(1100px, calc(100% - 32px)); margin:0 auto}
+    .topbar{
+      position:sticky; top:0; z-index:20;
+      backdrop-filter:blur(18px);
+      background:color-mix(in srgb, var(--bg) 78%, transparent);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar-inner{
+      min-height:70px; display:flex; align-items:center; gap:18px;
+      justify-content:space-between;
+    }
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.02em}
+    .logo{
+      width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+      color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      box-shadow:0 10px 25px rgba(77,103,255,.25);
+      font-weight:900;
+    }
+    .brand small{display:block;color:var(--muted);font-weight:600;font-size:11px;margin-top:2px}
+    main{padding:34px 0 60px}
+    .hero{
+      display:grid;grid-template-columns:1.3fr .7fr;gap:18px;align-items:stretch;
+      margin-bottom:20px;
+    }
+    .hero-card,.tool-card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      border-radius:24px;
+      backdrop-filter:blur(18px);
+    }
+    .hero-card{padding:30px}
+    h1{font-size:clamp(30px,5vw,54px);line-height:1.02;margin:0 0 12px;letter-spacing:-.045em}
+    .hero p{margin:0;color:var(--muted);line-height:1.7}
+    .hero-badge{
+      display:inline-flex;align-items:center;gap:7px;
+      padding:8px 11px;border-radius:999px;background:rgba(77,103,255,.11);
+      color:var(--accent);font-weight:800;font-size:12px;margin-bottom:14px
+    }
+    .mini-card{padding:24px;display:flex;flex-direction:column;justify-content:space-between}
+    .mini-card .num{font-size:46px;line-height:1;font-weight:900}
+    .mini-card .label{color:var(--muted);font-size:13px;margin-top:8px}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+    .tab{
+      border:1px solid var(--line);background:var(--panel);color:var(--text);
+      border-radius:14px;padding:11px 16px;font-weight:800;
+    }
+    .tab.active{background:var(--text);color:var(--bg);border-color:transparent}
+    .tool-card{padding:24px}
+    .panel{display:none}
+    .panel.active{display:block}
+    .display{
+      min-height:170px;display:grid;place-items:center;text-align:center;
+      padding:24px;border:1px solid var(--line);border-radius:20px;
+      background:var(--panel-solid);margin-bottom:18px
+    }
+    .display-time{
+      font-variant-numeric:tabular-nums;
+      font-size:clamp(52px,10vw,94px);
+      line-height:1;font-weight:900;letter-spacing:.03em
+    }
+    .display-sub{margin-top:10px;color:var(--muted);font-size:13px}
+    .controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+    .btn{
+      border:1px solid var(--line);background:var(--panel-solid);color:var(--text);
+      min-width:118px;padding:13px 18px;border-radius:14px;font-weight:800;
+    }
+    .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border:0}
+    .btn.danger{color:var(--danger)}
+    .btn:disabled{opacity:.48;cursor:not-allowed}
+    .timer-settings{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:700px;margin:0 auto 18px
+    }
+    .field label{display:block;color:var(--muted);font-size:12px;font-weight:800;margin-bottom:7px}
+    .field input{
+      width:100%;padding:13px 12px;border-radius:13px;border:1px solid var(--line);
+      background:var(--panel-solid);color:var(--text);outline:none
+    }
+    .field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(77,103,255,.12)}
+    .laps{margin-top:18px;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+    .laps-head,.lap{
+      display:grid;grid-template-columns:70px 1fr 1fr;gap:10px;padding:12px 15px;
+      font-variant-numeric:tabular-nums
+    }
+    .laps-head{background:rgba(127,127,127,.07);color:var(--muted);font-size:12px;font-weight:800}
+    .lap{border-top:1px solid var(--line)}
+    .lap span:nth-child(2){text-align:center}
+    .lap span:last-child{text-align:right}
+    .hint{margin-top:14px;text-align:center;color:var(--muted);font-size:12px}
+    footer{color:var(--muted);text-align:center;padding:30px 0 8px;font-size:12px}
+    @media (max-width:760px){
+      .hero{grid-template-columns:1fr}
+      .timer-settings{grid-template-columns:1fr}
+      .tool-card{padding:16px}
+      .hero-card{padding:22px}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand">
+        <div class="logo">F</div>
+        <div>
+          <div>FoZoWo Tools</div>
+          <small>フォゾツール</small>
+        </div>
+      </div>
+      <button class="btn" id="fullscreenBtn" type="button">全画面</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero-card">
+        <div class="hero-badge">FOZOWO TOOL BASE</div>
+        <h1>タイマー &<br>ストップウォッチ</h1>
+        <p>フォゾツールの第1弾。シンプルに使えて、あとから電卓・メモ・単位変換などを追加できる土台になっています。</p>
+      </div>
+      <div class="hero-card mini-card">
+        <div>
+          <div class="num">01</div>
+          <div class="label">現在のツール</div>
+        </div>
+        <div class="label">URL想定：<b>/Toul.timer</b></div>
+      </div>
+    </section>
+
+    <div class="tabs" role="tablist" aria-label="ツール切り替え">
+      <button class="tab active" data-tab="timer" type="button">⏱ タイマー</button>
+      <button class="tab" data-tab="stopwatch" type="button">◷ ストップウォッチ</button>
+    </div>
+
+    <section class="tool-card">
+      <div class="panel active" id="timer" role="tabpanel">
+        <div class="timer-settings">
+          <div class="field">
+            <label for="hours">時</label>
+            <input id="hours" type="number" min="0" max="99" value="0" inputmode="numeric">
+          </div>
+          <div class="field">
+            <label for="minutes">分</label>
+            <input id="minutes" type="number" min="0" max="59" value="5" inputmode="numeric">
+          </div>
+          <div class="field">
+            <label for="seconds">秒</label>
+            <input id="seconds" type="number" min="0" max="59" value="0" inputmode="numeric">
+          </div>
+        </div>
+
+        <div class="display">
+          <div>
+            <div class="display-time" id="timerDisplay">00:05:00</div>
+            <div class="display-sub" id="timerStatus">待機中</div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="btn primary" id="timerStart" type="button">開始</button>
+          <button class="btn" id="timerPause" type="button" disabled>一時停止</button>
+          <button class="btn danger" id="timerReset" type="button">リセット</button>
+        </div>
+        <div class="hint">入力を変更してから「開始」を押してください。</div>
+      </div>
+
+      <div class="panel" id="stopwatch" role="tabpanel">
+        <div class="display">
+          <div>
+            <div class="display-time" id="stopwatchDisplay">00:00:00.000</div>
+            <div class="display-sub" id="stopwatchStatus">停止中</div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="btn primary" id="swStart" type="button">開始</button>
+          <button class="btn" id="swLap" type="button" disabled>ラップ</button>
+          <button class="btn danger" id="swReset" type="button">リセット</button>
+        </div>
+
+        <div class="laps" id="lapsBox" hidden>
+          <div class="laps-head"><span>#</span><span>ラップ</span><span>経過時間</span></div>
+          <div id="laps"></div>
+        </div>
+      </div>
+    </section>
+
+    <footer>FoZoWo Tools · これからツールを追加できる共通土台</footer>
+  </main>
+
+<script>
+(() => {
+  "use strict";
+
+  const $ = (id) => document.getElementById(id);
+  const tabs = [...document.querySelectorAll(".tab")];
+  const panels = [...document.querySelectorAll(".panel")];
+
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      const key = tab.dataset.tab;
+      tabs.forEach(t => t.classList.toggle("active", t === tab));
+      panels.forEach(p => p.classList.toggle("active", p.id === key));
+    });
+  });
+
+  // Timer
+  let timerId = null;
+  let timerRemaining = 300000;
+  let timerRunning = false;
+  let timerEndAt = 0;
+
+  function pad(n, width = 2) { return String(n).padStart(width, "0"); }
+  function renderTimer() {
+    const ms = Math.max(0, timerRemaining);
+    const totalSeconds = Math.floor(ms / 1000);
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    $("timerDisplay").textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+  }
+  function readTimerInputs() {
+    const h = Math.max(0, Math.min(99, Number($("hours").value) || 0));
+    const m = Math.max(0, Math.min(59, Number($("minutes").value) || 0));
+    const s = Math.max(0, Math.min(59, Number($("seconds").value) || 0));
+    $("hours").value = h; $("minutes").value = m; $("seconds").value = s;
+    timerRemaining = ((h * 3600) + (m * 60) + s) * 1000;
+    renderTimer();
+  }
+  function setTimerState(status) {
+    $("timerStatus").textContent = status;
+  }
+  function stopTimerLoop() {
+    if (timerId !== null) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+  }
+  function finishTimer() {
+    stopTimerLoop();
+    timerRunning = false;
+    timerRemaining = 0;
+    renderTimer();
+    setTimerState("完了");
+    $("timerStart").disabled = false;
+    $("timerPause").disabled = true;
+    try { navigator.vibrate?.([180, 120, 180]); } catch {}
+    window.setTimeout(() => alert("タイマーが終了しました。"), 20);
+  }
+  $("timerStart").addEventListener("click", () => {
+    if (!timerRunning) {
+      if (timerRemaining <= 0) readTimerInputs();
+      if (timerRemaining <= 0) return;
+      timerEndAt = Date.now() + timerRemaining;
+      timerRunning = true;
+      setTimerState("実行中");
+      $("timerStart").disabled = true;
+      $("timerPause").disabled = false;
+      stopTimerLoop();
+      timerId = setInterval(() => {
+        timerRemaining = timerEndAt - Date.now();
+        if (timerRemaining <= 0) finishTimer();
+        else renderTimer();
+      }, 50);
+    }
+  });
+  $("timerPause").addEventListener("click", () => {
+    if (!timerRunning) return;
+    timerRemaining = Math.max(0, timerEndAt - Date.now());
+    timerRunning = false;
+    stopTimerLoop();
+    renderTimer();
+    setTimerState("一時停止");
+    $("timerStart").disabled = false;
+    $("timerPause").disabled = true;
+  });
+  $("timerReset").addEventListener("click", () => {
+    timerRunning = false;
+    stopTimerLoop();
+    readTimerInputs();
+    setTimerState("待機中");
+    $("timerStart").disabled = false;
+    $("timerPause").disabled = true;
+  });
+  ["hours","minutes","seconds"].forEach(id => {
+    $(id).addEventListener("change", () => {
+      if (!timerRunning) readTimerInputs();
+    });
+  });
+  readTimerInputs();
+
+  // Stopwatch
+  let swId = null;
+  let swRunning = false;
+  let swStartedAt = 0;
+  let swElapsed = 0;
+  let lapLast = 0;
+  let lapCount = 0;
+
+  function renderStopwatch() {
+    const ms = Math.max(0, swElapsed);
+    const totalSeconds = Math.floor(ms / 1000);
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    const milli = ms % 1000;
+    $("stopwatchDisplay").textContent = `${pad(h)}:${pad(m)}:${pad(s)}.${pad(milli, 3)}`;
+  }
+  function renderSwButtons() {
+    $("swStart").textContent = swRunning ? "停止" : (swElapsed > 0 ? "再開" : "開始");
+    $("swLap").disabled = !swRunning;
+  }
+  function stopSwLoop() {
+    if (swId !== null) {
+      clearInterval(swId);
+      swId = null;
+    }
+  }
+  $("swStart").addEventListener("click", () => {
+    if (!swRunning) {
+      swRunning = true;
+      swStartedAt = Date.now() - swElapsed;
+      $("stopwatchStatus").textContent = "計測中";
+      stopSwLoop();
+      swId = setInterval(() => {
+        swElapsed = Date.now() - swStartedAt;
+        renderStopwatch();
+      }, 20);
+    } else {
+      swRunning = false;
+      swElapsed = Date.now() - swStartedAt;
+      stopSwLoop();
+      $("stopwatchStatus").textContent = "停止中";
+    }
+    renderSwButtons();
+  });
+  $("swLap").addEventListener("click", () => {
+    if (!swRunning) return;
+    const current = swElapsed;
+    const diff = current - lapLast;
+    lapLast = current;
+    lapCount++;
+    $("lapsBox").hidden = false;
+    const row = document.createElement("div");
+    row.className = "lap";
+    row.innerHTML = `<span>${lapCount}</span><span>${formatMs(diff)}</span><span>${formatMs(current)}</span>`;
+    $("laps").prepend(row);
+  });
+  $("swReset").addEventListener("click", () => {
+    swRunning = false;
+    stopSwLoop();
+    swElapsed = 0;
+    swStartedAt = 0;
+    lapLast = 0;
+    lapCount = 0;
+    $("laps").replaceChildren();
+    $("lapsBox").hidden = true;
+    $("stopwatchStatus").textContent = "停止中";
+    renderStopwatch();
+    renderSwButtons();
+  });
+  function formatMs(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = Math.floor(totalSeconds % 60);
+    const milli = ms % 1000;
+    return `${pad(h)}:${pad(m)}:${pad(s)}.${pad(milli, 3)}`;
+  }
+  renderStopwatch();
+  renderSwButtons();
+
+  // Fullscreen
+  $("fullscreenBtn").addEventListener("click", async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch {
+      // Fullscreen may be blocked by browser policy.
+    }
+  });
+})();
+</script>
+</body>
+</html>
