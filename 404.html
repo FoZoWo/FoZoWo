@@ -20,14 +20,281 @@
   // ============================================================
   const FZW = window.FZW = {
     THEME_KEY: 'FoZoWo-theme',
-    LANG_KEY: 'FoZoWo-lang',
+    LANG_KEY: 'FoZoWo-language',
+    VALID_LANGS: ['ja','en','hiragana','ko','zh-cn','zh-tw','es','fr','de','pt'],
     lang: 'ja',
     headerRoot: null,
     _ja: new WeakMap(),
 
     TITLES: {
-      fozowo: { ja: 'ページが見つかりませんでした。 | FoZoWo', en: '404 Not Found | FoZoWo' },
-      oijiiw: { ja: '404 | 魔法でページを探しています… | おいじぃ魔女', en: '404 | Searching for your page with magic… | Oijii Witch' }
+      fozowo: {
+        ja: 'ページが見つかりませんでした。 | FoZoWo',
+        en: '404 Not Found | FoZoWo',
+        hiragana: 'ぺーじが みつかりませんでした。 | FoZoWo',
+        ko: '페이지를 찾을 수 없습니다. | FoZoWo',
+        'zh-cn': '找不到此页面。 | FoZoWo',
+        'zh-tw': '找不到此頁面。 | FoZoWo',
+        es: 'Página no encontrada | FoZoWo',
+        fr: 'Page introuvable | FoZoWo',
+        de: 'Seite nicht gefunden | FoZoWo',
+        pt: 'Página não encontrada | FoZoWo'
+      },
+      oijiiw: {
+        ja: '404 | 魔法でページを探しています… | おいじぃ魔女',
+        en: '404 | Searching for your page with magic… | Oijii Witch',
+        hiragana: '404 | まほうで ぺーじを さがしています… | おいじぃまじょ',
+        ko: '404 | 마법으로 페이지를 찾는 중… | Oijii Witch',
+        'zh-cn': '404 | 正在用魔法寻找页面… | Oijii Witch',
+        'zh-tw': '404 | 正在用魔法尋找頁面… | Oijii Witch',
+        es: '404 | Buscando tu página con magia… | Oijii Witch',
+        fr: '404 | Recherche magique de votre page… | Oijii Witch',
+        de: '404 | Wir suchen deine Seite mit Magie… | Oijii Witch',
+        pt: '404 | Procurando sua página com magia… | Oijii Witch'
+      }
+    },
+
+    // FoZoWo公式404の表示文。英語以外は lang-ja 側へ反映し、外部ヘッダーの言語設定と同期する。
+    FOZO_TEXT: {
+      ja: [
+        'FoZoWo / 404',
+        'ページが見つかりませんでした。',
+        '申し訳ありません。お探しのページは移動・削除されたか、URLが変更された可能性があります。<br>トップページへ戻るか、「原因は？」から詳しい情報をご確認いただけます。',
+        '↩ トップページへ戻る',
+        '← 前のページへ',
+        '？ 原因は？',
+        '「原因は？」では、404が起きる代表的な理由と、このページで確認できる情報を詳しく表示できます。',
+        '迷子になった<br>ページを再設計。',
+        '404も作品の一部。次の入口を、もっと分かりやすく。',
+        'FoZoWo Official',
+        '原因は？',
+        '主な原因は次のようなものです。',
+        'URLが違う',
+        '入力ミスや古いブックマークなどです。',
+        'ページが移動した',
+        'ページの場所や名前が変わった可能性があります。',
+        'ページが削除された',
+        '現在は公開されていない可能性があります。',
+        'リンクが古い',
+        'SNSや別のページから古いURLへ案内されていることがあります。',
+        'この画面だけでは、実際の原因を1つに断定できません。',
+        '閉じる'
+      ],
+      en: [
+        'FoZoWo / 404',
+        'The page could not be found.',
+        'Sorry, we couldn\'t find the page you requested. It may have been moved, removed, or the URL may have changed.<br>Return to the home page, or select “Why?” to see detailed information.',
+        '↩ Back to home',
+        '← Go back',
+        '? Why?',
+        '“Why?” explains common reasons for a 404 and the information available on this page.',
+        'Redesigning<br>the lost page.',
+        'Even a 404 is part of the work. A clearer way to your next destination.',
+        'FoZoWo Official',
+        'Why?',
+        'Common reasons include the following.',
+        'Incorrect URL',
+        'A typo or an old bookmark may be the reason.',
+        'Page moved',
+        'The page may have moved or changed its name.',
+        'Page removed',
+        'The page may no longer be published.',
+        'Outdated link',
+        'A social post or another page may contain an old link.',
+        'This page alone cannot determine the exact cause.',
+        'Close'
+      ],
+      hiragana: [
+        'FoZoWo / 404',
+        'ぺーじが みつかりませんでした。',
+        'もうしわけありません。おさがしのぺーじは いどう・さくじょされたか、URLが へんこうされた かのうせいがあります。<br>とっぷぺーじへ もどるか、「げんいんは？」から くわしい じょうほうを かくにんできます。',
+        '↩ とっぷぺーじへ もどる',
+        '← まえのぺーじへ',
+        '？ げんいんは？',
+        '「げんいんは？」では、404が おきる だいひょうてきな りゆうと、このぺーじで かくにんできる じょうほうを くわしく ひょうじできます。',
+        'まいごに なった<br>ぺーじを さいせっけい。',
+        '404も さくひんの いちぶ。つぎの いりぐちを、もっと わかりやすく。',
+        'FoZoWo Official',
+        'げんいんは？',
+        'おもな げんいんは つぎのような ものです。',
+        'URLが ちがう',
+        'にゅうりょくみすや ふるい ぶっくまーくなどです。',
+        'ぺーじが いどうした',
+        'ぺーじの ばしょや なまえが かわった かのうせいが あります。',
+        'ぺーじが さくじょされた',
+        'いまは こうかいされていない かのうせいが あります。',
+        'りんくが ふるい',
+        'SNSや ほかの ぺーじから ふるい URLへ あんないされている ことがあります。',
+        'この がめんだけでは、じっさいの げんいんを ひとつに きめられません。',
+        'とじる'
+      ],
+      ko: [
+        'FoZoWo / 404',
+        '페이지를 찾을 수 없습니다.',
+        '죄송합니다. 요청하신 페이지가 이동되었거나 삭제되었거나 URL이 변경되었을 수 있습니다.<br>홈으로 돌아가거나 “원인”에서 자세한 정보를 확인하세요.',
+        '↩ 홈으로 돌아가기',
+        '← 이전 페이지',
+        '? 원인은?',
+        '“원인은?”에서 404가 발생하는 일반적인 이유와 이 페이지에서 확인할 수 있는 정보를 볼 수 있습니다.',
+        '길을 잃은<br>페이지를 다시 디자인합니다.',
+        '404도 작품의 일부입니다. 다음 목적지로 가는 길을 더 쉽게 안내합니다.',
+        'FoZoWo Official',
+        '원인은?',
+        '일반적인 원인은 다음과 같습니다.',
+        '잘못된 URL',
+        '입력 오류나 오래된 북마크가 원인일 수 있습니다.',
+        '페이지가 이동됨',
+        '페이지의 위치나 이름이 변경되었을 수 있습니다.',
+        '페이지가 삭제됨',
+        '현재 공개되지 않는 페이지일 수 있습니다.',
+        '오래된 링크',
+        'SNS 게시물이나 다른 페이지에 오래된 링크가 남아 있을 수 있습니다.',
+        '이 화면만으로 정확한 원인을 하나로 단정할 수 없습니다.',
+        '닫기'
+      ],
+      'zh-cn': [
+        'FoZoWo / 404',
+        '找不到此页面。',
+        '抱歉，您要访问的页面可能已移动、删除，或网址已经更改。<br>您可以返回首页，或选择“为什么？”查看详细信息。',
+        '↩ 返回首页',
+        '← 返回上一页',
+        '？ 为什么？',
+        '“为什么？”会说明404常见原因，以及此页面可以查看的信息。',
+        '重新设计<br>迷失的页面。',
+        '404也是作品的一部分。让下一站更容易找到。',
+        'FoZoWo Official',
+        '为什么？',
+        '常见原因包括以下情况。',
+        '网址错误',
+        '输入错误或旧书签可能导致此问题。',
+        '页面已移动',
+        '页面的位置或名称可能已经更改。',
+        '页面已删除',
+        '该页面可能已经不再公开。',
+        '链接过期',
+        '社交媒体帖子或其他页面可能仍然使用旧链接。',
+        '仅凭此页面无法确定唯一的实际原因。',
+        '关闭'
+      ],
+      'zh-tw': [
+        'FoZoWo / 404',
+        '找不到此頁面。',
+        '抱歉，您要尋找的頁面可能已移動、刪除，或網址已變更。<br>您可以返回首頁，或選擇「為什麼？」查看詳細資訊。',
+        '↩ 返回首頁',
+        '← 返回上一頁',
+        '？ 為什麼？',
+        '「為什麼？」會說明404常見原因，以及此頁面可以查看的資訊。',
+        '重新設計<br>迷失的頁面。',
+        '404也是作品的一部分。讓下一個入口更容易找到。',
+        'FoZoWo Official',
+        '為什麼？',
+        '常見原因包括以下情況。',
+        '網址錯誤',
+        '輸入錯誤或舊書籤可能造成此問題。',
+        '頁面已移動',
+        '頁面的位置或名稱可能已變更。',
+        '頁面已刪除',
+        '該頁面可能已不再公開。',
+        '連結過期',
+        '社群貼文或其他頁面可能仍使用舊連結。',
+        '僅靠此頁面無法確定唯一的實際原因。',
+        '關閉'
+      ],
+      es: [
+        'FoZoWo / 404',
+        'No se ha encontrado la página.',
+        'Lo sentimos. La página que buscas puede haberse movido, eliminado o su URL puede haber cambiado.<br>Vuelve a la página principal o selecciona «¿Por qué?» para consultar más información.',
+        '↩ Volver al inicio',
+        '← Volver atrás',
+        '？ ¿Por qué?',
+        '«¿Por qué?» explica las causas habituales de un error 404 y la información disponible en esta página.',
+        'Rediseñando<br>la página perdida.',
+        'Un 404 también forma parte de la experiencia. Un acceso más claro hacia tu próximo destino.',
+        'FoZoWo Official',
+        '¿Por qué?',
+        'Entre las causas habituales se encuentran las siguientes.',
+        'URL incorrecta',
+        'Un error al escribir o un marcador antiguo puede ser la causa.',
+        'Página movida',
+        'La página puede haber cambiado de ubicación o de nombre.',
+        'Página eliminada',
+        'Es posible que la página ya no esté publicada.',
+        'Enlace antiguo',
+        'Una publicación en redes sociales u otra página puede contener un enlace antiguo.',
+        'Esta página por sí sola no puede determinar la causa exacta.',
+        'Cerrar'
+      ],
+      fr: [
+        'FoZoWo / 404',
+        'Page introuvable.',
+        'Désolé. La page recherchée a peut-être été déplacée, supprimée ou son URL a changé.<br>Retournez à l’accueil ou sélectionnez « Pourquoi ? » pour afficher plus d’informations.',
+        '↩ Retour à l’accueil',
+        '← Retour',
+        '？ Pourquoi ?',
+        '« Pourquoi ? » présente les causes courantes d’une erreur 404 et les informations disponibles sur cette page.',
+        'Repenser<br>la page perdue.',
+        'Même une 404 fait partie du projet. Un accès plus clair vers votre prochaine destination.',
+        'FoZoWo Official',
+        'Pourquoi ?',
+        'Les causes courantes sont notamment les suivantes.',
+        'URL incorrecte',
+        'Une faute de frappe ou un ancien favori peut en être la cause.',
+        'Page déplacée',
+        'La page a peut-être changé d’emplacement ou de nom.',
+        'Page supprimée',
+        'La page n’est peut-être plus publiée.',
+        'Lien obsolète',
+        'Une publication sur les réseaux ou une autre page peut contenir un ancien lien.',
+        'Cette page seule ne permet pas de déterminer la cause exacte.',
+        'Fermer'
+      ],
+      de: [
+        'FoZoWo / 404',
+        'Seite nicht gefunden.',
+        'Entschuldigung. Die gesuchte Seite wurde möglicherweise verschoben, gelöscht oder ihre URL wurde geändert.<br>Gehen Sie zurück zur Startseite oder wählen Sie „Warum?“, um weitere Informationen anzuzeigen.',
+        '↩ Zur Startseite',
+        '← Zurück',
+        '？ Warum?',
+        '„Warum?“ erklärt häufige Gründe für einen 404-Fehler und die auf dieser Seite verfügbaren Informationen.',
+        'Die verlorene<br>Seite neu gestalten.',
+        'Auch ein 404 ist Teil des Projekts. Ein klarerer Weg zum nächsten Ziel.',
+        'FoZoWo Official',
+        'Warum?',
+        'Häufige Gründe sind unter anderem die folgenden.',
+        'Falsche URL',
+        'Ein Tippfehler oder ein altes Lesezeichen kann die Ursache sein.',
+        'Seite verschoben',
+        'Die Seite wurde möglicherweise an einen anderen Ort verschoben oder umbenannt.',
+        'Seite gelöscht',
+        'Die Seite wird möglicherweise nicht mehr veröffentlicht.',
+        'Veralteter Link',
+        'Ein Social-Media-Beitrag oder eine andere Seite kann noch einen alten Link enthalten.',
+        'Diese Seite allein kann die genaue Ursache nicht bestimmen.',
+        'Schließen'
+      ],
+      pt: [
+        'FoZoWo / 404',
+        'Página não encontrada.',
+        'Desculpe. A página que você procura pode ter sido movida, removida ou o URL pode ter mudado.<br>Volte à página inicial ou selecione “Por quê?” para ver mais informações.',
+        '↩ Voltar ao início',
+        '← Voltar',
+        '？ Por quê?',
+        '“Por quê?” explica causas comuns de um erro 404 e as informações disponíveis nesta página.',
+        'Redesenhando<br>a página perdida.',
+        'Até um 404 faz parte do projeto. Um caminho mais claro para o próximo destino.',
+        'FoZoWo Official',
+        'Por quê?',
+        'Os motivos comuns incluem os seguintes.',
+        'URL incorreto',
+        'Um erro de digitação ou um marcador antigo pode ser a causa.',
+        'Página movida',
+        'A página pode ter mudado de localização ou de nome.',
+        'Página removida',
+        'A página pode não estar mais publicada.',
+        'Link desatualizado',
+        'Uma publicação em rede social ou outra página pode conter um link antigo.',
+        'Só esta página não pode determinar a causa exata.',
+        'Fechar'
+      ]
     },
 
     // ヘッダー（header.html）の日本語 → 英語
@@ -64,7 +331,7 @@
     write(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
 
     themePref() { const v = this.read(this.THEME_KEY); return (v === 'dark' || v === 'light') ? v : 'auto'; },
-    langPref()  { const v = this.read(this.LANG_KEY);  return (v === 'ja' || v === 'en') ? v : 'auto'; },
+    langPref()  { const v = this.read(this.LANG_KEY);  return this.VALID_LANGS.includes(v) ? v : 'auto'; },
 
     resolveTheme(p) {
       if (p === 'dark' || p === 'light') return p;
@@ -72,9 +339,17 @@
       return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     },
     resolveLang(p) {
-      if (p === 'ja' || p === 'en') return p;
+      if (this.VALID_LANGS.includes(p)) return p;
       const l = String((navigator.languages && navigator.languages[0]) || navigator.language || 'ja').toLowerCase();
-      return l.startsWith('ja') ? 'ja' : 'en';
+      if (l.startsWith('ja')) return 'ja';
+      if (l.startsWith('ko')) return 'ko';
+      if (l.startsWith('zh-tw') || l.startsWith('zh-hk') || l.startsWith('zh-hant')) return 'zh-tw';
+      if (l.startsWith('zh')) return 'zh-cn';
+      if (l.startsWith('es')) return 'es';
+      if (l.startsWith('fr')) return 'fr';
+      if (l.startsWith('de')) return 'de';
+      if (l.startsWith('pt')) return 'pt';
+      return 'en';
     },
 
     applyTheme(p) {
@@ -88,20 +363,50 @@
       root.lang = v;
       document.title = this.TITLES[isOijiiw ? 'oijiiw' : 'fozowo'][v];
       document.querySelectorAll('[data-aria-ja]').forEach(el => {
-        el.setAttribute('aria-label', el.getAttribute('data-aria-' + v));
+        const translated = el.getAttribute('data-aria-' + v)
+          || el.getAttribute('data-aria-en')
+          || el.getAttribute('data-aria-ja');
+        if (translated) el.setAttribute('aria-label', translated);
       });
+      this.renderFoZoWo404();
       this.translateHeader();
       document.dispatchEvent(new CustomEvent('fzw:lang', { detail: v }));
+      this.syncButtons();
+    },
+
+    renderFoZoWo404() {
+      if (isOijiiw) return;
+      const list = this.FOZO_TEXT[this.lang] || this.FOZO_TEXT.ja;
+      const nodes = document.querySelectorAll('#view-fozowo .lang-ja');
+      if (list && list.length) {
+        nodes.forEach((node, i) => {
+          if (list[i] !== undefined) node.innerHTML = list[i];
+        });
+      }
+      const close = document.getElementById('causeClose');
+      if (close) {
+        const aria = {
+          ja:'閉じる', en:'Close', hiragana:'とじる', ko:'닫기',
+          'zh-cn':'关闭', 'zh-tw':'關閉', es:'Cerrar', fr:'Fermer', de:'Schließen', pt:'Fechar'
+        };
+        close.setAttribute('aria-label', aria[this.lang] || aria.en);
+      }
     },
 
     setThemePref(p) { this.write(this.THEME_KEY, p); this.applyTheme(p); this.syncButtons(); },
-    setLangPref(p)  { this.write(this.LANG_KEY, p);  this.applyLang(p);  this.syncButtons(); },
+    setLangPref(p)  {
+      const next = this.VALID_LANGS.includes(p) ? p : 'auto';
+      this.write(this.LANG_KEY, next);
+      this.applyLang(next);
+      this.syncButtons();
+    },
 
     syncButtons() {
       if (!this.headerRoot) return;
       const tp = this.themePref(), lp = this.langPref();
+      const activeLang = lp === 'auto' ? this.lang : lp;
       this.headerRoot.querySelectorAll('#themeOptions button').forEach(b => b.classList.toggle('active', b.dataset.value === tp));
-      this.headerRoot.querySelectorAll('#langOptions button').forEach(b => b.classList.toggle('active', b.dataset.value === lp));
+      this.headerRoot.querySelectorAll('#langOptions button').forEach(b => b.classList.toggle('active', b.dataset.value === activeLang));
     },
 
     // 外部ヘッダーの文言を現在の言語へ
@@ -161,10 +466,23 @@
     }
   };
 
-  // 初期適用（描画前）
+  // 初期適用（描画前） — URLの ?lang= があれば最優先
+  const initialLang = new URLSearchParams(window.location.search).get('lang');
   FZW.applyTheme(FZW.themePref());
-  FZW.applyLang(FZW.langPref());
-  document.addEventListener('DOMContentLoaded', () => FZW.applyLang(FZW.langPref()));
+  FZW.applyLang(FZW.VALID_LANGS.includes(initialLang) ? initialLang : FZW.langPref());
+  document.addEventListener('DOMContentLoaded', () => {
+    const urlLang = new URLSearchParams(window.location.search).get('lang');
+    FZW.applyLang(FZW.VALID_LANGS.includes(urlLang) ? urlLang : FZW.langPref());
+  });
+
+  // 外部header(5).html / 共通言語システムとの同期
+  window.addEventListener('fozowo-language-change', (e) => {
+    const next = e && e.detail ? e.detail.lang : null;
+    if (FZW.VALID_LANGS.includes(next)) {
+      FZW.write(FZW.LANG_KEY, next);
+      FZW.applyLang(next);
+    }
+  });
 
   // OS のライト/ダーク切替・ブラウザ言語変更に追従（「自動」のとき）
   if (window.matchMedia) {
@@ -646,14 +964,9 @@ html.is-oijiiw body {
   color:#fff;
   background:linear-gradient(135deg,var(--pink),var(--purple));
 }
-[data-lang="en"] .lang-ja{display:none!important}
-[data-lang="ja"] .lang-en{display:none!important}
-[data-lang="en"] .reason-ja,
-[data-lang="en"] .diag-ja,
-[data-lang="en"] .action-ja{display:none!important}
-[data-lang="ja"] .reason-en,
-[data-lang="ja"] .diag-en,
-[data-lang="ja"] .action-en{display:none!important}
+#view-fozowo .lang-en{display:none!important}
+html[data-lang="en"] #view-fozowo .lang-ja{display:none!important}
+html[data-lang="en"] #view-fozowo .lang-en{display:inline!important}
 
 
 
@@ -852,8 +1165,9 @@ html.is-oijiiw body {
         old.replaceWith(s);
       });
 
-      // 言語切替の連動・ヘッダー文言の英語化
+      // 言語切替の連動・404本文の多言語化
       FZW.bindHeader(headerRoot);
+      FZW.applyLang(FZW.langPref());
     })
     .catch(() => {
       if (headerRoot) {
@@ -946,7 +1260,7 @@ html.is-oijiiw body {
         toastSearch: '魔法検索を実行！',
         themeTitle: 'テーマ切替', langTitle: '言語切替',
         themeLabel: 'テーマ', langLabel: '言語',
-        names: { auto: '自動', dark: 'ダーク', light: 'ライト', ja: '日本語', en: 'English' }
+        names: { auto: '自動', dark: 'ダーク', light: 'ライト', ja: '日本語', en: 'English', hiragana:'ひらがな', ko:'한국어', 'zh-cn':'简体中文', 'zh-tw':'繁體中文', es:'Español', fr:'Français', de:'Deutsch', pt:'Português' }
       },
       en: {
         brand: 'Oijii Witch',
@@ -956,13 +1270,123 @@ html.is-oijiiw body {
         back: '↩ Go back',
         random: '🔮 Search with magic',
         panel: '<strong>Magic circle status:</strong> 404 detected. Starting page search mode.',
-        bubble: { idle: '“Hold on a moment. A <b>404 spell</b> will surely find it!”',
-                  searching: '“Magic at full power…! <b>Searching!</b>”',
-                  after: '“Hold on… <b>it really is a 404.</b>”' },
+        bubble: { idle: '“Hold on a moment. A <b>404 spell</b> will surely find it!”', searching: '“Magic at full power…! <b>Searching!</b>”', after: '“Hold on… <b>it really is a 404.</b>”' },
         toastSearch: 'Running magic search!',
         themeTitle: 'Change theme', langTitle: 'Change language',
         themeLabel: 'Theme', langLabel: 'Language',
-        names: { auto: 'Auto', dark: 'Dark', light: 'Light', ja: '日本語', en: 'English' }
+        names: { auto: 'Auto', dark: 'Dark', light: 'Light', ja: 'Japanese', en: 'English', hiragana:'Hiragana', ko:'Korean', 'zh-cn':'Simplified Chinese', 'zh-tw':'Traditional Chinese', es:'Spanish', fr:'French', de:'German', pt:'Portuguese' }
+      },
+      hiragana: {
+        brand: 'おいじぃまじょ',
+        title: 'そのぺーじ、まほうで まいごに なったのぞぃ。',
+        lead: '<strong>おいじぃまじょ</strong>が ぺーじを さがしています。<br>URLが かわったか、まだ まほうが とどいていないのかもしれません。',
+        home: '🏠 おいじぃまじょTOPへ',
+        back: '↩ ひとつまえへ もどる',
+        random: '🔮 まほうで さがす',
+        panel: '<strong>まほうじん すてーたす：</strong>404を けんち。ぺーじたんさくもーどを きどうちゅう。',
+        bubble: { idle: '「ちょっと まつのぞぃ。<b>404の まほう</b>なら、きっと みつかるのぞぃ！」', searching: '「まほう、さいだい しゅつりょく……！<b>さがしてるのぞぃ！</b>」', after: '「ちょっと まつのぞぃ。<b>やっぱり404なのぞぃ。</b>」' },
+        toastSearch: 'まほう けんさくを じっこう！',
+        themeTitle: 'てーま きりかえ', langTitle: 'げんご きりかえ',
+        themeLabel: 'てーま', langLabel: 'げんご',
+        names: { auto:'じどう', dark:'だーく', light:'らいと', ja:'にほんご', en:'English', hiragana:'ひらがな', ko:'かんこくご', 'zh-cn':'かんたいじ', 'zh-tw':'はんたいじ', es:'すぺいんご', fr:'ふらんすご', de:'どいつご', pt:'ぽるとがるご' }
+      },
+      ko: {
+        brand: 'Oijii Witch',
+        title: '그 페이지는 마법 속에서 길을 잃었습니다.',
+        lead: '<strong>Oijii Witch</strong>가 페이지를 찾고 있습니다.<br>URL이 변경되었거나 아직 마법이 닿지 않았을 수 있습니다.',
+        home: '🏠 Oijii Witch 홈으로',
+        back: '↩ 이전 페이지로',
+        random: '🔮 마법으로 찾기',
+        panel: '<strong>마법진 상태:</strong> 404가 감지되었습니다. 페이지 탐색 모드를 시작합니다.',
+        bubble: { idle: '“잠시만 기다려 주세요. <b>404 마법</b>이라면 분명 찾을 수 있어요!”', searching: '“마법 최대 출력…! <b>찾고 있어요!</b>”', after: '“잠시만… <b>역시 404네요.</b>”' },
+        toastSearch: '마법 검색 실행!',
+        themeTitle: '테마 변경', langTitle: '언어 변경',
+        themeLabel: '테마', langLabel: '언어',
+        names: { auto:'자동', dark:'다크', light:'라이트', ja:'일본어', en:'영어', hiragana:'히라가나', ko:'한국어', 'zh-cn':'중국어 간체', 'zh-tw':'중국어 번체', es:'스페인어', fr:'프랑스어', de:'독일어', pt:'포르투갈어' }
+      },
+      'zh-cn': {
+        brand: 'Oijii Witch',
+        title: '这个页面迷失在魔法中了。',
+        lead: '<strong>Oijii Witch</strong>正在寻找您的页面。<br>网址可能已经更改，或者魔法还没有抵达这里。',
+        home: '🏠 返回 Oijii Witch 首页',
+        back: '↩ 返回上一页',
+        random: '🔮 用魔法寻找',
+        panel: '<strong>魔法阵状态：</strong>检测到404。正在启动页面搜索模式。',
+        bubble: { idle: '“请稍等。<b>404魔法</b>一定能找到它！”', searching: '“魔法全功率……！<b>正在寻找！</b>”', after: '“等等……<b>果然是404。</b>”' },
+        toastSearch: '正在执行魔法搜索！',
+        themeTitle: '切换主题', langTitle: '切换语言',
+        themeLabel: '主题', langLabel: '语言',
+        names: { auto:'自动', dark:'深色', light:'浅色', ja:'日语', en:'英语', hiragana:'平假名', ko:'韩语', 'zh-cn':'简体中文', 'zh-tw':'繁體中文', es:'西班牙语', fr:'法语', de:'德语', pt:'葡萄牙语' }
+      },
+      'zh-tw': {
+        brand: 'Oijii Witch',
+        title: '這個頁面迷失在魔法中了。',
+        lead: '<strong>Oijii Witch</strong>正在尋找您的頁面。<br>網址可能已經變更，或者魔法還沒有抵達這裡。',
+        home: '🏠 返回 Oijii Witch 首頁',
+        back: '↩ 返回上一頁',
+        random: '🔮 用魔法尋找',
+        panel: '<strong>魔法陣狀態：</strong>偵測到404。正在啟動頁面搜尋模式。',
+        bubble: { idle: '「請稍等。<b>404魔法</b>一定能找到它！」', searching: '「魔法全功率……！<b>正在尋找！</b>」', after: '「等等……<b>果然是404。</b>」' },
+        toastSearch: '正在執行魔法搜尋！',
+        themeTitle: '切換主題', langTitle: '切換語言',
+        themeLabel: '主題', langLabel: '語言',
+        names: { auto:'自動', dark:'深色', light:'淺色', ja:'日文', en:'英文', hiragana:'平假名', ko:'韓文', 'zh-cn':'簡體中文', 'zh-tw':'繁體中文', es:'西班牙文', fr:'法文', de:'德文', pt:'葡萄牙文' }
+      },
+      es: {
+        brand: 'Oijii Witch',
+        title: 'Esta página se perdió en la magia.',
+        lead: '<strong>Oijii Witch</strong> está buscando tu página.<br>Puede que la URL haya cambiado o que la magia aún no haya llegado.',
+        home: '🏠 Ir al inicio de Oijii Witch',
+        back: '↩ Volver',
+        random: '🔮 Buscar con magia',
+        panel: '<strong>Estado del círculo mágico:</strong> 404 detectado. Iniciando el modo de búsqueda.',
+        bubble: { idle: '«Espera un momento. ¡Un <b>hechizo 404</b> seguramente la encontrará!»', searching: '«¡Magia a máxima potencia…! <b>¡Buscando!</b>»', after: '«Espera… <b>realmente es un 404.</b>»' },
+        toastSearch: '¡Ejecutando búsqueda mágica!',
+        themeTitle: 'Cambiar tema', langTitle: 'Cambiar idioma',
+        themeLabel: 'Tema', langLabel: 'Idioma',
+        names: { auto:'Automático', dark:'Oscuro', light:'Claro', ja:'Japonés', en:'Inglés', hiragana:'Hiragana', ko:'Coreano', 'zh-cn':'Chino simplificado', 'zh-tw':'Chino tradicional', es:'Español', fr:'Francés', de:'Alemán', pt:'Portugués' }
+      },
+      fr: {
+        brand: 'Oijii Witch',
+        title: 'Cette page s’est perdue dans la magie.',
+        lead: '<strong>Oijii Witch</strong> recherche votre page.<br>L’URL a peut-être changé ou la magie n’est pas encore arrivée.',
+        home: '🏠 Retour à l’accueil Oijii Witch',
+        back: '↩ Retour',
+        random: '🔮 Chercher avec la magie',
+        panel: '<strong>État du cercle magique :</strong> erreur 404 détectée. Mode de recherche activé.',
+        bubble: { idle: '« Attendez un instant. Un <b>sortilège 404</b> finira sûrement par la trouver ! »', searching: '« Magie à pleine puissance… <b>Recherche !</b> »', after: '« Attendez… <b>c’est bien une 404.</b> »' },
+        toastSearch: 'Recherche magique en cours !',
+        themeTitle: 'Changer de thème', langTitle: 'Changer de langue',
+        themeLabel: 'Thème', langLabel: 'Langue',
+        names: { auto:'Auto', dark:'Sombre', light:'Clair', ja:'Japonais', en:'Anglais', hiragana:'Hiragana', ko:'Coréen', 'zh-cn':'Chinois simplifié', 'zh-tw':'Chinois traditionnel', es:'Espagnol', fr:'Français', de:'Allemand', pt:'Portugais' }
+      },
+      de: {
+        brand: 'Oijii Witch',
+        title: 'Diese Seite hat sich in der Magie verirrt.',
+        lead: '<strong>Oijii Witch</strong> sucht nach deiner Seite.<br>Die URL wurde möglicherweise geändert oder die Magie hat sie noch nicht erreicht.',
+        home: '🏠 Zur Oijii-Witch-Startseite',
+        back: '↩ Zurück',
+        random: '🔮 Mit Magie suchen',
+        panel: '<strong>Status des Magiekreises:</strong> 404 erkannt. Seitensuche wird gestartet.',
+        bubble: { idle: '„Einen Moment. Ein <b>404-Zauber</b> wird sie bestimmt finden!“', searching: '„Magie mit voller Kraft…! <b>Suche läuft!</b>“', after: '„Moment… <b>es ist wirklich ein 404.</b>“' },
+        toastSearch: 'Magiesuche wird ausgeführt!',
+        themeTitle: 'Theme wechseln', langTitle: 'Sprache wechseln',
+        themeLabel: 'Theme', langLabel: 'Sprache',
+        names: { auto:'Automatisch', dark:'Dunkel', light:'Hell', ja:'Japanisch', en:'Englisch', hiragana:'Hiragana', ko:'Koreanisch', 'zh-cn':'Chinesisch (vereinfacht)', 'zh-tw':'Chinesisch (traditionell)', es:'Spanisch', fr:'Französisch', de:'Deutsch', pt:'Portugiesisch' }
+      },
+      pt: {
+        brand: 'Oijii Witch',
+        title: 'Esta página se perdeu na magia.',
+        lead: '<strong>Oijii Witch</strong> está procurando sua página.<br>A URL pode ter mudado ou a magia ainda não conseguiu alcançá-la.',
+        home: '🏠 Voltar ao início do Oijii Witch',
+        back: '↩ Voltar',
+        random: '🔮 Procurar com magia',
+        panel: '<strong>Status do círculo mágico:</strong> 404 detectado. Iniciando o modo de busca.',
+        bubble: { idle: '“Espere um momento. Um <b>feitiço 404</b> certamente vai encontrá-la!”', searching: '“Magia em potência máxima…! <b>Procurando!</b>”', after: '“Espere… <b>é realmente um 404.</b>”' },
+        toastSearch: 'Executando busca mágica!',
+        themeTitle: 'Alterar tema', langTitle: 'Alterar idioma',
+        themeLabel: 'Tema', langLabel: 'Idioma',
+        names: { auto:'Automático', dark:'Escuro', light:'Claro', ja:'Japonês', en:'Inglês', hiragana:'Hiragana', ko:'Coreano', 'zh-cn':'Chinês simplificado', 'zh-tw':'Chinês tradicional', es:'Espanhol', fr:'Francês', de:'Alemão', pt:'Português' }
       }
     };
     const tr = () => T[FZW.lang] || T.ja;
@@ -1005,7 +1429,8 @@ html.is-oijiiw body {
     });
 
     langBtn?.addEventListener('click', () => {
-      const next = cycle(['auto', 'ja', 'en'], FZW.langPref());
+      const current = FZW.lang || 'ja';
+      const next = cycle(FZW.VALID_LANGS, current);
       FZW.setLangPref(next);
       showToast(tr().langLabel + ': ' + tr().names[next]);
     });
