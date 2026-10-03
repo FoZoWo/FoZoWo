@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0d12">
+  <title>フォゾツール | FoZoWo Tools</title>
+  <meta name="description" content="FoZoWoが提供する便利なWebツール。タイマー、ストップウォッチなどをすぐに使えます。">
+  <style>
+    :root{
+      color-scheme: light dark;
+      --bg:#f4f6fa;
+      --panel:rgba(255,255,255,.82);
+      --panel-solid:#fff;
+      --text:#111318;
+      --muted:#687080;
+      --line:rgba(20,25,35,.11);
+      --accent:#566cff;
+      --accent2:#8059ff;
+      --shadow:0 20px 70px rgba(19,24,40,.13);
+    }
+    @media (prefers-color-scheme:dark){
+      :root{
+        --bg:#0b0d12;
+        --panel:rgba(20,23,30,.82);
+        --panel-solid:#171a22;
+        --text:#f4f6fb;
+        --muted:#a1a9b7;
+        --line:rgba(255,255,255,.10);
+        --shadow:0 20px 70px rgba(0,0,0,.32);
+      }
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 8% 0%,rgba(86,108,255,.17),transparent 34rem),
+        radial-gradient(circle at 95% 12%,rgba(128,89,255,.14),transparent 30rem),
+        var(--bg);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;
+    }
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+    .wrap{width:min(1180px,calc(100% - 32px));margin:auto}
+    header{
+      position:sticky;top:0;z-index:20;
+      border-bottom:1px solid var(--line);
+      backdrop-filter:blur(18px);
+      background:color-mix(in srgb,var(--bg) 76%,transparent);
+    }
+    .nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.02em}
+    .mark{
+      width:42px;height:42px;border-radius:13px;display:grid;place-items:center;
+      color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));
+      box-shadow:0 12px 28px rgba(86,108,255,.25);font-weight:1000
+    }
+    .brand-text small{display:block;color:var(--muted);font-size:11px;font-weight:700}
+    .home-link{
+      padding:10px 14px;border:1px solid var(--line);border-radius:12px;
+      background:var(--panel);font-weight:800
+    }
+    main{padding:52px 0 72px}
+    .hero{
+      min-height:420px;
+      display:grid;grid-template-columns:1.25fr .75fr;gap:22px;align-items:stretch
+    }
+    .hero-main,.hero-side,.tool-card,.info{
+      border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(18px);
+      box-shadow:var(--shadow);border-radius:28px
+    }
+    .hero-main{padding:clamp(28px,5vw,62px);display:flex;flex-direction:column;justify-content:center}
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;width:max-content;
+      padding:8px 12px;border-radius:999px;background:rgba(86,108,255,.11);
+      color:var(--accent);font-size:12px;font-weight:900;margin-bottom:18px
+    }
+    h1{
+      margin:0;font-size:clamp(44px,8vw,88px);line-height:.93;
+      letter-spacing:-.06em
+    }
+    .lead{
+      max-width:700px;margin:24px 0 0;color:var(--muted);
+      font-size:clamp(15px,2vw,18px);line-height:1.8
+    }
+    .hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+    .primary,.secondary{
+      display:inline-flex;align-items:center;justify-content:center;
+      min-height:48px;padding:0 18px;border-radius:14px;font-weight:900
+    }
+    .primary{color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+    .secondary{border:1px solid var(--line);background:var(--panel-solid)}
+    .hero-side{padding:30px;display:flex;flex-direction:column;justify-content:space-between}
+    .hero-side .big{font-size:76px;font-weight:1000;line-height:1}
+    .hero-side h2{margin:10px 0 6px;font-size:22px}
+    .hero-side p{margin:0;color:var(--muted);line-height:1.7}
+    .section{margin-top:28px}
+    .section-title{display:flex;justify-content:space-between;align-items:end;gap:15px;margin-bottom:14px}
+    .section-title h2{margin:0;font-size:27px;letter-spacing:-.03em}
+    .section-title p{margin:0;color:var(--muted);font-size:13px}
+    .tools{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:14px
+    }
+    .tool-card{padding:23px;display:flex;flex-direction:column;min-height:220px}
+    .tool-icon{
+      width:52px;height:52px;border-radius:16px;display:grid;place-items:center;
+      font-size:25px;background:rgba(86,108,255,.11);margin-bottom:20px
+    }
+    .tool-card h3{margin:0 0 8px;font-size:21px}
+    .tool-card p{margin:0;color:var(--muted);line-height:1.65;font-size:14px}
+    .tool-card .open{
+      margin-top:auto;padding-top:20px;font-weight:900;color:var(--accent)
+    }
+    .tool-card.soon{opacity:.72}
+    .info{margin-top:14px;padding:24px}
+    .info h3{margin:0 0 8px}
+    .info p{margin:0;color:var(--muted);line-height:1.7;font-size:14px}
+    footer{padding:0 0 30px;text-align:center;color:var(--muted);font-size:12px}
+    @media(max-width:820px){
+      .hero{grid-template-columns:1fr}
+      .hero-side{min-height:190px}
+      .tools{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:540px){
+      .tools{grid-template-columns:1fr}
+      .home-link{display:none}
+      .hero-main{padding:28px}
+      main{padding-top:30px}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="./">
+      <div class="mark">F</div>
+      <div class="brand-text">
+        FoZoWo Tools
+        <small>フォゾツール</small>
+      </div>
+    </a>
+    <a class="home-link" href="https://fozowo.f5.si" target="_self" rel="noopener">FoZoWoへ</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="hero-main">
+      <div class="eyebrow">FOZOWO TOOLS</div>
+      <h1>フォゾツール</h1>
+      <p class="lead">
+        いつでもすぐ使える、FoZoWoの便利ツール集。
+        必要なものをシンプルに、気持ちよく使える場所を目指します。
+      </p>
+      <div class="hero-actions">
+        <a class="primary" href="./Toul.timer">タイマーを使う</a>
+        <a class="secondary" href="#tools">ツール一覧を見る</a>
+      </div>
+    </div>
+
+    <aside class="hero-side">
+      <div>
+        <div class="big">01</div>
+        <h2>最初のツール</h2>
+        <p>タイマーとストップウォッチをひとつのページに搭載。</p>
+      </div>
+      <div style="color:var(--muted);font-size:12px;font-weight:800">
+        URL: fozowo.f5.si/Toul.timer
+      </div>
+    </aside>
+  </section>
+
+  <section class="section" id="tools">
+    <div class="section-title">
+      <h2>ツール一覧</h2>
+      <p>これからどんどん追加できます</p>
+    </div>
+
+    <div class="tools">
+      <a class="tool-card" href="./Toul.timer">
+        <div class="tool-icon">⏱</div>
+        <h3>タイマー / ストップウォッチ</h3>
+        <p>カウントダウン、経過時間の計測、ラップに対応。</p>
+        <div class="open">ツールを開く →</div>
+      </a>
+
+      <div class="tool-card soon">
+        <div class="tool-icon">🧮</div>
+        <h3>電卓</h3>
+        <p>日常計算からちょっとした計算まで使える電卓を予定。</p>
+        <div class="open">近日追加</div>
+      </div>
+
+      <div class="tool-card soon">
+        <div class="tool-icon">📝</div>
+        <h3>メモ</h3>
+        <p>ブラウザですぐ書けるシンプルなメモツールを予定。</p>
+        <div class="open">近日追加</div>
+      </div>
+
+      <div class="tool-card soon">
+        <div class="tool-icon">🔄</div>
+        <h3>単位変換</h3>
+        <p>長さ、重さ、時間などを簡単に変換できるツールを予定。</p>
+        <div class="open">近日追加</div>
+      </div>
+
+      <div class="tool-card soon">
+        <div class="tool-icon">📅</div>
+        <h3>日付計算</h3>
+        <p>日付の差や指定日までの日数を計算できるツールを予定。</p>
+        <div class="open">近日追加</div>
+      </div>
+
+      <div class="tool-card soon">
+        <div class="tool-icon">🔗</div>
+        <h3>URLツール</h3>
+        <p>URLの確認・整形など、Webで役立つ機能を予定。</p>
+        <div class="open">近日追加</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="info">
+    <h3>フォゾツールについて</h3>
+    <p>FoZoWo Toolsは、必要なWebツールをひとつのホーム画面から使えるようにするためのプロジェクトです。ツールが増えてもこのホーム画面からアクセスできる構成にしています。</p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">FoZoWo Tools</div>
+</footer>
+</body>
+</html>
